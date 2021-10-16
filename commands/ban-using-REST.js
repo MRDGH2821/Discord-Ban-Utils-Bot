@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { token } = require('../config.json');
+const { Permissions } = require('discord.js');
 const rest = new REST({ version: '9' }).setToken(token);
 
 module.exports = {
@@ -22,16 +23,20 @@ module.exports = {
 		const target = interaction.options.getUser('user');
 		const reas = interaction.options.getString('reason');
 
-		//		interaction.guild.members.ban(target);
-		await rest.put(
-			Routes.guildBan(interaction.guildId, target.id),
-			{ reason: reas },
-		);
-		if (reas === null) {
-			await interaction.reply({ content: `User \`${target.tag}\` is banned from this server ||for no reason :joy:||.`, ephemeral: true });
+		if (interaction.user.permissions.has([Permissions.FLAGS.KICK_MEMBERS, Permissions.FLAGS.BAN_MEMBERS])) {
+			await rest.put(
+				Routes.guildBan(interaction.guildId, target.id),
+				{ reason: reas },
+			);
+			if (reas === null) {
+				await interaction.reply({ content: `User \`${target.tag}\` is banned from this server ||for no reason :joy:||.`, ephemeral: true });
+			}
+			else {
+				await interaction.reply({ content: `User \`${target.tag}\` is banned from this server. \nReason: \`${reas}\`.`, ephemeral: true });
+			}
 		}
 		else {
-			await interaction.reply({ content: `User \`${target.tag}\` is banned from this server. \nReason: \`${reas}\`.`, ephemeral: true });
+			await interaction.reply('You cannot ban...');
 		}
 	},
 };
