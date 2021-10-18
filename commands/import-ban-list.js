@@ -4,15 +4,13 @@ const { Routes } = require('discord-api-types/v9');
 const { token, pasteUser, pastePass, pasteKey } = require('../config.json');
 
 const paste = require('better-pastebin');
-// const fs = require('fs');
 
 const rest = new REST({ version: '9' }).setToken(token);
 const date = new Date();
 console.log(date.toDateString());
 paste.setDevKey(pasteKey);
 paste.login(pasteUser, pastePass);
-let bans;
-let blen = 0;
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('import-ban-list')
@@ -24,46 +22,22 @@ module.exports = {
 
 	async execute(interaction) {
 		const paste_id = interaction.options.getString('pastebin_link');
-		const iguildId = interaction.guildId;
-		const serverName = interaction.guild.name;
-		await interaction.reply('Parsing...');
+		await interaction.reply('Parsing... (If it is taking long time, it means the link was invalid & bot crashed)');
 		paste.get(paste_id, function(success, data) {
-
-			/*
-			console.log('IMPORT SUCESS');
-			console.log(data);
-			console.log(typeof data);
-			console.log(typeof data[0]);
-*/
 			if (success) {
-				bans = JSON.parse(data);
-				blen = bans.length;
-				/*
-			console.log('\n\n\n\n');
-			console.log(bans);
-			console.log(typeof bans);
-			console.log(typeof bans[0]);
-*/
-				// bans = data;
-
+				const bans = JSON.parse(data);
 				bans.forEach((v) => {
 					console.log(`Banning user ID ${v}...`);
 					rest.put(
-						Routes.guildBan(iguildId, v),
+						Routes.guildBan(interaction.guildId, v),
 						{ reason: `Ban Import on ${date.toDateString()}` },
 					);
 				});
-				return interaction.editReply(`Successfully imported ${blen} bans for guild ${serverName}.`);
-
+				return interaction.editReply(`${bans.length} bans are being imported in background. Sit back and relax for a while!`);
 			}
 			else {
 				return interaction.editReply('Given PasteBin link does not have contents in proper format...');
 			}
-
-			// return interaction.followUp(data);
-
 		});
-
-
 	},
 };

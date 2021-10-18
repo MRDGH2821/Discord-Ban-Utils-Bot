@@ -7,6 +7,7 @@ const paste = require('better-pastebin');
 
 const rest = new REST({ version: '9' }).setToken(token);
 const date = new Date();
+
 paste.setDevKey(pasteKey);
 paste.login(pasteUser, pastePass);
 
@@ -38,8 +39,6 @@ module.exports = {
 		},
 		function(success, data) {
 			if (success) {
-				console.log('PASTE SUCECESS');
-				console.log(data);
 				return interaction.editReply(data);
 			}
 			else {
@@ -48,42 +47,3 @@ module.exports = {
 		});
 	},
 };
-/*
-const fe = new_paste(interaction.serverName, results);
-console.log(fe);
-return interaction.editReply(fe);
-*/
-/*
-for (let trip = 0; trip < trips; trip++) {
-
-	let results = [];
-	// const reasons = [];
-	let i = 0 + trip * 50;
-	const len = 50 + trip * 50;
-	for (; i < len;i++) {
-		results.push(bans[i].user.id);
-		// , v.reason
-	}
-
-
-	results = JSON.stringify(results);
-	//	reasons = JSON.stringify(reasons);
-	const outputFile = `${serverName}-${date}.txt`;
-	paste.create({
-		contents: results,
-		name: outputFile,
-		expires: '1D',
-		anonymous: 'true',
-	},
-	function(success, data) {
-		if (success) {
-			return interaction.editReply(`${results} \n\n ${data}`);
-		}
-		else {
-			return interaction.editReply('There was some unexpected error.');
-		}
-	});
-*/
-//	fs.writeFile(outputFile, results);
-//	await interaction.channel.send({ files:[outputFile] });
-//	fs.unlink(outputFile);
