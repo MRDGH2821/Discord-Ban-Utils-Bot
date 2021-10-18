@@ -7,7 +7,7 @@ const rest = new REST({ version: '9' }).setToken(token);
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('ban-two-point-oh')
+		.setName('ban')
 		.setDescription('Bans a user')
 		.addUserOption(option =>
 			option.setName('user')
