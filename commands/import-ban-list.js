@@ -8,9 +8,11 @@ const paste = require('better-pastebin');
 
 const rest = new REST({ version: '9' }).setToken(token);
 const date = new Date();
+console.log(date.toDateString());
 paste.setDevKey(pasteKey);
 paste.login(pasteUser, pastePass);
 let bans;
+let blen = 0;
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('import-ban-list')
@@ -22,28 +24,46 @@ module.exports = {
 
 	async execute(interaction) {
 		const paste_id = interaction.options.getString('pastebin_link');
-		const ichannel = interaction.channel;
 		const iguildId = interaction.guildId;
 		const serverName = interaction.guild.name;
 		await interaction.reply('Parsing...');
 		paste.get(paste_id, function(success, data) {
-			try {
+
+			/*
+			console.log('IMPORT SUCESS');
+			console.log(data);
+			console.log(typeof data);
+			console.log(typeof data[0]);
+*/
+			if (success) {
 				bans = JSON.parse(data);
+				blen = bans.length;
+				/*
+			console.log('\n\n\n\n');
+			console.log(bans);
+			console.log(typeof bans);
+			console.log(typeof bans[0]);
+*/
+				// bans = data;
+
+				bans.forEach((v) => {
+					console.log(`Banning user ID ${v}...`);
+					rest.put(
+						Routes.guildBan(iguildId, v),
+						{ reason: `Ban Import on ${date.toDateString()}` },
+					);
+				});
+				return interaction.editReply(`Successfully imported ${blen} bans for guild ${serverName}.`);
+
 			}
-			catch (e) {
-				return ichannel.send('Input argument is not a JSON array or valid file path.');
+			else {
+				return interaction.editReply('Given PasteBin link does not have contents in proper format...');
 			}
+
 			// return interaction.followUp(data);
 
 		});
-		for (const v of bans) {
-			console.log(`Banning user ID ${v}...`);
-			await rest.put(
-				Routes.guildBan(iguildId, v),
-				{ reason: `Ban Import on ${date}` },
-			);
-		}
-		return ichannel.send(`Successfully imported ${bans.length} bans for guild ${serverName}.`);
+
 
 	},
 };
