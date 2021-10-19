@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { token } = require('../config.json');
-const { MessageActionRow, MessageSelectMenu } = require('discord.js');
+const { MessageActionRow, MessageSelectMenu, Client, Intents } = require('discord.js');
 const rest = new REST({ version: '9' }).setToken(token);
 
 module.exports = {
@@ -12,27 +12,23 @@ module.exports = {
 
 	async execute(interaction) {
 		const emb = {
-			description:'pong!',
+			description:'Guild fetcher',
 		};
-		const row1 = new MessageActionRow()
-    			.addComponents(
-    				new MessageSelectMenu()
-    					.setCustomId('select')
-    					.setPlaceholder('Nothing selected')
-    					.addOptions([
-    						{
-    							label: 'Select me',
-    							description: 'This is a description',
-    							value: 'first_option',
-    						},
-    						{
-    							label: 'You can select me too',
-    							description: 'This is also a description',
-    							value: 'second_option',
-    						},
-    					]),
-    			);
-		const row2 = new MessageActionRow()
+		const client = new Client({ intents: [Intents.FLAGS.GUILDS], partials: ['CHANNEL', 'REACTION'] });
+
+
+		const guilds = await client.guilds.cache.map(guild => guild.id);
+		console.log(guilds);
+
+		const guilds2 = Promise.all(
+			client.guilds.cache.map(async guild => [
+				guild.id,
+				await guild.members.fetch(interaction.member).catch(() => null),
+			]),
+		).then(guilds2 => guilds2.filter(g => g[1]).map(guild => client.guilds.resolve(guild[0])));
+		console.log(guilds2);
+
+		const row = new MessageActionRow()
 			.addComponents(
 				new MessageSelectMenu()
 					.setCustomId('select')
@@ -50,7 +46,7 @@ module.exports = {
 						},
 					]),
 			);
-    		await interaction.reply({ embeds:[emb], components: [row1] });
+		await interaction.reply({ embeds:[emb], components: [row] });
 
 	},
 };
