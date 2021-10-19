@@ -23,16 +23,16 @@ module.exports = {
 		const target = interaction.options.getUser('user');
 		const reas = interaction.options.getString('reason');
 
-		if (interaction.user.permissions.has([Permissions.FLAGS.KICK_MEMBERS, Permissions.FLAGS.BAN_MEMBERS])) {
+		if (interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])) {
 			await rest.put(
 				Routes.guildBan(interaction.guildId, target.id),
 				{ reason: reas },
 			);
 			if (reas === null) {
-				await interaction.reply({ content: `User \`${target.tag}\` is banned from this server ||for no reason :joy:||.`, ephemeral: true });
+				await interaction.reply({ content: `User \`${target.tag}\` is banned from this server ||for no reason :joy:||.` });
 			}
 			else {
-				await interaction.reply({ content: `User \`${target.tag}\` is banned from this server. \nReason: \`${reas}\`.`, ephemeral: true });
+				await interaction.reply({ content: `User \`${target.tag}\` is banned from this server. \nReason: \`${reas}\`.` });
 			}
 		}
 		else {
