@@ -14,19 +14,12 @@ module.exports = {
 		const emb = {
 			description:'Guild fetcher',
 		};
-		const client = new Client({ intents: [Intents.FLAGS.GUILDS], partials: ['CHANNEL', 'REACTION'] });
-
-
-		const guilds = await client.guilds.cache.map(guild => guild.id);
+		
+		const guilds = [];
+		for (const [,guild] of interaction.client.guilds.cache) {
+			await guild.members.fetch().then(()=>guilds.push(guild)).catch(()=>{});
+		}
 		console.log(guilds);
-
-		const guilds2 = Promise.all(
-			client.guilds.cache.map(async guild => [
-				guild.id,
-				await guild.members.fetch(interaction.member).catch(() => null),
-			]),
-		).then(guilds2 => guilds2.filter(g => g[1]).map(guild => client.guilds.resolve(guild[0])));
-		console.log(guilds2);
 
 		const row = new MessageActionRow()
 			.addComponents(
