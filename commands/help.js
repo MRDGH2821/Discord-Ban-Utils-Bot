@@ -12,7 +12,7 @@ const helpEmbed = new MessageEmbed()
 		{ name: 'Import', value: 'Imports the ban list in current server supplied from given file' },
 		{ name: 'Export', value: 'Exports the Ban list of current server as a file' },
 		{ name: 'Transfer', value: 'Exports the ban list from current server & imports it into target server without needing and file.' },
-		{ name: 'Bot still not working?', value: 'Please join my server or the any of the test servers & elaborate how you encountered that problem. You may also submit an issue at [Github Repository](https://github.com/MRDGH2821/Discord-Time-Tag-Bot/issues)' },
+		{ name: 'Bot still not working?', value: 'Please join my server or the any of the test servers & elaborate how you encountered that problem. You may also submit an issue at [Github Repository](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues)' },
 	);
 
 const row = new MessageActionRow()
