@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { token } = require('../config.json');
-const { MessageActionRow, MessageSelectMenu, Client, Intents } = require('discord.js');
+const { MessageActionRow, MessageSelectMenu } = require('discord.js');
 const rest = new REST({ version: '9' }).setToken(token);
 
 module.exports = {
@@ -33,17 +33,31 @@ module.exports = {
 					.setPlaceholder('Nothing selected')
 					.addOptions(servers),
 			);
-
-		const filter = i => {
-			i.deferUpdate();
-			return i.user.id === interaction.user.id;
-		};
 		await interaction.editReply({ embeds:[emb], components: [row] });
+		const collector = message.createMessageComponentCollector({ componentType: 'BUTTON', time: 15000 });
 
+		collector.on('collect', i => {
+			if (i.user.id === interaction.user.id) {
+				i.editReply(`${i.user.id} clicked on the ${i.customId} button.`);
+			}
+			else {
+				i.editReply({ content: 'These buttons aren\'t for you!', ephemeral: true });
+			}
+		});
 
+		collector.on('end', collected => {
+			console.log(`Collected ${collected.size} interactions.`);
+		});
+		/*
+const filter = i => {
+	i.deferUpdate();
+	return i.user.id === interaction.user.id;
+};
 		interaction.SelectMenuInteraction.message.awaitMessageComponent({ filter, componentType: 'SELECT_MENU', time: 60000 })
 			.then(console.log(`You selected ${interaction.values.join(', ')}!`))
 			.catch(err => console.log(`No interactions were collected. ${err}`));
+	},
+	*/
 	},
 };
 
