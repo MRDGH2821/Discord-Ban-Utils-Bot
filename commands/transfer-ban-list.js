@@ -20,27 +20,44 @@ module.exports = {
 		for (const [, guild] of interaction.client.guilds.cache) {
 			await guild.members.fetch(interaction.user).then(() => guilds.push(guild)).catch(error => console.log(error));
 		}
-		console.log(guilds);
+
+		const servers = [];
+		for (let i = 0; i < Object.keys(guilds).length;i++) {
+			servers.push({ label: Object.entries(guilds)[i][1].name, value:Object.entries(guilds)[i][1].id });
+		}
 
 		const row = new MessageActionRow()
 			.addComponents(
 				new MessageSelectMenu()
 					.setCustomId('select')
 					.setPlaceholder('Nothing selected')
-					.addOptions([
-						{
-							label: 'me',
-							description: 'description',
-							value: 'option_first',
-						},
-						{
-							label: 'me too',
-							description: ' description',
-							value: 'option_second',
-						},
-					]),
+					.addOptions(servers),
 			);
+
+		const filter = i => {
+			i.deferUpdate();
+			return i.user.id === interaction.user.id;
+		};
 		await interaction.editReply({ embeds:[emb], components: [row] });
 
+
+		interaction.SelectMenuInteraction.message.awaitMessageComponent({ filter, componentType: 'SELECT_MENU', time: 60000 })
+			.then(console.log(`You selected ${interaction.values.join(', ')}!`))
+			.catch(err => console.log(`No interactions were collected. ${err}`));
 	},
 };
+
+/*
+console.log(Object.keys(guilds).length);
+console.log('\n\n\n');
+// Specific server's info
+console.log(Object.entries(guilds)[0][1]);
+console.log('\n\n\n');
+console.log(typeof Object.entries(guilds)[0][1]);
+console.log('\n\n\n');
+// Server's name & ID
+console.log(Object.entries(guilds)[0][1].id, Object.entries(guilds)[0][1].name);
+console.log('\n\n\n');
+// 2nd Server's name & ID
+console.log(Object.entries(guilds)[1][1].id, Object.entries(guilds)[1][1].name);
+*/
