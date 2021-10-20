@@ -11,13 +11,14 @@ module.exports = {
 		.setDescription('Transfers Bans across servers'),
 
 	async execute(interaction) {
+		await interaction.deferReply('Fetching Guilds');
 		const emb = {
 			description:'Guild fetcher',
 		};
-		
+
 		const guilds = [];
-		for (const [,guild] of interaction.client.guilds.cache) {
-			await guild.members.fetch(interaction.user).then(()=>guilds.push(guild)).catch(()=>{});
+		for (const [, guild] of interaction.client.guilds.cache) {
+			await guild.members.fetch(interaction.user).then(() => guilds.push(guild)).catch(error => console.log(error));
 		}
 		console.log(guilds);
 
@@ -39,7 +40,7 @@ module.exports = {
 						},
 					]),
 			);
-		await interaction.reply({ embeds:[emb], components: [row] });
+		await interaction.editReply({ embeds:[emb], components: [row] });
 
 	},
 };
