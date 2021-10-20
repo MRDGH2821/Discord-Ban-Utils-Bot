@@ -1,9 +1,10 @@
+// const { REST } = require('@discordjs/rest');
+// const { Routes } = require('discord-api-types/v9');
+// const { token } = require('../config.json');
+// const rest = new REST({ version: '9' }).setToken(token);
+
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
-const { token } = require('../config.json');
 const { MessageActionRow, MessageSelectMenu } = require('discord.js');
-const rest = new REST({ version: '9' }).setToken(token);
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -30,10 +31,45 @@ module.exports = {
 			.addComponents(
 				new MessageSelectMenu()
 					.setCustomId('select')
-					.setPlaceholder('Nothing selected')
+					.setPlaceholder('Choose a Server')
 					.addOptions(servers),
 			);
 		await interaction.editReply({ embeds:[emb], components: [row] });
+		//	console.log(interaction);
+
+		const collector = interaction.channel.createMessageComponentCollector({ componentType: 'BUTTON', time: 15000 });
+
+		collector.on('collect', i => {
+			if (i.user.id === interaction.user.id) {
+				// i.followUp(`${i.user.id} clicked on the ${i.customId} button.`);
+				console.log(`${i.user.id} clicked on the ${i.customId} button.`);
+			}
+			else {
+				i.followUp({ content: 'These buttons aren\'t for you!', ephemeral: true });
+			}
+		});
+
+		collector.on('end', collected => {
+			console.log(`Collected ${collected.size} interactions.`);
+		});
+
+		/*
+		const filter = i =>	interaction.isSelectMenu() && i.user.id === interaction.user.id;
+		const collector = interaction.channel.createMessageComponentCollector({
+			filter,
+			max: 1,
+		});
+
+		collector.on('collect', async (collected) => {
+			const value = collected.values[0];
+			console.log(value);
+			collected.deferUpdate();
+			return interaction.followUp(value);
+		});
+		*/
+	},
+};
+/*
 		const collector = message.createMessageComponentCollector({ componentType: 'BUTTON', time: 15000 });
 
 		collector.on('collect', i => {
@@ -48,7 +84,8 @@ module.exports = {
 		collector.on('end', collected => {
 			console.log(`Collected ${collected.size} interactions.`);
 		});
-		/*
+*/
+/*
 const filter = i => {
 	i.deferUpdate();
 	return i.user.id === interaction.user.id;
@@ -58,9 +95,6 @@ const filter = i => {
 			.catch(err => console.log(`No interactions were collected. ${err}`));
 	},
 	*/
-	},
-};
-
 /*
 console.log(Object.keys(guilds).length);
 console.log('\n\n\n');
