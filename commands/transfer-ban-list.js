@@ -17,7 +17,7 @@ module.exports = {
 		
 		const guilds = [];
 		for (const [,guild] of interaction.client.guilds.cache) {
-			await guild.members.fetch().then(()=>guilds.push(guild)).catch(()=>{});
+			await guild.members.fetch(interaction.user).then(()=>guilds.push(guild)).catch(()=>{});
 		}
 		console.log(guilds);
 
