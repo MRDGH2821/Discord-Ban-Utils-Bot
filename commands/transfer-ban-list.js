@@ -12,10 +12,13 @@ module.exports = {
 		.setDescription('Transfers Bans across servers'),
 
 	async execute(interaction) {
-		await interaction.deferReply('Fetching Guilds');
 		const emb = {
-			description:'Guild fetcher',
+			title: 'Ban List transferer',
+			description:'Select Target Server where you wish to transfer bans. Bans will be transferred from current server',
 		};
+		const message = await interaction.reply({ embeds: [emb], fetchReply: true });
+		// = await interaction.fetchReply();
+		const collector = message.createMessageComponentCollector({ componentType: 'BUTTON', time: 15000 });
 
 		const guilds = [];
 		for (const [, guild] of interaction.client.guilds.cache) {
@@ -26,36 +29,40 @@ module.exports = {
 		for (let i = 0; i < Object.keys(guilds).length;i++) {
 			servers.push({ label: Object.entries(guilds)[i][1].name, value:Object.entries(guilds)[i][1].id });
 		}
-
+		console.log(servers);
 		const row = new MessageActionRow()
 			.addComponents(
 				new MessageSelectMenu()
-					.setCustomId('select')
+					.setCustomId('select-server')
 					.setPlaceholder('Choose a Server')
+					.setMaxValues(1)
 					.addOptions(servers),
 			);
-		await interaction.editReply({ embeds:[emb], components: [row] });
-		//	console.log(interaction);
-
-		const collector = interaction.channel.createMessageComponentCollector({ componentType: 'BUTTON', time: 15000 });
+		await interaction.editReply({ embeds:[emb], components: [row], fetchReply: true });
+		console.log(`Interaction has: \n${interaction}`);
+		console.log('\n\n\n');
 
 		collector.on('collect', i => {
 			if (i.user.id === interaction.user.id) {
-				// i.followUp(`${i.user.id} clicked on the ${i.customId} button.`);
-				console.log(`${i.user.id} clicked on the ${i.customId} button.`);
+				i.reply(`${i.user.id} clicked on the ${i.customId} button.`);
+				console.log(interaction);
 			}
 			else {
-				i.followUp({ content: 'These buttons aren\'t for you!', ephemeral: true });
+				i.reply({ content: 'These buttons aren\'t for you!', ephemeral: true });
 			}
 		});
 
 		collector.on('end', collected => {
 			console.log(`Collected ${collected.size} interactions.`);
 		});
+		const selectedServer = await interaction.values;
+		console.log(`Interaction has: \n${selectedServer}`);
 
-		/*
+	},
+};
+/*
 		const filter = i =>	interaction.isSelectMenu() && i.user.id === interaction.user.id;
-		const collector = interaction.channel.createMessageComponentCollector({
+		const collector = SelectMenuInteraction.message.createMessageComponentCollector({
 			filter,
 			max: 1,
 		});
@@ -66,9 +73,9 @@ module.exports = {
 			collected.deferUpdate();
 			return interaction.followUp(value);
 		});
-		*/
-	},
-};
+*/
+
+
 /*
 		const collector = message.createMessageComponentCollector({ componentType: 'BUTTON', time: 15000 });
 
