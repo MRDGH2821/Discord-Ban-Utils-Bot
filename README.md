@@ -7,6 +7,10 @@ Invite Link - [click here](https://discord.com/api/oauth2/authorize?client_id=89
 
 Join my server - https://discord.gg/MPtE9zsBs5
 
+Join Test server 1 - https://discord.gg/6xmJtmnWYx
+
+Join test server 2 - https://discord.gg/tssxShnhS2
+
 ## Bot Permissions
 
 ![Bot Permissions](https://i.imgur.com/vth293y.png)

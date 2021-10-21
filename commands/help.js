@@ -28,7 +28,7 @@ const row = new MessageActionRow()
 			.setURL('https://discord.gg/6xmJtmnWYx'))
 	.addComponents(
 		new MessageButton()
-			.setLabel('Join BU Test Server 1')
+			.setLabel('Join BU Test Server 2')
 			.setStyle('LINK')
 			.setURL('https://discord.gg/tssxShnhS2'))
 
