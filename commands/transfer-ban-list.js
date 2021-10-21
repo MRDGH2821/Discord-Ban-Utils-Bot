@@ -1,10 +1,12 @@
-// const { REST } = require('@discordjs/rest');
-// const { Routes } = require('discord-api-types/v9');
-// const { token } = require('../config.json');
-// const rest = new REST({ version: '9' }).setToken(token);
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
+const { token } = require('../config.json');
+const rest = new REST({ version: '9' }).setToken(token);
 
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageActionRow, MessageSelectMenu } = require('discord.js');
+const { MessageActionRow, MessageSelectMenu, MessageEmbed } = require('discord.js');
+let destname;
+let destid;
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -12,13 +14,14 @@ module.exports = {
 		.setDescription('Transfers Bans across servers'),
 
 	async execute(interaction) {
-		const emb = {
-			title: 'Ban List transferer',
-			description:'Select Target Server where you wish to transfer bans. Bans will be transferred from current server',
-		};
-		const message = await interaction.reply({ embeds: [emb], fetchReply: true });
+		const initial_Screen = new MessageEmbed()
+			.setTitle('Ban List transferer')
+			.setDescription('Fetching Mutual Servers on which you can transfer bans to. \nPlease wait...');
+		//
+
+		const message = await interaction.reply({ embeds: [initial_Screen], fetchReply: true });
 		// = await interaction.fetchReply();
-		const collector = message.createMessageComponentCollector({ componentType: 'BUTTON', time: 15000 });
+		const collector = message.createMessageComponentCollector({ componentType: 'SELECT_MENU', time: 15000 });
 
 		const guilds = [];
 		for (const [, guild] of interaction.client.guilds.cache) {
@@ -27,8 +30,18 @@ module.exports = {
 
 		const servers = [];
 		for (let i = 0; i < Object.keys(guilds).length;i++) {
-			servers.push({ label: Object.entries(guilds)[i][1].name, value:Object.entries(guilds)[i][1].id });
+			if (Object.entries(guilds)[i][1].name != interaction.guild.name) {
+				servers.push({ label: Object.entries(guilds)[i][1].name, value:Object.entries(guilds)[i][1].id });
+			}
 		}
+		/*
+		const currentServer = servers.findIndex(element => {
+			if (element.label === interaction.guild.name) {
+				return true;
+			}
+		});
+		delete servers[currentServer];
+		*/
 		console.log(servers);
 		const row = new MessageActionRow()
 			.addComponents(
@@ -38,26 +51,49 @@ module.exports = {
 					.setMaxValues(1)
 					.addOptions(servers),
 			);
-		await interaction.editReply({ embeds:[emb], components: [row], fetchReply: true });
-		console.log(`Interaction has: \n${interaction}`);
+
+		initial_Screen.setDescription('Select Target Server where you wish to transfer bans. Bans will be transferred from current server');
+		await interaction.editReply({ embeds:[initial_Screen], components: [row], fetchReply: true });
+		//	console.log(`Interaction has: \n${interaction}`);
 		console.log('\n\n\n');
 
-		collector.on('collect', i => {
+
+		const serverID = collector.on('collect', i => {
 			if (i.user.id === interaction.user.id) {
-				i.reply(`${i.user.id} clicked on the ${i.customId} button.`);
-				console.log(interaction);
+				destname = interaction.client.guilds.cache.get(i.values[0]).name;
+				destid = interaction.client.guilds.cache.get(i.values[0]).id;
+				console.log(destname);
+				console.log(destid);
+				initial_Screen.setDescription(`Source server: ${interaction.guild.name}\nDestination Server: ${interaction.client.guilds.cache.get(i.values[0]).name}`);
+				interaction.editReply({ embeds:[initial_Screen], components: [], fetchReply: true });
+
 			}
 			else {
 				i.reply({ content: 'These buttons aren\'t for you!', ephemeral: true });
 			}
+			return i.values[0];
 		});
 
 		collector.on('end', collected => {
-			console.log(`Collected ${collected.size} interactions.`);
-		});
-		const selectedServer = await interaction.values;
-		console.log(`Interaction has: \n${selectedServer}`);
+			initial_Screen
+				.addField('Beginning Transfer...', 'You can sit back and relax while the bot does the work for you!')
+				.setFooter('Btw, bot developer doesn\'t know how to notify you after the bans have been transferred... \nHence you should check destination server setting\'s ban section.');
 
+			interaction.editReply({ embeds:[initial_Screen], fetchReply: true });
+			console.log(`Collected ${collected.size} interactions. Collected: ${collected}`);
+		});
+
+		const bans = await rest.get(
+			Routes.guildBans(interaction.guild.id),
+		);
+		console.log(`Applying bans to guild ${interaction.client.guilds.cache.get(serverID).name}...`);
+		for (const v of bans) {
+			console.log(`Banning user ${v.user.username}#${v.user.discriminator}...`);
+			await rest.put(
+				Routes.guildBan(interaction.client.guilds.cache.get(serverID).id, v.user.id),
+				{ reason: v.reason },
+			);
+		}
 	},
 };
 /*
