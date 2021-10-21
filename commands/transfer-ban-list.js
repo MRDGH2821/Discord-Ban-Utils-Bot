@@ -12,8 +12,7 @@ module.exports = {
 		.setDescription('Transfers Bans across servers'),
 
 	async execute(interaction) {
-		let destname;
-		let destid;
+
 		const initial_Screen = new MessageEmbed()
 			.setTitle('Ban List transferer')
 			.setDescription('Fetching Mutual Servers on which you can transfer bans to. \nPlease wait...');
@@ -47,14 +46,16 @@ module.exports = {
 		initial_Screen.setDescription('Select Target Server where you wish to transfer bans. Bans will be transferred from current server');
 
 		await interaction.editReply({ embeds:[initial_Screen], components: [row], fetchReply: true });
-
+		let destname;
+		let destid;
 		collector.on('collect', i => {
 			if (i.user.id === interaction.user.id) {
 
 				destname = interaction.client.guilds.cache.get(i.values[0]).name;
 				destid = interaction.client.guilds.cache.get(i.values[0]).id;
-
+				console.log('\ndestname (inside collector, if scope):');
 				console.log(destname);
+				console.log('\ndestid (inside collector, if scope):');
 				console.log(destid);
 
 				initial_Screen
@@ -65,8 +66,18 @@ module.exports = {
 			else {
 				i.reply({ content: 'These buttons aren\'t for you!', ephemeral: true });
 			}
+			destname = interaction.client.guilds.cache.get(i.values[0]).name;
+			destid = interaction.client.guilds.cache.get(i.values[0]).id;
+			console.log('interaction.values (inside collector, outside if-else):');
+			console.log(interaction.values);
 		});
-
+		console.log('\ndestname (outside collector):');
+		console.log(destname);
+		console.log('\ndestid outside collector):');
+		console.log(destid);
+		const bans = await rest.get(
+			Routes.guildBans(interaction.guild.id),
+		);
 		collector.on('end', collected => {
 			initial_Screen
 				.addField('Beginning Transfer...', 'You can sit back and relax while the bot does the work for you!')
@@ -74,25 +85,22 @@ module.exports = {
 
 			interaction.editReply({ embeds:[initial_Screen], fetchReply: true });
 			console.log(`Collected ${collected.size} interactions. Collected: ${collected}`);
+
+
+			const fromGuildId = interaction.guild.id;
+			const toGuildId = destid;
+			console.log(`Fetching bans for guild ${destname}...`);
+
+			console.log(`Found ${bans.length} bans.`);
+			console.log(`Applying bans to guild ${toGuildId}...`);
+			for (const v of bans) {
+				console.log(`Banning user ${v.user.username}#${v.user.discriminator}...`);
+				rest.put(
+					Routes.guildBan(toGuildId, v.user.id),
+					{ reason: v.reason },
+				);
+			}
+			console.log(`Successfully transferred all bans from ${fromGuildId} to ${toGuildId}.`);
 		});
-
-		const fromGuildId = interaction.guild.id;
-		const toGuildId = destid;
-		console.log(`Fetching bans for guild ${fromGuildId}...`);
-
-		const bans = await rest.get(
-			Routes.guildBans(fromGuildId),
-		);
-		console.log(`Found ${bans.length} bans.`);
-		console.log(`Applying bans to guild ${toGuildId}...`);
-		for (const v of bans) {
-			console.log(`Banning user ${v.user.username}#${v.user.discriminator}...`);
-			await rest.put(
-				Routes.guildBan(toGuildId, v.user.id),
-				{ reason: v.reason },
-			);
-		}
-		console.log(`Successfully transferred all bans from ${fromGuildId} to ${toGuildId}.`);
-
 	},
 };
