@@ -15,6 +15,7 @@ module.exports = {
 	async execute(interaction) {
 
 		const initial_Screen = new MessageEmbed()
+			.setColor('#D8D4D3')
 			.setTitle('Ban List transferer')
 			.setDescription('Fetching Mutual Servers on which you can transfer bans to. \nPlease wait...');
 

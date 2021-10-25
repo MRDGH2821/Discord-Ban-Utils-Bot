@@ -3,7 +3,7 @@ const { MessageEmbed } = require('discord.js');
 const { MessageActionRow, MessageButton } = require('discord.js');
 
 const helpEmbed = new MessageEmbed()
-	.setColor('#0099ff')
+	.setColor('#D8D4D3')
 	.setTitle('Help Section')
 	.setURL('https://discord.gg/MPtE9zsBs5')
 	.setDescription('The help section you get you started!\nThe bot helps you import, export & transfer bans from one server to another.')

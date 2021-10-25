@@ -20,6 +20,7 @@ module.exports = {
 		}
 		// embed showing details
 		const userInfo = {
+			color: 0xD8D4D3,
 			title: 'User info',
 			description: 'Displays whether you have sufficient permissions to kick or ban or not.',
 			fields: [
