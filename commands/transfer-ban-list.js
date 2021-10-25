@@ -22,6 +22,7 @@ module.exports = {
 
 		const collector = message.createMessageComponentCollector({ componentType: 'SELECT_MENU', time: 15000 });
 
+		// Fetches mutual servers where interaction user can ban
 		const guilds = [];
 		for (const [, guild] of interaction.client.guilds.cache) {
 			try {
@@ -35,15 +36,22 @@ module.exports = {
 			catch (e) {console.log(e);}
 		}
 
+		// Puts Name & Server ID in an array except current serevr
 		const servers = [];
 		for (let i = 0; i < Object.keys(guilds).length;i++) {
 			if (Object.entries(guilds)[i][1].name != interaction.guild.name) {
 				servers.push({ label: Object.entries(guilds)[i][1].name, value:Object.entries(guilds)[i][1].id });
 			}
 		}
+		/*
 		console.log('servers');
 		console.log(typeof servers);
 		console.log(servers);
+		*/
+
+		// Checks if mutual servers list has atleast 1 server.
+		// This command is point less if you don't have another mutual server with bot.
+		// Hence the check
 		if (Object.keys(servers).length > 0) {
 			const row = new MessageActionRow()
 				.addComponents(
@@ -59,7 +67,10 @@ module.exports = {
 			await interaction.editReply({ embeds:[initial_Screen], components: [row], fetchReply: true });
 			let toGuildId;
 			let destname;
+
+			// Collectors to collect selected server
 			collector.on('collect', i => {
+				// This if statement is for checking if buttons are selected by interaction.user or not.
 				if (i.user.id === interaction.user.id) {
 
 					destname = interaction.client.guilds.cache.get(i.values[0]).name;
@@ -73,13 +84,16 @@ module.exports = {
 				else {
 					i.reply({ content: 'These buttons aren\'t for you!', ephemeral: true });
 				}
+				// Double assignment to ensure values are properly passed
 				destname = interaction.client.guilds.cache.get(i.values[0]).name;
 				toGuildId = interaction.client.guilds.cache.get(i.values[0]).id;
 			});
 
+			// Fetch bans from current server
 			const bans = await rest.get(
 				Routes.guildBans(interaction.guild.id),
 			);
+
 			collector.on('end', collected => {
 				if (collected.size === 1) {
 					initial_Screen
@@ -92,6 +106,7 @@ module.exports = {
 					const fromGuildId = interaction.guild.id;
 
 					try {
+						// Tries to ban users.
 						console.log(`Fetching bans for guild ${destname}...`);
 						console.log(`Found ${bans.length} bans.`);
 						console.log(`Applying bans to guild ${toGuildId}...`);
@@ -105,6 +120,8 @@ module.exports = {
 						console.log(`Successfully transferred all bans from ${fromGuildId} to ${toGuildId}.`);
 					}
 					catch (error) {
+						// Crash prevention code.
+						// Bot might hit API Rate limit when ban list is too big.
 						const apiErrorRow = new MessageActionRow()
 							.addComponents(
 								new MessageButton()
@@ -119,13 +136,13 @@ module.exports = {
 									.setStyle('LINK'),
 							);
 						initial_Screen
-							.setDescription('Seems like I failed. Possible reasons: Discord API Rate Limit crossed. And thus cannot transfer bans.');
+							.setDescription('Seems like I failed. Possible reasons: Discord API Rate Limit crossed. And thus cannot transfer bans. Try again after sometime?');
 						interaction.editReply({ embeds:[initial_Screen], component:[apiErrorRow], fetchReply: true });
 						console.log(error);
 					}
 				}
 				else {
-
+					// When the interaction times out
 					initial_Screen
 						.setDescription('Please Select Something!')
 						.setFooter('Re-run the command again!');
@@ -134,10 +151,21 @@ module.exports = {
 			});
 		}
 		else {
+			// When mutual servers are less than 1
 			initial_Screen
 				.setDescription('<@!897454611370213436> didn\'t find any mutual servers where you can ban!')
-				.setFooter('Best contact mods & tell them to do it');
+				.setFooter('Best contact mutual server mods & tell them to do it');
 			await interaction.editReply({ embeds: [initial_Screen], components:[], fetchReply: true });
 		}
 	},
 };
+
+
+/*
+25 Oct 2021
+I'll be honest here, this piece of code has taken a long time to get function & crash proof.
+I asked 2-3 questions on Stack overflow to get this working.
+This approach will fail when bot reaches more than 2000 servers.
+And I'm kinda afraid of that because I don't know how to use OAuth & Sharding.
++ I would need to monetize this bot since I would have to change the hosting platform from Raspberry Pi to Virtual Private Server.
+*/

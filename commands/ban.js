@@ -4,6 +4,7 @@ const { Routes } = require('discord-api-types/v9');
 const { token } = require('../config.json');
 const { Permissions } = require('discord.js');
 const rest = new REST({ version: '9' }).setToken(token);
+const date = new Date().toDateString();
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -24,14 +25,22 @@ module.exports = {
 		const reas = interaction.options.getString('reason');
 
 		if (interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])) {
-			await rest.put(
-				Routes.guildBan(interaction.guildId, target.id),
-				{ reason: reas },
-			);
 			if (reas === null) {
-				await interaction.reply({ content: `User \`${target.tag}\` is banned from this server ||for no reason :joy:||.` });
+				// If no reason given, give a formatted reason
+				await rest.put(
+					Routes.guildBan(interaction.guildId, target.id),
+					{ reason: `Banned by ${interaction.user.tag} on ${date} for "no reason"` },
+				);
+
+				await interaction.reply({ content: `User \`${target.tag}\` is banned from this server. \n||for no reason :joy:||` });
 			}
+
 			else {
+				// When a reason is given.
+				await rest.put(
+					Routes.guildBan(interaction.guildId, target.id),
+					{ reason: reas },
+				);
 				await interaction.reply({ content: `User \`${target.tag}\` is banned from this server. \nReason: \`${reas}\`.` });
 			}
 		}
