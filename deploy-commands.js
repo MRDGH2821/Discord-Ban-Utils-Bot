@@ -51,4 +51,4 @@ const rest = new REST({ version: '9' }).setToken(token);
 				}
 				return Promise.all(promises);
 			});
-			*/
+*/

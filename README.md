@@ -1,7 +1,9 @@
 # Discord-Ban-Utils-Bot
 Discord Ban Utilities for Mutual Servers!
 
-Currently under development.
+~~Currently the Bot is in development.~~ Bot development is supposedly finished. And can be used publicly!
+
+Hosted on my personal Raspberry Pi 2B+.
 
 Invite Link - [click here](https://discord.com/api/oauth2/authorize?client_id=897454611370213436&permissions=277562263718&scope=bot%20applications.commands)
 
@@ -57,3 +59,8 @@ git pull
 [MIT](./LICENSE)
 
 Feel free to make your own improved version of the bot!
+
+## Icon
+
+Made using Canva.
+See [here](https://www.canva.com/design/DAEsnh6KHfM/DTA-pMkWSqigGIgLA9Y39w/view?utm_content=DAEsnh6KHfM&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink) in high resolution.
