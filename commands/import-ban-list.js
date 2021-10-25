@@ -27,23 +27,31 @@ module.exports = {
 			await interaction.reply('Parsing... (If it is taking long time, it means the link was invalid & bot crashed)');
 			paste.get(paste_id, function(success, data) {
 				if (success) {
-					const bans = JSON.parse(data);
-					bans.forEach((v) => {
-						console.log(`Banning user ID ${v}...`);
-						rest.put(
-							Routes.guildBan(interaction.guildId, v),
-							{ reason: `Ban Import on ${date.toDateString()}` },
-						);
-					});
-					return interaction.editReply(`${bans.length} bans are being imported in background. Sit back and relax for a while!`);
+					try {
+						const bans = JSON.parse(data);
+						console.log(bans);
+						console.log(JSON.parse(data));
+						interaction.editReply(`${bans.length} bans are being imported in background. Sit back and relax for a while!`);
+						bans.forEach((v) => {
+							console.log(`Banning user ID ${v}...`);
+							rest.put(
+								Routes.guildBan(interaction.guildId, v),
+								{ reason: `Ban Import on ${date.toDateString()}` },
+							);
+						});
+						interaction.editReply(`${bans.length} imported successfully!`);
+					}
+					catch (e) {
+						interaction.editReply('Given PasteBin link does not have contents in proper format...');
+					}
 				}
 				else {
-					return interaction.editReply('Given PasteBin link does not have contents in proper format...');
+					interaction.editReply('Given PasteBin link does not have contents in proper format...');
 				}
 			});
 		}
 		else {
-			return interaction.reply('You cannot just ban anybody by importing 🤷. Contact Server Moderators!');
+			interaction.reply('You cannot just ban anybody by importing 🤷. Contact Server Moderators!');
 		}
 	},
 };
