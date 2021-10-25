@@ -21,12 +21,11 @@
   },
   "homepage": "https://github.com/MRDGH2821/Discord-Ban-Utils-Bot#readme",
   "dependencies": {
-    "@discordjs/builders": "^0.6.0",
+    "@discordjs/builders": "^0.7.0",
     "@discordjs/rest": "^0.1.0-canary.0",
     "better-pastebin": "^0.4.1",
-    "discord-api-types": "^0.23.1",
-    "discord.js": "^13.2.0",
-    "nodemon": "^2.0.13"
+    "discord-api-types": "^0.24.0",
+    "discord.js": "^13.2.0"
   },
   "devDependencies": {
     "eslint": "^7.32.0"

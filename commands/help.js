@@ -18,7 +18,7 @@ const helpEmbed = new MessageEmbed()
 		{ name: 'User-info', value: 'Tells if you have the permissions to kick or ban .' },
 		{ name: 'Bot still not working?', value: 'Please join my server or the any of the test servers & elaborate how you encountered that problem. You may also submit an issue at [Github Repository](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues)' },
 	)
-	.setFooter('Note from developer: "I still think that this bot is far from crash proof. I have done enough testing, but still some edge cases might be left out which might crash the bot. Well I have configured my bot to restart on crash (using pm2), it would be nice if you report the issue ASAP to me.');
+	.setFooter('Note from developer: "I still think that this bot is far from crash proof. I have done enough testing, but still some edge cases might be left out which might crash the bot. Well I have configured my bot to restart on crash (using pm2), it would be nice if you report the issue ASAP to me."');
 
 const row = new MessageActionRow()
 	.addComponents(
