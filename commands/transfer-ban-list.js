@@ -110,13 +110,23 @@ module.exports = {
 						// Tries to ban users.
 						console.log(`Fetching bans for guild ${destname}...`);
 						console.log(`Found ${bans.length} bans.`);
+						console.log(`Fetching bans for guild ${toGuildId}...`);
+
+						const targetBans = rest.get(
+							Routes.guildBans(toGuildId),
+						);
 						console.log(`Applying bans to guild ${toGuildId}...`);
 						for (const v of bans) {
-							console.log(`Banning user ${v.user.username}#${v.user.discriminator}...`);
-							rest.put(
-								Routes.guildBan(toGuildId, v.user.id),
-								{ reason: v.reason },
-							);
+							if (targetBans.includes(v.user.id)) {
+								console.log(`Skipping already banned user ${v.user.username}#${v.user.discriminator}.`);
+							}
+							else {
+								console.log(`Banning user ${v.user.username}#${v.user.discriminator}...`);
+								rest.put(
+									Routes.guildBan(toGuildId, v.user.id),
+									{ reason: v.reason },
+								);
+							}
 						}
 						console.log(`Successfully transferred all bans from ${fromGuildId} to ${toGuildId}.`);
 					}
