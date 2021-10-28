@@ -64,3 +64,7 @@ Feel free to make your own improved version of the bot!
 
 Made using Canva.
 See [here](https://www.canva.com/design/DAEsnh6KHfM/DTA-pMkWSqigGIgLA9Y39w/view?utm_content=DAEsnh6KHfM&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink) in high resolution.
+
+## Note from developer:
+I still think that this bot is far from crash proof. I have done enough testing, but still some edge cases might be left out.
+Well I have configured my bot to restart on crash (using pm2), it would be nice if you report the issue ASAP to me.
