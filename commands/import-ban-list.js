@@ -38,16 +38,16 @@ module.exports = {
 						console.log(bans);
 						console.log(JSON.parse(data));
 						interaction.editReply(`${bans.length} bans are being imported in background. Sit back and relax for a while!`);
-
+						let validBans = bans.length;
 						// Ban users
 						bans.forEach((v) => {
 							console.log(`Banning user ID ${v}...`);
 							rest.put(
 								Routes.guildBan(interaction.guildId, v),
 								{ reason: `Ban Import on ${date.toDateString()}` },
-							);
+							).catch(() => {validBans = validBans - 1;});
 						});
-						interaction.editReply(`${bans.length} imported successfully!`);
+						interaction.editReply(`Ban List: ${bans.length}. \nInvalid Bans: ${bans.length - validBans}.\n${validBans} imported successfully!`);
 					}
 					catch (e) {
 
