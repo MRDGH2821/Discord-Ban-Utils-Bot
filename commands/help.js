@@ -16,7 +16,7 @@ const helpEmbed = new MessageEmbed()
 		{ name: 'Kick', value: 'Kicks the given user.' },
 		{ name: 'Ping', value: 'Bot Latency.' },
 		{ name: 'User-info', value: 'Tells if you have the permissions to kick or ban .' },
-		{ name: 'Bot still not working?', value: 'Please join my server or the any of the test servers & elaborate how you encountered that problem. You may also submit an issue at [Github Repository](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues)' },
+		{ name: 'Bot still not working?', value: 'Please join my server & elaborate how you encountered that problem. You may also submit an issue at [Github Repository](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues)' },
 	)
 	.setFooter('Note from developer: "I still think that this bot is far from crash proof. I have done enough testing, but still some edge cases might be left out. Well I have configured my bot to restart on crash (using pm2), it would be nice if you report the issue ASAP to me."');
 
@@ -28,16 +28,6 @@ const row = new MessageActionRow()
 			.setURL('https://discord.gg/MPtE9zsBs5'))
 	.addComponents(
 		new MessageButton()
-			.setLabel('Join Test Server 1')
-			.setStyle('LINK')
-			.setURL('https://discord.gg/6xmJtmnWYx'))
-	.addComponents(
-		new MessageButton()
-			.setLabel('Join Test Server 2')
-			.setStyle('LINK')
-			.setURL('https://discord.gg/tssxShnhS2'))
-	.addComponents(
-		new MessageButton()
 			.setLabel('Report an Issue at GitHub')
 			.setStyle('LINK')
 			.setURL('https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues'))
@@ -45,7 +35,12 @@ const row = new MessageActionRow()
 		new MessageButton()
 			.setLabel('GitHub Repository')
 			.setStyle('LINK')
-			.setURL('https://github.com/MRDGH2821/Discord-Ban-Utils-Bot'),
+			.setURL('https://github.com/MRDGH2821/Discord-Ban-Utils-Bot'))
+	.addComponents(
+		new MessageButton()
+			.setLabel('Invite the Bot in your server!')
+			.setStyle('LINK')
+			.setURL('https://discord.com/oauth2/authorize?client_id=897454611370213436&permissions=277562263718&scope=bot%20applications.commands'),
 	);
 
 module.exports = {
