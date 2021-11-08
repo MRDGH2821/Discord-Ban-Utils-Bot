@@ -24,7 +24,7 @@ module.exports = {
 		const target = interaction.options.getUser('user');
 		const reas = interaction.options.getString('reason');
 		console.log(interaction.channel.type);
-		if (interaction.channel.type === 'GUILD_TEXT' || interaction.channel.type === 'GUILD_PUBLIC_THREAD' || interaction.channel.type === 'GUILD_PRIVATE_THREAD') {
+		if (interaction.guild) {
 			if (interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])) {
 				if (reas === null) {
 				// If no reason given, give a formatted reason

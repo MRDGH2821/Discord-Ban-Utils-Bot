@@ -2,6 +2,8 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { token, pasteUser, pastePass, pasteKey } = require('../betaconfig.json');
+const { MutualServers } = require('../lib/MutualServerFnc.js');
+const { MessageActionRow, MessageSelectMenu, MessageEmbed } = require('discord.js');
 
 const paste = require('better-pastebin');
 
@@ -36,37 +38,122 @@ module.exports = {
 		}
 
 		// Fetch bans
-		const bans = await rest.get(
-			Routes.guildBans(interaction.guildId),
-		);
-		await interaction.deferReply(`Found ${bans.length} bans. Exporting...`);
-		console.log(`Found ${bans.length} bans. Exporting...`);
+		if (interaction.guild) {
+			const bans = rest.get(
+				Routes.guildBans(interaction.guildId),
+			);
+			await interaction.deferReply(`Found ${bans.length} bans. Exporting...`);
+			console.log(`Found ${bans.length} bans. Exporting...`);
 
-		// Export bans
-		let results = [];
-		bans.forEach((v) => {
-			results.push(v.user.id);
-		});
-		results = JSON.stringify(results);
-		// console.log(results);
+			// Export bans
+			let results = [];
+			bans.forEach((v) => {
+				results.push(v.user.id);
+			});
+			results = JSON.stringify(results);
+			// console.log(results);
 
-		// Send bans to pastebin
-		const outputFile = `${interaction.guild.name}-${date}.txt`;
-		paste.create({
-			contents: results,
-			name: outputFile,
-			expires: expiry,
-			anonymous: 'true',
-		},
-		function(success, data) {
-			if (success) {
+			// Send bans to pastebin
+			const outputFile = `${interaction.guild.name}-${date}.txt`;
+			paste.create({
+				contents: results,
+				name: outputFile,
+				expires: expiry,
+				anonymous: 'true',
+			},
+			function(success, data) {
+				if (success) {
 				// Returns the pastebin link
-				return interaction.editReply(data);
+					return interaction.editReply(data);
+				}
+				else {
+				// Incase of any errors
+					return interaction.editReply('There was some unexpected error.');
+				}
+			});
+		}
+		else {
+			const initial_Screen = new MessageEmbed()
+				.setColor('#D8D4D3')
+				.setTitle('Ban List transferer')
+				.setDescription('Fetching Mutual Servers from which you can export Ban List. \nPlease wait...');
+
+			const message = await interaction.reply({ embeds: [initial_Screen], fetchReply: true });
+
+			const collector = message.createMessageComponentCollector({ componentType: 'SELECT_MENU', time: 15000 });
+
+			const guilds = MutualServers(interaction);
+			const servers = [];
+			for (let i = 0; i < Object.keys(guilds).length;i++) {
+				servers.push({ label: Object.entries(guilds)[i][1].name, value:Object.entries(guilds)[i][1].id });
+			}
+
+			if (Object.keys(servers).length > 0) {
+				const row = new MessageActionRow()
+					.addComponents(
+						new MessageSelectMenu()
+							.setCustomId('select-server')
+							.setPlaceholder('Choose a Server')
+							.setMaxValues(1)
+							.addOptions(servers),
+					);
+
+				initial_Screen.setDescription('Select The server from which you wish to fetch bans.');
+
+				await interaction.editReply({ embeds:[initial_Screen], components: [row], fetchReply: true });
+				let bans;
+				let selectedGuild;
+				collector.on('collect', async (i) => {
+					if (i.user.id === interaction.user.id) {
+						selectedGuild = interaction.client.guilds.cache.get(i.values[0]);
+						// console.log(selectedGuild);
+						bans = await rest.get(
+							Routes.guildBans(selectedGuild.id),
+						);
+					}
+				});
+
+				collector.on('end', collected => {
+					if (collected.size === 1) {
+						initial_Screen.setDescription(`Found ${bans.length} bans. Exporting...`);
+						interaction.editReply({ embeds:[initial_Screen], components:[], fetchReply: true });
+						console.log(`Found ${bans.length} bans. Exporting...`);
+						console.log(bans);
+
+						// Export bans
+						let results = [];
+						bans.forEach((v) => {
+							results.push(v.user.id);
+						});
+						results = JSON.stringify(results);
+						const outputFile = `${selectedGuild.name}-${date}.txt`;
+
+						paste.create({
+							contents: results,
+							name: outputFile,
+							expires: expiry,
+							anonymous: 'true',
+						},
+						function(success, data) {
+							if (success) {
+								// Returns the pastebin link
+								return interaction.followUp(data);
+							}
+							else {
+								// Incase of any errors
+								return interaction.followUp('There was some unexpected error.');
+							}
+						});
+					}
+				},
+				);
 			}
 			else {
-				// Incase of any errors
-				return interaction.editReply('There was some unexpected error.');
+				// When mutual servers are less than 1
+				initial_Screen
+					.setDescription('No Mutual servers Found');
+				await interaction.editReply({ embeds: [initial_Screen], components:[], fetchReply: true });
 			}
-		});
+		}
 	},
 };

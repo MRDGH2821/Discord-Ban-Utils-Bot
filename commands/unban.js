@@ -13,14 +13,17 @@ module.exports = {
 	async execute(interaction) {
 
 		const target = interaction.options.getUser('user');
-
-		if (interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])) {
-			interaction.guild.members.unban(target);
-			await interaction.reply({ content: `User \`${target.tag}\` is unbanned from this server.` });
+		if (interaction.guild) {
+			if (interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])) {
+				interaction.guild.members.unban(target);
+				await interaction.reply({ content: `User \`${target.tag}\` is unbanned from this server.` });
+			}
+			else {
+				await interaction.reply('You cannot unban...');
+			}
 		}
-
 		else {
-			await interaction.reply('You cannot unban...');
+			interaction.reply('Need to be in Server to work!');
 		}
 	},
 };
