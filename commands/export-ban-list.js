@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const { token, pasteUser, pastePass, pasteKey } = require('../config.json');
+const { token, pasteUser, pastePass, pasteKey } = require('../betaconfig.json');
 
 const paste = require('better-pastebin');
 

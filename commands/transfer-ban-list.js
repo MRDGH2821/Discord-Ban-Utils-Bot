@@ -1,7 +1,7 @@
 const { REST } = require('@discordjs/rest');
 const { Permissions } = require('discord.js');
 const { Routes } = require('discord-api-types/v9');
-const { token } = require('../config.json');
+const { token } = require('../betaconfig.json');
 const rest = new REST({ version: '9' }).setToken(token);
 
 const { SlashCommandBuilder } = require('@discordjs/builders');

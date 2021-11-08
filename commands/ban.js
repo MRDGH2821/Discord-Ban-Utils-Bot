@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const { token } = require('../config.json');
+const { token } = require('../betaconfig.json');
 const { Permissions } = require('discord.js');
 const rest = new REST({ version: '9' }).setToken(token);
 const date = new Date().toDateString();
@@ -23,7 +23,7 @@ module.exports = {
 
 		const target = interaction.options.getUser('user');
 		const reas = interaction.options.getString('reason');
-
+		console.log(interaction.channel.type);
 		if (interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])) {
 			if (reas === null) {
 				// If no reason given, give a formatted reason
