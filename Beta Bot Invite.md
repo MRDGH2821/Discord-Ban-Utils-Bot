@@ -1,5 +1,3 @@
-
-
 # Beta Bot Invite
 
 BU Beta can only be invited by developer.
