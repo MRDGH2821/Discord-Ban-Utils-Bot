@@ -13,7 +13,7 @@ paste.login(pasteUser, pastePass);
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('export-ban-list')
+		.setName('export_ban_list')
 		.setDescription('Exports ban list of current server')
 		.addStringOption(option =>
 			option.setName('expiry')

@@ -14,7 +14,7 @@ paste.login(pasteUser, pastePass);
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('import-ban-list')
+		.setName('import_ban_list')
 		.setDescription('Imports ban list of current server')
 		.addStringOption(option =>
 			option.setName('pastebin_link')

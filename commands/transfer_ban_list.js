@@ -9,7 +9,7 @@ const { MessageActionRow, MessageSelectMenu, MessageEmbed, MessageButton } = req
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('transfer-bans')
+		.setName('transfer_bans')
 		.setDescription('Transfers Bans across servers'),
 
 	async execute(interaction) {
