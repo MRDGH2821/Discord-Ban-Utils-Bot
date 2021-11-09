@@ -20,9 +20,10 @@ module.exports = {
 		}
 		// embed showing details
 		const userInfo = {
-			color: 0xD8D4D3,
+			color: 0xd8d4d3,
 			title: 'User info',
-			description: 'Displays whether you have sufficient permissions to kick or ban or not.',
+			description:
+        'Displays whether you have sufficient permissions to kick or ban or not.',
 			fields: [
 				{
 					name: 'Username',
@@ -42,7 +43,7 @@ module.exports = {
 				},
 				{
 					name: 'Can you kick?',
-					value:`${canKick}`,
+					value: `${canKick}`,
 				},
 				{
 					name: 'Can you ban?',

@@ -6,17 +6,20 @@ module.exports = {
 		.setName('unban')
 		.setDescription('Unbans a user')
 		.addUserOption(option =>
-			option.setName('user')
+			option
+				.setName('user')
 				.setDescription('Enter the User ID (i.e. snowflake) or tag them')
-				.setRequired(true)),
+				.setRequired(true),
+		),
 
 	async execute(interaction) {
-
 		const target = interaction.options.getUser('user');
 		if (interaction.guild) {
 			if (interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])) {
 				interaction.guild.members.unban(target);
-				await interaction.reply({ content: `User \`${target.tag}\` is unbanned from this server.` });
+				await interaction.reply({
+					content: `User \`${target.tag}\` is unbanned from this server.`,
+				});
 			}
 			else {
 				await interaction.reply('You cannot unban...');
