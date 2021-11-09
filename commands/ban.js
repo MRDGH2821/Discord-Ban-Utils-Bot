@@ -25,37 +25,41 @@ module.exports = {
 	async execute(interaction) {
 		const target = interaction.options.getUser('user');
 		const reas = interaction.options.getString('reason');
-		console.log(interaction.channel.type);
-		if (interaction.guild) {
-			if (interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])) {
-				if (reas === null) {
+		try {
+			if (interaction.guild) {
+				if (interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])) {
+					if (reas === null) {
 					// If no reason given, give a formatted reason
-					await rest.put(Routes.guildBan(interaction.guildId, target.id), {
-						reason: `Banned by ${interaction.user.tag} on ${date} for "no reason"`,
-					});
+						await rest.put(Routes.guildBan(interaction.guildId, target.id), {
+							reason: `Banned by ${interaction.user.tag} on ${date} for "no reason"`,
+						});
 
-					await interaction.reply({
-						content: `User \`${target.tag}\` is banned from this server. \n||for no reason :joy:||`,
-					});
+						await interaction.reply({
+							content: `User \`${target.tag}\` is banned from this server. \n||for no reason :joy:||`,
+						});
+					}
+					else {
+					// When a reason is given.
+						await rest.put(Routes.guildBan(interaction.guildId, target.id), {
+							reason: reas,
+						});
+						await interaction.reply({
+							content: `User \`${target.tag}\` is banned from this server. \nReason: \`${reas}\`.`,
+						});
+					}
 				}
 				else {
-					// When a reason is given.
-					await rest.put(Routes.guildBan(interaction.guildId, target.id), {
-						reason: reas,
-					});
-					await interaction.reply({
-						content: `User \`${target.tag}\` is banned from this server. \nReason: \`${reas}\`.`,
-					});
+					await interaction.reply('You cannot ban...');
 				}
 			}
 			else {
-				await interaction.reply('You cannot ban...');
+				await interaction.reply(
+					'Are you sure you are in a server to execute this?:unamused:  \nBecause this command can only be used in Server Text channels or Threads :shrug:',
+				);
 			}
 		}
-		else {
-			await interaction.reply(
-				'Are you sure you are in a server to execute this?:unamused:  \nBecause this command can only be used in Server Text channels or Threads :shrug:',
-			);
+		catch (e) {
+			interaction.reply(`There was some error while executing this command:\n\`${e}\``);
 		}
 	},
 };
