@@ -25,7 +25,7 @@ module.exports = {
 
 	async execute(interaction) {
 		const target = interaction.options.getUser('user');
-		const reas = interaction.options.getString('reason');
+		let reas = interaction.options.getString('reason');
 		try {
 			if (interaction.guild) {
 				if (
@@ -33,23 +33,15 @@ module.exports = {
 				) {
 					if (reas === null) {
 						// If no reason given, give a formatted reason
-						await rest.put(Routes.guildBan(interaction.guildId, target.id), {
-							reason: `Banned by ${interaction.user.tag} on ${date} for "no reason"`,
-						});
-
-						await interaction.reply({
-							content: `User \`${target.tag}\` is banned from this server. \n||for no reason :joy:||`,
-						});
+						reas = `Banned by ${interaction.user.tag} on ${date} ||for no reason :joy:||`;
 					}
-					else {
-						// When a reason is given.
-						await rest.put(Routes.guildBan(interaction.guildId, target.id), {
-							reason: reas,
-						});
-						await interaction.reply({
-							content: `User \`${target.tag}\` is banned from this server. \nReason: \`${reas}\`.`,
-						});
-					}
+					// Drop the Ban Hammer!
+					await rest.put(Routes.guildBan(interaction.guildId, target.id), {
+						reason: reas,
+					});
+					await interaction.reply({
+						content: `User \`${target.tag}\` is banned from this server. \nReason: ${reas}.`,
+					});
 				}
 				else {
 					await interaction.reply({
@@ -68,7 +60,7 @@ module.exports = {
 		}
 		catch (e) {
 			interaction.reply({
-				content: `There was some error while executing this command:\n\`${e}\``,
+				content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\``,
 				components: [SupportRow],
 			});
 		}
