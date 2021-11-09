@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const { token, pasteUser, pastePass, pasteKey } = require('../betaconfig.json');
+const { token } = require('../betaconfig.json');
 const { CreatePst } = require('../lib/PasteBinFnc.js');
 const { MutualServers } = require('../lib/MutualServerFnc.js');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
@@ -11,13 +11,8 @@ const {
 	MessageEmbed,
 } = require('discord.js');
 
-const paste = require('better-pastebin');
-
 const rest = new REST({ version: '9' }).setToken(token);
 const date = new Date();
-
-paste.setDevKey(pasteKey);
-paste.login(pasteUser, pastePass);
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -78,32 +73,6 @@ module.exports = {
 						components: [SupportRow],
 					});
 				}
-				/*
-			paste.create(
-				{
-					contents: results,
-					name: outputFile,
-					expires: expiry,
-					anonymous: 'true',
-				},
-				function(success, data) {
-					if (success) {
-						// Returns the pastebin link
-						return interaction.editReply({
-							content: data,
-							components: [InviteRow],
-						});
-					}
-					else {
-						// Incase of any errors
-						return interaction.editReply({
-							content: 'There was some unexpected error.',
-							components: [SupportRow],
-						});
-					}
-				},
-			);
-			*/
 			}
 			else {
 				const initial_Screen = new MessageEmbed()
@@ -213,28 +182,6 @@ module.exports = {
 									components: [SupportRow],
 								});
 							}
-							/*
-							paste.create(
-								{
-									contents: results,
-									name: outputFile,
-									expires: expiry,
-									anonymous: 'true',
-								},
-								function(success, data) {
-									if (success) {
-										// Returns the pastebin link
-										return interaction.followUp(data);
-									}
-									else {
-										// Incase of any errors
-										return interaction.followUp(
-											'There was some unexpected error.',
-										);
-									}
-								},
-							);
-							*/
 						}
 						else {
 							initial_Screen.setDescription('Please select something!');
