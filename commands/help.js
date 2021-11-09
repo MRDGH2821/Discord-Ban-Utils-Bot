@@ -21,7 +21,7 @@ const helpEmbed = new MessageEmbed()
 		{
 			name: '/transfer_bans',
 			value:
-        'Exports the ban list from current server & imports it into target server without extra steps.',
+				'Exports the ban list from current server & imports it into target server without extra steps.',
 		},
 		{ name: '/kick', value: 'Kicks the given user.' },
 		{ name: '/ping', value: 'Bot Latency.' },
@@ -32,7 +32,7 @@ const helpEmbed = new MessageEmbed()
 		{
 			name: 'Bot still not working?',
 			value:
-        'Please join my server & elaborate how you encountered that problem. You may also submit an issue at [Github Repository](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues)',
+				'Please join my server & elaborate how you encountered that problem. You may also submit an issue at [Github Repository](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues)',
 		},
 	)
 	.setFooter(`Bot version ${version}`);
