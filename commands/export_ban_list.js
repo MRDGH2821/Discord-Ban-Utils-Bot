@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { token, pasteUser, pastePass, pasteKey } = require('../betaconfig.json');
+const { CreatePst } = require('../lib/PasteBinFnc.js');
 const { MutualServers } = require('../lib/MutualServerFnc.js');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
 const {
@@ -62,30 +63,47 @@ module.exports = {
 
 				// Send bans to pastebin
 				const outputFile = `${interaction.guild.name}-${date}.txt`;
-				paste.create(
-					{
-						contents: results,
-						name: outputFile,
-						expires: expiry,
-						anonymous: 'true',
-					},
-					function(success, data) {
-						if (success) {
-							// Returns the pastebin link
-							return interaction.editReply({
-								content: data,
-								components: [InviteRow],
-							});
-						}
-						else {
-							// Incase of any errors
-							return interaction.editReply({
-								content: 'There was some unexpected error.',
-								components: [SupportRow],
-							});
-						}
-					},
-				);
+				const pt = await CreatePst(results, expiry, outputFile);
+
+				if (pt.url) {
+					await interaction.editReply({
+						content: pt.url,
+						components: [InviteRow],
+					});
+				}
+				else {
+					// Incase of any errors
+					await interaction.editReply({
+						content: `There was some unexpected error.\nError Dump: ${pt.error}`,
+						components: [SupportRow],
+					});
+				}
+				/*
+			paste.create(
+				{
+					contents: results,
+					name: outputFile,
+					expires: expiry,
+					anonymous: 'true',
+				},
+				function(success, data) {
+					if (success) {
+						// Returns the pastebin link
+						return interaction.editReply({
+							content: data,
+							components: [InviteRow],
+						});
+					}
+					else {
+						// Incase of any errors
+						return interaction.editReply({
+							content: 'There was some unexpected error.',
+							components: [SupportRow],
+						});
+					}
+				},
+			);
+			*/
 			}
 			else {
 				const initial_Screen = new MessageEmbed()
@@ -181,7 +199,21 @@ module.exports = {
 							});
 							results = JSON.stringify(results);
 							const outputFile = `${selectedGuild.name}-${date}.txt`;
-
+							const pt = await CreatePst(results, expiry, outputFile);
+							if (pt.url) {
+								await interaction.followUp({
+									content: pt.url,
+									components: [InviteRow],
+								});
+							}
+							else {
+								// Incase of any errors
+								await interaction.followUp({
+									content: `There was some unexpected error.\nError Dump: ${pt.error}`,
+									components: [SupportRow],
+								});
+							}
+							/*
 							paste.create(
 								{
 									contents: results,
@@ -202,6 +234,7 @@ module.exports = {
 									}
 								},
 							);
+							*/
 						}
 						else {
 							initial_Screen.setDescription('Please select something!');
