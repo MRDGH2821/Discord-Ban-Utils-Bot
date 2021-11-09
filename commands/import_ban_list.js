@@ -33,7 +33,7 @@ module.exports = {
 					'Parsing... (If it is taking long time, it means the link was invalid & bot has probably crashed)',
 				);
 				// Fetch data from pastebin
-				paste.get(paste_id, function(success, data) {
+				paste.get(paste_id, async function(success, data) {
 					if (success) {
 						try {
 							// Try to parse the data.
@@ -41,7 +41,7 @@ module.exports = {
 							const bans = JSON.parse(data);
 							console.log(bans);
 							console.log(JSON.parse(data));
-							interaction.editReply(
+							await interaction.editReply(
 								`${bans.length} bans are being imported in background. Sit back and relax for a while!`,
 							);
 							let validBans = bans.length;
@@ -56,14 +56,14 @@ module.exports = {
 										validBans = validBans - 1;
 									});
 							});
-							return interaction.editReply(
+							await interaction.editReply(
 								`Ban List: ${bans.length}. \nInvalid Bans: ${bans.length -
-                  validBans}.\n${validBans} imported successfully!`,
+									validBans}.\n${validBans} imported successfully!`,
 							);
 						}
 						catch (e) {
 							// When the link is invalid. this code prevented earlier versions of crashes.
-							return interaction.editReply(
+							await interaction.editReply(
 								`Given PasteBin link is invalid...\nError dump:\n\`${e}\``,
 							);
 						}
@@ -72,7 +72,7 @@ module.exports = {
 						// When the link is right, but the contents are invalid.
 						// Probably redundant because of try-catch block earlier.
 						// Still good to have as crash preventive measures.
-						return interaction.editReply(
+						await interaction.editReply(
 							'Given PasteBin link does not have contents in proper format...',
 						);
 					}
@@ -80,13 +80,13 @@ module.exports = {
 			}
 			else {
 				// When people do not have the permissions to ban.
-				interaction.reply(
+				await interaction.reply(
 					'You cannot just ban anybody by importing 🤷. Contact Server Moderators!',
 				);
 			}
 		}
 		else {
-			interaction.reply('Need to be in Server to work!');
+			await interaction.reply('Need to be in Server to work!');
 		}
 	},
 };
