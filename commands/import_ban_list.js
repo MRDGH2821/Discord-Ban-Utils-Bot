@@ -24,11 +24,10 @@ module.exports = {
 		),
 
 	async execute(interaction) {
+		const paste_id = interaction.options.getString('pastebin_link');
 		if (interaction.guild) {
 			// User should have ban permissions else it will not work
 			if (interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])) {
-				const paste_id = interaction.options.getString('pastebin_link');
-
 				await interaction.reply(
 					'Parsing... (If it is taking long time, it means the link was invalid & bot has probably crashed)',
 				);
