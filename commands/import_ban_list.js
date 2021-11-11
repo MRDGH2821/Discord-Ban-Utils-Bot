@@ -3,14 +3,23 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { Permissions } = require('discord.js');
 const { token, pasteUser, pastePass, pasteKey } = require('../betaconfig.json');
-
+// const { GetPaste } = require('../lib/PasteBinFnc.js');
+/*
 const paste = require('better-pastebin');
+const Scrape = require('pastebin-scraper');
+*/
+const PasteClient = require('pastebin-api').default;
+const paste = new PasteClient(pasteKey);
+const ptoken = paste.login(pasteUser, pastePass);
 
 const rest = new REST({ version: '9' }).setToken(token);
 const date = new Date();
 console.log(date.toDateString());
+
+/*
 paste.setDevKey(pasteKey);
 paste.login(pasteUser, pastePass);
+*/
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -31,12 +40,21 @@ module.exports = {
 				await interaction.reply(
 					'Parsing... (If it is taking long time, it means the link was invalid & bot has probably crashed)',
 				);
-				// Fetch data from pastebin
-				paste.get(paste_id, async function(success, data) {
-					if (success) {
-						try {
-							// Try to parse the data.
-							// If it doesn't work, input link was invalid.
+
+				//	const data = await GetPaste(paste_id);
+				//	console.log(data);
+				//	paste.get(paste_id, async function(success, data) {
+				//	if (data) {
+				// try
+				// GetPaste(paste_id)
+				paste.getRawPasteByKey({
+					pasteKey: paste_id,
+					userKey: ptoken,
+				})
+					.then(
+						async data => {
+						// Try to parse the data.
+						// If it doesn't work, input link was invalid.
 							const bans = JSON.parse(data);
 							console.log(bans);
 							console.log(JSON.parse(data));
@@ -59,24 +77,27 @@ module.exports = {
 								`Ban List: ${bans.length}. \nInvalid Bans: ${bans.length -
 									validBans}.\n${validBans} imported successfully!`,
 							);
-						}
-						catch (e) {
-							// When the link is invalid. this code prevented earlier versions of crashes.
+						})
+					.catch (
+						async e => {
+						// When the link is invalid. this code prevented earlier versions of crashes.
 							await interaction.editReply(
 								`Given PasteBin link is invalid...\nError dump:\n\`${e}\``,
 							);
-						}
-					}
-					else {
-						// When the link is right, but the contents are invalid.
-						// Probably redundant because of try-catch block earlier.
-						// Still good to have as crash preventive measures.
-						await interaction.editReply(
-							'Given PasteBin link does not have contents in proper format...',
-						);
-					}
-				});
+						});
+				// }
+				//	else {
+				// When the link is right, but the contents are invalid.
+				// Probably redundant because of try-catch block earlier.
+				// Still good to have as crash preventive measures.
+				/*
+					await interaction.editReply(
+						'Given PasteBin link does not have contents in proper format...',
+					);
+*/
 			}
+			//	});
+
 			else {
 				// When people do not have the permissions to ban.
 				await interaction.reply(
