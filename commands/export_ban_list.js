@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const { token } = require('../betaconfig.json');
+const { token, pasteUser, pastePass, pasteKey } = require('../betaconfig.json');
 const { CreatePst } = require('../lib/PasteBinFnc.js');
 const { MutualServers } = require('../lib/MutualServerFnc.js');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
@@ -11,6 +11,8 @@ const {
 	MessageEmbed,
 } = require('discord.js');
 
+const PasteClient = require('pastebin-api').default;
+const paste = new PasteClient(pasteKey);
 const rest = new REST({ version: '9' }).setToken(token);
 const date = new Date();
 
@@ -35,7 +37,7 @@ module.exports = {
 
 	async execute(interaction) {
 		let expiry = interaction.options.getString('expiry');
-
+		const ptoken = await paste.login(pasteUser, pastePass);
 		// If nothing is selected from the options, set default expiry as 1 Day
 		if (expiry === null) {
 			expiry = '1D';
@@ -45,7 +47,8 @@ module.exports = {
 			// Fetch bans
 			if (interaction.guild) {
 				const bans = await rest.get(Routes.guildBans(interaction.guildId));
-				await interaction.deferReply(`Found ${bans.length} bans. Exporting...`);
+				await interaction.deferReply();
+				await interaction.editReply(`Found ${bans.length} bans. Exporting...`);
 				console.log(`Found ${bans.length} bans. Exporting...`);
 
 				// Export bans
@@ -58,21 +61,28 @@ module.exports = {
 
 				// Send bans to pastebin
 				const outputFile = `${interaction.guild.name}-${date}.txt`;
-				const pt = await CreatePst(results, expiry, outputFile);
-
-				if (pt.url) {
-					await interaction.editReply({
-						content: pt.url,
-						components: [InviteRow],
+				// CreatePst(results, expiry, outputFile)
+				paste
+					.createPaste({
+						code: results,
+						expireDate: expiry,
+						format: 'javascript',
+						name: outputFile,
+						publicity: 2,
+					})
+					.then(async url => {
+						await interaction.editReply({
+							content: url,
+							components: [InviteRow],
+						});
+					})
+					.catch(async error => {
+						// Incase of any errors
+						await interaction.editReply({
+							content: `There was some unexpected error.\nError Dump: ${error}`,
+							components: [SupportRow],
+						});
 					});
-				}
-				else {
-					// Incase of any errors
-					await interaction.editReply({
-						content: `There was some unexpected error.\nError Dump: ${pt.error}`,
-						components: [SupportRow],
-					});
-				}
 			}
 			else {
 				const initial_Screen = new MessageEmbed()
@@ -168,20 +178,20 @@ module.exports = {
 							});
 							results = JSON.stringify(results);
 							const outputFile = `${selectedGuild.name}-${date}.txt`;
-							const pt = await CreatePst(results, expiry, outputFile);
-							if (pt.url) {
-								await interaction.followUp({
-									content: pt.url,
-									components: [InviteRow],
+							await CreatePst(results, expiry, outputFile)
+								.then(async url => {
+									await interaction.followUp({
+										content: url,
+										components: [InviteRow],
+									});
+								})
+								.catch(async error => {
+									// Incase of any errors
+									await interaction.followUp({
+										content: `There was some unexpected error.\nError Dump: ${error}`,
+										components: [SupportRow],
+									});
 								});
-							}
-							else {
-								// Incase of any errors
-								await interaction.followUp({
-									content: `There was some unexpected error.\nError Dump: ${pt.error}`,
-									components: [SupportRow],
-								});
-							}
 						}
 						else {
 							initial_Screen.setDescription('Please select something!');

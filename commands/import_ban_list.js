@@ -3,14 +3,13 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { Permissions } = require('discord.js');
 const { token, pasteUser, pastePass, pasteKey } = require('../betaconfig.json');
-// const { GetPaste } = require('../lib/PasteBinFnc.js');
+const { PasteCheck } = require('../lib/PasteBinFnc.js');
 /*
 const paste = require('better-pastebin');
 const Scrape = require('pastebin-scraper');
 */
 const PasteClient = require('pastebin-api').default;
 const paste = new PasteClient(pasteKey);
-const ptoken = paste.login(pasteUser, pastePass);
 
 const rest = new REST({ version: '9' }).setToken(token);
 const date = new Date();
@@ -33,7 +32,8 @@ module.exports = {
 		),
 
 	async execute(interaction) {
-		const paste_id = interaction.options.getString('pastebin_link');
+		const paste_id = PasteCheck(interaction.options.getString('pastebin_link'));
+		const ptoken = await paste.login(pasteUser, pastePass);
 		if (interaction.guild) {
 			// User should have ban permissions else it will not work
 			if (interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])) {
@@ -47,44 +47,47 @@ module.exports = {
 				//	if (data) {
 				// try
 				// GetPaste(paste_id)
-				paste.getRawPasteByKey({
-					pasteKey: paste_id,
-					userKey: ptoken,
-				})
-					.then(
-						async data => {
+				// console.log(paste_id);
+				// console.log(await ptoken);
+
+				paste
+					.getRawPasteByKey({
+						pasteKey: paste_id,
+						userKey: ptoken,
+					})
+					.then(async data => {
 						// Try to parse the data.
 						// If it doesn't work, input link was invalid.
-							const bans = JSON.parse(data);
-							console.log(bans);
-							console.log(JSON.parse(data));
-							await interaction.editReply(
-								`${bans.length} bans are being imported in background. Sit back and relax for a while!`,
-							);
-							let validBans = bans.length;
-							// Ban users
-							bans.forEach(async v => {
-								console.log(`Banning user ID ${v}...`);
-								await rest
-									.put(Routes.guildBan(interaction.guildId, v), {
-										reason: `Ban Import on ${date.toDateString()}`,
-									})
-									.catch(() => {
-										validBans = validBans - 1;
-									});
-							});
-							await interaction.editReply(
-								`Ban List: ${bans.length}. \nInvalid Bans: ${bans.length -
-									validBans}.\n${validBans} imported successfully!`,
-							);
-						})
-					.catch (
-						async e => {
-						// When the link is invalid. this code prevented earlier versions of crashes.
-							await interaction.editReply(
-								`Given PasteBin link is invalid...\nError dump:\n\`${e}\``,
-							);
+						console.log(data);
+						const bans = JSON.parse(data);
+						console.log(bans);
+						console.log(JSON.parse(data));
+						await interaction.editReply(
+							`${bans.length} bans are being imported in background. Sit back and relax for a while!`,
+						);
+						let validBans = bans.length;
+						// Ban users
+						bans.forEach(async v => {
+							console.log(`Banning user ID ${v}...`);
+							await rest
+								.put(Routes.guildBan(interaction.guildId, v), {
+									reason: `Ban Import on ${date.toDateString()}`,
+								})
+								.catch(() => {
+									validBans = validBans - 1;
+								});
 						});
+						await interaction.editReply(
+							`Ban List: ${bans.length}. \nInvalid Bans: ${bans.length -
+								validBans}.\n${validBans} imported successfully!`,
+						);
+					})
+					.catch(async e => {
+						// When the link is invalid. this code prevented earlier versions of crashes.
+						await interaction.editReply(
+							`Given PasteBin link is invalid...\nLink: https://pastebin.com/${paste_id} \nError dump:\n\`${e}\``,
+						);
+					});
 				// }
 				//	else {
 				// When the link is right, but the contents are invalid.
@@ -97,7 +100,6 @@ module.exports = {
 */
 			}
 			//	});
-
 			else {
 				// When people do not have the permissions to ban.
 				await interaction.reply(
