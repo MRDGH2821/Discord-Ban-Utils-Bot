@@ -29,7 +29,8 @@
     "discord-api-types": "^0.24.0",
     "discord.js": "^13.3.1",
     "pastebin-api": "^2.6.0",
-    "pastebin-scraper": "^1.0.2"
+    "pastebin-scraper": "^1.0.2",
+    "paster.js": "^1.0.0"
   },
   "devDependencies": {
     "eslint": "^8.2.0"
