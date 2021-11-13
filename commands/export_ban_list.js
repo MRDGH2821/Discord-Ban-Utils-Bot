@@ -11,10 +11,20 @@ const {
 	MessageEmbed,
 } = require('discord.js');
 
-const PasteClient = require('pastebin-api').default;
-const paste = new PasteClient(pasteKey);
+const paster = require('paster.js');
+
+// const PasteClient = require('pastebin-api').default;
+// const paste = new PasteClient(pasteKey);
 const rest = new REST({ version: '9' }).setToken(token);
 const date = new Date();
+
+function splitIntoChunk(arr, chunk) {
+	const chunks = [];
+	for (let i = 0; i < arr.length; i += chunk) {
+		chunks.push(arr.slice(i, i + chunk));
+	}
+	return chunks;
+}
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -37,7 +47,7 @@ module.exports = {
 
 	async execute(interaction) {
 		let expiry = interaction.options.getString('expiry');
-		const ptoken = await paste.login(pasteUser, pastePass);
+		// const ptoken = await paste.login(pasteUser, pastePass);
 		// If nothing is selected from the options, set default expiry as 1 Day
 		if (expiry === null) {
 			expiry = '1D';
@@ -52,13 +62,24 @@ module.exports = {
 				console.log(`Found ${bans.length} bans. Exporting...`);
 
 				// Export bans
-				let results = [];
+				const results = [];
+
 				bans.forEach(v => {
 					results.push(v.user.id);
 				});
-				results = JSON.stringify(results);
-				// console.log(results);
 
+				//	const urls = [];
+				const arrayOfIDs = splitIntoChunk(results, 500);
+				console.log(arrayOfIDs);
+				// console.log(typeof results);
+				// console.log(results.values());
+				arrayOfIDs.forEach(arrt => {
+					const arr = JSON.stringify(arrt);
+					console.log(arr);
+					console.log('\n\n\n\n');
+					// console.log(typeof results);
+					// console.log(results);
+					/*
 				// Send bans to pastebin
 				const outputFile = `${interaction.guild.name}-${date}.txt`;
 				// CreatePst(results, expiry, outputFile)
@@ -69,20 +90,23 @@ module.exports = {
 						format: 'javascript',
 						name: outputFile,
 						publicity: 2,
-					})
-					.then(async url => {
-						await interaction.editReply({
-							content: url,
-							components: [InviteRow],
+					}) */
+					paster
+						.create(`${arr}`)
+						.then(async url => {
+							await interaction.followUp({
+								content: url,
+								components: [InviteRow],
+							});
+						})
+						.catch(async error => {
+							// Incase of any errors
+							await interaction.followUp({
+								content: `There was some unexpected error.\nError Dump: ${error}`,
+								components: [SupportRow],
+							});
 						});
-					})
-					.catch(async error => {
-						// Incase of any errors
-						await interaction.editReply({
-							content: `There was some unexpected error.\nError Dump: ${error}`,
-							components: [SupportRow],
-						});
-					});
+				});
 			}
 			else {
 				const initial_Screen = new MessageEmbed()
@@ -216,7 +240,7 @@ module.exports = {
 			}
 		}
 		catch (e) {
-			interaction.reply({
+			interaction.editReply({
 				content: `Unexpected error occured, please report it to the developer! \nError dump:\n\n\`${e}\``,
 				components: [SupportRow],
 			});
