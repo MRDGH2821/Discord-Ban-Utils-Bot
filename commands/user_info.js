@@ -63,7 +63,9 @@ module.exports = {
 				return interaction.reply({ embeds: [userInfo] });
 			}
 			else {
-				userInfo.setFooter('User this command in a server to know more details!');
+				userInfo.setFooter(
+					'User this command in a server to know more details!',
+				);
 				await interaction.reply({
 					embeds: [userInfo],
 					components: [InviteRow],

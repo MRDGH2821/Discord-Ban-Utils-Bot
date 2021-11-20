@@ -229,8 +229,7 @@ module.exports = {
 			}
 			else {
 				await interaction.reply({
-					content:
-						'Its best if this command is used inside a server.',
+					content: 'Its best if this command is used inside a server.',
 					components: [InviteRow],
 				});
 			}

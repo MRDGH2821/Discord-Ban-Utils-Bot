@@ -3,10 +3,11 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { clientId, guildId, token } = require('./betaconfig.json');
 
-const commands = []
-	.map(command => command.toJSON());
+const commands = [].map(command => command.toJSON());
 
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commandFiles = fs
+	.readdirSync('./commands')
+	.filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
@@ -17,14 +18,12 @@ const rest = new REST({ version: '9' }).setToken(token);
 (async () => {
 	try {
 		console.log('Started refreshing application (/) commands.');
-		await rest.put(
-			Routes.applicationCommands(clientId, guildId),
-			{ body: commands },
-		);
-		await rest.put(
-			Routes.applicationGuildCommands(clientId, guildId),
-			{ body: commands },
-		);
+		await rest.put(Routes.applicationCommands(clientId, guildId), {
+			body: commands,
+		});
+		await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
+			body: commands,
+		});
 		console.log('Successfully registered application (/) commands.');
 	}
 	catch (error) {
