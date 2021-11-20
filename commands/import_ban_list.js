@@ -2,23 +2,13 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { Permissions } = require('discord.js');
-const { token, pasteUser, pastePass, pasteKey } = require('../betaconfig.json');
+const { token } = require('../betaconfig.json');
 const { PasteCheck } = require('../lib/PasteBinFnc.js');
-/*
-const paste = require('better-pastebin');
-const Scrape = require('pastebin-scraper');
-*/
-const PasteClient = require('pastebin-api').default;
-const paste = new PasteClient(pasteKey);
+const dpst = require('dpaste-ts');
 
 const rest = new REST({ version: '9' }).setToken(token);
 const date = new Date();
 console.log(date.toDateString());
-
-/*
-paste.setDevKey(pasteKey);
-paste.login(pasteUser, pastePass);
-*/
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -32,36 +22,26 @@ module.exports = {
 		),
 
 	async execute(interaction) {
-		const paste_id = PasteCheck(interaction.options.getString('pastebin_link'));
-		const ptoken = await paste.login(pasteUser, pastePass);
+		const paste_id = interaction.options.getString('pastebin_link');
 		if (interaction.guild) {
 			// User should have ban permissions else it will not work
 			if (interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])) {
 				await interaction.reply(
 					'Parsing... (If it is taking long time, it means the link was invalid & bot has probably crashed)',
 				);
-
-				//	const data = await GetPaste(paste_id);
-				//	console.log(data);
-				//	paste.get(paste_id, async function(success, data) {
-				//	if (data) {
-				// try
-				// GetPaste(paste_id)
-				// console.log(paste_id);
-				// console.log(await ptoken);
-
-				paste
-					.getRawPasteByKey({
-						pasteKey: paste_id,
-						userKey: ptoken,
-					})
+				dpst
+					.GetRawPaste(paste_id)
 					.then(async data => {
 						// Try to parse the data.
 						// If it doesn't work, input link was invalid.
-						console.log(data);
-						const bans = JSON.parse(data);
+
+						const rawEle = data.split(/[^\d{18}]+/g);
+						const bans = rawEle.map(element => element.trim());
+
+						console.log(typeof bans);
 						console.log(bans);
-						console.log(JSON.parse(data));
+
+						// console.log(JSON.parse(data));
 						await interaction.editReply(
 							`${bans.length} bans are being imported in background. Sit back and relax for a while!`,
 						);
@@ -85,21 +65,10 @@ module.exports = {
 					.catch(async e => {
 						// When the link is invalid. this code prevented earlier versions of crashes.
 						await interaction.editReply(
-							`Given PasteBin link is invalid...\nLink: https://pastebin.com/${paste_id} \nError dump:\n\`${e}\``,
+							`Given PasteBin link is invalid...\nLink: ${paste_id} \nError dump:\n\`${e}\``,
 						);
 					});
-				// }
-				//	else {
-				// When the link is right, but the contents are invalid.
-				// Probably redundant because of try-catch block earlier.
-				// Still good to have as crash preventive measures.
-				/*
-					await interaction.editReply(
-						'Given PasteBin link does not have contents in proper format...',
-					);
-*/
 			}
-			//	});
 			else {
 				// When people do not have the permissions to ban.
 				await interaction.reply(
