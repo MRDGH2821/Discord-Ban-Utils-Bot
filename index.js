@@ -2,9 +2,14 @@ const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./betaconfig.json');
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS], partials: ['CHANNEL', 'REACTION'] });
+const client = new Client({
+	intents: [Intents.FLAGS.GUILDS],
+	partials: ['CHANNEL', 'REACTION'],
+});
 
-const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
+const eventFiles = fs
+	.readdirSync('./events')
+	.filter(file => file.endsWith('.js'));
 
 for (const file of eventFiles) {
 	const event = require(`./events/${file}`);
@@ -17,7 +22,9 @@ for (const file of eventFiles) {
 }
 
 client.commands = new Collection();
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commandFiles = fs
+	.readdirSync('./commands')
+	.filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
@@ -38,10 +45,12 @@ client.on('interactionCreate', async interaction => {
 	}
 	catch (error) {
 		console.error(error);
-		return interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+		return interaction.reply({
+			content: `There was an error while executing this command!\nUse help command and report to developer!\n\nError Dump:\n${error}`,
+			ephemeral: true,
+		});
 	}
 	// console.log('${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.');
 });
-
 
 client.login(token);
