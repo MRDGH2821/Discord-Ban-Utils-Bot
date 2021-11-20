@@ -1,56 +1,42 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const { token, pasteUser, pastePass, pasteKey } = require('../betaconfig.json');
-const { CreatePst } = require('../lib/PasteBinFnc.js');
+const { token } = require('../betaconfig.json');
 const { MutualServers } = require('../lib/MutualServerFnc.js');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
+const dpst = require('dpaste-ts');
 const {
 	MessageActionRow,
 	MessageSelectMenu,
 	MessageEmbed,
 } = require('discord.js');
 
-const paster = require('paster.js');
-
-// const PasteClient = require('pastebin-api').default;
-// const paste = new PasteClient(pasteKey);
 const rest = new REST({ version: '9' }).setToken(token);
 const date = new Date();
-
-function splitIntoChunk(arr, chunk) {
-	const chunks = [];
-	for (let i = 0; i < arr.length; i += chunk) {
-		chunks.push(arr.slice(i, i + chunk));
-	}
-	return chunks;
-}
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('export_ban_list')
 		.setDescription('Exports ban list of current server')
-		.addStringOption(option =>
+		.addIntegerOption(option =>
 			option
 				.setName('expiry')
 				.setDescription(
 					'Set expiry of the generated pastebin. (Default: 1 Day)',
 				)
-				.addChoice('Never', 'N')
-				.addChoice('10 Minutes', '10M')
-				.addChoice('1 hour', '1H')
-				.addChoice('1 Day', '1D')
-				.addChoice('1 Week', '1W')
-				.addChoice('2 Weeks', '2W')
-				.addChoice('1 Month', '1M'),
+				.addChoice('1 Day', 1)
+				.addChoice('7 Days', 7)
+				.addChoice('14 Days', 14)
+				.addChoice('30 Days', 30)
+				.addChoice('90 Days', 90),
 		),
 
 	async execute(interaction) {
-		let expiry = interaction.options.getString('expiry');
-		// const ptoken = await paste.login(pasteUser, pastePass);
+		let expiry = interaction.options.getInteger('expiry');
+
 		// If nothing is selected from the options, set default expiry as 1 Day
 		if (expiry === null) {
-			expiry = '1D';
+			expiry = '1';
 		}
 
 		try {
@@ -62,51 +48,29 @@ module.exports = {
 				console.log(`Found ${bans.length} bans. Exporting...`);
 
 				// Export bans
-				const results = [];
+				let results = [];
 
 				bans.forEach(v => {
 					results.push(v.user.id);
 				});
+				results = JSON.stringify(results);
 
-				//	const urls = [];
-				const arrayOfIDs = splitIntoChunk(results, 500);
-				console.log(arrayOfIDs);
-				// console.log(typeof results);
-				// console.log(results.values());
-				arrayOfIDs.forEach(arrt => {
-					const arr = JSON.stringify(arrt);
-					console.log(arr);
-					console.log('\n\n\n\n');
-					// console.log(typeof results);
-					// console.log(results);
-					/*
-				// Send bans to pastebin
 				const outputFile = `${interaction.guild.name}-${date}.txt`;
-				// CreatePst(results, expiry, outputFile)
-				paste
-					.createPaste({
-						code: results,
-						expireDate: expiry,
-						format: 'javascript',
-						name: outputFile,
-						publicity: 2,
-					}) */
-					paster
-						.create(`${arr}`)
-						.then(async url => {
-							await interaction.followUp({
-								content: url,
-								components: [InviteRow],
-							});
-						})
-						.catch(async error => {
-							// Incase of any errors
-							await interaction.followUp({
-								content: `There was some unexpected error.\nError Dump: ${error}`,
-								components: [SupportRow],
-							});
+				dpst
+					.CreatePaste(results, outputFile, 'text', expiry)
+					.then(async url => {
+						await interaction.followUp({
+							content: url,
+							components: [InviteRow],
 						});
-				});
+					})
+					.catch(async error => {
+						// Incase of any errors
+						await interaction.followUp({
+							content: `There was some unexpected error.\nError Dump: ${error}`,
+							components: [SupportRow],
+						});
+					});
 			}
 			else {
 				const initial_Screen = new MessageEmbed()
@@ -202,7 +166,8 @@ module.exports = {
 							});
 							results = JSON.stringify(results);
 							const outputFile = `${selectedGuild.name}-${date}.txt`;
-							await CreatePst(results, expiry, outputFile)
+							await dpst
+								.CreatePaste(results, outputFile, 'text', expiry)
 								.then(async url => {
 									await interaction.followUp({
 										content: url,
