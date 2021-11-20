@@ -39,11 +39,19 @@ module.exports = {
 					);
 					let validBans = bans.length;
 					// Ban users
-					bans.forEach(async v => {
+					//	bans.forEach(async v =>
+					console.log(typeof bans);
+					console.log(bans);
+					for (const v of bans) {
 						try {
-							console.log(
-								`Banning user ID ${await interaction.client.users.fetch(v)}...`,
-							);
+							const tag = await interaction.client.users
+								.fetch(v)
+								.then(user => user.tag)
+								.catch(() => {
+									null;
+									// validBans = validBans - 1;
+								});
+							console.log(`Banning user ID ${tag}...`);
 							await rest.put(Routes.guildBan(interaction.guildId, v), {
 								reason: `Ban Import on ${date.toDateString()}`,
 							});
@@ -51,7 +59,7 @@ module.exports = {
 						catch {
 							validBans = validBans - 1;
 						}
-					});
+					}
 					await interaction.editReply(
 						`Ban List: ${bans.length}. \nInvalid Bans: ${bans.length -
 							validBans}.\n${validBans} imported successfully!`,
