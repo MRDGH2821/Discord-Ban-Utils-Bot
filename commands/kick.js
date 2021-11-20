@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { Permissions } = require('discord.js');
+const { InviteRow } = require('../lib/RowButtons.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -51,11 +52,17 @@ module.exports = {
 			}
 			// If you don't have permissions to kick
 			else {
-				await interaction.reply('You cannot kick...');
+				await interaction.reply({
+					content: 'You cannot kick...',
+					components: [InviteRow],
+				});
 			}
 		}
 		else {
-			interaction.reply('Need to be in Server to work!');
+			interaction.reply({
+				content: 'Need to be in Server to work!',
+				components: [InviteRow],
+			});
 		}
 	},
 };
