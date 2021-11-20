@@ -17,7 +17,7 @@
   },
   "keywords": [],
   "author": "MRDGH2821",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues"
   },
@@ -25,13 +25,9 @@
   "dependencies": {
     "@discordjs/builders": "^0.8.2",
     "@discordjs/rest": "^0.1.0-canary.0",
-    "better-pastebin": "^0.4.1",
     "discord-api-types": "^0.24.0",
     "discord.js": "^13.3.1",
-    "dpaste-ts": "^1.0.4",
-    "pastebin-api": "^2.6.0",
-    "pastebin-scraper": "^1.0.2",
-    "paster.js": "^1.0.0"
+    "dpaste-ts": "^1.0.4"
   },
   "devDependencies": {
     "eslint": "^8.2.0"
