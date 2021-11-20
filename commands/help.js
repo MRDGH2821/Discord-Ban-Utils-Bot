@@ -26,6 +26,10 @@ const helpEmbed = new MessageEmbed()
 			value:
 				'Exports the ban list from current server & imports it into target server without extra steps.',
 		},
+		{
+			name: '/mass_ban',
+			value: 'Mass bans given IDs',
+		},
 		{ name: '/kick', value: 'Kicks the given user.' },
 		{ name: '/ping', value: 'Bot Latency.' },
 		{
