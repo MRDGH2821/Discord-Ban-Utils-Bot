@@ -59,7 +59,7 @@ module.exports = {
 			}
 		}
 		catch (e) {
-			interaction.reply({
+			await interaction.reply({
 				content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\``,
 				components: [SupportRow],
 			});
