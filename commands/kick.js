@@ -21,48 +21,57 @@ module.exports = {
 	async execute(interaction) {
 		const target = interaction.options.getMember('user');
 		const reason = interaction.options.getString('reason');
-		if (interaction.guild) {
-			if (
-				interaction.member.permissions.has([Permissions.FLAGS.KICK_MEMBERS])
-			) {
-				// Checks if target user can be kicked or not
-				if (target.kickable) {
-					// If there is a reason specified, DM it to the user.
-					if (reason) {
-						try {
-							await target.user.send(
-								`Reason for kicking from ${interaction.guild.name}: ${reason}`,
-							);
+
+		try {
+			if (interaction.guild) {
+				if (
+					interaction.member.permissions.has([Permissions.FLAGS.KICK_MEMBERS])
+				) {
+					// Checks if target user can be kicked or not
+					if (target.kickable) {
+						// If there is a reason specified, DM it to the user.
+						if (reason) {
+							try {
+								await target.user.send(
+									`Reason for kicking from ${interaction.guild.name}: ${reason}`,
+								);
+							}
+							catch (e) {
+								console.log('Reason cannot be DM-ed');
+							}
 						}
-						catch (e) {
-							console.log('Reason cannot be DM-ed');
-						}
+						await interaction.reply({
+							content: `User \`${target.user.tag}\` is kicked from this server.`,
+						});
+						await target.kick();
 					}
-					await interaction.reply({
-						content: `User \`${target.user.tag}\` is kicked from this server.`,
-					});
-					await target.kick();
+					// If user cannot be kicked
+					else {
+						await await interaction.reply({
+							content: `User \`${target.user.tag}\` cannot be kicked :grimacing:.`,
+						});
+					}
 				}
-				// If user cannot be kicked
+				// If you don't have permissions to kick
 				else {
-					await await interaction.reply({
-						content: `User \`${target.user.tag}\` cannot be kicked :grimacing:.`,
+					await interaction.reply({
+						content: 'You cannot kick...',
+						components: [InviteRow],
 					});
 				}
 			}
-			// If you don't have permissions to kick
 			else {
 				await interaction.reply({
-					content: 'You cannot kick...',
+					content:
+						'Are you sure you are in a server to execute this?:unamused:  \nBecause this command can only be used in Server Text channels or Threads :shrug:',
 					components: [InviteRow],
 				});
 			}
 		}
-		else {
+		catch (e) {
 			await interaction.reply({
-				content:
-					'Are you sure you are in a server to execute this?:unamused:  \nBecause this command can only be used in Server Text channels or Threads :shrug:',
-				components: [InviteRow],
+				content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\``,
+				components: [SupportRow],
 			});
 		}
 	},
