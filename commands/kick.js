@@ -59,8 +59,9 @@ module.exports = {
 			}
 		}
 		else {
-			interaction.reply({
-				content: 'Need to be in Server to work!',
+			await interaction.reply({
+				content:
+					'Are you sure you are in a server to execute this?:unamused:  \nBecause this command can only be used in Server Text channels or Threads :shrug:',
 				components: [InviteRow],
 			});
 		}
