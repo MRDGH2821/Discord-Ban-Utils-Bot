@@ -48,12 +48,12 @@ module.exports = {
 				console.log(`Found ${bans.length} bans. Exporting...`);
 
 				// Export bans
-				let results = [];
+				const results = [];
 
 				bans.forEach(v => {
 					results.push(v.user.id);
 				});
-				results = JSON.stringify(results);
+				// results = JSON.stringify(results);
 
 				const outputFile = `${interaction.guild.name}-${date}.txt`;
 				dpst
