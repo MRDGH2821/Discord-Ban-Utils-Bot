@@ -1,4 +1,5 @@
 # Discord-Ban-Utils-Bot
+
 Discord Ban Utilities for Mutual Servers!
 
 ~~Currently the Bot is in development.~~ Bot development is supposedly finished. And can be used publicly!
@@ -26,10 +27,7 @@ Join test server 2 - https://discord.gg/tssxShnhS2
 {
   "token": "insert bot token",
   "clientId": "insert bot clientID",
-  "guildId": "insert one of your server's ID",
-  "pasteUser" : "pasteBin account username",
-	"pastePass" : "pasteBin account password",
-	"pasteKey" : "pasteBin API key"
+  "guildId": "insert one of your server's ID"
 }
 ```
 
@@ -37,8 +35,6 @@ Join test server 2 - https://discord.gg/tssxShnhS2
 4. Use `npm start` to run the bot code.
 
 For more info click [here](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot) & [here](https://discordjs.guide/creating-your-bot/)
-
-For more info on setting up pastebin click [here](https://github.com/Hydrothermal/better-pastebin)
 
 You may also use pm2. Check the guide [here](https://discordjs.guide/improving-dev-environment/pm2.html)
 
@@ -66,5 +62,7 @@ Made using Canva.
 See [here](https://www.canva.com/design/DAEsnh6KHfM/DTA-pMkWSqigGIgLA9Y39w/view?utm_content=DAEsnh6KHfM&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink) in high resolution.
 
 ## Note from developer:
-I still think that this bot is far from crash proof. I have done enough testing, but still some edge cases might be left out.
-Well I have configured my bot to restart on crash (using pm2), it would be nice if you report the issue ASAP to me.
+
+~~I still think that this bot is far from crash proof. I have done enough testing, but still some edge cases might be left out.~~
+Bot has become nearly crash proof. And will also show what the error was.
+Still I have configured my bot to restart on crash (using pm2), it would be nice if you report the issue ASAP to me.

@@ -1,12 +1,14 @@
 {
   "name": "discord-ban-utils-bot",
-  "version": "1.0.5",
+  "version": "1.1.0-beta",
   "description": "Discord Ban Utilities for Mutual Servers!",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prestart": "node deploy-commands.js",
-    "start": "node index.js",
+    "start": "node .",
+    "predev": "node deploy-commands.js",
+    "dev": "nodemon .",
     "lint": "eslint ."
   },
   "repository": {
@@ -14,20 +16,20 @@
     "url": "git+https://github.com/MRDGH2821/Discord-Ban-Utils-Bot.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "MRDGH2821",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues"
   },
   "homepage": "https://github.com/MRDGH2821/Discord-Ban-Utils-Bot#readme",
   "dependencies": {
-    "@discordjs/builders": "^0.7.0",
+    "@discordjs/builders": "^0.8.2",
     "@discordjs/rest": "^0.1.0-canary.0",
-    "better-pastebin": "^0.4.1",
     "discord-api-types": "^0.24.0",
-    "discord.js": "^13.2.0"
+    "discord.js": "^13.3.1",
+    "dpaste-ts": "^1.0.4"
   },
   "devDependencies": {
-    "eslint": "^7.32.0"
+    "eslint": "^8.2.0"
   }
 }
