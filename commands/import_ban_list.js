@@ -4,6 +4,7 @@ const { Routes } = require('discord-api-types/v9');
 const { Permissions } = require('discord.js');
 const { token } = require('../betaconfig.json');
 const { PasteCheck } = require('../lib/PasteBinFnc.js');
+const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
 const dpst = require('dpaste-ts');
 
 const rest = new REST({ version: '9' }).setToken(token);
@@ -39,9 +40,9 @@ module.exports = {
 					);
 					let validBans = bans.length;
 					// Ban users
-					//	bans.forEach(async v =>
-					console.log(typeof bans);
-					console.log(bans);
+
+					// console.log(typeof bans);
+					// console.log(bans);
 					for (const v of bans) {
 						try {
 							const tag = await interaction.client.users
@@ -67,20 +68,26 @@ module.exports = {
 				}
 				catch (e) {
 					// When the link is invalid. this code prevented earlier versions of crashes.
-					await interaction.editReply(
-						`Given PasteBin link is invalid...\nLink: https://dpaste.com/${paste_id} \nError dump:\n\`${e}\``,
-					);
+					await interaction.editReply({
+						content: `Given PasteBin link is invalid...\nLink: https://dpaste.com/${paste_id} \nError dump:\n\`${e}\``,
+						components: [SupportRow],
+					});
 				}
 			}
 			else {
 				// When people do not have the permissions to ban.
-				await interaction.reply(
-					'You cannot just ban anybody by importing 🤷. Contact Server Moderators!',
-				);
+				await interaction.reply({
+					content:
+						'You cannot just ban anybody by importing 🤷. Contact Server Moderators!\nOr invite the bot in your server!',
+					components: [InviteRow],
+				});
 			}
 		}
 		else {
-			await interaction.reply('Need to be in Server to work!');
+			await interaction.reply({
+				content: 'Need to be in Server to work!',
+				components: [InviteRow],
+			});
 		}
 	},
 };
