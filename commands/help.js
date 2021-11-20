@@ -15,9 +15,12 @@ const helpEmbed = new MessageEmbed()
 		{ name: '/unban', value: 'Unbans the given user.' },
 		{
 			name: '/import_ban_list',
-			value: 'Imports the ban list from pastebin link',
+			value: 'Imports the ban list from dpaste link',
 		},
-		{ name: '/export_ban_list', value: 'Exports the Ban list to pastebin' },
+		{
+			name: '/export_ban_list',
+			value: 'Exports the Ban list to [dpaste](https://dpaste.com)',
+		},
 		{
 			name: '/transfer_bans',
 			value:

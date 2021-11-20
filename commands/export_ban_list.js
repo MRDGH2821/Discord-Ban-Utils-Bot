@@ -22,7 +22,7 @@ module.exports = {
 			option
 				.setName('expiry')
 				.setDescription(
-					'Set expiry of the generated pastebin. (Default: 1 Day)',
+					'Set expiry of the generated dpaste link. (Default: 1 Day)',
 				)
 				.addChoice('1 Day', 1)
 				.addChoice('7 Days', 7)

@@ -17,13 +17,13 @@ module.exports = {
 		.setDescription('Imports ban list of current server')
 		.addStringOption(option =>
 			option
-				.setName('pastebin_link')
-				.setDescription('Enter full pastebin link')
+				.setName('dpaste_link')
+				.setDescription('Enter full dpaste link')
 				.setRequired(true),
 		),
 
 	async execute(interaction) {
-		const paste_id = PasteCheck(interaction.options.getString('pastebin_link'));
+		const paste_id = PasteCheck(interaction.options.getString('dpaste_link'));
 
 		try {
 			if (interaction.guild) {
@@ -73,7 +73,7 @@ module.exports = {
 					catch (e) {
 						// When the link is invalid. this code prevented earlier versions of crashes.
 						await interaction.editReply({
-							content: `Given PasteBin link is invalid...\nLink: https://dpaste.com/${paste_id} \nError dump:\n\`${e}\``,
+							content: `Given dpaste link is invalid...\nLink: https://dpaste.com/${paste_id} \nError dump:\n\`${e}\``,
 							components: [SupportRow],
 						});
 					}
