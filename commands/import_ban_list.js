@@ -57,6 +57,7 @@ module.exports = {
 										// validBans = validBans - 1;
 									});
 								console.log(`Banning user ID ${tag}...`);
+								await interaction.editReply(`Banning user ${tag}...`);
 								await rest.put(Routes.guildBan(interaction.guildId, v), {
 									reason: `Ban Import on ${date.toDateString()}`,
 								});
