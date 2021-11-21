@@ -14,7 +14,7 @@ console.log(date.toDateString());
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('import_ban_list')
-		.setDescription('Imports ban list of current server')
+		.setDescription('Imports ban list into current server')
 		.addStringOption(option =>
 			option
 				.setName('dpaste_link')
