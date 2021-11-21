@@ -18,10 +18,21 @@ module.exports = {
 				.setName('ids')
 				.setDescription('Enter IDs')
 				.setRequired(true),
+		)
+		.addStringOption(option =>
+			option
+				.setName('reason')
+				.setDescription(
+					'Enter a common reason. (Default is Banned by <you> on <today\'s date>)',
+				),
 		),
 
 	async execute(interaction) {
 		const ids = interaction.options.getString('ids');
+		let reason = interaction.options.getString('reason');
+		if (reason === null) {
+			reason = `Banned by ${interaction.user.tag} on ${date.toDateString()}`;
+		}
 		try {
 			if (interaction.guild) {
 				// User should have ban permissions else it will not work
@@ -37,7 +48,7 @@ module.exports = {
 						const bans = rawEle.map(element => element.trim());
 						await interaction.client.users.fetch(bans[0]);
 						await interaction.editReply(
-							`${bans.length} bans are being imported in background. Sit back and relax for a while!`,
+							`${bans.length} bans are being banned in background. Sit back and relax for a while!`,
 						);
 						let validBans = bans.length;
 						// Ban users
@@ -54,9 +65,9 @@ module.exports = {
 										// validBans = validBans - 1;
 									});
 								console.log(`Banning user ID ${tag}...`);
-								await interaction.editReply(`Banning user ID ${tag}...`);
+								await interaction.editReply(`Banning user ${tag}...`);
 								await rest.put(Routes.guildBan(interaction.guildId, v), {
-									reason: `Ban Import on ${date.toDateString()}`,
+									reason: reason,
 								});
 							}
 							catch {
@@ -65,7 +76,7 @@ module.exports = {
 						}
 						await interaction.editReply(
 							`Ban List: ${bans.length}. \nInvalid Bans: ${bans.length -
-								validBans}.\n${validBans} imported successfully!`,
+								validBans}.\n${validBans} banned successfully!`,
 						);
 					}
 					catch (e) {
@@ -80,7 +91,7 @@ module.exports = {
 					// When people do not have the permissions to ban.
 					await interaction.reply({
 						content:
-							'You cannot just ban anybody by importing 🤷. Contact Server Moderators!\nOr invite the bot in your server!',
+							'You cannot just ban anybody 🤷. Contact Server Moderators!\nOr invite the bot in your server!',
 						components: [InviteRow],
 					});
 				}
