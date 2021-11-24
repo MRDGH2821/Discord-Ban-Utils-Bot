@@ -76,7 +76,7 @@ module.exports = {
 						}
 						await interaction.editReply(
 							`Ban List: ${bans.length}. \nInvalid Bans: ${bans.length -
-								validBans}.\n${validBans} banned successfully!`,
+                validBans}.\n${validBans} banned successfully!`,
 						);
 					}
 					catch (e) {
@@ -91,7 +91,7 @@ module.exports = {
 					// When people do not have the permissions to ban.
 					await interaction.reply({
 						content:
-							'You cannot just ban anybody 🤷. Contact Server Moderators!\nOr invite the bot in your server!',
+              'You cannot just ban anybody 🤷. Contact Server Moderators!\nOr invite the bot in your server!',
 						components: [InviteRow],
 					});
 				}
@@ -99,7 +99,7 @@ module.exports = {
 			else {
 				await interaction.reply({
 					content:
-						'Are you sure you are in a server to execute this?:unamused:  \nBecause this command can only be used in Server Text channels or Threads :shrug:',
+            'Are you sure you are in a server to execute this?:unamused: \nBecause this command can only be used in Server Text channels or Threads :shrug:',
 					components: [InviteRow],
 				});
 			}

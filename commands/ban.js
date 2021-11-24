@@ -53,7 +53,7 @@ module.exports = {
 			else {
 				await interaction.reply({
 					content:
-						'Are you sure you are in a server to execute this?:unamused:  \nBecause this command can only be used in Server Text channels or Threads :shrug:',
+            'Are you sure you are in a server to execute this?:unamused: \nBecause this command can only be used in Server Text channels or Threads :shrug:',
 					components: [InviteRow],
 				});
 			}
