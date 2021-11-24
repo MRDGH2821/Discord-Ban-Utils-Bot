@@ -75,7 +75,7 @@ module.exports = {
 			else {
 				const initial_Screen = new MessageEmbed()
 					.setColor('#D8D4D3')
-					.setTitle('Ban List Exporter')
+					.setTitle('**Ban List Exporter**')
 					.setDescription(
 						'Fetching Mutual Servers from which you can export Ban List. \nPlease wait...',
 					);

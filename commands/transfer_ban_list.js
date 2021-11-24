@@ -23,7 +23,7 @@ module.exports = {
 			if (interaction.guild) {
 				const initial_Screen = new MessageEmbed()
 					.setColor('#D8D4D3')
-					.setTitle('Ban List transferer')
+					.setTitle('**Ban List transferer**')
 					.setDescription(
 						'Fetching Mutual Servers on which you can transfer bans to. \nPlease wait...',
 					);
@@ -136,7 +136,7 @@ module.exports = {
 						if (collected.size === 1) {
 							initial_Screen
 								.addField(
-									'Beginning Transfer...',
+									'**Beginning Transfer...**',
 									'You can sit back and relax while the bot does the work for you!',
 								)
 								.setFooter(
@@ -189,7 +189,7 @@ module.exports = {
 											.setStyle('LINK'),
 									);
 								initial_Screen.setDescription(
-									'Seems like I failed. Possible reasons: Discord API Rate Limit crossed. And thus cannot transfer bans. Try again after sometime?',
+									`Seems like I failed. Possible reasons: Discord API Rate Limit crossed. And thus cannot transfer bans. Try again after sometime?\n\nError Dump: ${error()}`,
 								);
 								interaction.editReply({
 									embeds: [initial_Screen],

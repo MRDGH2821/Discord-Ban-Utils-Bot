@@ -10,15 +10,15 @@ module.exports = {
 	async execute(interaction) {
 		const userInfo = new MessageEmbed()
 			.setColor(0xd8d4d3)
-			.setTitle('User info')
+			.setTitle('**User info**')
 			.setDescription('Displays user information & permissions.')
 			.addFields(
 				{
-					name: 'Username',
+					name: '**Username**',
 					value: `${interaction.user.tag}`,
 				},
 				{
-					name: 'User ID (a.k.a. Snowflake value)',
+					name: '**User ID (a.k.a. Snowflake value)**',
 					value: `${interaction.user.id}`,
 				},
 			);
@@ -44,19 +44,19 @@ module.exports = {
 				// embed showing details
 				userInfo.addFields(
 					{
-						name: 'Server Name',
+						name: '**Server Name**',
 						value: `${interaction.guild.name}`,
 					},
 					{
-						name: 'Server ID (a.k.a. Snowflake value)',
+						name: '**Server ID (a.k.a. Snowflake value)**',
 						value: `${interaction.guild.id}`,
 					},
 					{
-						name: 'Can you kick?',
+						name: '**Can you kick?**',
 						value: `${canKick}`,
 					},
 					{
-						name: 'Can you ban?',
+						name: '**Can you ban?**',
 						value: `${canBan}`,
 					},
 				);
