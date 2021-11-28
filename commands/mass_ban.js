@@ -31,7 +31,9 @@ module.exports = {
 		const ids = interaction.options.getString('ids');
 		let reason = interaction.options.getString('reason');
 		if (reason === null) {
-			reason = `Banned by ${interaction.user.tag} on ${date.toDateString()}`;
+			reason = `Banned by ${
+				interaction.user.tag
+			} on ${new Date().toDateString()}`;
 		}
 		try {
 			if (interaction.guild) {
