@@ -16,7 +16,16 @@
     "url": "git+https://github.com/MRDGH2821/Discord-Ban-Utils-Bot.git"
   },
   "keywords": [],
-  "author": "MRDGH2821",
+  "author": {
+    "name": "MRDGH2821",
+    "url": "https://github.com/MRDGH2821"
+  },
+  "contributors": [
+    {
+      "name": "AroLeaf",
+      "url": "https://github.com/AroLeaf"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues"
