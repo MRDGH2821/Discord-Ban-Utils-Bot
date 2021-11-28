@@ -264,3 +264,9 @@ This approach will fail when bot reaches more than 2000 servers.
 And I'm kinda afraid of that because I don't know how to use OAuth & Sharding.
 + I would need to monetize this bot since I would have to change the hosting platform from Raspberry Pi to Virtual Private Server.
 */
+
+/*
+28 Nov 2021
+Finally the bot will wait after processing each ban instead of ejecting all bans at once.
+I had no idea of async & await keyword usages hence things happened in one go instead of waiting.
+*/
