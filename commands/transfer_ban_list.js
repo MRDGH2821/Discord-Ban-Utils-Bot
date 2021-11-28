@@ -162,10 +162,31 @@ module.exports = {
 									console.log(
 										`Banning user ${v.user.username}#${v.user.discriminator}...`,
 									);
-									rest.put(Routes.guildBan(toGuildId, v.user.id), {
+									await interaction.editReply({
+										content: `Banning user ${v.user.username}#${v.user.discriminator}...`,
+									});
+									await rest.put(Routes.guildBan(toGuildId, v.user.id), {
 										reason: v.reason,
 									});
 								}
+								initial_Screen
+									.addField(
+										'**Transfer Successfull!**',
+										`Found ${
+											bans.length
+										} in current server.\nTransferred successfully to ${
+											interaction.client.guilds.cache.get(toGuildId).name
+										}.`,
+									)
+									.setFooter(
+										'Looks like bot developer does know how to notify you after all 🤷.',
+									);
+								await interaction.editReply({
+									content: '',
+									embeds: [initial_Screen],
+									fetchReply: true,
+									components: [],
+								});
 								console.log(
 									`Successfully transferred all bans from ${fromGuildId} to ${toGuildId}.`,
 								);
@@ -216,9 +237,7 @@ module.exports = {
 				else {
 					// When mutual servers are less than 1
 					initial_Screen
-						.setDescription(
-							'<@!897454611370213436> didn\'t find any mutual servers where you can ban!',
-						)
+						.setDescription('No mutual servers found where you can ban!')
 						.setFooter('Best contact mutual server mods & tell them to do it');
 					await interaction.editReply({
 						embeds: [initial_Screen],
