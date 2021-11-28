@@ -67,11 +67,6 @@ module.exports = {
 						});
 					}
 				}
-				/*
-		console.log('servers');
-		console.log(typeof servers);
-		console.log(servers);
-		*/
 
 				// Checks if mutual servers list has atleast 1 server.
 				// This command is point less if you don't have another mutual server with bot.
