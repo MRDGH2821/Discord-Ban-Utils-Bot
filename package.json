@@ -1,6 +1,6 @@
 {
   "name": "discord-ban-utils-bot",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Discord Ban Utilities for Mutual Servers!",
   "main": "index.js",
   "scripts": {
