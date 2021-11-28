@@ -98,7 +98,7 @@ module.exports = {
 		}
 		catch (e) {
 			await interaction.reply({
-				content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\``,
+				content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\`\n\nInput given:\n\`${paste_id}`,
 				components: [SupportRow],
 			});
 		}

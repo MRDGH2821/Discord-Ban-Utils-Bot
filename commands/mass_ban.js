@@ -82,7 +82,7 @@ module.exports = {
 					catch (e) {
 						// When the link is invalid. this code prevented earlier versions of crashes.
 						await interaction.editReply({
-							content: `There was some unexpected error. \nError dump:\n\`${e}\``,
+							content: `There was some unexpected error. \nError dump:\n\`${e}\` \n\nInput given:\n\`${ids}`,
 							components: [SupportRow],
 						});
 					}
@@ -106,7 +106,7 @@ module.exports = {
 		}
 		catch (e) {
 			await interaction.reply({
-				content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\``,
+				content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\`\n\nInput given:\n\`${ids}`,
 				components: [SupportRow],
 			});
 		}
