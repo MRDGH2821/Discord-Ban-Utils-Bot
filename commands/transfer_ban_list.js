@@ -176,15 +176,15 @@ module.exports = {
 									.setFooter(
 										'Looks like bot developer does know how to notify you after all 🤷.',
 									);
-								await interaction.editReply({
-									content: '',
+								console.log(
+									`Successfully transferred all bans from ${fromGuildId} to ${toGuildId}.`,
+								);
+								return interaction.editReply({
+									content: 'Ban Transfer Successful!',
 									embeds: [initial_Screen],
 									fetchReply: true,
 									components: [],
 								});
-								console.log(
-									`Successfully transferred all bans from ${fromGuildId} to ${toGuildId}.`,
-								);
 							}
 							catch (error) {
 								// Crash prevention code.
@@ -207,12 +207,12 @@ module.exports = {
 								initial_Screen.setDescription(
 									`Seems like I failed. Possible reasons: Discord API Rate Limit crossed. And thus cannot transfer bans. Try again after sometime?\n\nError Dump: ${error}`,
 								);
-								await interaction.editReply({
+								console.log(error);
+								return interaction.editReply({
 									embeds: [initial_Screen],
 									component: [apiErrorRow],
 									fetchReply: true,
 								});
-								console.log(error);
 							}
 						}
 						else {
