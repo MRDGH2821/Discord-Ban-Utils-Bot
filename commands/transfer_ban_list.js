@@ -98,7 +98,7 @@ module.exports = {
 					let destname;
 
 					// Collectors to collect selected server
-					collector.on('collect', i => {
+					collector.on('collect', async i => {
 						// This if statement is for checking if buttons are selected by interaction.user or not.
 						if (i.user.id === interaction.user.id) {
 							destname = interaction.client.guilds.cache.get(i.values[0]).name;
@@ -112,7 +112,7 @@ module.exports = {
 								}`,
 							);
 
-							interaction.editReply({
+							await interaction.editReply({
 								embeds: [initial_Screen],
 								components: [],
 								fetchReply: true,
@@ -132,7 +132,7 @@ module.exports = {
 					// Fetch bans from current server
 					const bans = await rest.get(Routes.guildBans(interaction.guild.id));
 
-					collector.on('end', collected => {
+					collector.on('end', async collected => {
 						if (collected.size === 1) {
 							initial_Screen
 								.addField(
@@ -143,7 +143,7 @@ module.exports = {
 									'Btw, bot developer doesn\'t know how to notify you after the bans have been transferred... \nHence you should check destination server setting\'s ban section.',
 								);
 
-							interaction.editReply({
+							await interaction.editReply({
 								embeds: [initial_Screen],
 								fetchReply: true,
 							});
@@ -189,9 +189,9 @@ module.exports = {
 											.setStyle('LINK'),
 									);
 								initial_Screen.setDescription(
-									`Seems like I failed. Possible reasons: Discord API Rate Limit crossed. And thus cannot transfer bans. Try again after sometime?\n\nError Dump: ${error()}`,
+									`Seems like I failed. Possible reasons: Discord API Rate Limit crossed. And thus cannot transfer bans. Try again after sometime?\n\nError Dump: ${error}`,
 								);
-								interaction.editReply({
+								await interaction.editReply({
 									embeds: [initial_Screen],
 									component: [apiErrorRow],
 									fetchReply: true,
@@ -204,7 +204,7 @@ module.exports = {
 							initial_Screen
 								.setDescription('Please Select Something!')
 								.setFooter('Re-run the command again!');
-							interaction.editReply({
+							await interaction.editReply({
 								embeds: [initial_Screen],
 								components: [],
 								fetchReply: true,
