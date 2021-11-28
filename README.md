@@ -8,11 +8,7 @@ Hosted on my personal Raspberry Pi 2B+.
 
 Invite Link - [click here](https://discord.com/api/oauth2/authorize?client_id=897454611370213436&permissions=277562263718&scope=bot%20applications.commands)
 
-Join my server - https://discord.gg/MPtE9zsBs5
-
-Join Test server 1 - https://discord.gg/6xmJtmnWYx
-
-Join test server 2 - https://discord.gg/tssxShnhS2
+Join my server - <https://discord.gg/MPtE9zsBs5>
 
 ## Bot Permissions
 
@@ -20,8 +16,8 @@ Join test server 2 - https://discord.gg/tssxShnhS2
 
 ## Hosting
 
-1. Clone this repo.
-2. Create a file named `config.json` & put the given text -
+1.  Clone this repo.
+2.  Create a file named `config.json` & put the given text -
 
 ```json
 {
@@ -31,8 +27,8 @@ Join test server 2 - https://discord.gg/tssxShnhS2
 }
 ```
 
-3. Install dependencies by using `npm install`.
-4. Use `npm start` to run the bot code.
+3.  Install dependencies by using `npm install`.
+4.  Use `npm start` to run the bot code.
 
 For more info click [here](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot) & [here](https://discordjs.guide/creating-your-bot/)
 
