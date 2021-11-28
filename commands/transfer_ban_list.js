@@ -1,7 +1,7 @@
 const { REST } = require('@discordjs/rest');
 const { Permissions } = require('discord.js');
 const { Routes } = require('discord-api-types/v9');
-const { token } = require('../config.json');
+const { token } = require('../betaconfig.json');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
 const rest = new REST({ version: '9' }).setToken(token);
 
@@ -67,11 +67,6 @@ module.exports = {
 						});
 					}
 				}
-				/*
-		console.log('servers');
-		console.log(typeof servers);
-		console.log(servers);
-		*/
 
 				// Checks if mutual servers list has atleast 1 server.
 				// This command is point less if you don't have another mutual server with bot.
@@ -98,7 +93,7 @@ module.exports = {
 					let destname;
 
 					// Collectors to collect selected server
-					collector.on('collect', i => {
+					collector.on('collect', async i => {
 						// This if statement is for checking if buttons are selected by interaction.user or not.
 						if (i.user.id === interaction.user.id) {
 							destname = interaction.client.guilds.cache.get(i.values[0]).name;
@@ -112,7 +107,7 @@ module.exports = {
 								}`,
 							);
 
-							interaction.editReply({
+							await interaction.editReply({
 								embeds: [initial_Screen],
 								components: [],
 								fetchReply: true,
@@ -132,7 +127,7 @@ module.exports = {
 					// Fetch bans from current server
 					const bans = await rest.get(Routes.guildBans(interaction.guild.id));
 
-					collector.on('end', collected => {
+					collector.on('end', async collected => {
 						if (collected.size === 1) {
 							initial_Screen
 								.addField(
@@ -143,7 +138,7 @@ module.exports = {
 									'Btw, bot developer doesn\'t know how to notify you after the bans have been transferred... \nHence you should check destination server setting\'s ban section.',
 								);
 
-							interaction.editReply({
+							await interaction.editReply({
 								embeds: [initial_Screen],
 								fetchReply: true,
 							});
@@ -162,13 +157,34 @@ module.exports = {
 									console.log(
 										`Banning user ${v.user.username}#${v.user.discriminator}...`,
 									);
-									rest.put(Routes.guildBan(toGuildId, v.user.id), {
+									await interaction.editReply({
+										content: `Banning user ${v.user.username}#${v.user.discriminator}...`,
+									});
+									await rest.put(Routes.guildBan(toGuildId, v.user.id), {
 										reason: v.reason,
 									});
 								}
+								initial_Screen
+									.addField(
+										'**Transfer Successfull!**',
+										`Found ${
+											bans.length
+										} in current server.\nTransferred successfully to ${
+											interaction.client.guilds.cache.get(toGuildId).name
+										}.`,
+									)
+									.setFooter(
+										'Looks like bot developer does know how to notify you after all 🤷.',
+									);
 								console.log(
 									`Successfully transferred all bans from ${fromGuildId} to ${toGuildId}.`,
 								);
+								return interaction.editReply({
+									content: 'Ban Transfer Successful!',
+									embeds: [initial_Screen],
+									fetchReply: true,
+									components: [],
+								});
 							}
 							catch (error) {
 								// Crash prevention code.
@@ -189,14 +205,14 @@ module.exports = {
 											.setStyle('LINK'),
 									);
 								initial_Screen.setDescription(
-									`Seems like I failed. Possible reasons: Discord API Rate Limit crossed. And thus cannot transfer bans. Try again after sometime?\n\nError Dump: ${error()}`,
+									`Seems like I failed. Possible reasons: Discord API Rate Limit crossed. And thus cannot transfer bans. Try again after sometime?\n\nError Dump: ${error}`,
 								);
-								interaction.editReply({
+								console.log(error);
+								return interaction.editReply({
 									embeds: [initial_Screen],
 									component: [apiErrorRow],
 									fetchReply: true,
 								});
-								console.log(error);
 							}
 						}
 						else {
@@ -204,7 +220,7 @@ module.exports = {
 							initial_Screen
 								.setDescription('Please Select Something!')
 								.setFooter('Re-run the command again!');
-							interaction.editReply({
+							await interaction.editReply({
 								embeds: [initial_Screen],
 								components: [],
 								fetchReply: true,
@@ -216,9 +232,7 @@ module.exports = {
 				else {
 					// When mutual servers are less than 1
 					initial_Screen
-						.setDescription(
-							'<@!897454611370213436> didn\'t find any mutual servers where you can ban!',
-						)
+						.setDescription('No mutual servers found where you can ban!')
 						.setFooter('Best contact mutual server mods & tell them to do it');
 					await interaction.editReply({
 						embeds: [initial_Screen],
@@ -249,4 +263,10 @@ I asked 2-3 questions on Stack overflow to get this working.
 This approach will fail when bot reaches more than 2000 servers.
 And I'm kinda afraid of that because I don't know how to use OAuth & Sharding.
 + I would need to monetize this bot since I would have to change the hosting platform from Raspberry Pi to Virtual Private Server.
+*/
+
+/*
+28 Nov 2021
+Finally the bot will wait after processing each ban instead of ejecting all bans at once.
+I had no idea of async & await keyword usages hence things happened in one go instead of waiting.
 */

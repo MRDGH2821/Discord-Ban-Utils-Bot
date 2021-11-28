@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const { token } = require('../config.json');
+const { token } = require('../betaconfig.json');
 const { MutualServers } = require('../lib/MutualServerFnc.js');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
 const dpst = require('dpaste-ts');

@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { Permissions } = require('discord.js');
-const { token } = require('../config.json');
+const { token } = require('../betaconfig.json');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
 
 const rest = new REST({ version: '9' }).setToken(token);
@@ -31,7 +31,9 @@ module.exports = {
 		const ids = interaction.options.getString('ids');
 		let reason = interaction.options.getString('reason');
 		if (reason === null) {
-			reason = `Banned by ${interaction.user.tag} on ${date.toDateString()}`;
+			reason = `Banned by ${
+				interaction.user.tag
+			} on ${new Date().toDateString()}`;
 		}
 		try {
 			if (interaction.guild) {
@@ -82,7 +84,7 @@ module.exports = {
 					catch (e) {
 						// When the link is invalid. this code prevented earlier versions of crashes.
 						await interaction.editReply({
-							content: `There was some unexpected error. \nError dump:\n\`${e}\``,
+							content: `There was some unexpected error. \nError dump:\n\`${e}\` \n\nInput given:\n\`${ids}`,
 							components: [SupportRow],
 						});
 					}
@@ -106,7 +108,7 @@ module.exports = {
 		}
 		catch (e) {
 			await interaction.reply({
-				content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\``,
+				content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\`\n\nInput given:\n\`${ids}`,
 				components: [SupportRow],
 			});
 		}

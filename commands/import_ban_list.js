@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { Permissions } = require('discord.js');
-const { token } = require('../config.json');
+const { token } = require('../betaconfig.json');
 const { PasteCheck } = require('../lib/PasteBinFnc.js');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
 const dpst = require('dpaste-ts');
@@ -98,7 +98,7 @@ module.exports = {
 		}
 		catch (e) {
 			await interaction.reply({
-				content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\``,
+				content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\`\n\nInput given:\n\`${paste_id}`,
 				components: [SupportRow],
 			});
 		}
