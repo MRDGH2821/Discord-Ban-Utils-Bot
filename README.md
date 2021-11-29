@@ -37,7 +37,7 @@ For more info click [here](https://discordjs.guide/preparations/setting-up-a-bot
 You may also use pm2. Check the guide [here](https://discordjs.guide/improving-dev-environment/pm2.html)
 
 ```bash
-pm2 start botstart.sh --name "Time Tag Bot" --watch
+pm2 start ban-utils-bot.sh --name "Ban Utils Bot" --watch
 ```
 
 ## How to update self-hosted version?/How to reset the Bot code?
