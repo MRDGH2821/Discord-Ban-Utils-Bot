@@ -204,7 +204,8 @@ module.exports = {
 											.setURL('https://discord.gg/MPtE9zsBs5')
 											.setStyle('LINK'),
 									);
-								initial_Screen.setDescription(
+								initial_Screen.addField(
+									'**Error**',
 									`Seems like I failed. Possible reasons: Discord API Rate Limit crossed. And thus cannot transfer bans. Try again after sometime?\n\nError Dump: ${error}`,
 								);
 								console.log(error);
