@@ -147,13 +147,13 @@ module.exports = {
 							);
 
 							const fromGuildId = interaction.guild.id;
-
+							const alreadybaned = await rest.get(Routes.guildBans(toGuildId));
 							try {
 								// Tries to ban users.
 								console.log(`Fetching bans for guild ${destname}...`);
 								console.log(`Found ${bans.length} bans.`);
 								console.log(`Applying bans to guild ${toGuildId}...`);
-								for (const v of bans) {
+								for (const v of bans.filter(r => !alreadybaned.every(u => u.user.id !== r.user.id))) {
 									console.log(
 										`Banning user ${v.user.username}#${v.user.discriminator}...`,
 									);
