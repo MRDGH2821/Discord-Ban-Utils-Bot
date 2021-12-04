@@ -1,4 +1,4 @@
-const { version } = require('../version.json');
+const { version } = require('../package.json');
 
 function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
