@@ -20,11 +20,16 @@ module.exports = {
 				.setName('dpaste_link')
 				.setDescription('Enter full dpaste link')
 				.setRequired(true),
+		)
+		.addStringOption(option =>
+			option.setName('reason').setDescription('Enter reason'),
 		),
 
 	async execute(interaction) {
 		const paste_id = PasteCheck(interaction.options.getString('dpaste_link'));
-
+		const banReason =
+      interaction.options.getString('reason') ||
+      `Ban Import on ${date.toDateString()}`;
 		try {
 			if (interaction.guild) {
 				// User should have ban permissions else it will not work
@@ -59,7 +64,7 @@ module.exports = {
 								console.log(`Banning user ID ${tag}...`);
 								await interaction.editReply(`Banning user ${tag}...`);
 								await rest.put(Routes.guildBan(interaction.guildId, v), {
-									reason: `Ban Import on ${date.toDateString()}`,
+									reason: banReason,
 								});
 							}
 							catch {
