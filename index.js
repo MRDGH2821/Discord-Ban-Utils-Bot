@@ -53,8 +53,4 @@ client.on('interactionCreate', async interaction => {
 	// console.log('${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.');
 });
 
-client.user.setActivity(`to /help in ${client.guilds.cache.size}`, {
-	type: 'LISTENING',
-});
-
 client.login(token);
