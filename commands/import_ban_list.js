@@ -73,7 +73,7 @@ module.exports = {
 						}
 						await interaction.editReply(
 							`Ban List: ${bans.length}. \nInvalid Bans: ${bans.length -
-                validBans}.\n${validBans} imported successfully!`,
+                validBans}.\n${validBans} imported successfully!\n\nReason provided: ${banReason}`,
 						);
 					}
 					catch (e) {
