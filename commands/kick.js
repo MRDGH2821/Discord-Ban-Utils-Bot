@@ -1,5 +1,5 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
 const { Permissions } = require('discord.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
 
 module.exports = {

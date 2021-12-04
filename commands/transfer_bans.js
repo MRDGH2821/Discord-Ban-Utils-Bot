@@ -1,17 +1,16 @@
-const { REST } = require('@discordjs/rest');
-const { Permissions } = require('discord.js');
-const { Routes } = require('discord-api-types/v9');
-const { token } = require('../config.json');
-const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
-const rest = new REST({ version: '9' }).setToken(token);
-
-const { SlashCommandBuilder } = require('@discordjs/builders');
 const {
+	Permissions,
 	MessageActionRow,
 	MessageSelectMenu,
 	MessageEmbed,
 	MessageButton,
 } = require('discord.js');
+const { Routes } = require('discord-api-types/v9');
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const { REST } = require('@discordjs/rest');
+const { token } = require('../lib/ConfigManager.js');
+const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
+const rest = new REST({ version: '9' }).setToken(token);
 
 module.exports = {
 	data: new SlashCommandBuilder()
