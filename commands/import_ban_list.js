@@ -22,7 +22,11 @@ module.exports = {
 				.setRequired(true),
 		)
 		.addStringOption(option =>
-			option.setName('reason').setDescription('Enter reason'),
+			option
+				.setName('reason')
+				.setDescription(
+					'Enter a common reason. (Default is Banned by <you> on <today\'s date>)',
+				),
 		),
 
 	async execute(interaction) {
@@ -73,7 +77,7 @@ module.exports = {
 						}
 						await interaction.editReply(
 							`Ban List: ${bans.length}. \nInvalid Bans: ${bans.length -
-                validBans}.\n${validBans} imported successfully!\n\nReason provided: ${banReason}`,
+                validBans}.\n${validBans} imported successfully!\n\nReason: ${banReason}`,
 						);
 					}
 					catch (e) {
