@@ -1,15 +1,15 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
-const { token } = require('../config.json');
-const { MutualServers } = require('../lib/MutualServerFnc.js');
-const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
-const dpst = require('dpaste-ts');
 const {
 	MessageActionRow,
 	MessageSelectMenu,
 	MessageEmbed,
 } = require('discord.js');
+const dpst = require('dpaste-ts');
+const { Routes } = require('discord-api-types/v9');
+const { REST } = require('@discordjs/rest');
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const { token } = require('../lib/ConfigManager.js');
+const { MutualServers } = require('../lib/MutualServerFnc.js');
+const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
 
 const rest = new REST({ version: '9' }).setToken(token);
 const date = new Date();

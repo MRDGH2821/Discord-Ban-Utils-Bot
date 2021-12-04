@@ -1,6 +1,5 @@
+const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
-const { MessageActionRow, MessageButton } = require('discord.js');
 const { version } = require('../package.json');
 
 const helpEmbed = new MessageEmbed()
