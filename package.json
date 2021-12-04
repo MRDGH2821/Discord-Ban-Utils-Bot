@@ -1,6 +1,6 @@
 {
   "name": "discord-ban-utils-bot",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "Discord Ban Utilities for Mutual Servers!",
   "main": "index.js",
   "scripts": {
@@ -41,7 +41,7 @@
   "devDependencies": {
     "eslint": "^8.2.0"
   },
-  "engines":{
+  "engines": {
     "node": "16.6"
   }
 }
