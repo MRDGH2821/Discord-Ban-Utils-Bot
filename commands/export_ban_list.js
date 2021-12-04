@@ -17,27 +17,10 @@ const date = new Date();
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('export_ban_list')
-		.setDescription('Exports ban list of current server')
-		.addIntegerOption(option =>
-			option
-				.setName('expiry')
-				.setDescription(
-					'Set expiry of the generated dpaste link. (Default: 1 Day)',
-				)
-				.addChoice('1 Day', 1)
-				.addChoice('7 Days', 7)
-				.addChoice('14 Days', 14)
-				.addChoice('30 Days', 30)
-				.addChoice('90 Days', 90),
-		),
+		.setDescription('Exports ban list of current server'),
 
 	async execute(interaction) {
-		let expiry = interaction.options.getInteger('expiry');
-
 		// If nothing is selected from the options, set default expiry as 1 Day
-		if (expiry === null) {
-			expiry = '1';
-		}
 
 		try {
 			// Fetch bans
@@ -57,7 +40,7 @@ module.exports = {
 
 				const outputFile = `${interaction.guild.name}-${date}.txt`;
 				dpst
-					.CreatePaste(results, outputFile, 'text', expiry)
+					.CreatePaste(results, outputFile, 'text')
 					.then(async url => {
 						await interaction.followUp({
 							content: url,
@@ -167,7 +150,7 @@ module.exports = {
 							results = JSON.stringify(results);
 							const outputFile = `${selectedGuild.name}-${date}.txt`;
 							await dpst
-								.CreatePaste(results, outputFile, 'text', expiry)
+								.CreatePaste(results, outputFile, 'text')
 								.then(async url => {
 									await interaction.followUp({
 										content: url,
