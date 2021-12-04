@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { Permissions } = require('discord.js');
-const { token } = require('../config.json');
+const { token } = require('../betaconfig.json');
 const { PasteCheck } = require('../lib/PasteBinFnc.js');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
 const dpst = require('dpaste-ts');
@@ -20,11 +20,20 @@ module.exports = {
 				.setName('dpaste_link')
 				.setDescription('Enter full dpaste link')
 				.setRequired(true),
+		)
+		.addStringOption(option =>
+			option
+				.setName('reason')
+				.setDescription(
+					'Enter a common reason. (Default is Banned by <you> on <today\'s date>)',
+				),
 		),
 
 	async execute(interaction) {
 		const paste_id = PasteCheck(interaction.options.getString('dpaste_link'));
-
+		const banReason =
+      interaction.options.getString('reason') ||
+      `Ban Import on ${date.toDateString()}`;
 		try {
 			if (interaction.guild) {
 				// User should have ban permissions else it will not work
@@ -59,7 +68,7 @@ module.exports = {
 								console.log(`Banning user ID ${tag}...`);
 								await interaction.editReply(`Banning user ${tag}...`);
 								await rest.put(Routes.guildBan(interaction.guildId, v), {
-									reason: `Ban Import on ${date.toDateString()}`,
+									reason: banReason,
 								});
 							}
 							catch {
@@ -68,7 +77,7 @@ module.exports = {
 						}
 						await interaction.editReply(
 							`Ban List: ${bans.length}. \nInvalid Bans: ${bans.length -
-                validBans}.\n${validBans} imported successfully!`,
+                validBans}.\n${validBans} imported successfully!\n\nReason: ${banReason}`,
 						);
 					}
 					catch (e) {

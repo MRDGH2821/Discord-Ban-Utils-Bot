@@ -1,7 +1,7 @@
 const { REST } = require('@discordjs/rest');
 const { Permissions } = require('discord.js');
 const { Routes } = require('discord-api-types/v9');
-const { token } = require('../config.json');
+const { token } = require('../betaconfig.json');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
 const rest = new REST({ version: '9' }).setToken(token);
 
@@ -126,6 +126,7 @@ module.exports = {
 
 					// Fetch bans from current server
 					const bans = await rest.get(Routes.guildBans(interaction.guild.id));
+					console.log('Source Bans:\n\n', bans);
 
 					collector.on('end', async collected => {
 						if (collected.size === 1) {
@@ -147,13 +148,19 @@ module.exports = {
 							);
 
 							const fromGuildId = interaction.guild.id;
+							const alreadybaned = await rest.get(Routes.guildBans(toGuildId));
+							console.log('Already banned\n\n', alreadybaned);
 
 							try {
 								// Tries to ban users.
 								console.log(`Fetching bans for guild ${destname}...`);
 								console.log(`Found ${bans.length} bans.`);
 								console.log(`Applying bans to guild ${toGuildId}...`);
-								for (const v of bans) {
+								let actualTransfers = 0;
+								for (const v of bans.filter(
+									r => !alreadybaned.some(u => u.user.id === r.user.id),
+								)) {
+									actualTransfers = actualTransfers + 1;
 									console.log(
 										`Banning user ${v.user.username}#${v.user.discriminator}...`,
 									);
@@ -171,7 +178,7 @@ module.exports = {
 											bans.length
 										} in current server.\nTransferred successfully to ${
 											interaction.client.guilds.cache.get(toGuildId).name
-										}.`,
+										}.\nUnique Bans: ${actualTransfers}`,
 									)
 									.setFooter(
 										'Looks like bot developer does know how to notify you after all 🤷.',
@@ -204,7 +211,8 @@ module.exports = {
 											.setURL('https://discord.gg/MPtE9zsBs5')
 											.setStyle('LINK'),
 									);
-								initial_Screen.setDescription(
+								initial_Screen.addField(
+									'**Error**',
 									`Seems like I failed. Possible reasons: Discord API Rate Limit crossed. And thus cannot transfer bans. Try again after sometime?\n\nError Dump: ${error}`,
 								);
 								console.log(error);
@@ -269,4 +277,9 @@ And I'm kinda afraid of that because I don't know how to use OAuth & Sharding.
 28 Nov 2021
 Finally the bot will wait after processing each ban instead of ejecting all bans at once.
 I had no idea of async & await keyword usages hence things happened in one go instead of waiting.
+*/
+
+/*
+04 Dec 2021
+AroLeaf helps to filter out duplicate bans
 */

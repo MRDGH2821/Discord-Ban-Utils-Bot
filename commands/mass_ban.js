@@ -1,8 +1,8 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const { Permissions } = require('discord.js');
-const { token } = require('../config.json');
+const { Permissions, MessageActionRow, MessageButton } = require('discord.js');
+const { token } = require('../betaconfig.json');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
 
 const rest = new REST({ version: '9' }).setToken(token);
@@ -35,6 +35,14 @@ module.exports = {
 				interaction.user.tag
 			} on ${new Date().toDateString()}`;
 		}
+
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('notworking')
+				.setLabel('Not working as expected?')
+				.setStyle('DANGER'),
+		);
+
 		try {
 			if (interaction.guild) {
 				// User should have ban permissions else it will not work
@@ -76,10 +84,26 @@ module.exports = {
 								validBans = validBans - 1;
 							}
 						}
-						await interaction.editReply(
-							`Ban List: ${bans.length}. \nInvalid Bans: ${bans.length -
-                validBans}.\n${validBans} banned successfully!`,
-						);
+						const message = await interaction.editReply({
+							content: `Ban List: ${
+								bans.length
+							}. \nInvalid Bans: ${bans.length -
+                validBans}.\n${validBans} banned successfully!\n\nReason: ${reason}`,
+							components: [row],
+							fetchReply: true,
+						});
+						const collector = message.createMessageComponentCollector({
+							componentType: 'BUTTON',
+						});
+						collector.on('collect', async i => {
+							if (i.customId === 'notworking') {
+								i.reply({
+									content:
+                    'You may either upload the list of IDs into https://dpaste.com and use the import command OR follow this [video](https://youtu.be/gxAqukdjtM8)',
+									ephemeral: true,
+								});
+							}
+						});
 					}
 					catch (e) {
 						// When the link is invalid. this code prevented earlier versions of crashes.
