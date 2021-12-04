@@ -28,7 +28,8 @@ const helpEmbed = new MessageEmbed()
 		},
 		{
 			name: '**/mass_ban**',
-			value: 'Mass bans given IDs',
+			value:
+        'Mass bans given IDs.\nSometimes you might put multiple IDs but it doesn\'t work. \nYou may either put the IDs on [dpaste.com](https://dpaste.com) or follow this [video](https://youtu.be/gxAqukdjtM8)',
 		},
 		{ name: '**/kick**', value: 'Kicks the given user.' },
 		{ name: '**/ping**', value: 'Bot Latency.' },
