@@ -99,7 +99,7 @@ module.exports = {
 							if (i.customId === 'notworking') {
 								i.reply({
 									content:
-                    'You may either upload the list of IDs into https://dpaste.com or follow this [video](https://youtu.be/gxAqukdjtM8)',
+                    'You may either upload the list of IDs into https://dpaste.com and use the import command OR follow this [video](https://youtu.be/gxAqukdjtM8)',
 									ephemeral: true,
 								});
 							}
