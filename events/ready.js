@@ -55,6 +55,6 @@ module.exports = {
 			const act = activities[Math.floor(Math.random() * activities.length)];
 			console.log(act);
 			client.user.setActivity(act.text, act.obj);
-		}, 5000);
+		}, 30000);
 	},
 };
