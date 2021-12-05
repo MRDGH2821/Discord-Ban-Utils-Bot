@@ -42,6 +42,12 @@ module.exports = {
 					type: 'WATCHING',
 				},
 			},
+			{
+				text: 'a ban list import',
+				obj: {
+					type: 'LISTENING',
+				},
+			},
 		];
 		console.log(activities);
 
