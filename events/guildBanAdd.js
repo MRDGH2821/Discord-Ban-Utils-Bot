@@ -1,7 +1,13 @@
 module.exports = {
 	name: 'guildBanAdd',
-	execute(client) {
-		client.on('guildBanAdd', async ban => {
+	async execute(ctx) {
+		const bannedUser = await ctx.user.fetch();
+		console.log(bannedUser);
+		console.log('A member is banned');
+	},
+};
+
+/*
 			const fetchedLogs = await ban.guild.fetchAuditLogs({
 				limit: 1,
 				type: 'MEMBER_BAN_ADD',
@@ -32,6 +38,4 @@ module.exports = {
 					`${ban.user.tag} got hit with the swift hammer of justice in the guild ${ban.guild.name}, audit log fetch was inconclusive.`,
 				);
 			}
-		});
-	},
-};
+	*/
