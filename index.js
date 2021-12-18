@@ -3,8 +3,8 @@ const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./lib/ConfigManager.js');
 
 const client = new Client({
-	intents: [Intents.FLAGS.GUILDS],
-	partials: ['CHANNEL', 'REACTION'],
+	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+	partials: ['CHANNEL', 'REACTION', 'MESSAGE'],
 });
 
 const eventFiles = fs
