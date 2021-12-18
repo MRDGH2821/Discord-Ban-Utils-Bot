@@ -3,8 +3,8 @@ const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./lib/ConfigManager.js');
 
 const client = new Client({
-	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
-	partials: ['CHANNEL', 'REACTION', 'MESSAGE'],
+	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_BANS],
+	partials: ['CHANNEL', 'REACTION'],
 });
 
 const eventFiles = fs
@@ -13,11 +13,14 @@ const eventFiles = fs
 
 for (const file of eventFiles) {
 	const event = require(`./events/${file}`);
+	//	console.log('Inside loop', event);
 	if (event.once) {
 		client.once(event.name, (...args) => event.execute(...args));
+		//		console.log('Inside If', event.name);
 	}
 	else {
 		client.on(event.name, (...args) => event.execute(...args));
+		//		console.log('Inside else', event.name);
 	}
 }
 
