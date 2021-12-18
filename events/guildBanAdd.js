@@ -1,5 +1,5 @@
 module.exports = {
-	name: 'banLog',
+	name: 'guildBanAdd',
 	execute(client) {
 		client.on('guildBanAdd', async ban => {
 			const fetchedLogs = await ban.guild.fetchAuditLogs({
