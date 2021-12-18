@@ -49,7 +49,7 @@ module.exports = {
 				},
 			},
 		];
-		console.log(activities);
+		//	console.log(activities);
 
 		setInterval(() => {
 			const act = activities[Math.floor(Math.random() * activities.length)];
