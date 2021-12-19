@@ -2,7 +2,7 @@ const { db } = require('../lib/firebase.js');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = {
-  name: 'exportList',
+  name: 'exportListSuccess',
   async execute(client, user, url, guild) {
     const serverDB = await db
       .collection('servers')

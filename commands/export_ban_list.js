@@ -156,8 +156,8 @@ module.exports = {
                     content: url,
                     components: [InviteRow],
                   });
-                  interaction.client.emit(
-                    'exportList',
+                  await interaction.client.emit(
+                    'exportListSuccess',
                     interaction.client,
                     interaction.user,
                     url,
