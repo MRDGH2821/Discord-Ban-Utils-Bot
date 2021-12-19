@@ -9,7 +9,8 @@
     "start": "node .",
     "predev": "node deploy-commands.js",
     "dev": "nodemon .",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "fire:test": "node ./lib/firebase.js"
   },
   "repository": {
     "type": "git",
@@ -36,7 +37,8 @@
     "@discordjs/rest": "^0.1.0-canary.0",
     "discord-api-types": "^0.24.0",
     "discord.js": "^13.3.1",
-    "dpaste-ts": "^1.0.4"
+    "dpaste-ts": "^1.0.4",
+    "firebase-admin": "^10.0.1"
   },
   "devDependencies": {
     "eslint": "^8.2.0"
