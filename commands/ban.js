@@ -42,6 +42,13 @@ module.exports = {
 					await interaction.reply({
 						content: `User \`${target.tag}\` is banned from this server. \nReason: ${reas}.`,
 					});
+					await interaction.client.emit(
+						'userBanned',
+						interaction.user,
+						target,
+						reas,
+						interaction.guild,
+					);
 				}
 				else {
 					await interaction.reply({
