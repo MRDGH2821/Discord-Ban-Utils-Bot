@@ -4,7 +4,7 @@ Discord Ban Utilities for Mutual Servers!
 
 ~~Currently the Bot is in development.~~ Bot development is supposedly finished. And can be used publicly!
 
-Hosted on my personal Raspberry Pi 2B+.
+Hosted on ~~my personal Raspberry Pi 2B+~~ Google Cloud VM Instance E2.
 
 Invite Link - [click here](https://discord.com/api/oauth2/authorize?client_id=897454611370213436&permissions=277562263718&scope=bot%20applications.commands)
 
@@ -16,6 +16,16 @@ This bot project was inspired by the project [here](https://github.com/Permissio
 
 ![Bot Permissions](https://i.imgur.com/vth293y.png)
 
+## Firebase integration
+
+With v2.4, the bot now comes with logging feature with firebase integration & custom events.
+So to setup logging follow these steps:
+1\. Create a Firebase project.
+2\. Go to project settings
+3\. In Firebase Admin SDK section, click on `Node.js` & finally on `Generate new private key`.
+4\. Copy this private key into the root folder of bot. (i.e. just besides `index.js`).
+5\. Now copy the path of this downloaded private key relative to `./lib/ConfigManager.js` & edit `config.json`.
+
 ## Hosting
 
 1.  Clone this repo.
@@ -25,7 +35,8 @@ This bot project was inspired by the project [here](https://github.com/Permissio
 {
   "token": "insert bot token",
   "clientId": "insert bot clientID",
-  "guildId": "insert one of your server's ID"
+  "guildId": "insert one of your server's ID",
+  "firebaseConfigPath": "insert path of firebase private key relative to `./lib.ConfigManager.js`"
 }
 ```
 
