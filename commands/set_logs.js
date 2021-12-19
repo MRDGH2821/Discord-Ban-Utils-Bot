@@ -18,7 +18,7 @@ module.exports = {
       option
         .setName('force_update')
         .setDescription(
-          'Use this option ONLY IF there is a feature update OR changing channel',
+          'Use ONLY in Dire situations. This will overwrite any kind of setting for the server!',
         ),
     ),
 
@@ -26,12 +26,14 @@ module.exports = {
     const banPerm = Permissions.FLAGS.BAN_MEMBERS;
     await interaction.deferReply();
     const force_update = interaction.options.getBoolean('force_update');
-    const logChannelExists = await db
-      .collection('servers')
-      .doc(`${interaction.guild.id}`)
-      .get();
+
     try {
-      if (!logChannelExists || force_update) {
+      const serverDB = await db
+        .collection('servers')
+        .doc(`${interaction.guild.id}`)
+        .get();
+
+      if (!serverDB.exists || force_update) {
         if (interaction.guild) {
           if (interaction.member.permissions.has([banPerm])) {
             const channel = interaction.options.getChannel('log_channel');
@@ -39,8 +41,8 @@ module.exports = {
             const channelID = channel.id;
 
             // console.log('channel', channel);
-            //	console.log('guildID', serverID);
-            //	console.log('channelID', channelID);
+            // console.log('guildID', serverID);
+            // console.log('channelID', channelID);
             await interaction.editReply('Channel obtained!');
             const webhook = await logsHook(channel);
             const data = {
@@ -71,10 +73,11 @@ module.exports = {
         }
       }
       else {
-        const serverData = logChannelExists.data();
-        console.log(serverData);
+        const serverData = serverDB.data();
+        const logChannel = serverData.logChannel;
+        console.log('LogChannel: ', logChannel);
         await interaction.editReply({
-          content: `Log channel is already configured to <#${serverData.logChannel}>.\nRerun this command with \`force_update\` set to \`True\``,
+          content: `Log channel is already configured to <#${logChannel}>.\nRerun this command with \`force_update\` set to \`True\` if there is some problem.`,
         });
       }
     }
