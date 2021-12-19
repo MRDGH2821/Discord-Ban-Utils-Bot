@@ -3,7 +3,7 @@ const { WebhookClient, MessageEmbed } = require('discord.js');
 
 module.exports = {
   name: 'userBanned',
-  async execute(mod, bannedUser, reason, guild) {
+  async execute(client, mod, bannedUser, reason, guild) {
     /*
 		console.log('Moderator: ', mod);
 		console.log('Banned user: ', bannedUser);
@@ -27,15 +27,15 @@ module.exports = {
     const webhookID = serverData.logWebhook;
     try {
       if (webhookID) {
-        const channel = guild.channels.cache.get(serverData.logChannel);
+        //      const channel = guild.channels.cache.get(serverData.logChannel);
 
-        const webhooks = await channel.fetchWebhooks();
-        const token = webhooks.find(wh => wh.token);
-
+        const webhookClient = await client.fetchWebhook(webhookID);
+        //  const webhookClient = webhooks.find(wh => wh.token);
+        /*
         const webhookClient = new WebhookClient({
           id: webhookID,
           token: token,
-        });
+        });*/
         const logEmb = new MessageEmbed()
           .setColor('#D8D4D3')
           .setTitle('**Ban Log**')
