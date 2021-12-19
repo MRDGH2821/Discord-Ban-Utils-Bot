@@ -29,7 +29,7 @@ module.exports = {
       if (webhookID) {
         const webhookClient = await client.fetchWebhook(webhookID);
         const logEmb = new MessageEmbed()
-          .setColor('#D8D4D3')
+          .setColor('#e1870a')
           .setTitle('**Ban Log**')
           .setDescription('A person got hit with the swift hammer of justice!')
           .addFields(
