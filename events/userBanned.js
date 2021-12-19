@@ -1,5 +1,5 @@
 const { db } = require('../lib/firebase.js');
-const { WebhookClient, MessageEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
   name: 'userBanned',
@@ -27,15 +27,7 @@ module.exports = {
     const webhookID = serverData.logWebhook;
     try {
       if (webhookID) {
-        //      const channel = guild.channels.cache.get(serverData.logChannel);
-
         const webhookClient = await client.fetchWebhook(webhookID);
-        //  const webhookClient = webhooks.find(wh => wh.token);
-        /*
-        const webhookClient = new WebhookClient({
-          id: webhookID,
-          token: token,
-        });*/
         const logEmb = new MessageEmbed()
           .setColor('#D8D4D3')
           .setTitle('**Ban Log**')
