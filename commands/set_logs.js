@@ -17,7 +17,9 @@ module.exports = {
     .addBooleanOption(option =>
       option
         .setName('force_update')
-        .setDescription('Use this option ONLY IF there is a feature update'),
+        .setDescription(
+          'Use this option ONLY IF there is a feature update OR changing channel',
+        ),
     ),
 
   async execute(interaction) {
