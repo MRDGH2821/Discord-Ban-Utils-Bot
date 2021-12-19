@@ -43,7 +43,7 @@ module.exports = {
             // console.log('channel', channel);
             // console.log('guildID', serverID);
             // console.log('channelID', channelID);
-            await interaction.editReply('Channel obtained!');
+            // await interaction.editReply('Channel obtained!');
             const webhook = await logsHook(channel);
             const data = {
               logChannel: channelID,
@@ -56,7 +56,9 @@ module.exports = {
               .doc(`${serverID}`)
               .set(data);
 
-            await interaction.editReply('Channel set into firebase!');
+            await interaction.editReply(
+              `Configured <#${channel.id}> as logging channel.`,
+            );
           }
           else {
             await interaction.editReply({
@@ -67,7 +69,8 @@ module.exports = {
         }
         else {
           await interaction.editReply({
-            content: 'Use this in server',
+            content:
+              'This is Server only command. Invite the bot in server to use.',
             components: [InviteRow],
           });
         }
