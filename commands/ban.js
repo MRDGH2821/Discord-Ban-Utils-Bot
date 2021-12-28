@@ -1,11 +1,6 @@
 const { Permissions } = require('discord.js');
-const { Routes } = require('discord-api-types/v9');
-const { REST } = require('@discordjs/rest');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { token } = require('../lib/ConfigManager.js');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
-const rest = new REST({ version: '9' }).setToken(token);
-const date = new Date().toDateString();
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -25,18 +20,18 @@ module.exports = {
 
   async execute(interaction) {
     const target = interaction.options.getUser('user');
-    let reas = interaction.options.getString('reason');
+    const reas =
+      interaction.options.getString('reason') ||
+      `Banned by ${
+        interaction.user.tag
+      } on ${new Date().toDateString()} ||for no reason :joy:||`;
     try {
       if (interaction.guild) {
         if (
           interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
         ) {
-          if (reas === null) {
-            // If no reason given, give a formatted reason
-            reas = `Banned by ${interaction.user.tag} on ${date} ||for no reason :joy:||`;
-          }
           // Drop the Ban Hammer!
-          await rest.put(Routes.guildBan(interaction.guildId, target.id), {
+          await interaction.guild.members.ban(target, {
             reason: reas,
           });
           await interaction.reply({
