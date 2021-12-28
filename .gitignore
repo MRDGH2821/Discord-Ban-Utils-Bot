@@ -2,4 +2,4 @@ node_modules
 config.json
 betaconfig.json
 Backup-Commands/*
-discord-ban-utils-bot-firebase-adminsdk-ohwmr-1392181386.json
+lib/firebase-service-acc/*
