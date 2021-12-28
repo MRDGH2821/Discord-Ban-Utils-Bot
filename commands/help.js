@@ -36,6 +36,7 @@ const helpEmbed = new MessageEmbed()
       name: '**/user_info**',
       value: 'Tells if you have the permissions to kick or ban .',
     },
+    { name: '**/set_logs**', value: 'Setup a log channel' },
     {
       name: '**Bot still not working?**',
       value:
