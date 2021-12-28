@@ -1,27 +1,20 @@
 const { Permissions } = require('discord.js');
-const { Routes } = require('discord-api-types/v9');
-const { REST } = require('@discordjs/rest');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { token } = require('../lib/ConfigManager.js');
 const { PasteCheck } = require('../lib/PasteBinFnc.js');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
 const dpst = require('dpaste-ts');
-
-const rest = new REST({ version: '9' }).setToken(token);
-const date = new Date();
-console.log(date.toDateString());
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('import_ban_list')
     .setDescription('Imports ban list into current server')
-    .addStringOption(option =>
+    .addStringOption((option) =>
       option
         .setName('dpaste_link')
         .setDescription('Enter full dpaste link')
         .setRequired(true),
     )
-    .addStringOption(option =>
+    .addStringOption((option) =>
       option
         .setName('reason')
         .setDescription(
@@ -30,10 +23,18 @@ module.exports = {
     ),
 
   async execute(interaction) {
+    const guildbans = await interaction.guild.bans.fetch();
+    //  console.log(bans);
+    const alreadybanned = guildbans.map((v) => ({
+      user: v.user,
+      reason: v.reason,
+    }));
+    // console.log(alreadybanned[0]);
+
     const paste_id = PasteCheck(interaction.options.getString('dpaste_link'));
     const banReason =
       interaction.options.getString('reason') ||
-      `Ban Import on ${date.toDateString()}`;
+      `Ban Import by ${interaction.user.tag} on ${new Date().toDateString()}`;
     try {
       if (interaction.guild) {
         // User should have ban permissions else it will not work
@@ -46,7 +47,7 @@ module.exports = {
           const data = await dpst.GetRawPaste(paste_id);
           try {
             const rawEle = data.split(/\D+/g);
-            const bans = rawEle.map(element => element.trim());
+            const bans = rawEle.map((element) => element.trim());
             await interaction.client.users.fetch(bans[0]);
             await interaction.editReply(
               `${bans.length} bans are being imported in background. Sit back and relax for a while!`,
@@ -56,29 +57,44 @@ module.exports = {
 
             // console.log(typeof bans);
             // console.log(bans);
-            for (const v of bans) {
+            let uniqueBans = 0;
+            for (const v of bans.filter(
+              (r) => !alreadybanned.some((u) => u.user.id === r),
+            )) {
               try {
                 const tag = await interaction.client.users
                   .fetch(v)
-                  .then(user => user.tag)
+                  .then((user) => user.tag)
                   .catch(() => {
                     null;
                     // validBans = validBans - 1;
                   });
                 console.log(`Banning user ID ${tag}...`);
                 await interaction.editReply(`Banning user ${tag}...`);
-                await rest.put(Routes.guildBan(interaction.guildId, v), {
+                await interaction.guild.members.ban(v, {
                   reason: banReason,
                 });
               }
               catch {
                 validBans = validBans - 1;
               }
+              uniqueBans = uniqueBans + 1;
             }
-            await interaction.editReply(
-              `Ban List: ${bans.length}. \nInvalid Bans: ${bans.length -
-                validBans}.\n${validBans} imported successfully!\n\nReason: ${banReason}`,
-            );
+            await interaction.editReply({
+              embeds: [
+                {
+                  title: 'Ban Import',
+                  description: `Ban List: ${
+                    bans.length
+                  }. \nInvalid Bans: ${bans.length -
+                    validBans}.\nUnique Bans: ${uniqueBans}.\n${uniqueBans} imported successfully!\n\n`,
+                  fields: [
+                    { name: 'Ban List Link', value: paste_id },
+                    { name: 'Reason', value: banReason },
+                  ],
+                },
+              ],
+            });
           }
           catch (e) {
             // When the link is invalid. this code prevented earlier versions of crashes.
