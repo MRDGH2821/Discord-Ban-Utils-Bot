@@ -81,13 +81,14 @@ module.exports = {
               uniqueBans = uniqueBans + 1;
             }
             await interaction.editReply({
+              content: 'Ban Import Success!',
               embeds: [
                 {
                   title: 'Ban Import',
-                  description: `Ban List: ${
-                    bans.length
-                  }. \nInvalid Bans: ${bans.length -
-                    validBans}.\nUnique Bans: ${uniqueBans}.\n${uniqueBans} imported successfully!\n\n`,
+                  description: `Ban List: ${bans.length}.\n
+                  Invalid Bans: ${bans.length - validBans}.\n
+                  Unique Bans: ${uniqueBans}.\n\n
+                  ${uniqueBans} imported successfully!`,
                   fields: [
                     { name: 'Ban List Link', value: paste_id },
                     { name: 'Reason', value: banReason },
@@ -123,7 +124,7 @@ module.exports = {
     }
     catch (e) {
       await interaction.reply({
-        content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\`\n\nInput given:\n\`${paste_id}`,
+        content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\`\n\nInput given:\n\`https://dpaste.com/${paste_id}`,
         components: [SupportRow],
       });
     }
