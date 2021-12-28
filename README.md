@@ -27,11 +27,12 @@ This bot project was inspired by the project [here](https://github.com/Permissio
 
 With v2.4, the bot now comes with logging feature with firebase integration & custom events.
 So to setup logging follow these steps:
-1\. Create a Firebase project.
-2\. Go to project settings
-3\. In Firebase Admin SDK section, click on `Node.js` & finally on `Generate new private key`.
-4\. Copy this private key into the root folder of bot. (i.e. just besides `index.js`).
-5\. Now copy the path of this downloaded private key relative to `./lib/ConfigManager.js` & edit `config.json`.
+1. Create a Firebase project.
+2. Go to project settings
+3. In Firebase Admin SDK section, click on `Node.js` & finally on `Generate new private key`.
+4. Copy this private key (i.e. the json file which gets downloaded) into `./lib/firebase-service-acc/`
+
+For more info check [here](./lib/firebase-service-acc/README.md)
 
 ## Hosting
 
@@ -43,7 +44,6 @@ So to setup logging follow these steps:
   "token": "insert bot token",
   "clientId": "insert bot clientID",
   "guildId": "insert one of your server's ID",
-  "firebaseConfigPath": "insert path of firebase private key relative to `./lib.ConfigManager.js`"
 }
 ```
 

@@ -2,7 +2,7 @@
 
 Put Firebase Service Account Here in this location.
 
-Location => ~/Discord-Ban-Utils-Bot/lib/firebase-service-acc
+Location => `~/Discord-Ban-Utils-Bot/lib/firebase-service-acc`
 
 Make sure there is **ONLY** 1 JSON file.
 
