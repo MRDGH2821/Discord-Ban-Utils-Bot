@@ -84,13 +84,17 @@ module.exports = {
               content: 'Ban Import Success!',
               embeds: [
                 {
+                  color: 0xe7890c,
                   title: 'Ban Import',
-                  description: `Ban List: ${bans.length}.\n
-                  Invalid Bans: ${bans.length - validBans}.\n
-                  Unique Bans: ${uniqueBans}.\n\n
+                  description: `Ban List: ${bans.length}.
+                  Invalid Bans: ${bans.length - validBans}.
+                  Unique Bans: ${uniqueBans}.\n
                   ${uniqueBans} imported successfully!`,
                   fields: [
-                    { name: 'Ban List Link', value: paste_id },
+                    {
+                      name: 'Ban List Link',
+                      value: `https://dpaste.com/${paste_id}`,
+                    },
                     { name: 'Reason', value: banReason },
                   ],
                 },
