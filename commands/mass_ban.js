@@ -1,25 +1,18 @@
-const { Routes } = require('discord-api-types/v9');
 const { Permissions, MessageActionRow, MessageButton } = require('discord.js');
-const { REST } = require('@discordjs/rest');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { token } = require('../lib/ConfigManager.js');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
-
-const rest = new REST({ version: '9' }).setToken(token);
-const date = new Date();
-console.log(date.toDateString());
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('mass_ban')
     .setDescription('Mass Bans given IDs')
-    .addStringOption(option =>
+    .addStringOption((option) =>
       option
         .setName('ids')
         .setDescription('Enter IDs')
         .setRequired(true),
     )
-    .addStringOption(option =>
+    .addStringOption((option) =>
       option
         .setName('reason')
         .setDescription(
@@ -29,20 +22,22 @@ module.exports = {
 
   async execute(interaction) {
     const ids = interaction.options.getString('ids');
-    let reason = interaction.options.getString('reason');
-    if (reason === null) {
-      reason = `Banned by ${
-        interaction.user.tag
-      } on ${new Date().toDateString()}`;
-    }
+    const banReason =
+      interaction.options.getString('reason') ||
+      `Massbanned by ${interaction.user.tag} on ${new Date().toDateString()}`;
 
-    const row = new MessageActionRow().addComponents(
+    const notWorking = new MessageActionRow().addComponents(
       new MessageButton()
         .setCustomId('notworking')
         .setLabel('Not working as expected?')
         .setStyle('DANGER'),
     );
-
+    const guildbans = await interaction.guild.bans.fetch();
+    //  console.log(bans);
+    const alreadybanned = guildbans.map((v) => ({
+      user: v.user,
+      reason: v.reason,
+    }));
     try {
       if (interaction.guild) {
         // User should have ban permissions else it will not work
@@ -55,7 +50,7 @@ module.exports = {
 
           try {
             const rawEle = ids.split(/\D+/g);
-            const bans = rawEle.map(element => element.trim());
+            const bans = rawEle.map((element) => element.trim());
             await interaction.client.users.fetch(bans[0]);
             await interaction.editReply(
               `${bans.length} bans are being banned in background. Sit back and relax for a while!`,
@@ -65,37 +60,49 @@ module.exports = {
 
             // console.log(typeof bans);
             // console.log(bans);
-            for (const v of bans) {
+            let uniqueBans = 0;
+            for (const v of bans.filter(
+              (r) => !alreadybanned.some((u) => u.user.id === r),
+            )) {
               try {
                 const tag = await interaction.client.users
                   .fetch(v)
-                  .then(user => user.tag)
+                  .then((user) => user.tag)
                   .catch(() => {
                     null;
                     // validBans = validBans - 1;
                   });
                 console.log(`Banning user ID ${tag}...`);
                 await interaction.editReply(`Banning user ${tag}...`);
-                await rest.put(Routes.guildBan(interaction.guildId, v), {
-                  reason: reason,
+                await interaction.guild.members.ban(v, {
+                  reason: banReason,
                 });
               }
               catch {
                 validBans = validBans - 1;
               }
+              uniqueBans = uniqueBans + 1;
             }
             const message = await interaction.editReply({
-              content: `Ban List: ${
-                bans.length
-              }. \nInvalid Bans: ${bans.length -
-                validBans}.\n${validBans} banned successfully!\n\nReason: ${reason}`,
-              components: [row],
+              content: 'Mass Ban Success!',
+              embeds: [
+                {
+                  color: 0xe7890c,
+                  title: 'Mass Ban Report',
+                  description: `Ban List: ${bans.length}.
+                  Invalid Bans: ${bans.length - validBans}.
+                  Unique Bans: ${uniqueBans}.\n
+                  ${uniqueBans} users mass banned successfully!`,
+                  fields: [{ name: 'Reason', value: banReason }],
+                },
+              ],
+              components: [notWorking],
               fetchReply: true,
             });
             const collector = message.createMessageComponentCollector({
               componentType: 'BUTTON',
             });
-            collector.on('collect', async i => {
+            collector.on('collect', async (i) => {
               if (i.customId === 'notworking') {
                 i.reply({
                   content:
