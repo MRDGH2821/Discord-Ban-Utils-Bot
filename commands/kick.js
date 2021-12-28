@@ -6,13 +6,13 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('kick')
     .setDescription('Kicks a user')
-    .addUserOption(option =>
+    .addUserOption((option) =>
       option
         .setName('user')
         .setDescription('Enter the User ID (i.e. snowflake) or tag them')
         .setRequired(true),
     )
-    .addStringOption(option =>
+    .addStringOption((option) =>
       option
         .setName('reason')
         .setDescription('Enter reason for Kick. Will be sent as DM to user'),

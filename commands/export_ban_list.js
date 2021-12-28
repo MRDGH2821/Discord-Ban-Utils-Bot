@@ -33,7 +33,7 @@ module.exports = {
         // Export bans
         const results = [];
 
-        bans.forEach(v => {
+        bans.forEach((v) => {
           results.push(v.user.id);
         });
         // results = JSON.stringify(results);
@@ -41,13 +41,13 @@ module.exports = {
         const outputFile = `${interaction.guild.name}-${date}.txt`;
         dpst
           .CreatePaste(results, outputFile, 'text')
-          .then(async url => {
+          .then(async (url) => {
             await interaction.followUp({
               content: url,
               components: [InviteRow],
             });
           })
-          .catch(async error => {
+          .catch(async (error) => {
             // Incase of any errors
             await interaction.followUp({
               content: `There was some unexpected error.\nError Dump: ${error}`,
@@ -102,7 +102,7 @@ module.exports = {
           });
           let bans;
           let selectedGuild;
-          collector.on('collect', async i => {
+          collector.on('collect', async (i) => {
             if (i.user.id === interaction.user.id) {
               selectedGuild = interaction.client.guilds.cache.get(i.values[0]);
               // console.log(selectedGuild);
@@ -126,7 +126,7 @@ module.exports = {
             }
           });
 
-          collector.on('end', async collected => {
+          collector.on('end', async (collected) => {
             if (collected.size === 1) {
               initial_Screen
                 .addFields({
@@ -144,14 +144,14 @@ module.exports = {
 
               // Export bans
               let results = [];
-              bans.forEach(v => {
+              bans.forEach((v) => {
                 results.push(v.user.id);
               });
               results = JSON.stringify(results);
               const outputFile = `${selectedGuild.name}-${date}.txt`;
               await dpst
                 .CreatePaste(results, outputFile, 'text')
-                .then(async url => {
+                .then(async (url) => {
                   await interaction.followUp({
                     content: url,
                     components: [InviteRow],
@@ -164,7 +164,7 @@ module.exports = {
                     interaction.guild,
                   );
                 })
-                .catch(async error => {
+                .catch(async (error) => {
                   // Incase of any errors
                   await interaction.followUp({
                     content: `There was some unexpected error.\nError Dump: ${error}`,

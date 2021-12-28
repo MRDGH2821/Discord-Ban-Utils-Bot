@@ -6,7 +6,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('unban')
     .setDescription('Unbans a user')
-    .addUserOption(option =>
+    .addUserOption((option) =>
       option
         .setName('user')
         .setDescription('Enter the User ID (i.e. snowflake) or tag them')

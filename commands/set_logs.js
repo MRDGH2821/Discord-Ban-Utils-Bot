@@ -8,13 +8,13 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('set_logs')
     .setDescription('Set a log channel')
-    .addChannelOption(option =>
+    .addChannelOption((option) =>
       option
         .setName('log_channel')
         .setDescription('Select Log Channel')
         .setRequired(true),
     )
-    .addBooleanOption(option =>
+    .addBooleanOption((option) =>
       option
         .setName('force_update')
         .setDescription(
