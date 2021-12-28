@@ -16,7 +16,9 @@
     "type": "git",
     "url": "git+https://github.com/MRDGH2821/Discord-Ban-Utils-Bot.git"
   },
-  "keywords": [],
+  "keywords": [
+    "discord", "ban", "utilities"
+  ],
   "author": {
     "name": "MRDGH2821",
     "url": "https://github.com/MRDGH2821"
@@ -44,8 +46,9 @@
     "eslint": "^8.2.0",
     "prettier-config-mrdgh2821": "^1.0.0"
   },
-  "prettier": "prettier-config-mrdgh2821",
   "engines": {
     "node": ">= 16.6.0"
-  }
+  },
+  "private": true,
+  "prettier": "prettier-config-mrdgh2821"
 }
