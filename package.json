@@ -41,8 +41,10 @@
     "firebase-admin": "^10.0.1"
   },
   "devDependencies": {
-    "eslint": "^8.2.0"
+    "eslint": "^8.2.0",
+    "prettier-config-mrdgh2821": "^1.0.0"
   },
+  "prettier": "prettier-config-mrdgh2821",
   "engines": {
     "node": ">= 16.6.0"
   }
