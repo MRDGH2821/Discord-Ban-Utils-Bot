@@ -135,7 +135,7 @@ module.exports = {
                   'You can sit back and relax while the bot does the work for you!',
                 )
                 .setFooter(
-                  'Btw, bot developer doesn\'t know how to notify you after the bans have been transferred... \nHence you should check destination server setting\'s ban section.',
+                  'Transfer has begun, still you should check destination server setting\'s ban section.',
                 );
 
               await interaction.editReply({
@@ -148,7 +148,7 @@ module.exports = {
 
               const fromGuildId = interaction.guild.id;
               const alreadybaned = await rest.get(Routes.guildBans(toGuildId));
-              console.log('Already banned\n\n', alreadybaned);
+              // console.log('Already banned\n\n', alreadybaned);
 
               try {
                 // Tries to ban users.
@@ -157,12 +157,10 @@ module.exports = {
                 console.log(`Applying bans to guild ${toGuildId}...`);
                 let actualTransfers = 0;
                 for (const v of bans.filter(
-                  r => !alreadybaned.some(u => u.user.id === r.user.id),
+                  (r) => !alreadybaned.some((u) => u.user.id === r.user.id),
                 )) {
                   actualTransfers = actualTransfers + 1;
-                  console.log(
-                    `Banning user ${v.user.username}#${v.user.discriminator}...`,
-                  );
+                  // console.log(`Banning user ${v.user.username}#${v.user.discriminator}...`);
                   await interaction.editReply({
                     content: `Banning user ${v.user.username}#${v.user.discriminator}...`,
                   });
@@ -179,7 +177,7 @@ module.exports = {
                     Unique Bans: ${actualTransfers}`,
                   )
                   .setFooter(
-                    'Looks like bot developer does know how to notify you after all 🤷.',
+                    `Check by going into destination server's ban section. It should be increased by ${actualTransfers}`,
                   );
                 console.log(
                   `Successfully transferred all bans from ${fromGuildId} to ${toGuildId}.`,
@@ -211,7 +209,7 @@ module.exports = {
                   );
                 initial_Screen.addField(
                   '**Error**',
-                  `Seems like I failed. Possible reasons: Discord API Rate Limit crossed. And thus cannot transfer bans. Try again after sometime?\n\nError Dump: ${error}`,
+                  `Seems like I failed. Try again after sometime?\n\nError Dump:\n ${error}`,
                 );
                 console.log(error);
                 return interaction.editReply({
@@ -280,4 +278,9 @@ I had no idea of async & await keyword usages hence things happened in one go in
 /*
 04 Dec 2021
 AroLeaf helps to filter out duplicate bans
+*/
+
+/*
+28 Dec 2021
+Bot Developer now definitely knows how to inform the mod.
 */
