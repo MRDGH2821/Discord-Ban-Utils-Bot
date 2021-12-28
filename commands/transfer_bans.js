@@ -92,19 +92,17 @@ module.exports = {
           let destname;
 
           // Collectors to collect selected server
-          collector.on('collect', async i => {
+          collector.on('collect', async (i) => {
             // This if statement is for checking if buttons are selected by interaction.user or not.
             if (i.user.id === interaction.user.id) {
-              destname = interaction.client.guilds.cache.get(i.values[0]).name;
-              toGuildId = interaction.client.guilds.cache.get(i.values[0]).id;
+              destname = await interaction.client.guilds.cache.get(i.values[0])
+                .name;
+              toGuildId = await interaction.client.guilds.cache.get(i.values[0])
+                .id;
 
-              initial_Screen.setDescription(
-                `Source server: ${
-                  interaction.guild.name
-                }\nDestination Server: ${
-                  interaction.client.guilds.cache.get(i.values[0]).name
-                }`,
-              );
+              initial_Screen.setDescription(`Source server: ${interaction.guild.name}
+                Destination Server: ${destname}`);
+              // interaction.client.guilds.cache.get(i.values[0]).name
 
               await interaction.editReply({
                 embeds: [initial_Screen],
@@ -119,15 +117,17 @@ module.exports = {
               });
             }
             // Double assignment to ensure values are properly passed
-            destname = interaction.client.guilds.cache.get(i.values[0]).name;
-            toGuildId = interaction.client.guilds.cache.get(i.values[0]).id;
+            destname = await interaction.client.guilds.cache.get(i.values[0])
+              .name;
+            toGuildId = await interaction.client.guilds.cache.get(i.values[0])
+              .id;
           });
 
           // Fetch bans from current server
           const bans = await rest.get(Routes.guildBans(interaction.guild.id));
-          console.log('Source Bans:\n\n', bans);
+          // console.log('Source Bans:\n\n', bans);
 
-          collector.on('end', async collected => {
+          collector.on('end', async (collected) => {
             if (collected.size === 1) {
               initial_Screen
                 .addField(
@@ -170,14 +170,13 @@ module.exports = {
                     reason: v.reason,
                   });
                 }
+                //  interaction.client.guilds.cache.get(toGuildId).name
                 initial_Screen
                   .addField(
                     '**Transfer Successfull!**',
-                    `Found ${
-                      bans.length
-                    } in current server.\nTransferred successfully to ${
-                      interaction.client.guilds.cache.get(toGuildId).name
-                    }.\nUnique Bans: ${actualTransfers}`,
+                    `Found ${bans.length} in current server.
+                    Transferred successfully to ${destname}.
+                    Unique Bans: ${actualTransfers}`,
                   )
                   .setFooter(
                     'Looks like bot developer does know how to notify you after all 🤷.',
