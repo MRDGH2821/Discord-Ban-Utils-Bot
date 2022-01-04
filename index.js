@@ -2,8 +2,16 @@ const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./lib/ConfigManager.js');
 
+const myintents = new Intents().add(
+  Intents.FLAGS.GUILDS,
+  Intents.FLAGS.GUILD_BANS,
+  Intents.FLAGS.GUILD_MEMBERS,
+  Intents.FLAGS.GUILD_WEBHOOKS,
+  Intents.FLAGS.DIRECT_MESSAGES,
+);
+
 const client = new Client({
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_BANS],
+  intents: myintents,
   partials: ['CHANNEL', 'REACTION'],
 });
 
