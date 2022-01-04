@@ -18,17 +18,17 @@ module.exports = {
     .addIntegerOption((option) =>
       option
         .setName('duration')
-        .setdesription('Enter Duration in minutes. Max 4 weeks.'),
+        .setDescription('Enter Duration in minutes. Max 4 weeks.'),
     )
     .addBooleanOption((option) =>
-      option.setName('dm_reason').setdesription('Send Reason as DM?'),
+      option.setName('dm_reason').setDescription('Send Reason as DM?'),
     ),
 
   async execute(interaction) {
     const target = interaction.options.getMember('user');
     const reason = interaction.options.getString('reason');
     const duration = interaction.options.getInteger('duration');
-    const dm_reason = interaction.options.getboolean('dm_reason');
+    const dm_reason = interaction.options.getBoolean('dm_reason');
     try {
       if (interaction.guild) {
         if (
