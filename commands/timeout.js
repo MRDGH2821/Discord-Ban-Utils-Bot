@@ -18,7 +18,10 @@ module.exports = {
     .addIntegerOption((option) =>
       option
         .setName('duration')
-        .setDescription('Enter Duration in minutes. Max 4 weeks.'),
+        .setDescription(
+          'Enter Duration in minutes. Put 0 to remove timeout. Max 4 weeks.',
+        )
+        .setMaxValue(4 * 24 * 60 * 1000),
     )
     .addBooleanOption((option) =>
       option.setName('dm_reason').setDescription('Send Reason as DM?'),
@@ -32,7 +35,9 @@ module.exports = {
     try {
       if (interaction.guild) {
         if (
-          interaction.member.permissions.has([Permissions.FLAGS.KICK_MEMBERS])
+          interaction.member.permissions.has([
+            Permissions.FLAGS.MODERATE_MEMBERS,
+          ])
         ) {
           // Checks if target user can be managed or not
           if (target.managable) {
@@ -52,9 +57,9 @@ module.exports = {
             });
             await target.timeout(duration * 60 * 1000, reason);
           }
-          // If user cannot be kicked
+          // If user cannot be timed-out
           else {
-            await await interaction.reply({
+            await interaction.reply({
               content: `User \`${target.user.tag}\` cannot be timed-out :grimacing:.`,
             });
           }
