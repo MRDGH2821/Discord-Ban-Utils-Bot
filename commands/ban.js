@@ -19,6 +19,7 @@ module.exports = {
     ),
 
   async execute(interaction) {
+    await interaction.deferReply();
     const target = interaction.options.getUser('user');
     const reas =
       interaction.options.getString('reason') ||
@@ -27,19 +28,40 @@ module.exports = {
       } on ${new Date().toDateString()} ||for no reason :joy:||`;
     try {
       if (!interaction.guild) {
-        await interaction.reply({
-          content:
-            'Are you sure you are in a server to execute this?:unamused: \nBecause this command can only be used in Server Text channels or Threads :shrug:',
+        await interaction.editReply({
+          embeds: [
+            {
+              color: 0xd8d4d3,
+              title: 'Are you in a server?:unamused:',
+              description:
+                'This command can only be used inside Server :shrug:',
+            },
+          ],
           components: [InviteRow],
         });
       }
-      if (interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])) {
+      else if (
+        interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
+      ) {
         // Drop the Ban Hammer!
         await interaction.guild.members.ban(target, {
           reason: reas,
         });
-        await interaction.reply({
-          content: `User \`${target.tag}\` is banned from this server. \nReason: ${reas}.`,
+        await interaction.editReply({
+          // content: `User \`${target.tag}\` is banned from this server. \nReason: ${reas}.`,
+          embeds: [
+            {
+              color: 0xe1870a,
+              title: 'Ban Hammer Dropped!',
+              description: `User \`${target.tag}\` ${target} is banned from this server.`,
+              fields: [
+                {
+                  name: '**Reason**',
+                  value: reas,
+                },
+              ],
+            },
+          ],
         });
         await interaction.client.emit(
           'userBanned',
@@ -51,14 +73,14 @@ module.exports = {
         );
       }
       else {
-        await interaction.reply({
+        await interaction.editReply({
           content: 'You cannot ban...',
           components: [InviteRow],
         });
       }
     }
     catch (e) {
-      await interaction.reply({
+      await interaction.editReply({
         content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\``,
         components: [SupportRow],
       });
