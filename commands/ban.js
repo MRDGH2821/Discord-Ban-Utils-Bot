@@ -26,37 +26,33 @@ module.exports = {
         interaction.user.tag
       } on ${new Date().toDateString()} ||for no reason :joy:||`;
     try {
-      if (interaction.guild) {
-        if (
-          interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
-        ) {
-          // Drop the Ban Hammer!
-          await interaction.guild.members.ban(target, {
-            reason: reas,
-          });
-          await interaction.reply({
-            content: `User \`${target.tag}\` is banned from this server. \nReason: ${reas}.`,
-          });
-          await interaction.client.emit(
-            'userBanned',
-            interaction.client,
-            interaction.user,
-            target,
-            reas,
-            interaction.guild,
-          );
-        }
-        else {
-          await interaction.reply({
-            content: 'You cannot ban...',
-            components: [InviteRow],
-          });
-        }
-      }
-      else {
+      if (!interaction.guild) {
         await interaction.reply({
           content:
             'Are you sure you are in a server to execute this?:unamused: \nBecause this command can only be used in Server Text channels or Threads :shrug:',
+          components: [InviteRow],
+        });
+      }
+      if (interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])) {
+        // Drop the Ban Hammer!
+        await interaction.guild.members.ban(target, {
+          reason: reas,
+        });
+        await interaction.reply({
+          content: `User \`${target.tag}\` is banned from this server. \nReason: ${reas}.`,
+        });
+        await interaction.client.emit(
+          'userBanned',
+          interaction.client,
+          interaction.user,
+          target,
+          reas,
+          interaction.guild,
+        );
+      }
+      else {
+        await interaction.reply({
+          content: 'You cannot ban...',
           components: [InviteRow],
         });
       }
