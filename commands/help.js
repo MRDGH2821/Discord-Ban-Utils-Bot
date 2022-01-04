@@ -36,7 +36,11 @@ const helpEmbed = {
       name: '**/user_info**',
       value: 'Tells if you have the permissions to kick or ban .',
     },
-    { name: '**/set_logs**', value: 'Setup a log channel' },
+    {
+      name: '**/set_logs**',
+      value:
+        'Setup a log channel.\n**NOTE:** This functionality is still Beta quality!',
+    },
     {
       name: '**Bot still not working?**',
       value:
