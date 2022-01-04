@@ -17,7 +17,9 @@
     "url": "git+https://github.com/MRDGH2821/Discord-Ban-Utils-Bot.git"
   },
   "keywords": [
-    "discord", "ban", "utilities"
+    "discord",
+    "ban",
+    "utilities"
   ],
   "author": {
     "name": "MRDGH2821",
@@ -38,7 +40,7 @@
     "@discordjs/builders": "^0.8.2",
     "@discordjs/rest": "^0.1.0-canary.0",
     "discord-api-types": "^0.24.0",
-    "discord.js": "^13.4.0",
+    "discord.js": "^13.5.0",
     "dpaste-ts": "^1.0.4",
     "firebase-admin": "^10.0.1"
   },
