@@ -23,112 +23,143 @@ module.exports = {
     ),
 
   async execute(interaction) {
-    const guildbans = await interaction.guild.bans.fetch();
-    //  console.log(bans);
-    const alreadybanned = guildbans.map((v) => ({
-      user: v.user,
-      reason: v.reason,
-    }));
-    // console.log(alreadybanned[0]);
-
+    await interaction.deferReply();
     const paste_id = PasteCheck(interaction.options.getString('dpaste_link'));
     const banReason =
       interaction.options.getString('reason') ||
       `Ban Import by ${interaction.user.tag} on ${new Date().toDateString()}`;
     try {
-      if (interaction.guild) {
-        // User should have ban permissions else it will not work
-        if (
-          interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
-        ) {
-          await interaction.reply(
-            'Parsing... (If it is taking long time, it means the link was invalid & bot has probably crashed)',
-          );
-          const data = await dpst.GetRawPaste(paste_id);
-          try {
-            const rawEle = data.split(/\D+/g);
-            const bans = rawEle.map((element) => element.trim());
-            await interaction.client.users.fetch(bans[0]);
-            await interaction.editReply(
-              `${bans.length} bans are being imported in background. Sit back and relax for a while!`,
-            );
-            let validBans = bans.length;
-            // Ban users
-
-            // console.log(typeof bans);
-            // console.log(bans);
-            let uniqueBans = 0;
-            for (const v of bans.filter(
-              (r) => !alreadybanned.some((u) => u.user.id === r),
-            )) {
-              try {
-                const tag = await interaction.client.users
-                  .fetch(v)
-                  .then((user) => user.tag)
-                  .catch(() => {
-                    null;
-                    // validBans = validBans - 1;
-                  });
-                console.log(`Banning user ID ${tag}...`);
-                await interaction.editReply(`Banning user ${tag}...`);
-                await interaction.guild.members.ban(v, {
-                  reason: banReason,
-                });
-              }
-              catch {
-                validBans = validBans - 1;
-              }
-              uniqueBans = uniqueBans + 1;
-            }
-            await interaction.editReply({
-              content: 'Ban Import Success!',
-              embeds: [
-                {
-                  color: 0xe7890c,
-                  title: 'Ban Import',
-                  description: `Ban List: ${bans.length}.
-                  Invalid Bans: ${bans.length - validBans}.
-                  Unique Bans: ${uniqueBans}.\n
-                  ${uniqueBans} imported successfully!`,
-                  fields: [
-                    {
-                      name: 'Ban List Link',
-                      value: `https://dpaste.com/${paste_id}`,
-                    },
-                    { name: 'Reason', value: banReason },
-                  ],
-                },
-              ],
-            });
-          }
-          catch (e) {
-            // When the link is invalid. this code prevented earlier versions of crashes.
-            await interaction.editReply({
-              content: `Given dpaste link is invalid...\nLink: https://dpaste.com/${paste_id} \nError dump:\n\`${e}\``,
-              components: [SupportRow],
-            });
-          }
-        }
-        else {
-          // When people do not have the permissions to ban.
-          await interaction.reply({
-            content:
-              'You cannot just ban anybody by importing 🤷. Contact Server Moderators!\nOr invite the bot in your server!',
-            components: [InviteRow],
-          });
-        }
-      }
-      else {
-        await interaction.reply({
-          content:
-            'Are you sure you are in a server to execute this?:unamused:  \nBecause this command can only be used in Server Text channels or Threads :shrug:',
+      if (!interaction.guild) {
+        await interaction.editReply({
+          embeds: [
+            {
+              color: 0xd8d4d3,
+              title: 'Are you in a server?:unamused:',
+              description:
+                'This command can only be used inside Server :shrug:',
+            },
+          ],
           components: [InviteRow],
         });
       }
+      // User should have ban permissions else it will not work
+      else if (
+        !interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
+      ) {
+        await interaction.editReply({
+          embeds: [
+            {
+              color: 0xd8d4d3,
+              title: 'Are you a mod?:unamused:',
+              description:
+                'You cannot just ban anybody by importing 🤷. Contact Server Moderators!\nOr invite the bot in your server!',
+            },
+          ],
+          components: [InviteRow],
+        });
+      }
+      else {
+        const guildbans = await interaction.guild.bans.fetch();
+        //  console.log(bans);
+        const alreadybanned = guildbans.map((v) => ({
+          user: v.user,
+          reason: v.reason,
+        }));
+        // console.log(alreadybanned[0]);
+        await interaction.editReply(
+          'Parsing... (If it is taking long time, it means the link was invalid & bot has probably crashed)',
+        );
+        const data = await dpst.GetRawPaste(paste_id);
+        // console.log(data);
+        try {
+          const rawEle = data.split(/\D+/g);
+          const bans = rawEle.map((element) => element.trim());
+          await interaction.client.users.fetch(bans[0]);
+          await interaction.editReply(
+            `${bans.length} bans are being imported in background. Sit back and relax for a while!`,
+          );
+          let validBans = bans.length;
+          // Ban users
+
+          // console.log(typeof bans);
+          // console.log(bans);
+          let uniqueBans = 0;
+          for (const v of bans.filter(
+            (r) => !alreadybanned.some((u) => u.user.id === r),
+          )) {
+            try {
+              const tag = await interaction.client.users
+                .fetch(v)
+                .then((user) => user.tag)
+                .catch(() => {
+                  null;
+                  // validBans = validBans - 1;
+                });
+              console.log(`Banning user ID ${tag}...`);
+              await interaction.editReply(`Banning user ${tag}...`);
+              await interaction.guild.members.ban(v, {
+                reason: banReason,
+              });
+            }
+            catch {
+              validBans = validBans - 1;
+            }
+            uniqueBans = uniqueBans + 1;
+          }
+          await interaction.editReply({
+            content: 'Ban Import Success!',
+            embeds: [
+              {
+                title: 'Ban Import Success!',
+                description: `Ban List: ${bans.length}.
+                Invalid Bans: ${bans.length - validBans}.
+                Unique Bans: ${uniqueBans}.
+                ${uniqueBans} imported successfully!`,
+                color: 0xe7890c,
+                fields: [
+                  {
+                    name: 'Ban List Link',
+                    value: `https://dpaste.com/${paste_id}`,
+                  },
+                  {
+                    name: 'Reason',
+                    value: banReason,
+                  },
+                ],
+              },
+            ],
+          });
+        }
+        catch (error) {
+          // When the link is invalid. this code prevented earlier versions of crashes.
+          await interaction.editReply({
+            content: 'Ban import Failure...',
+            embeds: [
+              {
+                title: 'Ban Import Failure...',
+                description: 'Given dpaste link is invalid...',
+                color: 0xff0033,
+                fields: [
+                  {
+                    name: 'Ban List Link',
+                    value: `https://dpaste.com/${paste_id}`,
+                  },
+                  {
+                    name: 'Dpaste Error Dump',
+                    value: `${data}`,
+                  },
+                  { name: 'Discord Error Dump', value: `${error}` },
+                ],
+              },
+            ],
+            components: [SupportRow],
+          });
+        }
+      }
     }
     catch (e) {
-      await interaction.reply({
-        content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\`\n\nInput given:\n\`https://dpaste.com/${paste_id}`,
+      await interaction.editReply({
+        content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\`\n\nInput given:\nhttps://dpaste.com/${paste_id}`,
         components: [SupportRow],
       });
     }

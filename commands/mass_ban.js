@@ -21,6 +21,7 @@ module.exports = {
     ),
 
   async execute(interaction) {
+    await interaction.deferReply();
     const ids = interaction.options.getString('ids');
     const banReason =
       interaction.options.getString('reason') ||
@@ -39,102 +40,128 @@ module.exports = {
       reason: v.reason,
     }));
     try {
-      if (interaction.guild) {
+      if (!interaction.guild) {
+        await interaction.editReply({
+          embeds: [
+            {
+              color: 0xd8d4d3,
+              title: 'Are you in a server?:unamused:',
+              description:
+                'This command can only be used inside Server :shrug:',
+            },
+          ],
+          components: [InviteRow],
+        });
+      }
+      else if (
+        !interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
+      ) {
         // User should have ban permissions else it will not work
-        if (
-          interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
-        ) {
-          await interaction.reply(
-            'Parsing... (If it is taking long time, bot has probably crashed)',
+        await interaction.editReply({
+          embeds: [
+            {
+              color: 0xd8d4d3,
+              title: 'Are you a mod?:unamused:',
+              description:
+                'You cannot just mas ban anybody 🤷. Contact Server Moderators!\nOr invite the bot in your server!',
+            },
+          ],
+          components: [InviteRow],
+        });
+      }
+      else {
+        await interaction.editReply(
+          'Parsing... (If it is taking long time, bot has probably crashed)',
+        );
+
+        try {
+          const rawEle = ids.split(/\D+/g);
+          const bans = rawEle.map((element) => element.trim());
+          await interaction.client.users.fetch(bans[0]);
+          await interaction.editReply(
+            `${bans.length} bans are being banned in background. Sit back and relax for a while!`,
           );
+          let validBans = bans.length;
+          // Ban users
 
-          try {
-            const rawEle = ids.split(/\D+/g);
-            const bans = rawEle.map((element) => element.trim());
-            await interaction.client.users.fetch(bans[0]);
-            await interaction.editReply(
-              `${bans.length} bans are being banned in background. Sit back and relax for a while!`,
-            );
-            let validBans = bans.length;
-            // Ban users
-
-            // console.log(typeof bans);
-            // console.log(bans);
-            let uniqueBans = 0;
-            for (const v of bans.filter(
-              (r) => !alreadybanned.some((u) => u.user.id === r),
-            )) {
-              try {
-                const tag = await interaction.client.users
-                  .fetch(v)
-                  .then((user) => user.tag)
-                  .catch(() => {
-                    null;
-                    // validBans = validBans - 1;
-                  });
-                console.log(`Banning user ID ${tag}...`);
-                await interaction.editReply(`Banning user ${tag}...`);
-                await interaction.guild.members.ban(v, {
-                  reason: banReason,
+          // console.log(typeof bans);
+          // console.log(bans);
+          let uniqueBans = 0;
+          for (const v of bans.filter(
+            (r) => !alreadybanned.some((u) => u.user.id === r),
+          )) {
+            try {
+              const tag = await interaction.client.users
+                .fetch(v)
+                .then((user) => user.tag)
+                .catch(() => {
+                  null;
+                  // validBans = validBans - 1;
                 });
-              }
-              catch {
-                validBans = validBans - 1;
-              }
-              uniqueBans = uniqueBans + 1;
+              console.log(`Banning user ID ${tag}...`);
+              await interaction.editReply(`Banning user ${tag}...`);
+              await interaction.guild.members.ban(v, {
+                reason: banReason,
+              });
             }
-            const message = await interaction.editReply({
-              content: 'Mass Ban Success!',
-              embeds: [
-                {
-                  color: 0xe7890c,
-                  title: 'Mass Ban Report',
-                  description: `Ban List: ${bans.length}.
+            catch {
+              validBans = validBans - 1;
+            }
+            uniqueBans = uniqueBans + 1;
+          }
+          const message = await interaction.editReply({
+            content: 'Mass Ban Success!',
+            embeds: [
+              {
+                color: 0xe7890c,
+                title: 'Mass Ban Success!',
+                description: `Ban List: ${bans.length}.
                   Invalid Bans: ${bans.length - validBans}.
                   Unique Bans: ${uniqueBans}.\n
                   ${uniqueBans} users mass banned successfully!`,
-                  fields: [{ name: 'Reason', value: banReason }],
-                },
-              ],
-              components: [notWorking],
-              fetchReply: true,
-            });
-            const collector = message.createMessageComponentCollector({
-              componentType: 'BUTTON',
-            });
-            collector.on('collect', async (i) => {
-              if (i.customId === 'notworking') {
-                i.reply({
-                  content:
-                    'You may either upload the list of IDs into https://dpaste.com and use the import command OR follow this [video](https://youtu.be/gxAqukdjtM8)',
-                  ephemeral: true,
-                });
-              }
-            });
-          }
-          catch (e) {
-            // When the link is invalid. this code prevented earlier versions of crashes.
-            await interaction.editReply({
-              content: `There was some unexpected error. \nError dump:\n\`${e}\` \n\nInput given:\n\`${ids}`,
-              components: [SupportRow],
-            });
-          }
-        }
-        else {
-          // When people do not have the permissions to ban.
-          await interaction.reply({
-            content:
-              'You cannot just ban anybody 🤷. Contact Server Moderators!\nOr invite the bot in your server!',
-            components: [InviteRow],
+                fields: [{ name: 'Reason', value: banReason }],
+              },
+            ],
+            components: [notWorking],
+            fetchReply: true,
+          });
+          const collector = message.createMessageComponentCollector({
+            componentType: 'BUTTON',
+          });
+          collector.on('collect', async (i) => {
+            if (i.customId === 'notworking') {
+              i.reply({
+                content:
+                  'You may either upload the list of IDs into https://dpaste.com and use the import command OR follow this [video](https://youtu.be/gxAqukdjtM8)',
+                ephemeral: true,
+              });
+            }
           });
         }
-      }
-      else {
-        await interaction.reply({
-          content:
-            'Are you sure you are in a server to execute this?:unamused: \nBecause this command can only be used in Server Text channels or Threads :shrug:',
-          components: [InviteRow],
-        });
+        catch (e) {
+          // When the link is invalid. this code prevented earlier versions of crashes.
+          await interaction.editReply({
+            content: 'Mass Ban Failure...',
+            embeds: [
+              {
+                title: 'Mass Ban Failure...',
+                description: 'There was some unexpected error...',
+                color: 0xff0033,
+                fields: [
+                  {
+                    name: 'Error Dump',
+                    value: `${e}`,
+                  },
+                  {
+                    name: 'Input given',
+                    value: ids,
+                  },
+                ],
+              },
+            ],
+            components: [SupportRow],
+          });
+        }
       }
     }
     catch (e) {
