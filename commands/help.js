@@ -1,15 +1,15 @@
-const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js');
+const { MessageActionRow, MessageButton } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { version } = require('../package.json');
 
-const helpEmbed = new MessageEmbed()
-  .setColor('#D8D4D3')
-  .setTitle('**Help Section**')
-  .setURL('https://discord.gg/MPtE9zsBs5')
-  .setDescription(
+const helpEmbed = {
+  color: 0xd8d4d3,
+  title: '**Help Section**',
+  url: 'https://discord.gg/MPtE9zsBs5',
+  description:
     'The help section you get you started!\nThe bot helps you import, export & transfer bans from one server to another.',
-  )
-  .addFields(
+
+  fields: [
     { name: '**/ban**', value: 'Bans the given user.' },
     { name: '**/unban**', value: 'Unbans the given user.' },
     {
@@ -42,9 +42,9 @@ const helpEmbed = new MessageEmbed()
       value:
         'Please join my server & elaborate how you encountered that problem. You may also submit an issue at [Github Repository](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues)',
     },
-  )
-  .setFooter(`Bot version ${version}`);
-
+  ],
+  footer: `Bot version ${version}`,
+};
 const row = new MessageActionRow()
   .addComponents(
     new MessageButton()
