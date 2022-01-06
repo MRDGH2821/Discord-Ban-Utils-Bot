@@ -2,14 +2,22 @@ const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./lib/ConfigManager.js');
 
+const myintents = new Intents().add(
+  Intents.FLAGS.GUILDS,
+  Intents.FLAGS.GUILD_BANS,
+  Intents.FLAGS.GUILD_MEMBERS,
+  Intents.FLAGS.GUILD_WEBHOOKS,
+  Intents.FLAGS.DIRECT_MESSAGES,
+);
+
 const client = new Client({
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_BANS],
+  intents: myintents,
   partials: ['CHANNEL', 'REACTION'],
 });
 
 const eventFiles = fs
   .readdirSync('./events')
-  .filter(file => file.endsWith('.js'));
+  .filter((file) => file.endsWith('.js'));
 
 for (const file of eventFiles) {
   const event = require(`./events/${file}`);
@@ -27,7 +35,7 @@ for (const file of eventFiles) {
 client.commands = new Collection();
 const commandFiles = fs
   .readdirSync('./commands')
-  .filter(file => file.endsWith('.js'));
+  .filter((file) => file.endsWith('.js'));
 
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
@@ -36,7 +44,7 @@ for (const file of commandFiles) {
   client.commands.set(command.data.name, command);
 }
 
-client.on('interactionCreate', async interaction => {
+client.on('interactionCreate', async (interaction) => {
   if (!interaction.isCommand()) return;
 
   const command = client.commands.get(interaction.commandName);

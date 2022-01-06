@@ -10,43 +10,56 @@ module.exports = {
 		console.log('Reason: ', reason);
 		console.log('Guild: ', guild);
     */
+
     const serverDB = await db
       .collection('servers')
       .doc(`${guild.id}`)
       .get();
-    const serverData = serverDB.data();
-    console.log('Doc data: ', serverData);
-    /* serverData format:
+
+    try {
+      if (serverDB.exists) {
+        const serverData = serverDB.data();
+        console.log('Doc data: ', serverData);
+        /* serverData format:
 		{
-		logChannel: <channel ID>,
-		logWebhook: <webhook ID>,
+		logChannelID: <channel ID>,
+		logWebhookID: <webhook ID>,
 		serverID: <server ID>
   	}
 		*/
-    console.log('logWebHookID: ', serverData.logWebhook);
-    const webhookID = serverData.logWebhook;
-    try {
-      if (webhookID) {
-        const webhookClient = await client.fetchWebhook(webhookID);
-        const logEmb = new MessageEmbed()
-          .setColor('#e1870a')
-          .setTitle('**Ban Log**')
-          .setDescription('A person got hit with the swift hammer of justice!')
-          .addFields(
-            {
-              name: '**Moderator who wielded the mighty hammer of justice**',
-              value: mod.tag,
-            },
-            { name: '**Justice Hammer Target**', value: bannedUser.tag },
-            {
-              name: '**Reason**',
-              value: reason,
-            },
-          )
-          .setTimestamp();
-        webhookClient.send({
-          embeds: [logEmb],
-        });
+        console.log('logWebHookID: ', serverData.logWebhookID);
+        const webhookID = serverData.logWebhookID;
+
+        if (webhookID) {
+          const webhookClient = await client.fetchWebhook(webhookID);
+          const logEmb = new MessageEmbed()
+            .setColor('#e1870a')
+            .setTitle('**Ban Log**')
+            .setDescription(
+              'A person got hit with the swift hammer of justice!',
+            )
+            .addFields(
+              {
+                name: '**Moderator who wielded the mighty hammer of justice**',
+                value: mod.tag,
+              },
+              {
+                name: '**Justice Hammer Target**',
+                value: `${bannedUser.tag} ${bannedUser}\nID: ${bannedUser.id}`,
+              },
+              {
+                name: '**Reason**',
+                value: reason,
+              },
+            )
+            .setTimestamp();
+          webhookClient.send({
+            embeds: [logEmb],
+          });
+        }
+      }
+      else {
+        console.log(`No log channel configured for ${guild.name}`);
       }
     }
     catch (error) {

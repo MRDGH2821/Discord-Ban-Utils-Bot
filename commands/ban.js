@@ -1,73 +1,86 @@
 const { Permissions } = require('discord.js');
-const { Routes } = require('discord-api-types/v9');
-const { REST } = require('@discordjs/rest');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { token } = require('../lib/ConfigManager.js');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
-const rest = new REST({ version: '9' }).setToken(token);
-const date = new Date().toDateString();
+const { NotInsideServer, NoPerms } = require('../lib/ErrorEmbeds.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('ban')
     .setDescription('Bans a user')
-    .addUserOption(option =>
+    .addUserOption((option) =>
       option
         .setName('user')
         .setDescription('Enter the User ID (i.e. snowflake) or tag them')
         .setRequired(true),
     )
-    .addStringOption(option =>
+    .addStringOption((option) =>
       option
         .setName('reason')
         .setDescription('Enter Reason. (Default: No reason Given)'),
     ),
 
   async execute(interaction) {
-    const target = interaction.options.getUser('user');
-    let reas = interaction.options.getString('reason');
+    await interaction.deferReply();
+    const target = await interaction.options.getUser('user');
+    const reas =
+      (await interaction.options.getString('reason')) ||
+      `Banned by ${
+        interaction.user.tag
+      } on ${new Date().toDateString()} ||for no reason :joy:||`;
     try {
-      if (interaction.guild) {
-        if (
-          interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
-        ) {
-          if (reas === null) {
-            // If no reason given, give a formatted reason
-            reas = `Banned by ${interaction.user.tag} on ${date} ||for no reason :joy:||`;
-          }
-          // Drop the Ban Hammer!
-          await rest.put(Routes.guildBan(interaction.guildId, target.id), {
-            reason: reas,
-          });
-          await interaction.reply({
-            content: `User \`${target.tag}\` is banned from this server. \nReason: ${reas}.`,
-          });
-          await interaction.client.emit(
-            'userBanned',
-            interaction.client,
-            interaction.user,
-            target,
-            reas,
-            interaction.guild,
-          );
-        }
-        else {
-          await interaction.reply({
-            content: 'You cannot ban...',
-            components: [InviteRow],
-          });
-        }
+      if (!interaction.guild) {
+        // if not in server
+        await interaction.editReply({
+          embeds: [NotInsideServer],
+          components: [InviteRow],
+        });
+      }
+      else if (
+        interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
+      ) {
+        // Drop the Ban Hammer!
+        await interaction.guild.members.ban(target, {
+          reason: reas,
+        });
+        await interaction.editReply({
+          // content: `User \`${target.tag}\` is banned from this server. \nReason: ${reas}.`,
+          embeds: [
+            {
+              color: 0xe1870a,
+              title: 'Ban Hammer Dropped!',
+              description: `User \`${target.tag}\` ${target} is banned from this server.`,
+              fields: [
+                {
+                  name: '**Reason**',
+                  value: reas,
+                },
+              ],
+            },
+          ],
+        });
+        await interaction.client.emit(
+          'userBanned',
+          interaction.client,
+          interaction.user,
+          target,
+          reas,
+          interaction.guild,
+        );
       }
       else {
-        await interaction.reply({
-          content:
-            'Are you sure you are in a server to execute this?:unamused: \nBecause this command can only be used in Server Text channels or Threads :shrug:',
+        // when no ban permissions
+        (NoPerms.fields = {
+          name: '**Permissions required**',
+          value: 'BAN_MEMBERS',
+        }),
+        await interaction.editReply({
+          embeds: [NoPerms],
           components: [InviteRow],
         });
       }
     }
     catch (e) {
-      await interaction.reply({
+      await interaction.editReply({
         content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\``,
         components: [SupportRow],
       });

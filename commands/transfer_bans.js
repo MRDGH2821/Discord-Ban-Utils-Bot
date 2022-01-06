@@ -92,19 +92,17 @@ module.exports = {
           let destname;
 
           // Collectors to collect selected server
-          collector.on('collect', async i => {
+          collector.on('collect', async (i) => {
             // This if statement is for checking if buttons are selected by interaction.user or not.
             if (i.user.id === interaction.user.id) {
-              destname = interaction.client.guilds.cache.get(i.values[0]).name;
-              toGuildId = interaction.client.guilds.cache.get(i.values[0]).id;
+              destname = await interaction.client.guilds.cache.get(i.values[0])
+                .name;
+              toGuildId = await interaction.client.guilds.cache.get(i.values[0])
+                .id;
 
-              initial_Screen.setDescription(
-                `Source server: ${
-                  interaction.guild.name
-                }\nDestination Server: ${
-                  interaction.client.guilds.cache.get(i.values[0]).name
-                }`,
-              );
+              initial_Screen.setDescription(`Source server: ${interaction.guild.name}
+                Destination Server: ${destname}`);
+              // interaction.client.guilds.cache.get(i.values[0]).name
 
               await interaction.editReply({
                 embeds: [initial_Screen],
@@ -119,15 +117,17 @@ module.exports = {
               });
             }
             // Double assignment to ensure values are properly passed
-            destname = interaction.client.guilds.cache.get(i.values[0]).name;
-            toGuildId = interaction.client.guilds.cache.get(i.values[0]).id;
+            destname = await interaction.client.guilds.cache.get(i.values[0])
+              .name;
+            toGuildId = await interaction.client.guilds.cache.get(i.values[0])
+              .id;
           });
 
           // Fetch bans from current server
           const bans = await rest.get(Routes.guildBans(interaction.guild.id));
-          console.log('Source Bans:\n\n', bans);
+          // console.log('Source Bans:\n\n', bans);
 
-          collector.on('end', async collected => {
+          collector.on('end', async (collected) => {
             if (collected.size === 1) {
               initial_Screen
                 .addField(
@@ -135,7 +135,7 @@ module.exports = {
                   'You can sit back and relax while the bot does the work for you!',
                 )
                 .setFooter(
-                  'Btw, bot developer doesn\'t know how to notify you after the bans have been transferred... \nHence you should check destination server setting\'s ban section.',
+                  'Transfer has begun, still you should check destination server setting\'s ban section.',
                 );
 
               await interaction.editReply({
@@ -148,7 +148,7 @@ module.exports = {
 
               const fromGuildId = interaction.guild.id;
               const alreadybaned = await rest.get(Routes.guildBans(toGuildId));
-              console.log('Already banned\n\n', alreadybaned);
+              // console.log('Already banned\n\n', alreadybaned);
 
               try {
                 // Tries to ban users.
@@ -157,12 +157,10 @@ module.exports = {
                 console.log(`Applying bans to guild ${toGuildId}...`);
                 let actualTransfers = 0;
                 for (const v of bans.filter(
-                  r => !alreadybaned.some(u => u.user.id === r.user.id),
+                  (r) => !alreadybaned.some((u) => u.user.id === r.user.id),
                 )) {
                   actualTransfers = actualTransfers + 1;
-                  console.log(
-                    `Banning user ${v.user.username}#${v.user.discriminator}...`,
-                  );
+                  // console.log(`Banning user ${v.user.username}#${v.user.discriminator}...`);
                   await interaction.editReply({
                     content: `Banning user ${v.user.username}#${v.user.discriminator}...`,
                   });
@@ -170,17 +168,16 @@ module.exports = {
                     reason: v.reason,
                   });
                 }
+                //  interaction.client.guilds.cache.get(toGuildId).name
                 initial_Screen
                   .addField(
                     '**Transfer Successfull!**',
-                    `Found ${
-                      bans.length
-                    } in current server.\nTransferred successfully to ${
-                      interaction.client.guilds.cache.get(toGuildId).name
-                    }.\nUnique Bans: ${actualTransfers}`,
+                    `Found ${bans.length} in current server.
+                    Transferred successfully to ${destname}.
+                    Unique Bans: ${actualTransfers}`,
                   )
                   .setFooter(
-                    'Looks like bot developer does know how to notify you after all 🤷.',
+                    `Check by going into destination server's ban section. It should be increased by ${actualTransfers}`,
                   );
                 console.log(
                   `Successfully transferred all bans from ${fromGuildId} to ${toGuildId}.`,
@@ -212,7 +209,7 @@ module.exports = {
                   );
                 initial_Screen.addField(
                   '**Error**',
-                  `Seems like I failed. Possible reasons: Discord API Rate Limit crossed. And thus cannot transfer bans. Try again after sometime?\n\nError Dump: ${error}`,
+                  `Seems like I failed. Try again after sometime?\n\nError Dump:\n ${error}`,
                 );
                 console.log(error);
                 return interaction.editReply({
@@ -281,4 +278,9 @@ I had no idea of async & await keyword usages hence things happened in one go in
 /*
 04 Dec 2021
 AroLeaf helps to filter out duplicate bans
+*/
+
+/*
+28 Dec 2021
+Bot Developer now definitely knows how to inform the mod.
 */

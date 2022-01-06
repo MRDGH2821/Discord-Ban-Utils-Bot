@@ -8,11 +8,11 @@ const {
   betaMode,
 } = require('./lib/ConfigManager.js');
 
-const commands = [].map(command => command.toJSON());
+const commands = [].map((command) => command.toJSON());
 
 const commandFiles = fs
   .readdirSync('./commands')
-  .filter(file => file.endsWith('.js'));
+  .filter((file) => file.endsWith('.js'));
 
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);

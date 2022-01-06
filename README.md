@@ -1,10 +1,3 @@
-# CAUTION!
-
-v2.4.0 is a bugged release DO NOT USE IT.
-In case you have updated the code I suggest using this command to revert back to v2.3.2
-
-`git reset --hard v2.3.2`
-
 # Discord-Ban-Utils-Bot
 
 Discord Ban Utilities for Mutual Servers!
@@ -13,7 +6,7 @@ Discord Ban Utilities for Mutual Servers!
 
 Hosted on ~~my personal Raspberry Pi 2B+~~ Google Cloud VM Instance E2.
 
-Invite Link - [click here](https://discord.com/api/oauth2/authorize?client_id=897454611370213436&permissions=277562263718&scope=bot%20applications.commands)
+Invite Link - [click here](https://discord.com/api/oauth2/authorize?client_id=897454611370213436&permissions=1377073907846&scope=bot%20applications.commands)
 
 Join my server - <https://discord.gg/MPtE9zsBs5>
 
@@ -21,17 +14,18 @@ This bot project was inspired by the project [here](https://github.com/Permissio
 
 ## Bot Permissions
 
-![Bot Permissions](https://i.imgur.com/vth293y.png)
+![Bot Permissions](https://i.imgur.com/ZcJaN4y.png)
 
 ## Firebase integration
 
 With v2.4, the bot now comes with logging feature with firebase integration & custom events.
 So to setup logging follow these steps:
-1\. Create a Firebase project.
-2\. Go to project settings
-3\. In Firebase Admin SDK section, click on `Node.js` & finally on `Generate new private key`.
-4\. Copy this private key into the root folder of bot. (i.e. just besides `index.js`).
-5\. Now copy the path of this downloaded private key relative to `./lib/ConfigManager.js` & edit `config.json`.
+1. Create a Firebase project.
+2. Go to project settings
+3. In Firebase Admin SDK section, click on `Node.js` & finally on `Generate new private key`.
+4. Copy this private key (i.e. the json file which gets downloaded) into `./lib/firebase-service-acc/`
+
+For more info check [here](./lib/firebase-service-acc/README.md)
 
 ## Hosting
 
@@ -43,7 +37,6 @@ So to setup logging follow these steps:
   "token": "insert bot token",
   "clientId": "insert bot clientID",
   "guildId": "insert one of your server's ID",
-  "firebaseConfigPath": "insert path of firebase private key relative to `./lib.ConfigManager.js`"
 }
 ```
 

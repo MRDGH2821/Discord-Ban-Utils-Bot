@@ -1,44 +1,57 @@
 const { Permissions } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
+const { NotInsideServer, NoPerms } = require('../lib/ErrorEmbeds.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('unban')
     .setDescription('Unbans a user')
-    .addUserOption(option =>
+    .addUserOption((option) =>
       option
         .setName('user')
-        .setDescription('Enter the User ID (i.e. snowflake) or tag them')
+        .setDescription('Enter the User ID (i.e. snowflake)')
         .setRequired(true),
     ),
 
   async execute(interaction) {
-    const target = interaction.options.getUser('user');
+    await interaction.deferReply();
+    const target = await interaction.options.getUser('user');
     try {
-      if (interaction.guild) {
-        if (
-          interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
-        ) {
-          interaction.guild.members.unban(target);
-          await interaction.reply({
-            content: `User \`${target.tag}\` is unbanned from this server.`,
-          });
-        }
-        else {
-          await interaction.reply('You cannot unban...');
-        }
+      if (!interaction.guild) {
+        await interaction.editReply({
+          embeds: [NotInsideServer],
+          components: [InviteRow],
+        });
+      }
+      else if (
+        interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
+      ) {
+        await interaction.guild.members.unban(target);
+        await interaction.editReply({
+          embeds: [
+            {
+              color: 0xe1870a,
+              title: '**User Unbanned!**',
+              description: `User \`${target.tag}\` ${target} is unbanned from this server.`,
+            },
+          ],
+        });
       }
       else {
-        await interaction.reply({
-          content:
-            'Are you sure you are in a server to execute this?:unamused: \nBecause this command can only be used in Server Text channels or Threads :shrug:',
+        // when no ban permissions
+        (NoPerms.fields = {
+          name: '**Permissions required**',
+          value: 'BAN_MEMBERS',
+        }),
+        await interaction.editReply({
+          embeds: [NoPerms],
           components: [InviteRow],
         });
       }
     }
     catch (e) {
-      await interaction.reply({
+      await interaction.editReply({
         content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\``,
         components: [SupportRow],
       });
