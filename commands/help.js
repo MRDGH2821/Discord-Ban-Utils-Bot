@@ -48,7 +48,7 @@ const helpEmbed = {
         'Please join my server & elaborate how you encountered that problem. You may also submit an issue at [Github Repository](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues)',
     },
   ],
-  footer: `Bot version ${version}`,
+  footer: { text: `Bot version ${version}` },
 };
 const row = new MessageActionRow()
   .addComponents(
