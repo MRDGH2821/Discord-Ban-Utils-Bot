@@ -4,3 +4,9 @@ betaconfig.json
 Backup-Commands/*
 lib/firebase-service-acc/*.json
 discord-ban-utils-bot-firebase-adminsdk-ohwmr-1392181386.json
+.env.beta
+.env.production
+.env
+beta.env
+prod.env
+.env.prod

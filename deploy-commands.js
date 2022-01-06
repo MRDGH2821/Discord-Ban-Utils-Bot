@@ -1,7 +1,12 @@
 const fs = require('fs');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const { clientId, guildId, token } = require('./config.json');
+const { clientId, guildId, token } = require('./lib/ConfigManager.js');
+// const dotenv = require('custom-env').env('beta');
+
+// dotenv.config();
+
+console.log(process.env.CLIENTID);
 
 const commands = [].map((command) => command.toJSON());
 

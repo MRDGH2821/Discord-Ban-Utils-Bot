@@ -1,7 +1,9 @@
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
-const { token } = require('./config.json');
+const { token } = require('./lib/ConfigManager.js');
+// const dotenv = require('custom-env').env('beta');
 
+// dotenv.config();
 const myintents = new Intents().add(
   Intents.FLAGS.GUILDS,
   Intents.FLAGS.GUILD_BANS,
