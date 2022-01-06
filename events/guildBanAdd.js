@@ -11,7 +11,7 @@ module.exports = {
       color: 0xe1870a,
       title: '**User banned!**',
       fields: [],
-      footer: `ID: ${ban.user.id}`,
+      footer: { text: `ID: ${ban.user.id}` },
       timestamp: new Date(),
     };
 
@@ -59,7 +59,7 @@ module.exports = {
     }
     const serverDB = await db
       .collection('servers')
-      .doc(`${ban.guild.id}`)
+      .doc(ban.guild.id)
       .get();
     const serverData = serverDB.data();
     console.log('Doc data: ', serverData);

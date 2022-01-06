@@ -39,7 +39,7 @@ module.exports = {
             },
             {
               name: '**Justice Hammer Target**',
-              value: `${bannedUser.tag} ${bannedUser}`,
+              value: `${bannedUser.tag} ${bannedUser}\nID: ${bannedUser.id}`,
             },
             {
               name: '**Reason**',
