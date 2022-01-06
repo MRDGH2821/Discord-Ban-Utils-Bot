@@ -18,8 +18,8 @@ module.exports = {
     console.log('Doc data: ', serverData);
     /* serverData format:
 		{
-		logChannel: <channel ID>,
-		logWebhook: <webhook ID>,
+		logChannelID: <channel ID>,
+		logWebhookID: <webhook ID>,
 		serverID: <server ID>
   	}
 		*/
