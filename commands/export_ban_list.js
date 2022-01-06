@@ -1,12 +1,6 @@
 const dpst = require('dpaste-ts');
-const { Routes } = require('discord-api-types/v9');
-const { REST } = require('@discordjs/rest');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { token } = require('../lib/ConfigManager.js');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
-
-const rest = new REST({ version: '9' }).setToken(token);
-const date = new Date();
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -14,24 +8,26 @@ module.exports = {
     .setDescription('Exports ban list of current server'),
 
   async execute(interaction) {
+    await interaction.deferReply();
     try {
       // Fetch bans
       if (interaction.guild) {
         // When used inside server
-        const bans = await rest.get(Routes.guildBans(interaction.guildId));
-        await interaction.deferReply();
-        await interaction.editReply(`Found ${bans.length} bans. Exporting...`);
-        console.log(`Found ${bans.length} bans. Exporting...`);
+        //  const sampleBans = await interaction.guild.bans.fetch();
+        //  console.log('DJS: ', sampleBans.first());
+        const bans = await interaction.guild.bans.fetch();
 
         // Export bans
-        const results = [];
-
+        let results = new String();
+        console.log(bans.size);
         bans.forEach((v) => {
           results.push(v.user.id);
         });
         // results = JSON.stringify(results);
+        await interaction.editReply(`Found ${bans.size} bans. Exporting...`);
+        console.log(`Found ${bans.size} bans. Exporting...`);
 
-        const outputFile = `${interaction.guild.name}-${date}.txt`;
+        const outputFile = `${interaction.guild.name}-${new Date()}.txt`;
         dpst
           .CreatePaste(results, outputFile, 'text')
           .then(async (url) => {
