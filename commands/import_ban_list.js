@@ -2,6 +2,7 @@ const { Permissions } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { PasteCheck } = require('../lib/PasteBinFnc.js');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
+const { NotInsideServer, NoPerms } = require('../lib/ErrorEmbeds.js');
 const dpst = require('dpaste-ts');
 
 module.exports = {
@@ -31,14 +32,7 @@ module.exports = {
     try {
       if (!interaction.guild) {
         await interaction.editReply({
-          embeds: [
-            {
-              color: 0xd8d4d3,
-              title: 'Are you in a server?:unamused:',
-              description:
-                'This command can only be used inside Server :shrug:',
-            },
-          ],
+          embeds: [NotInsideServer],
           components: [InviteRow],
         });
       }
@@ -46,15 +40,20 @@ module.exports = {
       else if (
         !interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
       ) {
+        NoPerms.description =
+          'You do not have the required permissions to use this command, hence you cannot just ban anybody by importing 🤷\n\nContact Server Moderators!\nOr invite the bot in your server!';
+        (NoPerms.fields = [
+          {
+            name: '**Permissions required**',
+            value: 'BAN_MEMBERS',
+          },
+          {
+            name: '**Ban List Link**',
+            value: `https://dpaste.com/${paste_id}`,
+          },
+        ]),
         await interaction.editReply({
-          embeds: [
-            {
-              color: 0xd8d4d3,
-              title: 'Are you a mod?:unamused:',
-              description:
-                'You cannot just ban anybody by importing 🤷. Contact Server Moderators!\nOr invite the bot in your server!',
-            },
-          ],
+          embeds: [NoPerms],
           components: [InviteRow],
         });
       }

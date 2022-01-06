@@ -1,7 +1,7 @@
 const { Permissions } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
-
+const { NotInsideServer, NoPerms } = require('../lib/ErrorEmbeds.js');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('kick')
@@ -26,22 +26,21 @@ module.exports = {
     try {
       if (!interaction.guild) {
         await interaction.reply({
-          embeds: [
-            {
-              color: 0xd8d4d3,
-              title: 'Are you in a server?:unamused:',
-              description:
-                'This command can only be used inside Server :shrug:',
-            },
-          ],
+          embeds: [NotInsideServer],
           components: [InviteRow],
         });
       }
       else if (
         !interaction.member.permissions.has([Permissions.FLAGS.KICK_MEMBERS])
       ) {
+        NoPerms.fields = [
+          {
+            name: '**Permissions Required**',
+            value: 'KICK_MEMBERS',
+          },
+        ];
         await interaction.reply({
-          content: 'You cannot kick...',
+          embeds: [NoPerms],
           components: [InviteRow],
         });
       }
@@ -79,7 +78,7 @@ module.exports = {
       // If user cannot be kicked
       else {
         await interaction.reply({
-          content: 'Ban import Failure...',
+          // content: 'Kicking Wrench cannot kick...',
           embeds: [
             {
               title: 'Cannot Kick...',

@@ -1,6 +1,7 @@
 const { Permissions } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
+const { NotInsideServer, NoPerms } = require('../lib/ErrorEmbeds.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -33,42 +34,84 @@ module.exports = {
     ),
 
   async execute(interaction) {
-    const target = interaction.options.getMember('user');
-    const duration = interaction.options.getInteger('duration');
+    const target = await interaction.options.getMember('user');
+    const duration = await interaction.options.getInteger('duration');
     const reason =
-      interaction.options.getString('reason') ||
+      (await interaction.options.getString('reason')) ||
       `Timed-out by ${
         interaction.user.tag
       } for ${duration} mins on ${new Date().toString()}`;
     const dm_reason = interaction.options.getBoolean('dm_reason') || false;
     try {
       if (!interaction.guild) {
-        throw 'Are you sure you are in a server to execute this?:unamused: \nBecause this command can only be used in Server Text channels or Threads :shrug:';
+        await interaction.reply({
+          embeds: [NotInsideServer],
+          components: [InviteRow],
+        });
       }
-      if (
+      else if (
         !interaction.member.permissions.has([
           Permissions.FLAGS.MODERATE_MEMBERS,
         ])
       ) {
+        NoPerms.field = [
+          {
+            name: '**Permissions Required**',
+            value: 'MODERATE_MEMBERS',
+          },
+        ];
         await interaction.reply({
-          content: 'You cannot Timeout members.',
+          // content: 'You cannot Timeout members.',
+          embeds: [NoPerms],
           components: [InviteRow],
         });
       }
       else {
         await target.timeout(duration * 60 * 1000, reason);
-        if (dm_reason) {
-          // If there is a reason specified, DM it to the user.
-          target.user
-            .send(
-              `You have been timed-out from ${interaction.guild.name}.\nReason: ${reason}\nDuration: ${duration}`,
-            )
-            .catch('User cannot be DM-ed');
+        if (duration > 0) {
+          const dm_emb = {
+            color: 0xe1870a,
+            title: 'Timed-out!',
+            description: `${target} is timed-out from ${interaction.guild}`,
+            fields: [
+              {
+                name: '**Reason**',
+                value: `${reason}`,
+              },
+              {
+                name: '**Duration**',
+                value: `${duration} minute(s)`,
+              },
+            ],
+          };
+          if (dm_reason) {
+            // If there is a reason specified, DM it to the user.
+            target.user
+              .send({ embeds: [dm_emb] })
+              .catch('User cannot be DM-ed');
+          }
+          await interaction.reply({
+            // content: `User ${target.user.tag} is timed-out.\nReason: ${reason}\nDuration: ${duration} minutes`,
+            embeds: [dm_emb],
+          });
         }
-
-        await interaction.reply({
-          content: `User ${target.user.tag} is timed-out.\nReason: ${reason}\nDuration: ${duration} minutes`,
-        });
+        else {
+          const dm_emb = {
+            color: 0xe1870a,
+            title: 'Timeout removed!',
+            description: `Timeout removed from ${target} in ${interaction.guild}`,
+          };
+          if (dm_reason) {
+            // If there is a reason specified, DM it to the user.
+            target.user
+              .send({ embeds: [dm_emb] })
+              .catch('User cannot be DM-ed');
+          }
+          await interaction.reply({
+            // content: `User ${target.user.tag} is timed-out.\nReason: ${reason}\nDuration: ${duration} minutes`,
+            embeds: [dm_emb],
+          });
+        }
       }
     }
     catch (e) {

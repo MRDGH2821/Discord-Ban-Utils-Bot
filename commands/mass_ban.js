@@ -1,7 +1,7 @@
 const { Permissions, MessageActionRow, MessageButton } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
-
+const { NotInsideServer, NoPerms } = require('../lib/ErrorEmbeds.js');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('mass_ban')
@@ -42,14 +42,7 @@ module.exports = {
     try {
       if (!interaction.guild) {
         await interaction.editReply({
-          embeds: [
-            {
-              color: 0xd8d4d3,
-              title: 'Are you in a server?:unamused:',
-              description:
-                'This command can only be used inside Server :shrug:',
-            },
-          ],
+          embeds: [NotInsideServer],
           components: [InviteRow],
         });
       }
@@ -57,15 +50,15 @@ module.exports = {
         !interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
       ) {
         // User should have ban permissions else it will not work
+
+        (NoPerms.fields = [
+          {
+            name: '**Permissions required**',
+            value: 'BAN_MEMBERS',
+          },
+        ]),
         await interaction.editReply({
-          embeds: [
-            {
-              color: 0xd8d4d3,
-              title: 'Are you a mod?:unamused:',
-              description:
-                'You cannot just mas ban anybody 🤷. Contact Server Moderators!\nOr invite the bot in your server!',
-            },
-          ],
+          embeds: [NoPerms],
           components: [InviteRow],
         });
       }
