@@ -19,7 +19,7 @@ module.exports = {
     ),
 
   async execute(interaction) {
-    const target = interaction.options.getMember('user');
+    const target = await interaction.options.getMember('user');
     const reason =
       interaction.options.getString('reason') || '||for no reason :joy:||';
     //  const tartag = target.user.tag;
@@ -62,7 +62,7 @@ module.exports = {
           embeds: [
             {
               color: 0x84929f,
-              title: 'Kicking Wrench Deployed!',
+              title: '**Kicking Wrench Deployed!**',
               description: `User \`${target.user.tag}\` ${target} is kicked from this server!`,
               fields: [
                 {
@@ -81,7 +81,7 @@ module.exports = {
           // content: 'Kicking Wrench cannot kick...',
           embeds: [
             {
-              title: 'Cannot Kick...',
+              title: '**Cannot Kick...**',
               description: `User ${target} cannot be kicked :grimacing:`,
               color: 0xff0033,
             },

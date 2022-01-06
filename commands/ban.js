@@ -21,9 +21,9 @@ module.exports = {
 
   async execute(interaction) {
     await interaction.deferReply();
-    const target = interaction.options.getUser('user');
+    const target = await interaction.options.getUser('user');
     const reas =
-      interaction.options.getString('reason') ||
+      (await interaction.options.getString('reason')) ||
       `Banned by ${
         interaction.user.tag
       } on ${new Date().toDateString()} ||for no reason :joy:||`;

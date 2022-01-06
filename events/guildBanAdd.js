@@ -9,7 +9,7 @@ module.exports = {
     //	console.log(ban);
     const embed = {
       color: 0xe1870a,
-      title: 'User banned!',
+      title: '**User banned!**',
       fields: [],
       footer: `ID: ${ban.user.id}`,
       timestamp: new Date(),
@@ -27,7 +27,7 @@ module.exports = {
       const line = `${ban.user.tag} ${ban.user} was banned from ${ban.guild.name}.`;
       embed.description = line;
       embed.fields.push({
-        name: 'Justice Hammer Wielder',
+        name: '**Justice Hammer Wielder**',
         value: 'No audit log could be found.',
       });
       console.log(line, 'No audit log could be found.');
@@ -44,7 +44,7 @@ module.exports = {
       console.log(line, 'Justice Hammer Wielder: ', executor.tag);
       embed.description = line;
       embed.fields.push({
-        name: 'Justice Hammer Wielder',
+        name: '**Justice Hammer Wielder**',
         value: `${executor.tag} ${executor}`,
       });
     }
@@ -53,7 +53,7 @@ module.exports = {
       console.log(line, 'Audit log fetch was inconclusive.');
       embed.description = line;
       embed.fields.push({
-        name: 'Justice Hammer Wielder',
+        name: '**Justice Hammer Wielder**',
         value: 'Audit log fetch was inconclusive.',
       });
     }

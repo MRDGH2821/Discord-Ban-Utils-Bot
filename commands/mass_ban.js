@@ -22,9 +22,9 @@ module.exports = {
 
   async execute(interaction) {
     await interaction.deferReply();
-    const ids = interaction.options.getString('ids');
+    const ids = await interaction.options.getString('ids');
     const banReason =
-      interaction.options.getString('reason') ||
+      (await interaction.options.getString('reason')) ||
       `Massbanned by ${interaction.user.tag} on ${new Date().toDateString()}`;
 
     const notWorking = new MessageActionRow().addComponents(
@@ -107,12 +107,12 @@ module.exports = {
             embeds: [
               {
                 color: 0xe7890c,
-                title: 'Mass Ban Success!',
+                title: '**Mass Ban Success!**',
                 description: `Ban List: ${bans.length}.
                   Invalid Bans: ${bans.length - validBans}.
                   Unique Bans: ${uniqueBans}.\n
                   ${uniqueBans} users mass banned successfully!`,
-                fields: [{ name: 'Reason', value: banReason }],
+                fields: [{ name: '**Reason**', value: banReason }],
               },
             ],
             components: [notWorking],
@@ -137,16 +137,16 @@ module.exports = {
             content: 'Mass Ban Failure...',
             embeds: [
               {
-                title: 'Mass Ban Failure...',
+                title: '**Mass Ban Failure...**',
                 description: 'There was some unexpected error...',
                 color: 0xff0033,
                 fields: [
                   {
-                    name: 'Error Dump',
+                    name: '**Error Dump**',
                     value: `${e}`,
                   },
                   {
-                    name: 'Input given',
+                    name: '**Input given**',
                     value: ids,
                   },
                 ],

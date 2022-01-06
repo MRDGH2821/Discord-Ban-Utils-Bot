@@ -25,7 +25,7 @@ module.exports = {
 
   async execute(interaction) {
     await interaction.deferReply();
-    const paste_id = PasteCheck(interaction.options.getString('dpaste_link'));
+    const paste_id = PasteCheck(await interaction.options.getString('dpaste_link'));
     const banReason =
       interaction.options.getString('reason') ||
       `Ban Import by ${interaction.user.tag} on ${new Date().toDateString()}`;
@@ -109,7 +109,7 @@ module.exports = {
             content: 'Ban Import Success!',
             embeds: [
               {
-                title: 'Ban Import Success!',
+                title: '**Ban Import Success!**',
                 description: `Ban List: ${bans.length}.
                 Invalid Bans: ${bans.length - validBans}.
                 Unique Bans: ${uniqueBans}.
@@ -117,11 +117,11 @@ module.exports = {
                 color: 0xe7890c,
                 fields: [
                   {
-                    name: 'Ban List Link',
+                    name: '**Ban List Link**',
                     value: `https://dpaste.com/${paste_id}`,
                   },
                   {
-                    name: 'Reason',
+                    name: '**Reason**',
                     value: banReason,
                   },
                 ],
@@ -135,19 +135,19 @@ module.exports = {
             content: 'Ban import Failure...',
             embeds: [
               {
-                title: 'Ban Import Failure...',
+                title: '**Ban Import Failure...**',
                 description: 'Given dpaste link is invalid...',
                 color: 0xff0033,
                 fields: [
                   {
-                    name: 'Ban List Link',
+                    name: '**Ban List Link**',
                     value: `https://dpaste.com/${paste_id}`,
                   },
                   {
-                    name: 'Dpaste Error Dump',
+                    name: '**Dpaste Error Dump**',
                     value: `${data}`,
                   },
-                  { name: 'Discord Error Dump', value: `${error}` },
+                  { name: '**Discord Error Dump**', value: `${error}` },
                 ],
               },
             ],

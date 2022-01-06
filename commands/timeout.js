@@ -71,7 +71,7 @@ module.exports = {
         if (duration > 0) {
           const dm_emb = {
             color: 0xe1870a,
-            title: 'Timed-out!',
+            title: '**Timed-out!**',
             description: `${target} is timed-out from ${interaction.guild}`,
             fields: [
               {
@@ -98,7 +98,7 @@ module.exports = {
         else {
           const dm_emb = {
             color: 0xe1870a,
-            title: 'Timeout removed!',
+            title: '**Timeout removed!**',
             description: `Timeout removed from ${target} in ${interaction.guild}`,
           };
           if (dm_reason) {

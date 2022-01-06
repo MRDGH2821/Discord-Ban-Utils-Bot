@@ -16,7 +16,7 @@ module.exports = {
 
   async execute(interaction) {
     await interaction.deferReply();
-    const target = interaction.options.getUser('user');
+    const target = await interaction.options.getUser('user');
     try {
       if (!interaction.guild) {
         await interaction.editReply({
@@ -27,12 +27,12 @@ module.exports = {
       else if (
         interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
       ) {
-        interaction.guild.members.unban(target);
+        await interaction.guild.members.unban(target);
         await interaction.editReply({
           embeds: [
             {
               color: 0xe1870a,
-              title: 'User Unbanned!',
+              title: '**User Unbanned!**',
               description: `User \`${target.tag}\` ${target} is unbanned from this server.`,
             },
           ],

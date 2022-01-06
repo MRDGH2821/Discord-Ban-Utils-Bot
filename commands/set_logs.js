@@ -26,7 +26,7 @@ module.exports = {
   async execute(interaction) {
     const banPerm = Permissions.FLAGS.BAN_MEMBERS;
     await interaction.deferReply();
-    const force_update = interaction.options.getBoolean('force_update');
+    const force_update = await interaction.options.getBoolean('force_update');
 
     try {
       const serverDB = await db
@@ -97,8 +97,8 @@ module.exports = {
           embeds: [
             {
               color: 0xd8d4d3,
-              title: 'Log Channel configured!',
-              description: ` Configured <#${channel.id}> as logging channel.`,
+              title: '**Log Channel configured!**',
+              description: `Configured <#${channel.id}> as logging channel.`,
             },
           ],
         });
@@ -111,7 +111,7 @@ module.exports = {
           embeds: [
             {
               color: 0xd8d4d3,
-              title: 'Log Channel already configured!',
+              title: '**Log Channel already configured!**',
               description: `Log channel is already configured to <#${logChannel}>.\nRerun this command with \`force_update\` set to \`True\` if there is some problem.`,
             },
           ],
