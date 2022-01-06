@@ -23,8 +23,8 @@ module.exports = {
 		serverID: <server ID>
   	}
 		*/
-    console.log('logWebHookID: ', serverData.logWebhook);
-    const webhookID = serverData.logWebhook;
+    console.log('logWebHookID: ', serverData.logWebhookID);
+    const webhookID = serverData.logWebhookID;
     try {
       if (webhookID) {
         const webhookClient = await client.fetchWebhook(webhookID);
