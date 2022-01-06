@@ -57,20 +57,28 @@ module.exports = {
         value: 'Audit log fetch was inconclusive.',
       });
     }
+
     const serverDB = await db
       .collection('servers')
       .doc(ban.guild.id)
       .get();
-    const serverData = serverDB.data();
-    console.log('Doc data: ', serverData);
-    console.log('logWebHookID: ', serverData.logWebhookID);
-    const webhookID = serverData.logWebhookID;
+
     try {
-      if (webhookID) {
-        const webhookClient = await ban.guild.client.fetchWebhook(webhookID);
-        webhookClient.send({
-          embeds: [embed],
-        });
+      if (serverDB.exists) {
+        const serverData = serverDB.data();
+        console.log('Doc data: ', serverData);
+        console.log('logWebHookID: ', serverData.logWebhookID);
+        const webhookID = serverData.logWebhookID;
+
+        if (webhookID) {
+          const webhookClient = await ban.guild.client.fetchWebhook(webhookID);
+          webhookClient.send({
+            embeds: [embed],
+          });
+        }
+      }
+      else {
+        console.log(`No log channel configured for ${ban.guild.name}`);
       }
     }
     catch (error) {

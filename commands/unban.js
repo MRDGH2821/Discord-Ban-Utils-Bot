@@ -51,7 +51,7 @@ module.exports = {
       }
     }
     catch (e) {
-      await interaction.reply({
+      await interaction.editReply({
         content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\``,
         components: [SupportRow],
       });
