@@ -28,6 +28,7 @@ module.exports = {
       } on ${new Date().toDateString()} ||for no reason :joy:||`;
     try {
       if (!interaction.guild) {
+        // if not in server
         await interaction.editReply({
           embeds: [
             {
@@ -73,6 +74,7 @@ module.exports = {
         );
       }
       else {
+        // when no ban permissions
         await interaction.editReply({
           content: 'You cannot ban...',
           components: [InviteRow],
