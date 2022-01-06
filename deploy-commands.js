@@ -30,7 +30,7 @@ async () => {
     console.log('Successfully registered application (/) commands.');
   }
   catch (error) {
-    console.error(error);
+    console.log(error);
   }
 };
 
