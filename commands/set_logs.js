@@ -2,7 +2,8 @@ const { Permissions } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { db } = require('../lib/firebase.js');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
-const { logsHook } = require('../lib/LogsWebhook.js');
+const { newHook, changeHook } = require('../lib/LogsWebhook.js');
+const { NotInsideServer, NoPerms } = require('../lib/ErrorEmbeds.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -32,61 +33,70 @@ module.exports = {
         .collection('servers')
         .doc(`${interaction.guild.id}`)
         .get();
+      const serverData = serverDB.data();
 
-      if (!serverDB.exists || force_update) {
-        if (interaction.guild) {
-          if (interaction.member.permissions.has([banPerm])) {
-            const channel = interaction.options.getChannel('log_channel');
-            const serverID = interaction.guild.id;
-            const channelID = channel.id;
+      if (!interaction.guild) {
+        await interaction.editReply({
+          embeds: [NotInsideServer],
+          components: [InviteRow],
+        });
+      }
+      else if (!interaction.member.permissions.has([banPerm])) {
+        (NoPerms.fields = {
+          name: '**Permissions required**',
+          value: 'BAN_MEMBERS',
+        }),
+        await interaction.editReply({
+          embeds: [NoPerms],
+          components: [InviteRow],
+        });
+      }
+      else if (!serverDB.exists || force_update) {
+        const channel = interaction.options.getChannel('log_channel');
+        const serverID = interaction.guild.id;
+        const channelID = channel.id;
 
-            // console.log('channel', channel);
-            // console.log('guildID', serverID);
-            // console.log('channelID', channelID);
-            // await interaction.editReply('Channel obtained!');
-            const webhook = await logsHook(channel);
-            const data = {
-              logChannel: channelID,
-              serverID: serverID,
-              logWebhook: webhook.id,
-            };
-            console.log(data);
-            await db
-              .collection('servers')
-              .doc(`${serverID}`)
-              .set(data);
-
-            await interaction.editReply(
-              `Configured <#${channel.id}> as logging channel.`,
-            );
-          }
-          else {
-            await interaction.editReply({
-              content: 'Only Mods with Ban permissions can set this.',
-              ephemeral: true,
-            });
-          }
+        // console.log('channel', channel);
+        // console.log('guildID', serverID);
+        // console.log('channelID', channelID);
+        // await interaction.editReply('Channel obtained!');
+        let webhook;
+        if (!serverDB.exists) {
+          webhook = await newHook(channel);
         }
         else {
-          await interaction.editReply({
-            content:
-              'This is Server only command. Invite the bot in server to use.',
-            components: [InviteRow],
-          });
+          webhook = await changeHook(
+            interaction.client,
+            channel,
+            serverDB.data().logChannelID,
+          );
         }
+        const data = {
+          logChannelID: channelID,
+          serverID: serverID,
+          logWebhookID: webhook.id,
+        };
+        console.log(data);
+        await db
+          .collection('servers')
+          .doc(`${serverID}`)
+          .set(data, { merge: true });
+
+        await interaction.editReply(
+          `Configured <#${channel.id}> as logging channel.`,
+        );
       }
       else {
-        const serverData = serverDB.data();
-        const logChannel = serverData.logChannel;
+        const logChannel = serverData.logChannelID;
         console.log('LogChannel: ', logChannel);
         await interaction.editReply({
           content: `Log channel is already configured to <#${logChannel}>.\nRerun this command with \`force_update\` set to \`True\` if there is some problem.`,
         });
       }
     }
-    catch (error) {
+    catch (e) {
       await interaction.editReply({
-        content: `Unexpected error occured. \n\nError Dump:\n ${error}`,
+        content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\``,
         components: [SupportRow],
       });
     }
