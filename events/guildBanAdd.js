@@ -1,3 +1,5 @@
+const { db } = require('../lib/firebase.js');
+
 module.exports = {
   name: 'guildBanAdd',
   async execute(ban) {
@@ -5,6 +7,14 @@ module.exports = {
     //	console.log(bannedUser);
     //	console.log('A member is banned');
     //	console.log(ban);
+    const embed = {
+      color: 0xe1870a,
+      title: 'User banned!',
+      fields: [],
+      footer: `ID: ${ban.user.id}`,
+      timestamp: new Date(),
+    };
+
     const fetchedLogs = await ban.guild.fetchAuditLogs({
       limit: 1,
       type: 'MEMBER_BAN_ADD',
@@ -14,9 +24,13 @@ module.exports = {
 
     // Perform a coherence check to make sure that there's *something*
     if (!banLog) {
-      return console.log(
-        `${ban.user.tag} was banned from ${ban.guild.name} but no audit log could be found.`,
-      );
+      const line = `${ban.user.tag} ${ban.user} was banned from ${ban.guild.name}.`;
+      embed.description = line;
+      embed.fields.push({
+        name: 'Justice Hammer Wielder',
+        value: 'No audit log could be found.',
+      });
+      console.log(line, 'No audit log could be found.');
     }
 
     // Now grab the user object of the person who banned the member
@@ -26,14 +40,41 @@ module.exports = {
     // Update the output with a bit more information
     // Also run a check to make sure that the log returned was for the same banned member
     if (target.id === ban.user.id) {
-      console.log(
-        `${ban.user.tag} got hit with the swift hammer of justice in the guild ${ban.guild.name}, wielded by the mighty ${executor.tag}`,
-      );
+      const line = `${ban.user.tag} ${ban.user} got hit with the swift hammer of justice in the guild ${ban.guild.name}!`;
+      console.log(line, 'Justice Hammer Wielder: ', executor.tag);
+      embed.description = line;
+      embed.fields.push({
+        name: 'Justice Hammer Wielder',
+        value: `${executor.tag} ${executor}`,
+      });
     }
     else {
-      console.log(
-        `${ban.user.tag} got hit with the swift hammer of justice in the guild ${ban.guild.name}, audit log fetch was inconclusive.`,
-      );
+      const line = `${ban.user.tag} ${ban.user} got hit with the swift hammer of justice in the guild ${ban.guild.name}!`;
+      console.log(line, 'Audit log fetch was inconclusive.');
+      embed.description = line;
+      embed.fields.push({
+        name: 'Justice Hammer Wielder',
+        value: 'Audit log fetch was inconclusive.',
+      });
+    }
+    const serverDB = await db
+      .collection('servers')
+      .doc(`${ban.guild.id}`)
+      .get();
+    const serverData = serverDB.data();
+    console.log('Doc data: ', serverData);
+    console.log('logWebHookID: ', serverData.logWebhookID);
+    const webhookID = serverData.logWebhookID;
+    try {
+      if (webhookID) {
+        const webhookClient = await ban.guild.client.fetchWebhook(webhookID);
+        webhookClient.send({
+          embeds: [embed],
+        });
+      }
+    }
+    catch (error) {
+      console.log(error);
     }
   },
 };
