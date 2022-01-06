@@ -15,7 +15,7 @@ for (const file of commandFiles) {
 }
 const rest = new REST({ version: '9' }).setToken(token);
 
-async () => {
+(async () => {
   try {
     console.log('Started refreshing application (/) commands.');
     await rest.put(Routes.applicationCommands(clientId), {
@@ -30,9 +30,9 @@ async () => {
     console.log('Successfully registered application (/) commands.');
   }
   catch (error) {
-    console.log(error);
+    console.error(error);
   }
-};
+})();
 
 /* All commands deleter
 		rest.get(Routes.applicationGuildCommands(clientId, guildId))

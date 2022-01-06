@@ -56,11 +56,17 @@ client.on('interactionCreate', async (interaction) => {
   }
   catch (error) {
     console.error(error);
-    const msg = {
-      content: `There was an error while executing this command!\nUse help command and report to developer!\n\nError Dump:\n${error}`,
-      ephemeral: true,
-    };
-    return interaction.reply(msg) || interaction.editReply(msg);
+
+    return (
+      interaction.reply({
+        content: `There was an error while executing this command!\nUse help command and report to developer!\n\nError Dump:\n${error}`,
+        ephemeral: true,
+      }) ||
+      interaction.editReply({
+        content: `There was an error while executing this command!\nUse help command and report to developer!\n\nError Dump:\n${error}`,
+        ephemeral: true,
+      })
+    );
   }
   // console.log('${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.');
 });
