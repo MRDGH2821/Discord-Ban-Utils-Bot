@@ -13,7 +13,7 @@ Discord Ban Utilities for Mutual Servers!
 
 Hosted on ~~my personal Raspberry Pi 2B+~~ Google Cloud VM Instance E2.
 
-Invite Link - [click here](https://discord.com/api/oauth2/authorize?client_id=897454611370213436&permissions=1377073907878&scope=bot%20applications.commands)
+Invite Link - [click here](https://discord.com/api/oauth2/authorize?client_id=897454611370213436&permissions=1377073907846&scope=bot%20applications.commands)
 
 Join my server - <https://discord.gg/MPtE9zsBs5>
 
@@ -21,7 +21,7 @@ This bot project was inspired by the project [here](https://github.com/Permissio
 
 ## Bot Permissions
 
-![Bot Permissions](https://i.imgur.com/jlIQiGn.png)
+![Bot Permissions](https://i.imgur.com/ZcJaN4y.png)
 
 ## Firebase integration
 
