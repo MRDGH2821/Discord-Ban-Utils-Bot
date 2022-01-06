@@ -1,6 +1,7 @@
 const { MessageActionRow, MessageButton } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { version } = require('../package.json');
+const { link } = require('../lib/InviteLink.json');
 
 const helpEmbed = {
   color: 0xd8d4d3,
@@ -72,9 +73,7 @@ const row = new MessageActionRow()
     new MessageButton()
       .setLabel('Invite the Bot in your server!')
       .setStyle('LINK')
-      .setURL(
-        'https://discord.com/api/oauth2/authorize?client_id=897454611370213436&permissions=1377073907878&scope=bot%20applications.commands',
-      ),
+      .setURL(link),
   );
 
 module.exports = {
