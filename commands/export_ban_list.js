@@ -21,7 +21,7 @@ module.exports = {
         let results = new String();
         console.log(bans.size);
         bans.forEach((v) => {
-          results.push(v.user.id);
+          results = results + ' ' + v.user.id;
         });
         // results = JSON.stringify(results);
         await interaction.editReply(`Found ${bans.size} bans. Exporting...`);
