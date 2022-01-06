@@ -1,6 +1,7 @@
 const { Permissions } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
+const { NotInsideServer, NoPerms } = require('../lib/ErrorEmbeds.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -30,14 +31,7 @@ module.exports = {
       if (!interaction.guild) {
         // if not in server
         await interaction.editReply({
-          embeds: [
-            {
-              color: 0xd8d4d3,
-              title: 'Are you in a server?:unamused:',
-              description:
-                'This command can only be used inside Server :shrug:',
-            },
-          ],
+          embeds: [NotInsideServer],
           components: [InviteRow],
         });
       }
@@ -75,8 +69,12 @@ module.exports = {
       }
       else {
         // when no ban permissions
+        (NoPerms.fields = {
+          name: '**Permissions required**',
+          value: 'BAN_MEMBERS',
+        }),
         await interaction.editReply({
-          content: 'You cannot ban...',
+          embeds: [NoPerms],
           components: [InviteRow],
         });
       }
