@@ -1,3 +1,8 @@
+# CAUTION!
+
+Please read the [caution notes](./Caution.md) for v2.5.2
+There is now a significant change in usage of config files!  
+
 # Discord-Ban-Utils-Bot
 
 Discord Ban Utilities for Mutual Servers!
@@ -30,15 +35,15 @@ For more info check [here](./lib/firebase-service-acc/README.md)
 ## Hosting
 
 1.  Clone this repo.
-2.  Create a file named `config.json` & put the given text -
+2.  Create a file named `.env.prod` & put the given text -
 
-```json
-{
-  "token": "insert bot token",
-  "clientId": "insert bot clientID",
-  "guildId": "insert one of your server's ID",
-}
+```environment
+TOKEN = insert bot token
+CLIENTID = insert bot clientID
+GUILDID = insert one of your server's ID
 ```
+
+You can also copy [`.env.sample`](./.env.sample) file and rename it to `.env.prod`.
 
 3.  Install dependencies by using `npm install`.
 4.  Use `npm start` to run the bot code.
