@@ -2,9 +2,9 @@ const fs = require('fs');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { clientId, guildId, token } = require('./lib/ConfigManager.js');
-// const dotenv = require('custom-env').env('beta');
+// Const dotenv = require('custom-env').env('beta');
 
-// dotenv.config();
+// Dotenv.config();
 
 console.log(process.env.CLIENTID);
 
@@ -38,6 +38,10 @@ const rest = new REST({ version: '9' }).setToken(token);
     console.error(error);
   }
 })();
+
+module.exports = {
+  commands,
+};
 
 /* All commands deleter
 		rest.get(Routes.applicationGuildCommands(clientId, guildId))
