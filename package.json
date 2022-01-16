@@ -10,7 +10,8 @@
     "predev": "node deploy-commands.js",
     "dev": "nodemon .",
     "lint": "eslint .",
-    "fire:test": "node ./lib/firebase.js"
+    "fire:test": "node ./lib/firebase.js",
+    "commit": "cz"
   },
   "repository": {
     "type": "git",
@@ -25,12 +26,10 @@
     "name": "MRDGH2821",
     "url": "https://github.com/MRDGH2821"
   },
-  "contributors": [
-    {
-      "name": "AroLeaf",
-      "url": "https://github.com/AroLeaf"
-    }
-  ],
+  "contributors": [{
+    "name": "AroLeaf",
+    "url": "https://github.com/AroLeaf"
+  }],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues"
@@ -41,12 +40,14 @@
     "@discordjs/rest": "^0.2.0-canary.0",
     "custom-env": "^2.0.1",
     "discord-api-types": "^0.26.1",
-    "discord.js": "^13.5.0",
-    "dotenv": "^10.0.0",
+    "discord.js": "^13.6.0",
+    "dotenv": "^12.0.3",
     "dpaste-ts": "^1.0.4",
     "firebase-admin": "^10.0.1"
   },
   "devDependencies": {
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.6.0",
     "prettier-config-mrdgh2821": "^1.0.0"
   },
@@ -54,5 +55,10 @@
     "node": ">= 16.6.0"
   },
   "private": true,
-  "prettier": "prettier-config-mrdgh2821"
+  "prettier": "prettier-config-mrdgh2821",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
 }
