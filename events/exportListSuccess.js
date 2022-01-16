@@ -1,12 +1,11 @@
 const { db } = require('../lib/firebase.js');
-const { MessageEmbed } = require('discord.js');
 
 module.exports = {
   name: 'exportListSuccess',
-  async execute(client, user, url, guild) {
+  async execute(interaction, url) {
     const serverDB = await db
       .collection('servers')
-      .doc(`${guild.id}`)
+      .doc(`${interaction.guild.id}`)
       .get();
     try {
       if (serverDB.exists) {
@@ -23,23 +22,26 @@ module.exports = {
         const webhookID = serverData.logWebhookID;
 
         if (webhookID) {
-          const webhookClient = await client.fetchWebhook(webhookID);
-          const logEmb = new MessageEmbed()
-            .setColor('#D8D4D3')
-            .setTitle('**Export Log**')
-            .setDescription('Ban List was just exported!')
-            .addFields(
-              { name: '**Export Requested by**', value: user.tag },
+          const webhookClient = await interaction.client.fetchWebhook(
+            webhookID,
+          );
+          const logEmb = {
+            color: 0xd8d4d3,
+            title: '**Export Log**',
+            description: 'Ban List was just exported!',
+            fields: [
+              { name: '**Export Requested by**', value: `${interaction.user}` },
               { name: '**URL**', value: url },
-            )
-            .setTimestamp();
+            ],
+            timestamp: new Date(),
+          };
           webhookClient.send({
             embeds: [logEmb],
           });
         }
       }
       else {
-        console.log(`No log channel configured for ${guild.name} `);
+        console.log(`No log channel configured for ${interaction.guild.name} `);
       }
     }
     catch (e) {
