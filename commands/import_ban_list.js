@@ -130,6 +130,8 @@ module.exports = {
               },
             ],
           });
+          const url = `https://dpaste.com/${paste_id}`;
+          interaction.client.emit('importListSuccess', interaction, url, banReason);
         }
         catch (error) {
           // When the link is invalid. this code prevented earlier versions of crashes.
