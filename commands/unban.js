@@ -35,6 +35,10 @@ module.exports = {
               title: '**User Unbanned!**',
               description: `User \`${target.tag}\` ${target} is unbanned from this server.`,
               thumbnail: { url: target.displayAvatarURL({ dynamic: true }) },
+              timestamp: new Date(),
+              footer: {
+                text: `${target.id}`,
+              },
             },
           ],
         });
