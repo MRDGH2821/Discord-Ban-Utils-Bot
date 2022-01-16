@@ -1,11 +1,11 @@
 const { db } = require('../lib/firebase.js');
 
 module.exports = {
-  name: 'exportListSuccess',
-  async execute(interaction, url) {
+  name: 'guildMemberRemove',
+  async execute(member) {
     const serverDB = await db
       .collection('servers')
-      .doc(`${interaction.guild.id}`)
+      .doc(`${member.guild.id}`)
       .get();
     try {
       if (serverDB.exists) {
@@ -22,18 +22,15 @@ module.exports = {
         const webhookID = serverData.logWebhookID;
 
         if (webhookID) {
-          const webhookClient = await interaction.client.fetchWebhook(
-            webhookID,
-          );
+          const webhookClient = await member.client.fetchWebhook(webhookID);
           const logEmb = {
             color: 0xd8d4d3,
-            title: '**Export Log**',
-            description: 'Ban List was just exported!',
-            fields: [
-              { name: '**Export Requested by**', value: `${interaction.user}` },
-              { name: '**URL**', value: url },
-            ],
+            title: '**Exit Log**',
+            description: `${member.user.tag} ${member} left the server`,
             timestamp: new Date(),
+            footer: {
+              text: `${member.user.id}`,
+            },
           };
           webhookClient.send({
             embeds: [logEmb],
@@ -41,7 +38,7 @@ module.exports = {
         }
       }
       else {
-        console.log(`No log channel configured for ${interaction.guild.name} `);
+        console.log(`No log channel configured for ${member.guild.name} `);
       }
     }
     catch (e) {

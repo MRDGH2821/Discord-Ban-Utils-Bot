@@ -35,13 +35,7 @@ module.exports = {
               content: url,
               components: [InviteRow],
             });
-            interaction.client.emit(
-              'exportListSuccess',
-              interaction.client,
-              interaction.user,
-              url,
-              interaction.guild,
-            );
+            interaction.client.emit('exportListSuccess', interaction, url);
           })
           .catch(async (error) => {
             // Incase of any errors

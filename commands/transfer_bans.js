@@ -172,9 +172,7 @@ module.exports = {
                 initial_Screen
                   .addField(
                     '**Transfer Successfull!**',
-                    `Found ${bans.length} in current server.
-                    Transferred successfully to ${destname}.
-                    Unique Bans: ${actualTransfers}`,
+                    `Found ${bans.length} in current server.\nTransferred successfully to ${destname}.\nUnique Bans: ${actualTransfers}`,
                   )
                   .setFooter(
                     `Check by going into destination server's ban section. It should be increased by ${actualTransfers}`,

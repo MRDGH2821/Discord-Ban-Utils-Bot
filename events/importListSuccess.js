@@ -1,8 +1,8 @@
 const { db } = require('../lib/firebase.js');
 
 module.exports = {
-  name: 'exportListSuccess',
-  async execute(interaction, url) {
+  name: 'importListSuccess',
+  async execute(interaction, url, reason) {
     const serverDB = await db
       .collection('servers')
       .doc(`${interaction.guild.id}`)
@@ -27,11 +27,12 @@ module.exports = {
           );
           const logEmb = {
             color: 0xd8d4d3,
-            title: '**Export Log**',
-            description: 'Ban List was just exported!',
+            title: '**Import Log**',
+            description: 'Ban List was just imported!',
             fields: [
-              { name: '**Export Requested by**', value: `${interaction.user}` },
+              { name: '**Imported by**', value: `${interaction.user}` },
               { name: '**URL**', value: url },
+              { name: '**Reason**', value: reason },
             ],
             timestamp: new Date(),
           };

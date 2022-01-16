@@ -1,9 +1,8 @@
 const { db } = require('../lib/firebase.js');
-const { MessageEmbed } = require('discord.js');
 
 module.exports = {
   name: 'userBanned',
-  async execute(client, mod, bannedUser, reason, guild) {
+  async execute(interaction, bannedUser, reason, daysOfMsgs) {
     /*
 		console.log('Moderator: ', mod);
 		console.log('Banned user: ', bannedUser);
@@ -13,7 +12,7 @@ module.exports = {
 
     const serverDB = await db
       .collection('servers')
-      .doc(`${guild.id}`)
+      .doc(`${interaction.guild.id}`)
       .get();
 
     try {
@@ -31,17 +30,20 @@ module.exports = {
         const webhookID = serverData.logWebhookID;
 
         if (webhookID) {
-          const webhookClient = await client.fetchWebhook(webhookID);
-          const logEmb = new MessageEmbed()
-            .setColor('#e1870a')
-            .setTitle('**Ban Log**')
-            .setDescription(
-              'A person got hit with the swift hammer of justice!',
-            )
-            .addFields(
+          const webhookClient = await interaction.client.fetchWebhook(
+            webhookID,
+          );
+          const logEmb = {
+            color: 0xe1870a,
+            title: '**Ban Log**',
+            description: 'A person got hit with the swift Hammer of Justice!',
+            thumbnail: {
+              url: bannedUser.displayAvatarURL(),
+            },
+            fields: [
               {
-                name: '**Moderator who wielded the mighty hammer of justice**',
-                value: mod.tag,
+                name: '**Justice Hammer Wielder**',
+                value: `${interaction.user}`,
               },
               {
                 name: '**Justice Hammer Target**',
@@ -49,17 +51,25 @@ module.exports = {
               },
               {
                 name: '**Reason**',
-                value: reason,
+                value: `${reason}`,
               },
-            )
-            .setTimestamp();
+              {
+                name: '**Days of messages deleted**',
+                value: `${daysOfMsgs}`,
+              },
+            ],
+            timestamp: new Date(),
+            footer: {
+              text: bannedUser.id,
+            },
+          };
           webhookClient.send({
             embeds: [logEmb],
           });
         }
       }
       else {
-        console.log(`No log channel configured for ${guild.name}`);
+        console.log(`No log channel configured for ${interaction.guild.name}`);
       }
     }
     catch (error) {

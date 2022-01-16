@@ -10,7 +10,13 @@ module.exports = {
     const embed = {
       color: 0xe1870a,
       title: '**User banned!**',
-      fields: [],
+      thumbnail: { url: ban.user.displayAvatarURL({ dynamic: true }) },
+      fields: [
+        {
+          name: '**Reason**',
+          value: `${ban.reason}`,
+        },
+      ],
       footer: { text: `ID: ${ban.user.id}` },
       timestamp: new Date(),
     };

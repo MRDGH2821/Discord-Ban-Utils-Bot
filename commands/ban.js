@@ -17,11 +17,18 @@ module.exports = {
       option
         .setName('reason')
         .setDescription('Enter Reason. (Default: No reason Given)'),
+    )
+    .addNumberOption((option) =>
+      option
+        .setName('delete_messages')
+        .setDescription('Enter number of days of msgs to delete'),
     ),
 
   async execute(interaction) {
     await interaction.deferReply();
     const target = await interaction.options.getUser('user');
+    const delete_msg_days =
+      (await interaction.options.getNumber('delete_messages')) || 7;
     const reas =
       (await interaction.options.getString('reason')) ||
       `Banned by ${
@@ -41,30 +48,36 @@ module.exports = {
         // Drop the Ban Hammer!
         await interaction.guild.members.ban(target, {
           reason: reas,
+          days: delete_msg_days,
         });
+
         await interaction.editReply({
           // content: `User \`${target.tag}\` is banned from this server. \nReason: ${reas}.`,
           embeds: [
             {
               color: 0xe1870a,
-              title: 'Ban Hammer Dropped!',
-              description: `User \`${target.tag}\` ${target} is banned from this server.`,
+              title: '**Ban Hammer Dropped!**',
+              description: `User \`${target.tag}\` ${target} is banned from this server.\nNumber of days of msgs deleted: ${delete_msg_days}`,
+              thumbnail: { url: target.displayAvatarURL({ dynamic: true }) },
               fields: [
                 {
                   name: '**Reason**',
                   value: reas,
                 },
               ],
+              timestamp: new Date(),
+              footer: {
+                text: target.id,
+              },
             },
           ],
         });
         await interaction.client.emit(
           'userBanned',
-          interaction.client,
-          interaction.user,
+          interaction,
           target,
           reas,
-          interaction.guild,
+          delete_msg_days,
         );
       }
       else {

@@ -11,10 +11,11 @@ module.exports = {
       .setColor(0xd8d4d3)
       .setTitle('**User info**')
       .setDescription('Displays user information & permissions.')
+      .setThumbnail(await interaction.user.displayAvatarURL({ dynamic: true }))
       .addFields(
         {
           name: '**Username**',
-          value: `${interaction.user.tag}`,
+          value: `${interaction.user.tag} ${interaction.user}`,
         },
         {
           name: '**User ID (a.k.a. Snowflake value)**',
