@@ -25,9 +25,11 @@ module.exports = {
 
   async execute(interaction) {
     await interaction.deferReply();
-    const paste_id = PasteCheck(await interaction.options.getString('dpaste_link'));
+    const paste_id = PasteCheck(
+      await interaction.options.getString('dpaste_link'),
+    );
     const banReason =
-      interaction.options.getString('reason') ||
+      (await interaction.options.getString('reason')) ||
       `Ban Import by ${interaction.user.tag} on ${new Date().toDateString()}`;
     try {
       if (!interaction.guild) {
@@ -110,10 +112,10 @@ module.exports = {
             embeds: [
               {
                 title: '**Ban Import Success!**',
-                description: `Ban List: ${bans.length}.
-                Invalid Bans: ${bans.length - validBans}.
-                Unique Bans: ${uniqueBans}.
-                ${uniqueBans} imported successfully!`,
+                description: `Ban List: ${
+                  bans.length
+                }.\nInvalid Bans: ${bans.length -
+                  validBans}.\nUnique Bans: ${uniqueBans}.\n${uniqueBans} imported successfully!`,
                 color: 0xe7890c,
                 fields: [
                   {
