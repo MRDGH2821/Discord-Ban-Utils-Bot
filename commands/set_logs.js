@@ -61,31 +61,36 @@ module.exports = {
         // console.log('channelID', channelID);
         // await interaction.editReply('Channel obtained!');
         let webhook;
-        if (!serverDB.exists) {
-          webhook = await newHook(channel);
-        }
-        else {
-          const oldChannel = await interaction.client.channels.cache.get(
-            serverData.logChannelID,
-          );
-          try {
-            const webhooks = await oldChannel.fetchWebhooks();
-            const validHook = webhooks.find((wh) => wh.token);
-            webhook = await changeHook(
-              interaction.client,
-              channel,
-              validHook.id,
+        let data;
+        try {
+          let webhooks;
+          if (serverData.logChannelID) {
+            const oldChannel = await interaction.client.channels.cache.get(
+              serverData.logChannelID,
             );
+            webhooks = await oldChannel.fetchWebhooks();
           }
-          catch (e) {
-            webhook = await newHook(channel);
+          else {
+            webhooks = await interaction.guild.fetchWebhooks();
           }
+          const validHook = webhooks.find((wh) => wh.token);
+          webhook = await changeHook(interaction.client, channel, validHook.id);
+
+          data = {
+            logChannelID: channelID,
+            serverID: serverID,
+            logWebhookID: webhook.id,
+          };
         }
-        const data = {
-          logChannelID: channelID,
-          serverID: serverID,
-          logWebhookID: webhook.id,
-        };
+        catch (e) {
+          console.log(e);
+          webhook = await newHook(channel);
+          data = {
+            logChannelID: channelID,
+            serverID: serverID,
+            logWebhookID: webhook.id,
+          };
+        }
         console.log(data);
         await db
           .collection('servers')
