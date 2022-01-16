@@ -34,6 +34,7 @@ module.exports = {
               color: 0xe1870a,
               title: '**User Unbanned!**',
               description: `User \`${target.tag}\` ${target} is unbanned from this server.`,
+              thumbnail: { url: target.displayAvatarURL({ dynamic: true }) },
             },
           ],
         });
