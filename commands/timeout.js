@@ -73,6 +73,7 @@ module.exports = {
             color: 0xe1870a,
             title: '**Timed-out!**',
             description: `${target} is timed-out from ${interaction.guild}`,
+            thumbnail: { url: target.displayAvatarURL({ dynamic: true }) },
             fields: [
               {
                 name: '**Reason**',

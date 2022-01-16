@@ -64,6 +64,7 @@ module.exports = {
               color: 0x84929f,
               title: '**Kicking Wrench Deployed!**',
               description: `User \`${target.user.tag}\` ${target} is kicked from this server!`,
+              thumbnail: { url: target.displayAvatarURL({ dynamic: true }) },
               fields: [
                 {
                   name: '**Reason**',
