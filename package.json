@@ -1,6 +1,6 @@
 {
   "name": "discord-ban-utils-bot",
-  "version": "2.5.2",
+  "version": "2.5.3",
   "description": "Discord Ban Utilities for Mutual Servers!",
   "main": "index.js",
   "scripts": {
@@ -26,10 +26,12 @@
     "name": "MRDGH2821",
     "url": "https://github.com/MRDGH2821"
   },
-  "contributors": [{
-    "name": "AroLeaf",
-    "url": "https://github.com/AroLeaf"
-  }],
+  "contributors": [
+    {
+      "name": "AroLeaf",
+      "url": "https://github.com/AroLeaf"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues"
