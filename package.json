@@ -6,9 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prestart": "node deploy-commands.js",
-    "start": "node .",
+    "start": "node index.js",
     "predev": "node deploy-commands.js",
-    "dev": "nodemon .",
+    "dev": "nodemon index.js",
     "lint": "eslint . --fix",
     "pretty": "prettier --write .",
     "postpretty": "npm run lint",
