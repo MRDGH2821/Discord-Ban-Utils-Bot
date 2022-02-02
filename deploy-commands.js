@@ -1,35 +1,28 @@
 const fs = require('fs');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const { clientId, guildId, token } = require('./lib/ConfigManager.js');
-// Const dotenv = require('custom-env').env('beta');
-
-// Dotenv.config();
-
-console.log(process.env.CLIENTID);
-
-const commands = [].map((command) => command.toJSON());
-
-const commandFiles = fs
-  .readdirSync('./commands')
-  .filter((file) => file.endsWith('.js'));
+const { clientId, guildId, token } = require('./lib/ConfigManager.js'),
+  commandFiles = fs
+    .readdirSync('./commands')
+    .filter((file) => file.endsWith('.js')),
+  commands = [].map((command) => command.toJSON()),
+  rest = new REST({ version: '9' }).setToken(token);
 
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
   commands.push(command.data.toJSON());
 }
-const rest = new REST({ version: '9' }).setToken(token);
 
-(async () => {
+(async() => {
   try {
     console.log('Started refreshing application (/) commands.');
     await rest.put(Routes.applicationCommands(clientId), {
-      body: commands,
+      body: commands
     });
     console.log('Global Commands registered.');
 
     await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
-      body: [],
+      body: []
     });
 
     console.log('Successfully registered application (/) commands.');
@@ -40,26 +33,27 @@ const rest = new REST({ version: '9' }).setToken(token);
 })();
 
 module.exports = {
-  commands,
+  commands
 };
 
-/* All commands deleter
-		rest.get(Routes.applicationGuildCommands(clientId, guildId))
-			.then(data => {
-				const promises = [];
-				for (const command of data) {
-					const deleteUrl = `${Routes.applicationGuildCommands(clientId, guildId)}/${command.id}`;
-					promises.push(rest.delete(deleteUrl));
-				}
-				return Promise.all(promises);
-			});
-		rest.get(Routes.applicationCommands(clientId, guildId))
-			.then(data => {
-				const promises = [];
-				for (const command of data) {
-					const deleteUrl = `${Routes.applicationCommands(clientId, guildId)}/${command.id}`;
-					promises.push(rest.delete(deleteUrl));
-				}
-				return Promise.all(promises);
-			});
-*/
+/*
+ * All commands deleter
+ * rest.get(Routes.applicationGuildCommands(clientId, guildId))
+ * .then(data => {
+ *   const promises = [];
+ *   for (const command of data) {
+ *     const deleteUrl = `${Routes.applicationGuildCommands(clientId, guildId)}/${command.id}`;
+ *     promises.push(rest.delete(deleteUrl));
+ *   }
+ *   return Promise.all(promises);
+ * });
+ * rest.get(Routes.applicationCommands(clientId, guildId))
+ * .then(data => {
+ *   const promises = [];
+ *   for (const command of data) {
+ *     const deleteUrl = `${Routes.applicationCommands(clientId, guildId)}/${command.id}`;
+ *     promises.push(rest.delete(deleteUrl));
+ *   }
+ *   return Promise.all(promises);
+ * });
+ */

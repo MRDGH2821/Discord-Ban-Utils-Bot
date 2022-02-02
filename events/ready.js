@@ -4,57 +4,60 @@ module.exports = {
   name: 'ready',
   once: true,
 
+  // eslint-disable-next-line sort-keys
   execute(client) {
     console.log(`Ready! Logged in as ${client.user.tag}`);
+
     /*
-		client.user.setActivity(`/help. Bot Version: ${version}`, {
-			type: 'LISTENING',
-		});
-		*/
+     *Client.user.setActivity(`/help. Bot Version: ${version}`, {
+     *type: 'LISTENING',
+     *});
+     */
     const activities = [
-      {
-        text: `/help in ${client.guilds.cache.size} servers`,
-        obj: { type: 'LISTENING' },
-      },
-      {
-        text: 'a ban hammer being dropped',
-        obj: { type: 'WATCHING' },
-      },
-      {
-        text: `bot version ${version}`,
-        obj: { type: 'PLAYING' },
-      },
-      {
-        text: '',
-        obj: {
-          type: '',
+        {
+          msg: `/help in ${client.guilds.cache.size} servers`,
+          obj: { type: 'LISTENING' }
         },
-      },
-      {
-        text: 'Justice Hammer',
-        obj: {
-          type: 'PLAYING',
+        {
+          msg: 'a ban hammer being dropped',
+          obj: { type: 'WATCHING' }
         },
-      },
-      {
-        text: 'a ban list being exported',
-        obj: {
-          type: 'WATCHING',
+        {
+          msg: `bot version ${version}`,
+          obj: { type: 'PLAYING' }
         },
-      },
-      {
-        text: 'a ban list import',
-        obj: {
-          type: 'LISTENING',
+        {
+          msg: '',
+          obj: {
+            type: ''
+          }
         },
-      },
-    ];
-    //	console.log(activities);
+        {
+          msg: 'Justice Hammer',
+          obj: {
+            type: 'PLAYING'
+          }
+        },
+        {
+          msg: 'a ban list being exported',
+          obj: {
+            type: 'WATCHING'
+          }
+        },
+        {
+          msg: 'a ban list import',
+          obj: {
+            type: 'LISTENING'
+          }
+        }
+      ],
+      delay = 30000;
+    // console.log(activities);
 
     setInterval(() => {
       const act = activities[Math.floor(Math.random() * activities.length)];
       console.log(act);
-      client.user.setActivity(act.text, act.obj);
-    }, 30000);
-  },
+      client.user.setActivity(act.msg, act.obj);
+    }, delay);
+  }
 };

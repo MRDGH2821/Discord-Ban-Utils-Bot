@@ -1,6 +1,7 @@
+/* eslint-disable no-negated-condition */
 const { Permissions } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { PasteCheck } = require('../lib/PasteBinFnc.js');
+const { pasteCheck } = require('../lib/PasteBinFnc.js');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
 const { NotInsideServer, NoPerms } = require('../lib/ErrorEmbeds.js');
 const dpst = require('dpaste-ts');
@@ -9,33 +10,26 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('import_ban_list')
     .setDescription('Imports ban list into current server')
-    .addStringOption((option) =>
-      option
-        .setName('dpaste_link')
-        .setDescription('Enter full dpaste link')
-        .setRequired(true),
-    )
-    .addStringOption((option) =>
-      option
-        .setName('reason')
-        .setDescription(
-          'Enter a common reason. (Default is Banned by <you> on <today\'s date>)',
-        ),
-    ),
+    .addStringOption((option) => option
+      .setName('dpaste_link')
+      .setDescription('Enter full dpaste link')
+      .setRequired(true))
+    .addStringOption((option) => option
+      .setName('reason')
+      .setDescription('Enter a common reason. (Default is Banned by <you> on <today\'s date>)')),
 
   async execute(interaction) {
     await interaction.deferReply();
-    const paste_id = PasteCheck(
-      await interaction.options.getString('dpaste_link'),
-    );
     const banReason =
-      (await interaction.options.getString('reason')) ||
-      `Ban Import by ${interaction.user.tag} on ${new Date().toDateString()}`;
+        (await interaction.options.getString('reason')) ||
+        `Ban Import by ${interaction.user.tag} on ${new Date().toDateString()}`,
+      paste_id = pasteCheck(await interaction.options.getString('dpaste_link')),
+      url = `https://dpaste.com/${paste_id}`;
     try {
       if (!interaction.guild) {
         await interaction.editReply({
-          embeds: [NotInsideServer],
           components: [InviteRow],
+          embeds: [NotInsideServer]
         });
       }
       // User should have ban permissions else it will not work
@@ -44,94 +38,102 @@ module.exports = {
       ) {
         NoPerms.description =
           'You do not have the required permissions to use this command, hence you cannot just ban anybody by importing 🤷\n\nContact Server Moderators!\nOr invite the bot in your server!';
-        (NoPerms.fields = [
+        NoPerms.fields = [
           {
             name: '**Permissions required**',
-            value: 'BAN_MEMBERS',
+            value: 'BAN_MEMBERS'
           },
           {
             name: '**Ban List Link**',
-            value: `https://dpaste.com/${paste_id}`,
-          },
-        ]),
+            value: `https://dpaste.com/${paste_id}`
+          }
+        ];
         await interaction.editReply({
-          embeds: [NoPerms],
           components: [InviteRow],
+          embeds: [NoPerms]
         });
       }
       else {
-        const guildbans = await interaction.guild.bans.fetch();
-        //  console.log(bans);
-        const alreadybanned = guildbans.map((v) => ({
-          user: v.user,
-          reason: v.reason,
-        }));
-        // console.log(alreadybanned[0]);
-        await interaction.editReply(
-          'Parsing... (If it is taking long time, it means the link was invalid & bot has probably crashed)',
-        );
-        const data = await dpst.GetRawPaste(paste_id);
-        // console.log(data);
+        //  Console.log(bans);
+        const guildbans = await interaction.guild.bans.fetch(),
+          previousbans = guildbans.map((ban) => ({
+            reason: ban.reason,
+            user: ban.user
+          })),
+          // eslint-disable-next-line new-cap
+          source = await dpst.GetRawPaste(paste_id);
+        // Console.log(alreadybanned[0]);
+        await interaction.editReply('Parsing... (If it is taking long time, it means the link was invalid & bot has probably crashed)');
+        // Console.log(data);
         try {
-          const rawEle = data.split(/\D+/g);
-          const bans = rawEle.map((element) => element.trim());
-          await interaction.client.users.fetch(bans[0]);
-          await interaction.editReply(
-            `${bans.length} bans are being imported in background. Sit back and relax for a while!`,
-          );
-          let validBans = bans.length;
+          const rawEle = source.split(/\D+/gu),
+            sourcebans = rawEle.map((element) => element.trim());
+          await interaction.client.users.fetch(sourcebans[0]);
+          await interaction.editReply(`${sourcebans.length} bans are being imported in background. Sit back and relax for a while!`);
+          let uniqueBans = 0,
+            validBans = sourcebans.length;
           // Ban users
 
-          // console.log(typeof bans);
-          // console.log(bans);
-          let uniqueBans = 0;
-          for (const v of bans.filter(
-            (r) => !alreadybanned.some((u) => u.user.id === r),
-          )) {
-            try {
-              const tag = await interaction.client.users
-                .fetch(v)
-                .then((user) => user.tag)
-                .catch(() => {
-                  null;
-                  // validBans = validBans - 1;
+          /*
+           * Console.log(typeof bans);
+           * Console.log(bans);
+           */
+          for (const newban of sourcebans.filter((newPotentialBan) => !previousbans.some((previousban) => previousban.user.id === newPotentialBan))) {
+            // eslint-disable-next-line no-await-in-loop
+            await interaction.client.users
+              .fetch(newban)
+              .then(async(user) => {
+                console.log('Banning user: ', user.tag);
+                await interaction.editReply(`Banning user ${user.tag}...`);
+                await interaction.guild.members.ban(user, {
+                  reason: banReason
                 });
-              console.log(`Banning user ID ${tag}...`);
-              await interaction.editReply(`Banning user ${tag}...`);
-              await interaction.guild.members.ban(v, {
-                reason: banReason,
+              })
+              // eslint-disable-next-line no-loop-func
+              .catch((error) => {
+                console.log(error);
+                // eslint-disable-next-line no-magic-numbers
+                validBans -= 1;
+                // eslint-disable-next-line no-magic-numbers
+                uniqueBans -= 1;
+                // ValidBans = validBans - 1;
               });
-            }
-            catch {
-              validBans = validBans - 1;
-            }
-            uniqueBans = uniqueBans + 1;
+            // console.log(`Banning user ID ${tag}...`);
+
+            // eslint-disable-next-line no-magic-numbers
+            uniqueBans += 1;
           }
           await interaction.editReply({
             content: 'Ban Import Success!',
             embeds: [
               {
                 title: '**Ban Import Success!**',
-                description: `Ban List: ${
-                  bans.length
-                }.\nInvalid Bans: ${bans.length -
-                  validBans}.\nUnique Bans: ${uniqueBans}.\n${uniqueBans} imported successfully!`,
+                // eslint-disable-next-line sort-keys
+                description: `Ban List: ${sourcebans.length}.\nInvalid Bans: ${
+                  sourcebans.length - validBans
+                }.\nUnique Bans: ${uniqueBans}.\n${uniqueBans} imported successfully!`,
+                // eslint-disable-next-line sort-keys
                 color: 0xe7890c,
                 fields: [
                   {
                     name: '**Ban List Link**',
-                    value: `https://dpaste.com/${paste_id}`,
+                    value: `https://dpaste.com/${paste_id}`
                   },
                   {
                     name: '**Reason**',
-                    value: banReason,
-                  },
-                ],
-              },
-            ],
+                    value: banReason
+                  }
+                ]
+              }
+            ]
           });
-          const url = `https://dpaste.com/${paste_id}`;
-          interaction.client.emit('importListSuccess', interaction, url, banReason);
+
+          interaction.client.emit(
+            'importListSuccess',
+            interaction,
+            url,
+            banReason
+          );
         }
         catch (error) {
           // When the link is invalid. this code prevented earlier versions of crashes.
@@ -140,31 +142,35 @@ module.exports = {
             embeds: [
               {
                 title: '**Ban Import Failure...**',
+                // eslint-disable-next-line sort-keys
                 description: 'Given dpaste link is invalid...',
+                // eslint-disable-next-line sort-keys
                 color: 0xff0033,
                 fields: [
                   {
                     name: '**Ban List Link**',
-                    value: `https://dpaste.com/${paste_id}`,
+                    value: url
                   },
                   {
                     name: '**Dpaste Error Dump**',
-                    value: `${data}`,
+                    value: `${source}`
                   },
-                  { name: '**Discord Error Dump**', value: `${error}` },
-                ],
-              },
+                  { name: '**Discord Error Dump**',
+                    value: `${error}` }
+                ]
+              }
             ],
-            components: [SupportRow],
+            // eslint-disable-next-line sort-keys
+            components: [SupportRow]
           });
         }
       }
     }
-    catch (e) {
+    catch (error) {
       await interaction.editReply({
-        content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\`\n\nInput given:\nhttps://dpaste.com/${paste_id}`,
         components: [SupportRow],
+        content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${error}\`\n\nInput given:\n${url}`
       });
     }
-  },
+  }
 };

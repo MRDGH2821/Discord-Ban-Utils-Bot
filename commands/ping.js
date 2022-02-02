@@ -7,11 +7,10 @@ module.exports = {
   async execute(interaction) {
     const sent = await interaction.reply({
       content: 'Pinging...',
-      fetchReply: true,
+      fetchReply: true
     });
-    await interaction.editReply(
-      `Roundtrip latency: ${sent.createdTimestamp -
-        interaction.createdTimestamp}ms`,
-    );
-  },
+    await interaction.editReply(`Roundtrip latency: ${
+      sent.createdTimestamp - interaction.createdTimestamp
+    }ms`);
+  }
 };

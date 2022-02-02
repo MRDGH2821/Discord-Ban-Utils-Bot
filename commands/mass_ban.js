@@ -1,3 +1,4 @@
+/* eslint-disable no-negated-condition */
 const { Permissions, MessageActionRow, MessageButton } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
@@ -6,44 +7,32 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('mass_ban')
     .setDescription('Mass Bans given IDs')
-    .addStringOption((option) =>
-      option
-        .setName('ids')
-        .setDescription('Enter IDs')
-        .setRequired(true),
-    )
-    .addStringOption((option) =>
-      option
-        .setName('reason')
-        .setDescription(
-          'Enter a common reason. (Default is Banned by <you> on <today\'s date>)',
-        ),
-    ),
+    .addStringOption((option) => option.setName('ids').setDescription('Enter IDs')
+      .setRequired(true))
+    .addStringOption((option) => option
+      .setName('reason')
+      .setDescription('Enter a common reason. (Default is Banned by <you> on <today\'s date>)')),
 
   async execute(interaction) {
     await interaction.deferReply();
-    const ids = await interaction.options.getString('ids');
-    const banReason =
-      (await interaction.options.getString('reason')) ||
-      `Massbanned by ${interaction.user.tag} on ${new Date().toDateString()}`;
-
-    const notWorking = new MessageActionRow().addComponents(
-      new MessageButton()
+    const guildbans = await interaction.guild.bans.fetch(),
+      ids = await interaction.options.getString('ids'),
+      notWorking = new MessageActionRow().addComponents(new MessageButton()
         .setCustomId('notworking')
         .setLabel('Not working as expected?')
-        .setStyle('DANGER'),
-    );
-    const guildbans = await interaction.guild.bans.fetch();
-    //  console.log(bans);
-    const alreadybanned = guildbans.map((v) => ({
-      user: v.user,
-      reason: v.reason,
-    }));
+        .setStyle('DANGER')),
+      previousbans = guildbans.map((ban) => ({
+        reason: ban.reason,
+        user: ban.user
+      })),
+      reasonForBan =
+        (await interaction.options.getString('reason')) ||
+        `Massbanned by ${interaction.user.tag} on ${new Date().toDateString()}`;
     try {
       if (!interaction.guild) {
         await interaction.editReply({
-          embeds: [NotInsideServer],
           components: [InviteRow],
+          embeds: [NotInsideServer]
         });
       }
       else if (
@@ -51,117 +40,126 @@ module.exports = {
       ) {
         // User should have ban permissions else it will not work
 
-        (NoPerms.fields = [
+        NoPerms.fields = [
           {
             name: '**Permissions required**',
-            value: 'BAN_MEMBERS',
-          },
-        ]),
+            value: 'BAN_MEMBERS'
+          }
+        ];
         await interaction.editReply({
-          embeds: [NoPerms],
           components: [InviteRow],
+          embeds: [NoPerms]
         });
       }
       else {
-        await interaction.editReply(
-          'Parsing... (If it is taking long time, bot has probably crashed)',
-        );
+        await interaction.editReply('Parsing... (If it is taking long time, bot has probably crashed)');
 
         try {
-          const rawEle = ids.split(/\D+/g);
-          const bans = rawEle.map((element) => element.trim());
-          await interaction.client.users.fetch(bans[0]);
-          await interaction.editReply(
-            `${bans.length} bans are being banned in background. Sit back and relax for a while!`,
-          );
-          let validBans = bans.length;
+          const rawEle = ids.split(/\D+/gu),
+            sourcebans = rawEle.map((element) => element.trim());
+          await interaction.client.users.fetch(sourcebans[0]);
+          await interaction.editReply(`${sourcebans.length} bans are being banned in background. Sit back and relax for a while!`);
+          let uniqueBans = 0,
+            validBans = sourcebans.length;
           // Ban users
 
-          // console.log(typeof bans);
-          // console.log(bans);
-          let uniqueBans = 0;
-          for (const v of bans.filter(
-            (r) => !alreadybanned.some((u) => u.user.id === r),
-          )) {
-            try {
-              const tag = await interaction.client.users
-                .fetch(v)
-                .then((user) => user.tag)
-                .catch(() => {
-                  null;
-                  // validBans = validBans - 1;
+          /*
+           * Console.log(typeof bans);
+           * Console.log(bans);
+           */
+          for (const newban of sourcebans.filter((newPotentialBan) => !previousbans.some((previousBan) => previousBan.user.id === newPotentialBan))) {
+            // eslint-disable-next-line no-await-in-loop
+            await interaction.client.users
+              .fetch(newban)
+              .then(async(user) => {
+                console.log('Banning user: ', user.tag);
+                await interaction.editReply(`Banning user ${user.tag}...`);
+                await interaction.guild.members.ban(user, {
+                  reason: reasonForBan
                 });
-              console.log(`Banning user ID ${tag}...`);
-              await interaction.editReply(`Banning user ${tag}...`);
-              await interaction.guild.members.ban(v, {
-                reason: banReason,
+              })
+              // eslint-disable-next-line no-loop-func
+              .catch((error) => {
+                console.log(error);
+                // eslint-disable-next-line no-magic-numbers
+                validBans -= 1;
+                // eslint-disable-next-line no-magic-numbers
+                uniqueBans -= 1;
+                // ValidBans = validBans - 1;
               });
-            }
-            catch {
-              validBans = validBans - 1;
-            }
-            uniqueBans = uniqueBans + 1;
+            // console.log(`Banning user ID ${tag}...`);
+
+            // eslint-disable-next-line no-magic-numbers
+            uniqueBans += 1;
           }
+          // eslint-disable-next-line one-var
           const message = await interaction.editReply({
-            content: 'Mass Ban Success!',
-            embeds: [
-              {
-                color: 0xe7890c,
-                title: '**Mass Ban Success!**',
-                description: `Ban List: ${bans.length}.
-                  Invalid Bans: ${bans.length - validBans}.
+              components: [notWorking],
+              content: 'Mass Ban Success!',
+              embeds: [
+                {
+                  color: 0xe7890c,
+                  title: '**Mass Ban Success!**',
+                  // eslint-disable-next-line sort-keys
+                  description: `Ban List: ${sourcebans.length}.
+                  Invalid Bans: ${sourcebans.length - validBans}.
                   Unique Bans: ${uniqueBans}.\n
                   ${uniqueBans} users mass banned successfully!`,
-                fields: [{ name: '**Reason**', value: banReason }],
-              },
-            ],
-            components: [notWorking],
-            fetchReply: true,
-          });
-          const collector = message.createMessageComponentCollector({
-            componentType: 'BUTTON',
-          });
-          collector.on('collect', async (i) => {
-            if (i.customId === 'notworking') {
-              i.reply({
+                  fields: [
+                    { name: '**Reason**',
+                      value: reasonForBan }
+                  ]
+                }
+              ],
+              fetchReply: true
+            }),
+            // eslint-disable-next-line sort-vars
+            collector = message.createMessageComponentCollector({
+              componentType: 'BUTTON'
+            });
+          collector.on('collect', async(interacted) => {
+            if (interacted.customId === 'notworking') {
+              await interacted.reply({
                 content:
                   'You may either upload the list of IDs into https://dpaste.com and use the import command OR follow this [video](https://youtu.be/gxAqukdjtM8)',
-                ephemeral: true,
+                ephemeral: true
               });
             }
           });
         }
-        catch (e) {
+        catch (error) {
           // When the link is invalid. this code prevented earlier versions of crashes.
           await interaction.editReply({
+            components: [SupportRow],
             content: 'Mass Ban Failure...',
             embeds: [
               {
                 title: '**Mass Ban Failure...**',
+                // eslint-disable-next-line sort-keys
                 description: 'There was some unexpected error...',
+                // eslint-disable-next-line sort-keys
                 color: 0xff0033,
                 fields: [
                   {
                     name: '**Error Dump**',
-                    value: `${e}`,
+                    value: `${error}`
                   },
                   {
                     name: '**Input given**',
-                    value: ids,
-                  },
-                ],
-              },
-            ],
-            components: [SupportRow],
+                    value: ids
+                  }
+                ]
+              }
+            ]
           });
         }
       }
     }
-    catch (e) {
+    catch (error) {
       await interaction.reply({
-        content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\`\n\nInput given:\n\`${ids}`,
         components: [SupportRow],
+        content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${error}\`\n\nInput given:\n\`${ids}`
       });
     }
-  },
+  }
 };
