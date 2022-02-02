@@ -1,7 +1,7 @@
 # CAUTION!
 
 Please read the [caution notes](./Caution.md) for v2.5.2
-There is now a significant change in usage of config files!  
+There is now a significant change in usage of config files!
 
 # Discord-Ban-Utils-Bot
 
@@ -25,6 +25,7 @@ This bot project was inspired by the project [here](https://github.com/Permissio
 
 With v2.4, the bot now comes with logging feature with firebase integration & custom events.
 So to setup logging follow these steps:
+
 1. Create a Firebase project.
 2. Go to project settings
 3. In Firebase Admin SDK section, click on `Node.js` & finally on `Generate new private key`.

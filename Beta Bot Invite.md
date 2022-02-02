@@ -10,8 +10,6 @@ If you invite the beta bot in your server, commands will **may** show up. But th
 
 To see this bot in action, join my main [server](https://discord.gg/MPtE9zsBs5) and go to [#►dev-chat](https://discord.com/channels/452119784503640084/881108882569711616/) and check the pins.
 
-
-
 ## Bot permissions
 
 ![Bot Permissions](https://i.imgur.com/BVGr8uB.png)
