@@ -12,3 +12,4 @@ prod.env
 .env.prod
 
 command-exports
+.vscode/*
