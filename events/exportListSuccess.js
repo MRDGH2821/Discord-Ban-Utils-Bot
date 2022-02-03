@@ -15,7 +15,7 @@ module.exports = {
         console.log('Doc data: ', serverData);
 
         /*
-         * ServerData format:
+         * serverData format:
          * {
          * logChannel: <channel ID>,
          * logWebhook: <webhook ID>,

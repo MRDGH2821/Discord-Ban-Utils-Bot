@@ -38,7 +38,7 @@ module.exports = {
       else if (
         !interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
       ) {
-        // User should have ban permissions else it will not work
+        // user should have ban permissions else it will not work
 
         NoPerms.fields = [
           {
@@ -61,10 +61,10 @@ module.exports = {
           await interaction.editReply(`${sourcebans.length} bans are being banned in background. Sit back and relax for a while!`);
           let uniqueBans = 0,
             validBans = sourcebans.length;
-          // Ban users
+          // ban users
 
           /*
-           * Console.log(typeof bans);
+           * console.log(typeof bans);
            * Console.log(bans);
            */
           for (const newban of sourcebans.filter((newPotentialBan) => !previousbans.some((previousBan) => previousBan.user.id === newPotentialBan))) {
@@ -85,7 +85,7 @@ module.exports = {
                 validBans -= 1;
                 // eslint-disable-next-line no-magic-numbers
                 uniqueBans -= 1;
-                // ValidBans = validBans - 1;
+                // validBans = validBans - 1;
               });
             // console.log(`Banning user ID ${tag}...`);
 
@@ -128,7 +128,7 @@ module.exports = {
           });
         }
         catch (error) {
-          // When the link is invalid. this code prevented earlier versions of crashes.
+          // when the link is invalid. this code prevented earlier versions of crashes.
           await interaction.editReply({
             components: [SupportRow],
             content: 'Mass Ban Failure...',

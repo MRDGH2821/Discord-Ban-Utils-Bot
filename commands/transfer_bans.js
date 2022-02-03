@@ -34,9 +34,9 @@ module.exports = {
             time: 15000
           }),
           servers = [],
-          // Fetch bans from current server
+          // fetch bans from current server
           sourcebans = await rest.get(Routes.guildBans(interaction.guild.id));
-        // Fetches mutual servers where interaction user can ban
+        // fetches mutual servers where interaction user can ban
 
         for (const [, guild] of interaction.client.guilds.cache) {
           // eslint-disable-next-line no-await-in-loop
@@ -55,7 +55,7 @@ module.exports = {
             });
         }
 
-        // Puts Name & Server ID in an array except current serevr
+        // puts Name & Server ID in an array except current serevr
 
         for (let index = 0; index < Object.keys(guilds).length; index++) {
           if (
@@ -69,7 +69,7 @@ module.exports = {
         }
 
         /*
-         * Checks if mutual servers list has atleast 1 server.
+         * checks if mutual servers list has atleast 1 server.
          * This command is point less if you don't have another mutual server with bot.
          * Hence the check
          */
@@ -92,16 +92,16 @@ module.exports = {
           // eslint-disable-next-line init-declarations
           let destname, toGuildId;
 
-          // Collectors to collect selected server
+          // collectors to collect selected server
           msgcollector.on('collect', async(interacted) => {
-            // This if statement is for checking if buttons are selected by interaction.user or not.
+            // this if statement is for checking if buttons are selected by interaction.user or not.
             if (interacted.user.id === interaction.user.id) {
               destname = await interaction.client.guilds.cache.get(interacted.values[0]).name;
               toGuildId = await interaction.client.guilds.cache.get(interacted.values[0]).id;
 
               initial_Screen.setDescription(`Source server: ${interaction.guild.name}
                 Destination Server: ${destname}`);
-              // Interaction.client.guilds.cache.get(i.values[0]).name
+              // interaction.client.guilds.cache.get(i.values[0]).name
 
               await interaction.editReply({
                 components: [],
@@ -117,7 +117,7 @@ module.exports = {
             }
 
             /*
-             * Possibly avoided race condition
+             * possibly avoided race condition
              * // Double assignment to ensure values are properly passed
              *destname = await interaction.client.guilds.cache.get(interacted.values[0])
              *  .name;
@@ -126,7 +126,7 @@ module.exports = {
              */
           });
 
-          // Console.log('Source Bans:\n\n', bans);
+          // console.log('Source Bans:\n\n', bans);
 
           msgcollector.on('end', async(collected) => {
             // eslint-disable-next-line no-magic-numbers
@@ -146,10 +146,10 @@ module.exports = {
 
               const alreadybanned = await rest.get(Routes.guildBans(toGuildId)),
                 fromGuildId = interaction.guild.id;
-              // Console.log('Already banned\n\n', alreadybaned);
+              // console.log('Already banned\n\n', alreadybaned);
 
               try {
-                // Tries to ban users.
+                // tries to ban users.
                 console.log(`Fetching bans for guild ${destname}...`);
                 console.log(`Found ${sourcebans.length} bans.`);
                 console.log(`Applying bans to guild ${toGuildId}...`);
@@ -157,7 +157,7 @@ module.exports = {
                 for (const newBan of sourcebans.filter((newPotentialBan) => !alreadybanned.some((banned) => banned.user.id === newPotentialBan.user.id))) {
                   // eslint-disable-next-line no-magic-numbers
                   actualTransfers += 1;
-                  // Console.log(`Banning user ${v.user.username}#${v.user.discriminator}...`);
+                  // console.log(`Banning user ${v.user.username}#${v.user.discriminator}...`);
                   // eslint-disable-next-line no-await-in-loop
                   await interaction.editReply({
                     content: `Banning user ${newBan.user.username}#${newBan.user.discriminator}...`
@@ -167,7 +167,7 @@ module.exports = {
                     reason: newBan.reason
                   });
                 }
-                //  Interaction.client.guilds.cache.get(toGuildId).name
+                //  interaction.client.guilds.cache.get(toGuildId).name
                 initial_Screen
                   .addField(
                     '**Transfer Successfull!**',
@@ -183,7 +183,7 @@ module.exports = {
                 });
               }
               catch (error) {
-                // Crash prevention code. Bot might hit API Rate limit when ban list is too big.
+                // crash prevention code. Bot might hit API Rate limit when ban list is too big.
                 const apiErrorRow = new MessageActionRow()
                   .addComponents(new MessageButton()
                     .setLabel('Report Issue at GitHub')
@@ -206,7 +206,7 @@ module.exports = {
               }
             }
             else {
-              // When the interaction times out
+              // when the interaction times out
               initial_Screen
                 .setDescription('Please Select Something!')
                 .setFooter('Re-run the command again!');
@@ -220,7 +220,7 @@ module.exports = {
           });
         }
         else {
-          // When mutual servers are less than 1
+          // when mutual servers are less than 1
           initial_Screen
             .setDescription('No mutual servers found where you can ban!')
             .setFooter('Best contact mutual server mods & tell them to do it');

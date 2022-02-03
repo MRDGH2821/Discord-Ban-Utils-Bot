@@ -51,7 +51,7 @@ module.exports = {
         // serverID = interaction.guild.id;
 
         /*
-         * Console.log('channel', channel);
+         * console.log('channel', channel);
          * Console.log('guildID', serverID);
          * Console.log('channelID', channelID);
          * Await interaction.editReply('Channel obtained!');
@@ -93,7 +93,7 @@ module.exports = {
           .set(data, { merge: true });
 
         await interaction.editReply({
-          //  Content: `Configured <#${channel.id}> as logging channel.`,
+          //  content: `Configured <#${channel.id}> as logging channel.`,
           embeds: [
             {
               color: 0xd8d4d3,
@@ -108,7 +108,7 @@ module.exports = {
         const logChannel = serverData.logChannelID;
         console.log('LogChannel: ', logChannel);
         await interaction.editReply({
-          // Content: `Log channel is already configured to <#${logChannel}>.\nRerun this command with \`force_update\` set to \`True\` if there is some problem.`,
+          // content: `Log channel is already configured to <#${logChannel}>.\nRerun this command with \`force_update\` set to \`True\` if there is some problem.`,
           embeds: [
             {
               color: 0xd8d4d3,

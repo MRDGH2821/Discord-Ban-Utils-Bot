@@ -48,7 +48,7 @@ module.exports = {
           }
         ];
         await interaction.reply({
-          // Content: 'You cannot Timeout members.',
+          // content: 'You cannot Timeout members.',
           components: [InviteRow],
           embeds: [NoPerms]
         });
@@ -77,13 +77,13 @@ module.exports = {
             ]
           };
           if (dm_reason) {
-            // If there is a reason specified, DM it to the user.
+            // if there is a reason specified, DM it to the user.
             target.user
               .send({ embeds: [dm_emb] })
               .catch('User cannot be DM-ed');
           }
           await interaction.reply({
-            // Content: `User ${target.user.tag} is timed-out.\nReason: ${reason}\nDuration: ${duration} minutes`,
+            // content: `User ${target.user.tag} is timed-out.\nReason: ${reason}\nDuration: ${duration} minutes`,
             embeds: [dm_emb]
           });
         }
@@ -95,20 +95,20 @@ module.exports = {
             description: `Timeout removed from ${target} in ${interaction.guild}`
           };
           if (dm_reason) {
-            // If there is a reason specified, DM it to the user.
+            // if there is a reason specified, DM it to the user.
             target.user
               .send({ embeds: [dm_emb] })
               .catch('User cannot be DM-ed');
           }
           await interaction.reply({
-            // Content: `User ${target.user.tag} is timed-out.\nReason: ${reason}\nDuration: ${duration} minutes`,
+            // content: `User ${target.user.tag} is timed-out.\nReason: ${reason}\nDuration: ${duration} minutes`,
             embeds: [dm_emb]
           });
         }
       }
     }
     catch (error) {
-      // If any error is thrown
+      // if any error is thrown
       await interaction.reply({
         components: [SupportRow],
         content: `Error Occured! \nPlease Report to the Developer. \nError Dump:\n${error}`

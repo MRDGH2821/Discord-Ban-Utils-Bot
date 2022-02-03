@@ -17,7 +17,7 @@ module.exports = {
         (await interaction.options.getString('reason')) ||
         '||for no reason :joy:||',
       target = await interaction.options.getMember('user');
-    //  Const tartag = target.user.tag;
+    //  const tartag = target.user.tag;
     try {
       if (!interaction.guild) {
         await interaction.reply({
@@ -39,9 +39,9 @@ module.exports = {
           embeds: [NoPerms]
         });
       }
-      // Checks if target user can be kicked or not
+      // checks if target user can be kicked or not
       else if (target.kickable) {
-        // If there is a reason specified, DM it to the user.
+        // if there is a reason specified, DM it to the user.
         if (reason) {
           try {
             await target.user.send(`Reason for kicking from ${interaction.guild.name}: ${reason}`);
@@ -51,7 +51,7 @@ module.exports = {
           }
         }
         await interaction.reply({
-          // Content: `User \`${target.tag}\` is banned from this server. \nReason: ${reas}.`,
+          // content: `User \`${target.tag}\` is banned from this server. \nReason: ${reas}.`,
           embeds: [
             {
               color: 0x84929f,
@@ -71,10 +71,10 @@ module.exports = {
         });
         await target.kick();
       }
-      // If user cannot be kicked
+      // if user cannot be kicked
       else {
         await interaction.reply({
-          // Content: 'Kicking Wrench cannot kick...',
+          // content: 'Kicking Wrench cannot kick...',
           components: [SupportRow],
           embeds: [
             {

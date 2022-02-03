@@ -37,7 +37,7 @@ module.exports = {
 };
 
 /*
- * All commands deleter
+ * all commands deleter
  * rest.get(Routes.applicationGuildCommands(clientId, guildId))
  * .then(data => {
  *   const promises = [];

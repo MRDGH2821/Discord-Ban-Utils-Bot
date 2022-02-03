@@ -33,7 +33,7 @@ module.exports = {
 
     try {
       if (!interaction.guild) {
-        // If not in server
+        // if not in server
         await interaction.editReply({
           components: [InviteRow],
           embeds: [NotInsideServer]
@@ -42,14 +42,14 @@ module.exports = {
       else if (
         interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
       ) {
-        // Drop the Ban Hammer!
+        // drop the Ban Hammer!
         await interaction.guild.members.ban(target, {
           days: delete_msg_days,
           reason: reas
         });
 
         await interaction.editReply({
-          // Content: `User \`${target.tag}\` is banned from this server. \nReason: ${reas}.`,
+          // content: `User \`${target.tag}\` is banned from this server. \nReason: ${reas}.`,
           embeds: [
             {
               color: 0xe1870a,
@@ -81,7 +81,7 @@ module.exports = {
         );
       }
       else {
-        // When no ban permissions
+        // when no ban permissions
         NoPerms.fields = {
           name: '**Permissions required**',
           value: 'BAN_MEMBERS'

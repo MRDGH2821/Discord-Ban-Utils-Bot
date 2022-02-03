@@ -32,7 +32,7 @@ module.exports = {
           embeds: [NotInsideServer]
         });
       }
-      // User should have ban permissions else it will not work
+      // user should have ban permissions else it will not work
       else if (
         !interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
       ) {
@@ -54,7 +54,7 @@ module.exports = {
         });
       }
       else {
-        //  Console.log(bans);
+        //  console.log(bans);
         const guildbans = await interaction.guild.bans.fetch(),
           previousbans = guildbans.map((ban) => ({
             reason: ban.reason,
@@ -62,9 +62,9 @@ module.exports = {
           })),
           // eslint-disable-next-line new-cap
           source = await dpst.GetRawPaste(paste_id);
-        // Console.log(alreadybanned[0]);
+        // console.log(alreadybanned[0]);
         await interaction.editReply('Parsing... (If it is taking long time, it means the link was invalid & bot has probably crashed)');
-        // Console.log(data);
+        // console.log(data);
         try {
           const rawEle = source.split(/\D+/gu),
             sourcebans = rawEle.map((element) => element.trim());
@@ -72,10 +72,10 @@ module.exports = {
           await interaction.editReply(`${sourcebans.length} bans are being imported in background. Sit back and relax for a while!`);
           let uniqueBans = 0,
             validBans = sourcebans.length;
-          // Ban users
+          // ban users
 
           /*
-           * Console.log(typeof bans);
+           * console.log(typeof bans);
            * Console.log(bans);
            */
           for (const newban of sourcebans.filter((newPotentialBan) => !previousbans.some((previousban) => previousban.user.id === newPotentialBan))) {
@@ -96,7 +96,7 @@ module.exports = {
                 validBans -= 1;
                 // eslint-disable-next-line no-magic-numbers
                 uniqueBans -= 1;
-                // ValidBans = validBans - 1;
+                // validBans = validBans - 1;
               });
             // console.log(`Banning user ID ${tag}...`);
 
@@ -136,7 +136,7 @@ module.exports = {
           );
         }
         catch (error) {
-          // When the link is invalid. this code prevented earlier versions of crashes.
+          // when the link is invalid. this code prevented earlier versions of crashes.
           await interaction.editReply({
             content: 'Ban import Failure...',
             embeds: [

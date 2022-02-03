@@ -9,7 +9,7 @@ module.exports = {
     console.log(`Ready! Logged in as ${client.user.tag}`);
 
     /*
-     *Client.user.setActivity(`/help. Bot Version: ${version}`, {
+     *client.user.setActivity(`/help. Bot Version: ${version}`, {
      *type: 'LISTENING',
      *});
      */

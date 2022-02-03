@@ -44,7 +44,7 @@ module.exports = {
         });
       }
       else {
-        // When no ban permissions
+        // when no ban permissions
         NoPerms.fields = {
           name: '**Permissions required**',
           value: 'BAN_MEMBERS'

@@ -10,24 +10,24 @@ module.exports = {
   async execute(interaction) {
     await interaction.deferReply();
     try {
-      // Fetch bans
+      // fetch bans
       if (interaction.guild) {
         const bans = await interaction.guild.bans.fetch(),
           outputFile = `${interaction.guild.name}-${new Date()}.txt`;
 
         /*
-         * When used inside server
+         * when used inside server
          *  Const sampleBans = await interaction.guild.bans.fetch();
          *  Console.log('DJS: ', sampleBans.first());
          */
 
-        // Export bans
+        // export bans
         let results = '';
         console.log(bans.size);
         bans.forEach((ban) => {
           results = `${results} ${ban.user.id}`;
         });
-        // Results = JSON.stringify(results);
+        // results = JSON.stringify(results);
         await interaction.editReply(`Found ${bans.size} bans. Exporting...`);
         console.log(`Found ${bans.size} bans. Exporting...`);
 
@@ -42,7 +42,7 @@ module.exports = {
             interaction.client.emit('exportListSuccess', interaction, url);
           })
           .catch(async(error) => {
-            // Incase of any errors
+            // incase of any errors
             await interaction.followUp({
               components: [SupportRow],
               content: `There was some unexpected error.\nError Dump: ${error}`

@@ -29,7 +29,7 @@ module.exports = {
         const canBan = interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS]),
           canKick = interaction.member.permissions.has([Permissions.FLAGS.KICK_MEMBERS]);
 
-        // Embed showing details
+        // embed showing details
         userInfo.addFields(
           {
             name: '**Server Name**',

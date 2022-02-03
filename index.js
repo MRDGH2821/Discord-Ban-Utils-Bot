@@ -26,14 +26,14 @@ const { token } = require('./lib/ConfigManager.js'),
 
 for (const file of eventFiles) {
   const event = require(`./events/${file}`);
-  //  Console.log('Inside loop', event);
+  //  console.log('Inside loop', event);
   if (event.once) {
     client.once(event.name, (...args) => event.execute(...args));
-    // Console.log('Inside If', event.name);
+    // console.log('Inside If', event.name);
   }
   else {
     client.on(event.name, (...args) => event.execute(...args));
-    // Console.log('Inside else', event.name);
+    // console.log('Inside else', event.name);
   }
 }
 
@@ -43,7 +43,7 @@ for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
 
   /*
-   * Set a new item in the Collection
+   * set a new item in the Collection
    * With the key as the command name and the value as the exported module
    */
   client.commands.set(command.data.name, command);
@@ -78,7 +78,7 @@ client.on('interactionCreate', async(interaction) => {
       })
     );
   }
-  // Console.log('${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.');
+  // console.log('${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.');
 });
 
 client.login(token);

@@ -23,16 +23,16 @@ module.exports = {
         limit: 1,
         type: 'MEMBER_BAN_ADD'
       }),
-      // Since there's only 1 audit log entry in this collection, grab the first one
+      // since there's only 1 audit log entry in this collection, grab the first one
       firstBanLog = fetchedLogs.entries.first(),
 
       /*
-       * Now grab the user object of the person who banned the member
+       * now grab the user object of the person who banned the member
        * Also grab the target of this action to double-check things
        */
       { executor, target } = firstBanLog;
 
-    // Perform a coherence check to make sure that there's *something*
+    // perform a coherence check to make sure that there's *something*
     if (!firstBanLog) {
       const line = `${ban.user.tag} ${ban.user} was banned from ${ban.guild.name}.`;
       embed.description = line;
@@ -44,7 +44,7 @@ module.exports = {
     }
 
     /*
-     * Update the output with a bit more information
+     * update the output with a bit more information
      * Also run a check to make sure that the log returned was for the same banned member
      */
     if (target.id === ban.user.id) {

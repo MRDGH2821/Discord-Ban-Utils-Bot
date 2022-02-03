@@ -11,7 +11,7 @@ module.exports = {
         .get();
 
     /*
-     *Console.log('Moderator: ', mod);
+     *console.log('Moderator: ', mod);
      *console.log('Banned user: ', bannedUser);
      *console.log('Reason: ', reason);
      *console.log('Guild: ', guild);
@@ -23,7 +23,7 @@ module.exports = {
         console.log('Doc data: ', serverData);
 
         /*
-         * ServerData format:
+         * serverData format:
          * {
          * logChannelID: <channel ID>,
          * logWebhookID: <webhook ID>,
