@@ -45,7 +45,7 @@
     "custom-env": "^2.0.1",
     "discord-api-types": "^0.26.1",
     "discord.js": "^13.6.0",
-    "dotenv": "^15.0.0",
+    "dotenv": "^16.0.0",
     "dpaste-ts": "^1.0.4",
     "firebase-admin": "^10.0.2"
   },
