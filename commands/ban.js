@@ -39,6 +39,20 @@ module.exports = {
           embeds: [NotInsideServer]
         });
       }
+      else if (!target.bannable) {
+        await interaction.editReply({
+          components: [SupportRow],
+          embeds: [
+            {
+              title: '**Cannot Ban...**',
+              // eslint-disable-next-line sort-keys
+              description: `User ${target} cannot be banned :grimacing:\n\nPlease move the bot role higher than that user for this command to work.`,
+              // eslint-disable-next-line sort-keys
+              color: 0xff0033
+            }
+          ]
+        });
+      }
       else if (
         interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
       ) {

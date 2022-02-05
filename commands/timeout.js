@@ -53,7 +53,7 @@ module.exports = {
           embeds: [NoPerms]
         });
       }
-      else {
+      else if (target.moderatable) {
         // eslint-disable-next-line no-magic-numbers
         await target.timeout(duration * 60 * 1000, reason);
         // eslint-disable-next-line no-magic-numbers
@@ -105,6 +105,20 @@ module.exports = {
             embeds: [dm_emb]
           });
         }
+      }
+      else {
+        await interaction.reply({
+          components: [SupportRow],
+          embeds: [
+            {
+              title: '**Cannot Time-out...**',
+              // eslint-disable-next-line sort-keys
+              description: `User ${target} cannot be Timed out :grimacing:\n\nPlease move the bot role higher than that user for this command to work.`,
+              // eslint-disable-next-line sort-keys
+              color: 0xff0033
+            }
+          ]
+        });
       }
     }
     catch (error) {
