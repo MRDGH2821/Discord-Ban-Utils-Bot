@@ -47,6 +47,11 @@ const { link } = require('../lib/InviteLink.json'),
           'Setup a log channel.\n**NOTE:** This functionality is still Beta quality!'
       },
       {
+        name: '**NOTE!**',
+        value:
+          'The Bot role needs to be higher than target user\'s highest role. Only then the mod commands will work. \n*You have to become your boss\'s boss to fire the boss. Else how can you do it :shrug:*'
+      },
+      {
         name: '**Bot still not working?**',
         value:
           'Please join my server & elaborate how you encountered that problem. You may also submit an issue at [Github Repository](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues)'
