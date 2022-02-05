@@ -50,6 +50,7 @@
     "firebase-admin": "^10.0.2"
   },
   "devDependencies": {
+    "ansi-regex": "^6.0.1",
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.8.0",
