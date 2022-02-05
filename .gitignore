@@ -13,3 +13,4 @@ prod.env
 
 command-exports
 .vscode/*
+.env.dev
