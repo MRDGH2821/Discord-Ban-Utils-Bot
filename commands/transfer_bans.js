@@ -99,8 +99,7 @@ module.exports = {
               destname = await interaction.client.guilds.cache.get(interacted.values[0]).name;
               toGuildId = await interaction.client.guilds.cache.get(interacted.values[0]).id;
 
-              initial_Screen.setDescription(`Source server: ${interaction.guild.name}
-                Destination Server: ${destname}`);
+              initial_Screen.setDescription(`Source server: ${interaction.guild.name}\nDestination Server: ${destname}`);
               // interaction.client.guilds.cache.get(i.values[0]).name
 
               await interaction.editReply({
