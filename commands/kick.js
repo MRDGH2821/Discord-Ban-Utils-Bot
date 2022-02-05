@@ -80,7 +80,7 @@ module.exports = {
             {
               title: '**Cannot Kick...**',
               // eslint-disable-next-line sort-keys
-              description: `User ${target} cannot be kicked :grimacing:`,
+              description: `User ${target} cannot be kicked :grimacing:\n\nPlease move the bot role higher than that user for this command to work.`,
               // eslint-disable-next-line sort-keys
               color: 0xff0033
             }
