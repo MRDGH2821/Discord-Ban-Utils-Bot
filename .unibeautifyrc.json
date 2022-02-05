@@ -1,8 +1,6 @@
 {
   "JavaScript": {
-    "beautifiers": [
-      "ESLint"
-    ],
+    "beautifiers": ["ESLint"],
     "ESLint": {
       "prefer_beautifier_config": "./.eslintrc.json"
     }

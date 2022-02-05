@@ -7,12 +7,10 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('unban')
     .setDescription('Unbans a user')
-    .addUserOption((option) =>
-      option
-        .setName('user')
-        .setDescription('Enter the User ID (i.e. snowflake)')
-        .setRequired(true),
-    ),
+    .addUserOption((option) => option
+      .setName('user')
+      .setDescription('Enter the User ID (i.e. snowflake)')
+      .setRequired(true)),
 
   async execute(interaction) {
     await interaction.deferReply();
@@ -20,8 +18,8 @@ module.exports = {
     try {
       if (!interaction.guild) {
         await interaction.editReply({
-          embeds: [NotInsideServer],
           components: [InviteRow],
+          embeds: [NotInsideServer]
         });
       }
       else if (
@@ -33,33 +31,35 @@ module.exports = {
             {
               color: 0xe1870a,
               title: '**User Unbanned!**',
+              // eslint-disable-next-line sort-keys
               description: `User \`${target.tag}\` ${target} is unbanned from this server.`,
               thumbnail: { url: target.displayAvatarURL({ dynamic: true }) },
               timestamp: new Date(),
+              // eslint-disable-next-line sort-keys
               footer: {
-                text: `${target.id}`,
-              },
-            },
-          ],
+                text: `${target.id}`
+              }
+            }
+          ]
         });
       }
       else {
         // when no ban permissions
-        (NoPerms.fields = {
+        NoPerms.fields = {
           name: '**Permissions required**',
-          value: 'BAN_MEMBERS',
-        }),
+          value: 'BAN_MEMBERS'
+        };
         await interaction.editReply({
-          embeds: [NoPerms],
           components: [InviteRow],
+          embeds: [NoPerms]
         });
       }
     }
-    catch (e) {
+    catch (error) {
       await interaction.editReply({
-        content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${e}\``,
         components: [SupportRow],
+        content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${error}\``
       });
     }
-  },
+  }
 };
