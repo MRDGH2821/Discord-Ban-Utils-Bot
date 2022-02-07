@@ -18,8 +18,9 @@ module.exports = {
       .setName('delete_messages')
       .setDescription('Enter number of msgs (in days) to delete')),
 
-  desc: `Bans a user. Default reason is: Banned by <you> on <today's date>. Default days of messages deleted is ${default_days}`,
+  note: `Default reason is: Banned by <you> on <today's date>. Default days of messages deleted is ${default_days}`,
 
+  // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
     const delete_msg_days =

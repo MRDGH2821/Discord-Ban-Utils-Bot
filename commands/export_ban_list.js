@@ -11,8 +11,9 @@ module.exports = {
       .setName('advanced')
       .setDescription('Select true to export with reason. Default false')),
 
-  desc: 'Exports ban list of current server. Has simple mode & Advanced mode.',
+  note: 'Simple mode exports list which is compatible with other popular ban bots.\nAdvanced mode exports list with reason but only compatible with Ban Utils only.',
 
+  // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
     let isInGuild = false;
