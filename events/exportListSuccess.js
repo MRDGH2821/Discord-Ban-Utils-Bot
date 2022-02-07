@@ -3,7 +3,7 @@ const { db } = require('../lib/firebase.js');
 module.exports = {
   name: 'exportListSuccess',
   // eslint-disable-next-line sort-keys
-  async execute(interaction, url) {
+  async execute(interaction, url, advanceMode) {
     const serverDB = await db
       .collection('servers')
       .doc(`${interaction.guild.id}`)
@@ -36,7 +36,11 @@ module.exports = {
                   value: `${interaction.user}`
                 },
                 { name: '**URL**',
-                  value: url }
+                  value: url },
+                {
+                  name: '**Advanced mode?**',
+                  value: `${advanceMode}`
+                }
               ],
               timestamp: new Date()
             };
