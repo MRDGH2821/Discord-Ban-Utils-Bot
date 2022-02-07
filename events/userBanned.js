@@ -10,26 +10,22 @@ module.exports = {
         .doc(`${interaction.guild.id}`)
         .get();
 
-    /*
-     *console.log('Moderator: ', mod);
-     *console.log('Banned user: ', bannedUser);
-     *console.log('Reason: ', reason);
-     *console.log('Guild: ', guild);
-     */
+    /* console.log('Moderator: ', mod);
+       console.log('Banned user: ', bannedUser);
+       console.log('Reason: ', reason);
+       console.log('Guild: ', guild); */
     try {
       if (serverDB.exists) {
         const serverData = serverDB.data(),
           webhookID = serverData.logWebhookID;
         console.log('Doc data: ', serverData);
 
-        /*
-         * serverData format:
-         * {
-         * logChannelID: <channel ID>,
-         * logWebhookID: <webhook ID>,
-         * serverID: <server ID>
-         * }
-         */
+        /* serverData format:
+           {
+           logChannelID: <channel ID>,
+           logWebhookID: <webhook ID>,
+           serverID: <server ID>
+           } */
         console.log('logWebHookID: ', serverData.logWebhookID);
 
         if (webhookID) {

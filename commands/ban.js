@@ -39,6 +39,9 @@ module.exports = {
           embeds: [NotInsideServer]
         });
       }
+      else if (
+
+      /*
       else if (!target.bannable) {
         await interaction.editReply({
           components: [SupportRow],
@@ -53,7 +56,7 @@ module.exports = {
           ]
         });
       }
-      else if (
+      */
         interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
       ) {
         // drop the Ban Hammer!

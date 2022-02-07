@@ -8,11 +8,9 @@ module.exports = {
   execute(client) {
     console.log(`Ready! Logged in as ${client.user.tag}`);
 
-    /*
-     *client.user.setActivity(`/help. Bot Version: ${version}`, {
-     *type: 'LISTENING',
-     *});
-     */
+    /* client.user.setActivity(`/help. Bot Version: ${version}`, {
+       type: 'LISTENING',
+       }); */
     const activities = [
         {
           msg: `/help in ${client.guilds.cache.size} servers`,

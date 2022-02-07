@@ -63,10 +63,8 @@ module.exports = {
             validBans = sourcebans.length;
           // ban users
 
-          /*
-           * console.log(typeof bans);
-           * Console.log(bans);
-           */
+          /* console.log(typeof bans);
+             Console.log(bans); */
           for (const newban of sourcebans.filter((newPotentialBan) => !previousbans.some((previousBan) => previousBan.user.id === newPotentialBan))) {
             // eslint-disable-next-line no-await-in-loop
             await interaction.client.users

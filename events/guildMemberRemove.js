@@ -14,14 +14,12 @@ module.exports = {
           webhookID = serverData.logWebhookID;
         console.log('Doc data: ', serverData);
 
-        /*
-         * serverData format:
-         * {
-         * logChannel: <channel ID>,
-         * logWebhook: <webhook ID>,
-         * serverID: <server ID>
-         * }
-         */
+        /* serverData format:
+           {
+           logChannel: <channel ID>,
+           logWebhook: <webhook ID>,
+           serverID: <server ID>
+           } */
         console.log('logWebHookID: ', serverData.logWebhookID);
 
         if (webhookID) {
