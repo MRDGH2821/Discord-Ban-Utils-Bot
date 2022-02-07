@@ -72,6 +72,9 @@ module.exports = {
           delete_msg_days
         );
       }
+      else {
+        throw new Error(`Inside server? ${isInGuild}\nCan Ban? ${canBan}`);
+      }
     }
     catch (error) {
       const ban_fail = new MessageEmbed()
