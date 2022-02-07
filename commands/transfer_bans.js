@@ -68,11 +68,9 @@ module.exports = {
           }
         }
 
-        /*
-         * checks if mutual servers list has atleast 1 server.
-         * This command is point less if you don't have another mutual server with bot.
-         * Hence the check
-         */
+        /* checks if mutual servers list has atleast 1 server.
+           This command is point less if you don't have another mutual server with bot.
+           Hence the check */
         // eslint-disable-next-line no-magic-numbers
         if (Object.keys(servers).length > 0) {
           const row = new MessageActionRow().addComponents(new MessageSelectMenu()
@@ -115,14 +113,12 @@ module.exports = {
               });
             }
 
-            /*
-             * possibly avoided race condition
-             * // Double assignment to ensure values are properly passed
-             *destname = await interaction.client.guilds.cache.get(interacted.values[0])
-             *  .name;
-             *toGuildId = await interaction.client.guilds.cache.get(interacted.values[0])
-             *  .id;
-             */
+            /*  possibly avoided race condition
+                // Double assignment to ensure values are properly passed
+               destname = await interaction.client.guilds.cache.get(interacted.values[0])
+                 .name;
+               toGuildId = await interaction.client.guilds.cache.get(interacted.values[0])
+                 .id; */
           });
 
           // console.log('Source Bans:\n\n', bans);
@@ -246,27 +242,19 @@ module.exports = {
   }
 };
 
-/*
- *25 Oct 2021
- *I'll be honest here, this piece of code has taken a long time to get function & crash proof.
- *I asked 2-3 questions on Stack overflow to get this working.
- *This approach will fail when bot reaches more than 2000 servers.
- *And I'm kinda afraid of that because I don't know how to use OAuth & Sharding.
- *+ I would need to monetize this bot since I would have to change the hosting platform from Raspberry Pi to Virtual Private Server.
- */
+/* 25 Oct 2021
+   I'll be honest here, this piece of code has taken a long time to get function & crash proof.
+   I asked 2-3 questions on Stack overflow to get this working.
+   This approach will fail when bot reaches more than 2000 servers.
+   And I'm kinda afraid of that because I don't know how to use OAuth & Sharding.
+   + I would need to monetize this bot since I would have to change the hosting platform from Raspberry Pi to Virtual Private Server. */
 
-/*
- *28 Nov 2021
- *Finally the bot will wait after processing each ban instead of ejecting all bans at once.
- *I had no idea of async & await keyword usages hence things happened in one go instead of waiting.
- */
+/* 28 Nov 2021
+   Finally the bot will wait after processing each ban instead of ejecting all bans at once.
+   I had no idea of async & await keyword usages hence things happened in one go instead of waiting. */
 
-/*
- *04 Dec 2021
- *AroLeaf helps to filter out duplicate bans
- */
+/* 04 Dec 2021
+   AroLeaf helps to filter out duplicate bans */
 
-/*
- *28 Dec 2021
- *Bot Developer now definitely knows how to inform the mod.
- */
+/* 28 Dec 2021
+   Bot Developer now definitely knows how to inform the mod. */

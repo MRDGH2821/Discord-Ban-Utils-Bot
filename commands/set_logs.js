@@ -50,12 +50,10 @@ module.exports = {
           channelID = channel.id;
         // serverID = interaction.guild.id;
 
-        /*
-         * console.log('channel', channel);
-         * Console.log('guildID', serverID);
-         * Console.log('channelID', channelID);
-         * Await interaction.editReply('Channel obtained!');
-         */
+        /* console.log('channel', channel);
+           Console.log('guildID', serverID);
+           Console.log('channelID', channelID);
+           Await interaction.editReply('Channel obtained!'); */
         // eslint-disable-next-line init-declarations
         let data, webhook;
         try {

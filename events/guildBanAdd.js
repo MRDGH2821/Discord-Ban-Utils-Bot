@@ -26,10 +26,8 @@ module.exports = {
       // since there's only 1 audit log entry in this collection, grab the first one
       firstBanLog = fetchedLogs.entries.first(),
 
-      /*
-       * now grab the user object of the person who banned the member
-       * Also grab the target of this action to double-check things
-       */
+      /* now grab the user object of the person who banned the member
+         Also grab the target of this action to double-check things */
       { executor, target } = firstBanLog;
 
     // perform a coherence check to make sure that there's *something*
@@ -43,10 +41,8 @@ module.exports = {
       console.log(line, 'No audit log could be found.');
     }
 
-    /*
-     * update the output with a bit more information
-     * Also run a check to make sure that the log returned was for the same banned member
-     */
+    /* update the output with a bit more information
+       Also run a check to make sure that the log returned was for the same banned member */
     if (target.id === ban.user.id) {
       const line = `${ban.user.tag} ${ban.user} got hit with the swift hammer of justice in the guild ${ban.guild.name}!`;
       console.log(line, 'Justice Hammer Wielder: ', executor.tag);

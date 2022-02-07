@@ -15,11 +15,9 @@ module.exports = {
         const bans = await interaction.guild.bans.fetch(),
           outputFile = `${interaction.guild.name}-${new Date()}.txt`;
 
-        /*
-         * when used inside server
-         *  Const sampleBans = await interaction.guild.bans.fetch();
-         *  Console.log('DJS: ', sampleBans.first());
-         */
+        /* when used inside server
+            Const sampleBans = await interaction.guild.bans.fetch();
+            Console.log('DJS: ', sampleBans.first()); */
 
         // export bans
         let results = '';
