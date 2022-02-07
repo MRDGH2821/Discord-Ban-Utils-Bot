@@ -1,64 +1,107 @@
-const dpst = require('dpaste-ts');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
+const { MessageEmbed } = require('discord.js');
+const dpst = require('dpaste-ts');
+const { InviteRow, SupportRow } = require('../lib/RowButtons');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('export_ban_list')
-    .setDescription('Exports ban list of current server'),
+    .setDescription('Exports ban list of current server')
+    .addBooleanOption((option) => option
+      .setName('advanced')
+      .setDescription('Select true to export with reason. Default false')),
+
+  desc: 'Exports ban list of current server. Has simple mode & Advanced mode.',
 
   async execute(interaction) {
     await interaction.deferReply();
+    let isInGuild = false;
+    const advMode = (await interaction.options.getBoolean('advanced')) || false;
     try {
-      // fetch bans
-      if (interaction.guild) {
+      isInGuild = (await interaction.guild) || false;
+      if (isInGuild) {
         const bans = await interaction.guild.bans.fetch(),
-          outputFile = `${interaction.guild.name}-${new Date()}.txt`;
-
-        /* when used inside server
-            Const sampleBans = await interaction.guild.bans.fetch();
-            Console.log('DJS: ', sampleBans.first()); */
-
-        // export bans
-        let results = '';
-        console.log(bans.size);
+          outputAdv = `${interaction.guild.name}-${new Date()}.json`,
+          outputSimple = `${interaction.guild.name}-${new Date()}.txt`,
+          resultAdv = [];
+        let finalOutput = '',
+          finalResult = '',
+          finalType = '',
+          resultSimple = '';
         bans.forEach((ban) => {
-          results = `${results} ${ban.user.id}`;
+          resultSimple = `${resultSimple} ${ban.user.id}`;
+          resultAdv.push({
+            id: `${ban.user.id}`,
+            reason: `${ban.reason}`
+          });
         });
-        // results = JSON.stringify(results);
-        await interaction.editReply(`Found ${bans.size} bans. Exporting...`);
-        console.log(`Found ${bans.size} bans. Exporting...`);
-
+        await interaction.editReply(`Found ${bans.size} bans.\nAdvanced Mode: ${advMode}\nExporting...`);
+        if (advMode) {
+          finalResult = JSON.stringify(resultAdv);
+          finalOutput = outputAdv;
+          finalType = 'json';
+        }
+        else {
+          finalResult = resultSimple;
+          finalOutput = outputSimple;
+          finalType = 'text';
+        }
         dpst
           // eslint-disable-next-line new-cap
-          .CreatePaste(results, outputFile, 'text')
+          .CreatePaste(finalResult, finalOutput, finalType)
           .then(async(url) => {
             await interaction.followUp({
               components: [InviteRow],
               content: url
             });
-            interaction.client.emit('exportListSuccess', interaction, url);
+            interaction.client.emit(
+              'exportListSuccess',
+              interaction,
+              url,
+              advMode
+            );
           })
-          .catch(async(error) => {
-            // incase of any errors
-            await interaction.followUp({
-              components: [SupportRow],
-              content: `There was some unexpected error.\nError Dump: ${error}`
-            });
+          .catch((error) => {
+            throw error;
           });
       }
       else {
-        await interaction.editReply({
-          components: [InviteRow],
-          content: 'Please use this command inside server!'
-        });
+        throw new Error('Cannot export outside sever. Please use this command inside server.');
       }
     }
-    catch (err) {
+    catch (error) {
+      const ban_fail = new MessageEmbed()
+        .setColor('ff0033')
+        .setTitle('**Cannot Export...**')
+        .setDescription('Ban list cannot be exported.')
+        .addFields([
+          {
+            name: '**Checks**',
+            value: `Executed In server? **\`${isInGuild}\`**`
+          },
+          {
+            name: '**Possible solutions**',
+            value:
+              'Use this command inside a server. Or wait for sometime for [dpaste API](https://dpaste.com/api/v2/) to cooldown.'
+          },
+          {
+            name: '**Inputs given**',
+            value: `Advanced mode: ${advMode}`
+          },
+          {
+            name: '**Bot Error Dump**',
+            value: `${error}`
+          }
+        ]);
+
       await interaction.editReply({
-        components: [SupportRow],
-        content: `Unexpected error occured, please report it to the developer! \nError dump:\n\n\`${err}\``
+        components: [
+          SupportRow,
+          InviteRow
+        ],
+        embeds: [ban_fail]
       });
+      console.error(error);
     }
   }
 };
