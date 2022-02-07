@@ -14,3 +14,6 @@ prod.env
 command-exports
 .vscode/*
 .env.dev
+
+[old-files]/*
+[old-files]
