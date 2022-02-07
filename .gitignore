@@ -16,3 +16,4 @@ command-exports
 .env.dev
 
 already-old-files
+cmd.json
