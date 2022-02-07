@@ -1,10 +1,8 @@
-/* eslint-disable no-negated-condition */
-const { Permissions } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { pasteCheck } = require('../lib/PasteBinFnc.js');
-const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
-const { NotInsideServer, NoPerms } = require('../lib/ErrorEmbeds.js');
+const { Permissions, MessageEmbed } = require('discord.js');
 const dpst = require('dpaste-ts');
+const { SupportRow } = require('../lib/RowButtons');
+const { pasteCheck } = require('../lib/UtilityFunctions');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -18,157 +16,69 @@ module.exports = {
       .setName('reason')
       .setDescription('Enter a common reason. (Default is Banned by <you> on <today\'s date>)')),
 
+  note: 'For simple import type, provided/default reason is used. For advanced import type, included reason is used. Type of import is automatically detemined.',
+
+  // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
-    const banReason =
+    const inputReason =
         (await interaction.options.getString('reason')) ||
         `Ban Import by ${interaction.user.tag} on ${new Date().toDateString()}`,
       paste_id = pasteCheck(await interaction.options.getString('dpaste_link')),
       url = `https://dpaste.com/${paste_id}`;
+
+    let canBan = false,
+      isInGuild = false;
+
     try {
-      if (!interaction.guild) {
-        await interaction.editReply({
-          components: [InviteRow],
-          embeds: [NotInsideServer]
-        });
-      }
-      // user should have ban permissions else it will not work
-      else if (
-        !interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
-      ) {
-        NoPerms.description =
-          'You do not have the required permissions to use this command, hence you cannot just ban anybody by importing 🤷\n\nContact Server Moderators!\nOr invite the bot in your server!';
-        NoPerms.fields = [
-          {
-            name: '**Permissions required**',
-            value: 'BAN_MEMBERS'
-          },
-          {
-            name: '**Ban List Link**',
-            value: `https://dpaste.com/${paste_id}`
-          }
-        ];
-        await interaction.editReply({
-          components: [InviteRow],
-          embeds: [NoPerms]
-        });
-      }
-      else {
-        //  console.log(bans);
+      canBan = await interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS]);
+      isInGuild = await interaction.guild;
+
+      if (isInGuild && canBan) {
         const guildbans = await interaction.guild.bans.fetch(),
           previousbans = guildbans.map((ban) => ({
             reason: ban.reason,
             user: ban.user
           })),
           // eslint-disable-next-line new-cap
-          source = await dpst.GetRawPaste(paste_id);
-        // console.log(alreadybanned[0]);
+          remoteSource = await dpst.GetRawPaste(paste_id),
+          source = JSON.parse(remoteSource);
+        console.log(remoteSource);
         await interaction.editReply('Parsing... (If it is taking long time, it means the link was invalid & bot has probably crashed)');
-        // console.log(data);
-        try {
-          const rawEle = source.split(/\D+/gu),
-            sourcebans = rawEle.map((element) => element.trim());
-          await interaction.client.users.fetch(sourcebans[0]);
-          await interaction.editReply(`${sourcebans.length} bans are being imported in background. Sit back and relax for a while!`);
-          let uniqueBans = 0,
-            validBans = sourcebans.length;
-          // ban users
 
-          /* console.log(typeof bans);
-             Console.log(bans); */
-          for (const newban of sourcebans.filter((newPotentialBan) => !previousbans.some((previousban) => previousban.user.id === newPotentialBan))) {
-            // eslint-disable-next-line no-await-in-loop
-            await interaction.client.users
-              .fetch(newban)
-              .then(async(user) => {
-                console.log('Banning user: ', user.tag);
-                await interaction.editReply(`Banning user ${user.tag}...`);
-                await interaction.guild.members.ban(user, {
-                  reason: banReason
-                });
-              })
-              // eslint-disable-next-line no-loop-func
-              .catch((error) => {
-                console.log(error);
-                // eslint-disable-next-line no-magic-numbers
-                validBans -= 1;
-                // eslint-disable-next-line no-magic-numbers
-                uniqueBans -= 1;
-                // validBans = validBans - 1;
-              });
-            // console.log(`Banning user ID ${tag}...`);
-
-            // eslint-disable-next-line no-magic-numbers
-            uniqueBans += 1;
-          }
-          await interaction.editReply({
-            content: 'Ban Import Success!',
-            embeds: [
-              {
-                title: '**Ban Import Success!**',
-                // eslint-disable-next-line sort-keys
-                description: `Ban List: ${sourcebans.length}.\nInvalid Bans: ${
-                  sourcebans.length - validBans
-                }.\nUnique Bans: ${uniqueBans}.\n${uniqueBans} imported successfully!`,
-                // eslint-disable-next-line sort-keys
-                color: 0xe7890c,
-                fields: [
-                  {
-                    name: '**Ban List Link**',
-                    value: `https://dpaste.com/${paste_id}`
-                  },
-                  {
-                    name: '**Reason**',
-                    value: banReason
-                  }
-                ]
-              }
-            ]
-          });
-
-          interaction.client.emit(
-            'importListSuccess',
-            interaction,
-            url,
-            banReason
-          );
+        if (typeof source === Array) {
+          console.log(typeof source);
+          console.log(source);
         }
-        catch (error) {
-          // when the link is invalid. this code prevented earlier versions of crashes.
-          await interaction.editReply({
-            content: 'Ban import Failure...',
-            embeds: [
-              {
-                title: '**Ban Import Failure...**',
-                // eslint-disable-next-line sort-keys
-                description: 'Given dpaste link is invalid...',
-                // eslint-disable-next-line sort-keys
-                color: 0xff0033,
-                fields: [
-                  {
-                    name: '**Ban List Link**',
-                    value: url
-                  },
-                  {
-                    name: '**Dpaste Error Dump**',
-                    value: `${source}`
-                  },
-                  { name: '**Discord Error Dump**',
-                    value: `${error}` }
-                ]
-              }
-            ],
-            // eslint-disable-next-line sort-keys
-            components: [SupportRow]
-          });
+        else {
+          console.log(typeof source);
+          console.log(source);
         }
+      }
+      else {
+        throw new Error(`Inside server? ${isInGuild}\nCan Ban? ${canBan}`);
       }
     }
     catch (error) {
+      const import_fail = new MessageEmbed()
+        .setColor('ff0033')
+        .setTitle('**Cannot Import...**')
+        .setDescription('Cannot import ban list.')
+        .addFields([
+          {
+            name: '**Checks**',
+            value: `Executed In server? **\`${isInGuild}\`**\nCan you ban? **\`${canBan}\`**`
+          },
+          {
+            name: '**Inputs given**',
+            value: `Link: ${url}\nReason: ${inputReason}`
+          }
+        ]);
       await interaction.editReply({
         components: [SupportRow],
-        content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${error}\`\n\nInput given:\n${url}`
+        embeds: [import_fail]
       });
+      console.error(error);
     }
   }
 };
