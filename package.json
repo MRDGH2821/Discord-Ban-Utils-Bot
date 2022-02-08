@@ -62,7 +62,6 @@
     "node": ">= 16.6.0"
   },
   "private": true,
-  "prettier": "prettier-config-mrdgh2821",
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
