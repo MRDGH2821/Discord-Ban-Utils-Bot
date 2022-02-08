@@ -171,7 +171,7 @@ module.exports = {
           {
             name: '**Possible solutions**',
             value:
-              'Use this command inside a server where you have ban permissions. Also make sure the bot role is above most of the public display roles & that the link is valid.'
+              'Use this command inside a server where you have required permissions. Also make sure the bot role is above most of the public display roles & that the link is valid.'
           },
           {
             name: '**Inputs given**',
