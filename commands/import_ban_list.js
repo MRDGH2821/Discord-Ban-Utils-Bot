@@ -131,7 +131,7 @@ module.exports = {
         const import_success = new MessageEmbed()
           .setColor('e7890c')
           .setTitle('**Ban Import Success!**')
-          .setDescription(`Ban in list: ${bansInList}\nInvalid Bans: ${invalidBans}\nUnique Bans: ${uniqueBans}\nAdvanced Mode: ${advMode}`)
+          .setDescription(`Bans in list: ${bansInList}\nInvalid Bans: ${invalidBans}\nUnique Bans: ${uniqueBans}\nAdvanced Mode: ${advMode}`)
           .addFields([
             {
               name: '**Ban list link**',
@@ -162,7 +162,7 @@ module.exports = {
       const import_fail = new MessageEmbed()
         .setColor('ff0033')
         .setTitle('**Cannot Import...**')
-        .setDescription('Cannot import ban list.')
+        .setDescription('Cannot import ban list.\n\nIf this error is comming even after passing all checks, then please report the Error Dump section to developer.')
         .addFields([
           {
             name: '**Checks**',
