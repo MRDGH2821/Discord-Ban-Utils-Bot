@@ -25,12 +25,12 @@ module.exports = {
     await interaction.deferReply();
 
     let canBan = false,
-      isInGuild = false,
       isLinkValid = false;
 
     const inputReason =
         (await interaction.options.getString('reason')) ||
         `Ban Import by ${interaction.user.tag} on ${new Date().toDateString()}`,
+      isInGuild = await interaction.inGuild(),
       pasteID = pasteCheck(await interaction.options.getString('dpaste_link')),
       pasteLink = `https://dpaste.com/${pasteID}`,
       remoteSource = await axios(`${pasteLink}.txt`)
@@ -45,7 +45,6 @@ module.exports = {
 
     try {
       canBan = await interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS]);
-      isInGuild = await interaction.guild;
 
       if (isInGuild && canBan) {
         const finalBanList = [],

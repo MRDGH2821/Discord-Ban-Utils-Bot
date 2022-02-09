@@ -15,7 +15,8 @@ module.exports = {
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
-    const reason =
+    const isInGuild = await interaction.inGuild(),
+      reason =
         (await interaction.options.getString('reason')) ||
         `Kicked by ${
           interaction.user.tag
@@ -23,13 +24,11 @@ module.exports = {
       target = await interaction.options.getMember('user');
 
     let canKick = false,
-      isInGuild = false,
       isKickable = false;
 
     try {
       canKick = await interaction.member.permissions.has([Permissions.FLAGS.KICK_MEMBERS]);
       isKickable = target.kickable;
-      isInGuild = await interaction.guild;
 
       if (isInGuild && canKick) {
         await interaction.guild.members.kick(target, reason);

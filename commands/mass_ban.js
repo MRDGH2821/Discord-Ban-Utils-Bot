@@ -28,6 +28,7 @@ module.exports = {
   async execute(interaction) {
     await interaction.deferReply();
     const ids = await interaction.options.getString('ids'),
+      isInGuild = interaction.inGuild(),
       notWorking = new MessageActionRow().addComponents(new MessageButton()
         .setCustomId('massban_notworking')
         .setLabel('Not working as expected?')
@@ -39,7 +40,6 @@ module.exports = {
         } on ${new Date().toDateString()} ||for no reason :joy:||`;
 
     let canBan = false,
-      isInGuild = interaction.inGuild(),
       sourceListLen = zero;
 
     try {
@@ -75,7 +75,6 @@ module.exports = {
       }
 
       canBan = await interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS]);
-      isInGuild = await interaction.guild;
 
       if (isInGuild && canBan) {
         console.log(sourceList);

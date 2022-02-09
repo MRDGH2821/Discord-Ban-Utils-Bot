@@ -26,6 +26,7 @@ module.exports = {
     const delete_msg_days =
         (await interaction.options.getNumber('delete_messages')) ||
         default_days,
+      isInGuild = await interaction.inGuild(),
       reason =
         (await interaction.options.getString('reason')) ||
         `Banned by ${
@@ -34,13 +35,11 @@ module.exports = {
       target = await interaction.options.getUser('user');
     // eslint-disable-next-line one-var
     let canBan = false,
-      isBannable = false,
-      isInGuild = false;
+      isBannable = false;
 
     try {
       canBan = await interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS]);
       isBannable = target.bannable;
-      isInGuild = await interaction.guild;
 
       if (isInGuild && canBan) {
         await interaction.guild.members.ban(target, {

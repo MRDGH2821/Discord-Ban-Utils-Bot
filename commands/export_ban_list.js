@@ -16,10 +16,9 @@ module.exports = {
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
-    let isInGuild = false;
-    const advMode = (await interaction.options.getBoolean('advanced')) || false;
+    const advMode = (await interaction.options.getBoolean('advanced')) || false,
+      isInGuild = await interaction.inGuild();
     try {
-      isInGuild = (await interaction.guild) || false;
       if (isInGuild) {
         const bans = await interaction.guild.bans.fetch(),
           outputAdv = `${interaction.guild.name}-${new Date()}.json`,
