@@ -1,9 +1,10 @@
-const { Permissions } = require('discord.js');
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { db } = require('../lib/firebase.js');
-const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
-const { newHook, changeHook } = require('../lib/LogsWebhook.js');
-const { NotInsideServer, NoPerms } = require('../lib/ErrorEmbeds.js');
+const { Permissions, MessageEmbed } = require('discord.js');
+const { createWebhook } = require('../lib/UtilityFunctions');
+const { SupportRow, InviteRow } = require('../lib/RowButtons');
+const { db } = require('../lib/firebase');
+const { SlashCommandBuilder } = require('@discordjs/builders'),
+  GUILD_TEXT = 0,
+  one = 1;
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -13,117 +14,105 @@ module.exports = {
       .setName('log_channel')
       .setDescription('Select Log Channel')
       .setRequired(true)
-      .addChannelType(0))
-    .addBooleanOption((option) => option
-      .setName('force_update')
-      .setDescription('Use ONLY in Dire situations. This will overwrite any kind of setting for the server!')),
+      .addChannelType(GUILD_TEXT)),
 
+  note: 'Type of logs sent: Ban list import-export log, Ban-unban logr & member leaving server log. More type of logs coming soon.',
+
+  // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
-    const banPerm = Permissions.FLAGS.BAN_MEMBERS,
-      force_update = await interaction.options.getBoolean('force_update');
+    const channel = await interaction.options.getChannel('log_channel'),
+      isInGuild = await interaction.inGuild();
+    let canManage = false;
 
     try {
-      const serverDB = await db
-          .collection('servers')
-          .doc(`${interaction.guild.id}`)
-          .get(),
-        serverData = serverDB.data();
-
-      if (!interaction.guild) {
-        await interaction.editReply({
-          components: [InviteRow],
-          embeds: [NotInsideServer]
-        });
-      }
-      else if (!interaction.member.permissions.has([banPerm])) {
-        NoPerms.fields = {
-          name: '**Permissions required**',
-          value: 'BAN_MEMBERS'
-        };
-        await interaction.editReply({
-          components: [InviteRow],
-          embeds: [NoPerms]
-        });
-      }
-      else if (!serverDB.exists || force_update) {
-        const channel = interaction.options.getChannel('log_channel'),
-          channelID = channel.id;
-        // serverID = interaction.guild.id;
-
-        /* console.log('channel', channel);
-           Console.log('guildID', serverID);
-           Console.log('channelID', channelID);
-           Await interaction.editReply('Channel obtained!'); */
-        // eslint-disable-next-line init-declarations
-        let data, webhook;
-        try {
-          // eslint-disable-next-line init-declarations
-          let webhooks;
-          if (serverData.logChannelID) {
-            const oldChannel = await interaction.client.channels.cache.get(serverData.logChannelID);
-            webhooks = await oldChannel.fetchWebhooks();
-          }
-          else {
-            webhooks = await interaction.guild.fetchWebhooks();
-          }
-          const validHook = webhooks.find((wh) => wh.token);
-          webhook = await changeHook(interaction.client, channel, validHook.id);
-
-          data = {
-            logChannelID: channelID,
-            logWebhookID: webhook.id,
+      canManage =
+        (await interaction.member.permissions.has([Permissions.FLAGS.MANAGE_GUILD])) || false;
+      if (isInGuild && canManage) {
+        const logWebhook = await interaction.guild
+            .fetchWebhooks()
+            .then(async(webhooks) => {
+              const allhooks = await webhooks.filter((wh) => wh.token);
+              console.log(allhooks);
+              if (allhooks.size > one) {
+                const qty = allhooks.size;
+                console.log(`Found ${qty} webhooks`);
+                allhooks.forEach((hook) => {
+                  hook.delete('Redundant webhook');
+                });
+                throw new Error(`Found ${qty} webhooks. Which are now deleted explictly.`);
+              }
+              else {
+                const hook = allhooks.first();
+                console.log(hook);
+                hook.edit({
+                  channel: channel.id
+                });
+                return hook;
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+              console.log('Creating new webhook...');
+              return createWebhook(channel);
+            }),
+          log_set_success = new MessageEmbed()
+            .setColor('d8d4d3')
+            .setTitle('**Log Channel configured!**')
+            .setDescription(`Configured ${channel} for logs.`),
+          setDBdata = {
+            logChannelID: channel.id,
+            logWebhookID: logWebhook.id,
             serverID: interaction.guild.id
           };
-        }
-        catch (error) {
-          console.log(error);
-          webhook = await newHook(channel);
-          data = {
-            logChannelID: channelID,
-            logWebhookID: webhook.id,
-            serverID: interaction.guild.id
-          };
-        }
-        console.log(data);
+
         await db
           .collection('servers')
-          .doc(`${interaction.guild.id}`)
-          .set(data, { merge: true });
+          .doc(interaction.guild.id)
+          .set(setDBdata, { merge: true })
+          .then(() => console.log('Updated Database!'));
 
         await interaction.editReply({
-          //  content: `Configured <#${channel.id}> as logging channel.`,
-          embeds: [
-            {
-              color: 0xd8d4d3,
-              title: '**Log Channel configured!**',
-              // eslint-disable-next-line sort-keys
-              description: `Configured <#${channel.id}> as logging channel.`
-            }
-          ]
+          embeds: [log_set_success]
         });
       }
       else {
-        const logChannel = serverData.logChannelID;
-        console.log('LogChannel: ', logChannel);
-        await interaction.editReply({
-          // content: `Log channel is already configured to <#${logChannel}>.\nRerun this command with \`force_update\` set to \`True\` if there is some problem.`,
-          embeds: [
-            {
-              color: 0xd8d4d3,
-              title: '**Log Channel already configured!**',
-              // eslint-disable-next-line sort-keys
-              description: `Log channel is already configured to <#${logChannel}>.\nRerun this command with \`force_update\` set to \`True\` if there is some problem.`
-            }
-          ]
-        });
+        throw new Error(`Inside server? ${isInGuild}\nCan Manage Server? ${canManage}`);
       }
     }
     catch (error) {
+      const log_set_fail = new MessageEmbed()
+        .setColor('ff0033')
+        .setTitle('**Cannot Set logs...**')
+        .setDescription('Cannot set logs :grimacing:\n\nIf this error is comming even after passing all checks, then please report the Error Dump section to developer.')
+        .addFields([
+          {
+            name: '**Checks**',
+            value: `Executed In server? **\`${isInGuild}\`**\nCan you manage server? **\`${canManage}\`**`
+          },
+          {
+            name: '**Possible solutions**',
+            value:
+              'Use this command inside a server where you have required permissions. Also Make sure the bot has webhooks permissions on given channel.'
+          },
+          {
+            name: '**Inputs given**',
+            value: `Channel: ${channel}`
+          },
+          {
+            name: '**Bot Error Dump**',
+            value: `${error}`
+          }
+        ]);
+
       await interaction.editReply({
-        components: [SupportRow],
-        content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${error}\``
+        components: [
+          SupportRow,
+          InviteRow
+        ],
+        embeds: [log_set_fail]
       });
+      console.log(error);
     }
   }
 };
