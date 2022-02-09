@@ -12,7 +12,8 @@ module.exports = {
     .addChannelOption((option) => option
       .setName('log_channel')
       .setDescription('Select Log Channel')
-      .setRequired(true))
+      .setRequired(true)
+      .addChannelType(0))
     .addBooleanOption((option) => option
       .setName('force_update')
       .setDescription('Use ONLY in Dire situations. This will overwrite any kind of setting for the server!')),
