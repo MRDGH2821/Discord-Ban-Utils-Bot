@@ -36,12 +36,12 @@ const { link } = require('../lib/InviteLink.json'),
     {
       name: '**/transfer_bans**',
       value:
-      'Exports the ban list from current server & imports it into target server without extra steps.'
+        'Exports the ban list from current server & imports it into target server without extra steps.'
     },
     {
       name: '**/mass_ban**',
       value:
-      'Mass bans given IDs.\nSometimes you might put multiple IDs but it doesn\'t work. \nYou may either put the IDs on [dpaste.com](https://dpaste.com) & use import command or follow this [video](https://youtu.be/gxAqukdjtM8)'
+        'Mass bans given IDs.\nSometimes you might put multiple IDs but it doesn\'t work. \nYou may either put the IDs on [dpaste.com](https://dpaste.com) & use import command or follow this [video](https://youtu.be/gxAqukdjtM8)'
     },
     { name: '**/kick**',
       value: 'Kicks the given user.' },
@@ -54,17 +54,17 @@ const { link } = require('../lib/InviteLink.json'),
     {
       name: '**/set_logs**',
       value:
-      'Setup a log channel.\n**NOTE:** This functionality is still Beta quality!'
+        'Setup a log channel.\n**NOTE:** This functionality is still Beta quality!'
     },
     {
       name: '**NOTE!**',
       value:
-      'The Bot role needs to be higher than target user\'s highest role. Only then the mod commands will work. \n*You have to become your boss\'s boss to fire the boss. Else how can you do it :shrug:*'
+        'The Bot role needs to be higher than target user\'s highest role. Only then the mod commands will work. \n*You have to become your boss\'s boss to fire the boss. Else how can you do it :shrug:*'
     },
     {
       name: '**Bot still not working?**',
       value:
-      'Please join my server & elaborate how you encountered that problem. You may also submit an issue at [Github Repository](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues)'
+        'Please join my server & elaborate how you encountered that problem. You may also submit an issue at [Github Repository](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues)'
     }
   ];
 module.exports = {

@@ -34,6 +34,6 @@
     "padded-blocks": ["error", "never"],
     "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
     "multiline-comment-style": ["error", "bare-block"],
-    "no-ternary" : "warn"
+    "no-ternary": "warn"
   }
 }
