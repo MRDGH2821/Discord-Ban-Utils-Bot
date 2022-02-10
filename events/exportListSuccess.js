@@ -23,7 +23,7 @@ module.exports = {
         console.log('logWebHookID: ', serverData.logWebhookID);
 
         if (webhookID) {
-          const webhookClient = await interaction.client.fetchWebhook(webhookID),
+          const webhookClient = await interaction.client.webhooksCache.find((webhook) => webhook.id === webhookID),
             // eslint-disable-next-line sort-vars
             logEmb = {
               color: 0xd8d4d3,
@@ -35,8 +35,7 @@ module.exports = {
                   name: '**Export Requested by**',
                   value: `${interaction.user}`
                 },
-                { name: '**URL**',
-                  value: url },
+                { name: '**URL**', value: url },
                 {
                   name: '**Advanced mode?**',
                   value: `${advanceMode}`
