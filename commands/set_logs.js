@@ -22,19 +22,39 @@ module.exports = {
   async execute(interaction) {
     await interaction.deferReply();
     const channel = await interaction.options.getChannel('log_channel'),
-      isInGuild = await interaction.inGuild();
+      isInGuild = await interaction.inGuild(),
+      logsProgress = new MessageEmbed()
+        .setColor('d8d4d3')
+        .setTitle('**Setting up Log Channel**')
+        .setDescription(`Configuring ${channel} for logs.\nAfter configuration success, 2 log messages should come in that channel.`);
     let canManage = false;
 
     try {
       canManage =
         (await interaction.member.permissions.has([Permissions.FLAGS.MANAGE_GUILD])) || false;
       if (isInGuild && canManage) {
+        await interaction.editReply({
+          embeds: [
+            logsProgress.addField(
+              'Step 1',
+              'Checking if there are any existing webhooks...'
+            )
+          ]
+        });
         const logWebhook = await interaction.guild
             .fetchWebhooks()
             .then(async(webhooks) => {
-              const allhooks = await webhooks.filter((wh) => wh.token);
-              console.log(allhooks);
+              const allhooks = await webhooks.filter((wh) => wh.owner === interaction.client.user);
+              // console.log(allhooks);
               if (allhooks.size > one) {
+                await interaction.editReply({
+                  embeds: [
+                    logsProgress.addField(
+                      'Step 2',
+                      'Deleting duplicate webhooks...'
+                    )
+                  ]
+                });
                 const qty = allhooks.size;
                 console.log(`Found ${qty} webhooks`);
                 allhooks.forEach((hook) => {
@@ -43,29 +63,42 @@ module.exports = {
                 throw new Error(`Found ${qty} webhooks. Which are now deleted explictly.`);
               }
               else {
+                await interaction.editReply({
+                  embeds: [
+                    logsProgress.addField(
+                      'Step 2',
+                      'Editing target channel of webhook...'
+                    )
+                  ]
+                });
                 const hook = allhooks.first();
-                console.log(hook);
+                // console.log(hook);
                 hook.edit({
                   channel: channel.id
                 });
                 return hook;
               }
             })
-            .catch((error) => {
+            .catch(async(error) => {
+              await interaction.editReply({
+                embeds: [logsProgress.addField('Step 2.5', 'Creating new webhook...')]
+              });
               console.error(error);
               console.log('Creating new webhook...');
               return createWebhook(channel);
             }),
-          log_set_success = new MessageEmbed()
-            .setColor('d8d4d3')
-            .setTitle('**Log Channel configured!**')
-            .setDescription(`Configured ${channel} for logs.`),
+          log_sample = new MessageEmbed()
+            .setTitle('Test msg via command')
+            .setDescription(`This is a test log, should come in ${channel}.\nThis is sent when the log channel is set via command.`),
           setDBdata = {
             logChannelID: channel.id,
             logWebhookID: logWebhook.id,
             serverID: interaction.guild.id
           };
 
+        await interaction.editReply({
+          embeds: [logsProgress.addField('Step 3', 'Saving data...')]
+        });
         await db
           .collection('servers')
           .doc(interaction.guild.id)
@@ -73,8 +106,14 @@ module.exports = {
           .then(() => console.log('Updated Database!'));
 
         await interaction.editReply({
-          embeds: [log_set_success]
+          embeds: [
+            logsProgress
+              .setTitle('**Log Channel configured!**')
+              .addField('Success!', `Configured ${channel} for logs.`)
+          ]
         });
+
+        logWebhook.send({ embeds: [log_sample] });
       }
       else {
         throw new Error(`Inside server? ${isInGuild}\nCan Manage Server? ${canManage}`);
