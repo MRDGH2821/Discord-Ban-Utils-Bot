@@ -21,10 +21,8 @@ const { link } = require('../lib/InviteLink.json'),
       .setURL(link)),
   // eslint-disable-next-line sort-vars
   oldFields = [
-    { name: '**/ban**',
-      value: 'Bans the given user.' },
-    { name: '**/unban**',
-      value: 'Unbans the given user.' },
+    { name: '**/ban**', value: 'Bans the given user.' },
+    { name: '**/unban**', value: 'Unbans the given user.' },
     {
       name: '**/import_ban_list**',
       value: 'Imports the ban list from dpaste link'
@@ -43,10 +41,8 @@ const { link } = require('../lib/InviteLink.json'),
       value:
         'Mass bans given IDs.\nSometimes you might put multiple IDs but it doesn\'t work. \nYou may either put the IDs on [dpaste.com](https://dpaste.com) & use import command or follow this [video](https://youtu.be/gxAqukdjtM8)'
     },
-    { name: '**/kick**',
-      value: 'Kicks the given user.' },
-    { name: '**/ping**',
-      value: 'Bot Latency.' },
+    { name: '**/kick**', value: 'Kicks the given user.' },
+    { name: '**/ping**', value: 'Bot Latency.' },
     {
       name: '**/user_info**',
       value: 'Tells if you have the permissions to kick or ban .'

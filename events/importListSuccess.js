@@ -31,16 +31,13 @@ module.exports = {
               // eslint-disable-next-line sort-keys
               description: 'Ban List was just imported!',
               fields: [
-                { name: '**Imported by**',
-                  value: `${interaction.user}` },
-                { name: '**URL**',
-                  value: url },
+                { name: '**Imported by**', value: `${interaction.user}` },
+                { name: '**URL**', value: url },
                 {
                   name: '**Advance mode?**',
                   value: `${advMode}`
                 },
-                { name: '**Reason**',
-                  value: reason }
+                { name: '**Reason**', value: reason }
               ],
               timestamp: new Date()
             };
