@@ -1,5 +1,4 @@
 const fs = require('fs');
-const fsp = require('fs/promises');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { clientId, guildId, token } = require('./lib/ConfigManager.js'),
@@ -7,17 +6,14 @@ const { clientId, guildId, token } = require('./lib/ConfigManager.js'),
     .readdirSync('./commands')
     .filter((file) => file.endsWith('.js')),
   commands = [].map((command) => command.toJSON()),
-  descriptions = [],
-  final = [],
   rest = new REST({ version: '9' }).setToken(token);
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`),
     data = command.data.toJSON();
   data.note = command.note || 'none';
   commands.push(command.data.toJSON());
-  descriptions.push(data);
 }
-console.log(descriptions);
+
 (async() => {
   try {
     console.log('Started refreshing application (/) commands.');
@@ -36,18 +32,6 @@ console.log(descriptions);
     console.error(error);
   }
 })();
-
-for (const dat of descriptions) {
-  const format = {
-    name: `/${dat.name}`,
-    value: `${dat.description}\nNote: ${dat.note}`
-  };
-  final.push(format);
-}
-
-fsp.open('./cmd.json', 'w').then((file) => {
-  file.writeFile(JSON.stringify(final));
-});
 
 /* all commands deleter
    rest.get(Routes.applicationGuildCommands(clientId, guildId))
