@@ -9,13 +9,7 @@ const {
   MessageEmbed,
   MessageAttachment
 } = require('discord.js');
-const {
-  zero,
-  minIDlen,
-  futureIDlen,
-  link_expiry_days,
-  one
-} = require('../lib/Constants');
+const { NUMBER, IDlen, link_expiry_days } = require('../lib/Constants');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -42,7 +36,7 @@ module.exports = {
         } on ${new Date().toDateString()} ||for no reason :joy:||`;
 
     let canBan = false,
-      sourceListLen = zero;
+      sourceListLen = NUMBER.zero;
 
     try {
       const currentBanList = await interaction.guild.bans.fetch(),
@@ -55,11 +49,11 @@ module.exports = {
       let sourceList = [],
         sourceURL = '';
 
-      if (idList.length > zero) {
-        sourceList = idList.filter((id) => id.length >= minIDlen && id.length <= futureIDlen);
+      if (idList.length > NUMBER.zero) {
+        sourceList = idList.filter((id) => id.length >= IDlen.min && id.length <= IDlen.max);
         sourceListLen = sourceList.length;
 
-        if (sourceListLen > zero) {
+        if (sourceListLen > NUMBER.zero) {
           // eslint-disable-next-line new-cap
           sourceURL = await CreatePaste(
             sourceList,
@@ -82,11 +76,11 @@ module.exports = {
         console.log(sourceList);
         await interaction.editReply(`${sourceListLen} bans are being banned in background. Sit back and relax for a while!`);
 
-        let invalidBans = zero,
-          uniqueBans = zero;
+        let invalidBans = NUMBER.zero,
+          uniqueBans = NUMBER.zero;
 
         for (const newban of sourceList.filter((newPotentialBan) => !currentBanListProcessed.some((previousBan) => previousBan.user.id === newPotentialBan))) {
-          uniqueBans += one;
+          uniqueBans += NUMBER.one;
           await interaction.client.users
             .fetch(newban)
             .then(async(user) => {
@@ -99,8 +93,8 @@ module.exports = {
             // eslint-disable-next-line no-loop-func
             .catch((error) => {
               console.error(error);
-              invalidBans += one;
-              uniqueBans -= one;
+              invalidBans += NUMBER.one;
+              uniqueBans -= NUMBER.one;
             });
         }
 

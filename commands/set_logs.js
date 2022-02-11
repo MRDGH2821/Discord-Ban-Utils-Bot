@@ -3,7 +3,7 @@ const { createWebhook } = require('../lib/UtilityFunctions');
 const { SupportRow, InviteRow } = require('../lib/RowButtons');
 const { db } = require('../lib/firebase');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { one } = require('../lib/Constants');
+const { NUMBER } = require('../lib/Constants');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -45,7 +45,7 @@ module.exports = {
             .then(async(webhooks) => {
               const allhooks = await webhooks.filter((wh) => wh.owner === interaction.client.user);
               // console.log(allhooks);
-              if (allhooks.size > one) {
+              if (allhooks.size > NUMBER.one) {
                 await interaction.editReply({
                   embeds: [
                     logsProgress.addField(

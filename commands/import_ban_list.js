@@ -4,7 +4,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { Permissions, MessageEmbed } = require('discord.js');
 const { SupportRow } = require('../lib/RowButtons');
 const { pasteCheck } = require('../lib/UtilityFunctions');
-const { one } = require('../lib/Constants');
+const { NUMBER } = require('../lib/Constants');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -81,7 +81,7 @@ module.exports = {
               reason: inputReason
             };
             finalBanList.push(finalBan);
-            uniqueBans += one;
+            uniqueBans += NUMBER.one;
           }
         }
         else {
@@ -100,7 +100,7 @@ module.exports = {
                 : newban.reason
             };
             finalBanList.push(finalBan);
-            uniqueBans += one;
+            uniqueBans += NUMBER.one;
           }
         }
 
@@ -115,8 +115,8 @@ module.exports = {
               })
               .catch((error) => {
                 console.log(error);
-                invalidBans += one;
-                uniqueBans -= one;
+                invalidBans += NUMBER.one;
+                uniqueBans -= NUMBER.one;
               });
           });
         }
