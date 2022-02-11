@@ -1,132 +1,120 @@
-/* eslint-disable no-negated-condition */
-const { Permissions } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
-const { NotInsideServer, NoPerms } = require('../lib/ErrorEmbeds.js'),
-  // eslint-disable-next-line no-magic-numbers
-  fourweeks = 4 * 7 * 24 * 60 * 60 * 1000;
+const { Permissions, MessageEmbed } = require('discord.js');
+const { NUMBER, TIME } = require('../lib/Constants');
+const { SupportRow, InviteRow } = require('../lib/RowButtons');
+const { timeoutDurationText } = require('../lib/UtilityFunctions');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('timeout')
-    .setDescription('Timeouts a user')
-    .addUserOption((option) => option.setName('user').setDescription('Tag a user')
+    .setDescription('Put a user in timeout')
+    .addUserOption((option) => option
+      .setName('user')
+      .setDescription('Select a user to timeout')
       .setRequired(true))
     .addIntegerOption((option) => option
       .setName('duration')
-      .setDescription('Enter Duration in minutes. Put 0 to remove timeout. Max 4 weeks.')
-      .setMaxValue(fourweeks)
-      .setRequired(true))
+      .setDescription('Enter Timeout duration.')
+      .setRequired(true)
+      .addChoice('0 i.e. Remove timeout', NUMBER.zero)
+      .addChoice('60 seconds', TIME.minute)
+      .addChoice('5 minutes', TIME.minute * NUMBER.five)
+      .addChoice('10 minutes', TIME.minute * NUMBER.ten)
+      .addChoice('30 minutes', TIME.hour / NUMBER.two)
+      .addChoice('1 hour', TIME.hour)
+      .addChoice('2 hours', TIME.hour * NUMBER.two)
+      .addChoice('6 hours', TIME.hour * NUMBER.six)
+      .addChoice('12 hours', TIME.day / NUMBER.two)
+      .addChoice('1 day', TIME.day)
+      .addChoice('3 days', TIME.day * NUMBER.three)
+      .addChoice('1 week', TIME.week)
+      .addChoice('3 weeks', TIME.week * NUMBER.three))
     .addStringOption((option) => option
       .setName('reason')
-      .setDescription('Enter reason for Timeout. Default: Timed-out by <you> for <duration> on <today\'s date>'))
-    .addBooleanOption((option) => option.setName('dm_reason').setDescription('Send Reason as DM?')),
+      .setDescription('Enter reason for Timeout. Default: Timed-out by <you> for <duration> on <today\'s date>')),
 
   async execute(interaction) {
-    const dm_reason =
-        (await interaction.options.getBoolean('dm_reason')) || false,
-      duration = await interaction.options.getInteger('duration'),
+    await interaction.deferReply();
+    const duration = await interaction.options.getInteger('duration'),
+      isInGuild = await interaction.inGuild(),
       reason =
         (await interaction.options.getString('reason')) ||
-        `Timed-out by ${
-          interaction.user.tag
-        } for ${duration} mins on ${new Date().toString()}`,
+        `Timed-out by ${interaction.user.tag} for ${timeoutDurationText(duration)} on ${new Date().toString()}`,
       target = await interaction.options.getMember('user');
+    console.log(duration);
+    let canTimeout = false,
+      isModeratable = false;
+
     try {
-      if (!interaction.guild) {
-        await interaction.reply({
-          components: [InviteRow],
-          embeds: [NotInsideServer]
-        });
-      }
-      else if (
-        !interaction.member.permissions.has([Permissions.FLAGS.MODERATE_MEMBERS])
-      ) {
-        NoPerms.field = [
-          {
-            name: '**Permissions Required**',
-            value: 'MODERATE_MEMBERS'
-          }
-        ];
-        await interaction.reply({
-          // content: 'You cannot Timeout members.',
-          components: [InviteRow],
-          embeds: [NoPerms]
-        });
-      }
-      else if (target.moderatable) {
-        // eslint-disable-next-line no-magic-numbers
-        await target.timeout(duration * 60 * 1000, reason);
-        // eslint-disable-next-line no-magic-numbers
-        if (duration > 0) {
-          const dm_emb = {
-            color: 0xe1870a,
-            title: '**Timed-out!**',
-            // eslint-disable-next-line sort-keys
-            description: `${target} is timed-out from ${interaction.guild}`,
-            thumbnail: { url: target.displayAvatarURL({ dynamic: true }) },
-            // eslint-disable-next-line sort-keys
-            fields: [
+      canTimeout = await interaction.member.permissions.has([Permissions.FLAGS.MODERATE_MEMBERS]);
+      isModeratable = target.moderatable;
+      if (isInGuild && canTimeout) {
+        await target.timeout(duration, reason);
+        if (duration > NUMBER.zero) {
+          const timeout_success = new MessageEmbed()
+            .setColor('e1870a')
+            .setTitle('**User put in Timeout!**')
+            .setDescription(`User \`${target.tag}\` ${target} is put into timeout.`)
+            .setThumbnail(target.displayAvatarURL({ dynamic: true }))
+            .addFields([
               {
                 name: '**Reason**',
                 value: `${reason}`
               },
               {
                 name: '**Duration**',
-                value: `${duration} minute(s)`
+                value: timeoutDurationText(duration)
               }
-            ]
-          };
-          if (dm_reason) {
-            // if there is a reason specified, DM it to the user.
-            target.user
-              .send({ embeds: [dm_emb] })
-              .catch('User cannot be DM-ed');
-          }
-          await interaction.reply({
-            // content: `User ${target.user.tag} is timed-out.\nReason: ${reason}\nDuration: ${duration} minutes`,
-            embeds: [dm_emb]
-          });
+            ])
+            .setTimestamp();
+
+          await interaction.editReply({ embeds: [timeout_success] });
         }
         else {
-          const dm_emb = {
-            color: 0xe1870a,
-            title: '**Timeout removed!**',
-            // eslint-disable-next-line sort-keys
-            description: `Timeout removed from ${target} in ${interaction.guild}`
-          };
-          if (dm_reason) {
-            // if there is a reason specified, DM it to the user.
-            target.user
-              .send({ embeds: [dm_emb] })
-              .catch('User cannot be DM-ed');
-          }
-          await interaction.reply({
-            // content: `User ${target.user.tag} is timed-out.\nReason: ${reason}\nDuration: ${duration} minutes`,
-            embeds: [dm_emb]
-          });
+          const timeout_removed = new MessageEmbed()
+            .setColor('e1870a')
+            .setTitle('**Timeout Removed**')
+            .setDescription(`User \`${target.tag}\` ${target} is out of timeout.`)
+            .setTimestamp();
+          await interaction.editReply({ embeds: [timeout_removed] });
         }
       }
       else {
-        await interaction.reply({
-          components: [SupportRow],
-          embeds: [
-            {
-              title: '**Cannot Time-out...**',
-              // eslint-disable-next-line sort-keys
-              description: `User ${target} cannot be Timed out :grimacing:\n\nPlease move the bot role higher than that user for this command to work.`,
-              // eslint-disable-next-line sort-keys
-              color: 0xff0033
-            }
-          ]
-        });
+        throw new Error(`Inside server? ${isInGuild}\nCan Timeout? ${canTimeout}`);
       }
     }
     catch (error) {
-      // if any error is thrown
-      await interaction.reply({
-        components: [SupportRow],
-        content: `Error Occured! \nPlease Report to the Developer. \nError Dump:\n${error}`
+      const timeout_fail = new MessageEmbed()
+        .setColor('ff0033')
+        .setTitle('**Cannot Timeout...**')
+        .setDescription(`User ${target} cannot be put in Timeout :grimacing:\n\nIf this error is comming even after passing all checks, then please report the Error Dump section to developer.\n(In DM channel, user will be always null for obvious reasons.)`)
+        .addFields([
+          {
+            name: '**Checks**',
+            value: `Executed In server? **\`${isInGuild}\`**\nCan you Timeout? **\`${canTimeout}\`**\nTarget moderatable? **\`${isModeratable}\`**`
+          },
+          {
+            name: '**Possible solutions**',
+            value:
+              'Use this command inside a server where you have required permissions. Also make sure the bot role is above that user\'s highest role for this command to work.'
+          },
+          {
+            name: '**Inputs given**',
+            value: `User: ${target} \nTimeout duration: ${timeoutDurationText(duration)}\nReason: ${reason}`
+          },
+          {
+            name: '**Bot Error Dump**',
+            value: `${error}`
+          }
+        ]);
+
+      await interaction.editReply({
+        components: [
+          SupportRow,
+          InviteRow
+        ],
+        embeds: [timeout_fail]
       });
+      console.error(error);
     }
   }
 };
