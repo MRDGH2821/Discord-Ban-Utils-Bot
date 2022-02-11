@@ -3,8 +3,8 @@ const axios = require('axios');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { Permissions, MessageEmbed } = require('discord.js');
 const { SupportRow } = require('../lib/RowButtons');
-const { pasteCheck } = require('../lib/UtilityFunctions'),
-  one = 1;
+const { pasteCheck } = require('../lib/UtilityFunctions');
+const { one } = require('../lib/Constants');
 
 module.exports = {
   data: new SlashCommandBuilder()

@@ -1,10 +1,9 @@
-const { Permissions, MessageEmbed } = require('discord.js');
+const { Permissions, MessageEmbed, Constants } = require('discord.js');
 const { createWebhook } = require('../lib/UtilityFunctions');
 const { SupportRow, InviteRow } = require('../lib/RowButtons');
 const { db } = require('../lib/firebase');
-const { SlashCommandBuilder } = require('@discordjs/builders'),
-  GUILD_TEXT = 0,
-  one = 1;
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const { one } = require('../lib/Constants');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -14,7 +13,7 @@ module.exports = {
       .setName('log_channel')
       .setDescription('Select Log Channel')
       .setRequired(true)
-      .addChannelType(GUILD_TEXT)),
+      .addChannelType(Constants.ChannelTypes.GUILD_TEXT)),
 
   note: 'Type of logs sent: Ban list import-export log, Ban-unban logr & member leaving server log. More type of logs coming soon.',
 

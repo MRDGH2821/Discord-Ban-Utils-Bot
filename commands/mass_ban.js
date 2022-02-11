@@ -3,17 +3,19 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { CreatePaste } = require('dpaste-ts');
 const { SupportRow, InviteRow } = require('../lib/RowButtons');
 const {
-    Permissions,
-    MessageActionRow,
-    MessageButton,
-    MessageEmbed,
-    MessageAttachment
-  } = require('discord.js'),
-  expiry = 3,
-  futureIDlen = 19,
-  minIDlen = 17,
-  one = 1,
-  zero = 0;
+  Permissions,
+  MessageActionRow,
+  MessageButton,
+  MessageEmbed,
+  MessageAttachment
+} = require('discord.js');
+const {
+  zero,
+  minIDlen,
+  futureIDlen,
+  link_expiry_days,
+  one
+} = require('../lib/Constants');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -63,7 +65,7 @@ module.exports = {
             sourceList,
             `Mass ban list by ${interaction.user.tag} on ${new Date()}.txt`,
             'text',
-            expiry
+            link_expiry_days
           );
         }
         else {

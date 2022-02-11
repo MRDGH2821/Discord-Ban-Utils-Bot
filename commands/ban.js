@@ -1,7 +1,7 @@
 const { Permissions, MessageEmbed } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { SupportRow, InviteRow } = require('../lib/RowButtons'),
-  default_days = 7;
+const { SupportRow, InviteRow } = require('../lib/RowButtons');
+const { default_delete_days } = require('../lib/Constants');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -18,14 +18,14 @@ module.exports = {
       .setName('delete_messages')
       .setDescription('Enter number of msgs (in days) to delete')),
 
-  note: `Default reason is: Banned by <you> on <today's date>. Default days of messages deleted is ${default_days}`,
+  note: `Default reason is: Banned by <you> on <today's date>. Default days of messages deleted is ${default_delete_days}`,
 
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
     const delete_msg_days =
         (await interaction.options.getNumber('delete_messages')) ||
-        default_days,
+        default_delete_days,
       isInGuild = await interaction.inGuild(),
       reason =
         (await interaction.options.getString('reason')) ||
