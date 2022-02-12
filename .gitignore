@@ -17,3 +17,5 @@ command-exports
 
 already-old-files
 cmd.json
+commands/guildban.txt
+commands/list.txt
