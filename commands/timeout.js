@@ -73,7 +73,7 @@ module.exports = {
           const timeout_removed = new MessageEmbed()
             .setColor('e1870a')
             .setTitle('**Timeout Removed**')
-            .setDescription(`User \`${target.tag}\` ${target} is out of timeout.`)
+            .setDescription(`User \`${target.user.tag}\` ${target} is out of timeout.`)
             .setTimestamp();
           await interaction.editReply({ embeds: [timeout_removed] });
         }
