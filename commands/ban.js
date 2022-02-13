@@ -16,7 +16,8 @@ module.exports = {
       .setDescription('Enter Reason. (Default: Banned by <you> on <today\'s date>)'))
     .addNumberOption((option) => option
       .setName('delete_messages')
-      .setDescription('Enter number of msgs (in days) to delete')),
+      .setDescription('Enter number of msgs (in days) to delete. (Max and Default is 7 days')
+      .setMaxValue(default_delete_days)),
 
   note: `Default reason is: Banned by <you> on <today's date>. Default days of messages deleted is ${default_delete_days}`,
 
