@@ -1,25 +1,7 @@
-const { MessageActionRow, MessageButton } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { version } = require('../package.json');
-const { link } = require('../lib/InviteLink.json'),
-  row = new MessageActionRow()
-    .addComponents(new MessageButton()
-      .setLabel('Join Support Server')
-      .setStyle('LINK')
-      .setURL('https://discord.gg/MPtE9zsBs5'))
-    .addComponents(new MessageButton()
-      .setLabel('Report an Issue at GitHub')
-      .setStyle('LINK')
-      .setURL('https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues'))
-    .addComponents(new MessageButton()
-      .setLabel('GitHub Repository')
-      .setStyle('LINK')
-      .setURL('https://github.com/MRDGH2821/Discord-Ban-Utils-Bot'))
-    .addComponents(new MessageButton()
-      .setLabel('Invite the Bot in your server!')
-      .setStyle('LINK')
-      .setURL(link)),
-  // eslint-disable-next-line sort-vars
+const { MessageEmbed } = require('discord.js');
+const { InviteRow, SupportRow } = require('../lib/RowButtons');
+const { version } = require('../package.json'),
   oldFields = [
     { name: '**/ban**', value: 'Bans the given user.' },
     { name: '**/unban**', value: 'Unbans the given user.' },
@@ -68,22 +50,21 @@ module.exports = {
     .setName('help')
     .setDescription('The help section to get you started!'),
 
-  async execute(interaction) {
-    const helpEmbed = {
-      color: 0xd8d4d3,
-      title: '**Help Section**',
-      url: 'https://discord.gg/MPtE9zsBs5',
-      // eslint-disable-next-line sort-keys
-      description:
-        'The help section you get you started!\nThe bot helps you import, export & transfer bans from one server to another.',
-      fields: [],
-      footer: { text: `Bot version ${version}` }
-    };
+  note: 'All commannds have an additional note like this which explain more about the respective command.',
 
-    helpEmbed.fields.push(oldFields);
+  // eslint-disable-next-line sort-keys
+  async execute(interaction) {
+    const helpEmbed = new MessageEmbed()
+      .setColor('d8d4d3')
+      .setTitle('**Help Section**')
+      .setDescription(`The help section for you to get started with the bot!\nIt helps you import, export & transfer bans from one server to another.\n\nBot version **\`${version}\`**`)
+      .addFields(oldFields);
 
     await interaction.reply({
-      components: [row],
+      components: [
+        InviteRow,
+        SupportRow
+      ],
       embeds: [helpEmbed]
     });
   }
