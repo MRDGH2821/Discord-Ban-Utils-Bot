@@ -15,7 +15,7 @@ module.exports = {
       .setRequired(true)
       .addChannelType(Constants.ChannelTypes.GUILD_TEXT)),
 
-  note: 'Type of logs sent: Ban list import-export log, Ban-unban logr & member leaving server log. More type of logs coming soon.',
+  note: 'Type of logs sent: Ban list import-export log, Ban-unban log & member leaving server log. More type of logs coming soon.',
 
   // eslint-disable-next-line sort-keys
   async execute(interaction) {

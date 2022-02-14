@@ -21,6 +21,9 @@ module.exports = {
       .setName('reason')
       .setDescription('Enter a common reason. (Default is Banned by <you> on <today\'s date>)')),
 
+  note: 'Default reason is: Massbanned by <you> on <today\'s date>.\nIt will automatically filter out duplicate bans.',
+
+  // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
     const ids = await interaction.options.getString('ids'),

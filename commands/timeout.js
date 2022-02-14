@@ -32,6 +32,9 @@ module.exports = {
       .setName('reason')
       .setDescription('Enter reason for Timeout. Default: Timed-out by <you> for <duration> on <today\'s date>')),
 
+  note: 'Default reason is: Timed-out by <you> on <today\'s date>.',
+
+  // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
     const duration = await interaction.options.getInteger('duration'),

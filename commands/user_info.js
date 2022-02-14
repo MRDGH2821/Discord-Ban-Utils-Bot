@@ -10,6 +10,9 @@ module.exports = {
     .setDescription('Display info about given user.')
     .addUserOption((option) => option.setName('user').setDescription('Select user to know info')),
 
+  note: 'If a server member is not found, will show your details. Using in DM will show different yet interesting information',
+
+  // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
 

@@ -19,7 +19,7 @@ module.exports = {
       .setDescription('Enter number of msgs (in days) to delete. (Max and Default is 7 days')
       .setMaxValue(default_delete_days)),
 
-  note: `Default reason is: Banned by <you> on <today's date>. Default days of messages deleted is ${default_delete_days}`,
+  note: `Default reason is: Banned by <you> on <today's date>. Default & max days of messages deleted is ${default_delete_days}`,
 
   // eslint-disable-next-line sort-keys
   async execute(interaction) {

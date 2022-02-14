@@ -13,6 +13,9 @@ module.exports = {
     .setName('transfer_bans')
     .setDescription('Transfers Bans across servers'),
 
+  note: 'It will automatically filter out duplicate bans while transferring. Transfers bans with their reasons.',
+
+  // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
     const isInGuild = await interaction.inGuild();
