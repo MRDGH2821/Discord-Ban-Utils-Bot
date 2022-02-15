@@ -54,12 +54,10 @@ module.exports = {
               components: [InviteRow],
               content: url
             });
-            interaction.client.emit(
-              'exportListSuccess',
-              interaction,
-              url,
-              advMode
-            );
+            interaction.client.emit('exportListSuccess', interaction, {
+              advanceMode: advMode,
+              url
+            });
           })
           .catch((error) => {
             throw error;
