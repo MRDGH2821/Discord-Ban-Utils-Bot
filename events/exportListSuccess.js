@@ -4,18 +4,28 @@ const { db } = require('../lib/firebase');
 module.exports = {
   name: 'exportListSuccess',
 
+  /**
+   * function to execute on 'exportListSuccess' event
+   * @async
+   * @function execute
+   * @param {Interaction} interaction
+   * @param {Object} exportOptions
+   * @param {@link} exportOptions.url
+   * @param {boolean} exportOptions.advanceMode
+   */
   // eslint-disable-next-line sort-keys
   async execute(interaction, { url, advanceMode }) {
     const exportLog = new MessageEmbed()
       .setColor('d8d4d3')
-      .setTitle('**Export Log**')
+      .setTitle('**BU Export Log**')
       .setDescription(`Ban list of this server was just exported!\nExport Requested by ${interaction.user}\nAdvanced mode: **\`${advanceMode}\`**`)
       .addFields([
         {
           name: '**URL**',
           value: url
         }
-      ]);
+      ])
+      .setTimestamp();
     try {
       const loghook = await interaction.client.webhooksCache.find((webhook) => webhook.guildId === interaction.guild.id);
 
