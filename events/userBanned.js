@@ -1,80 +1,59 @@
-const { db } = require('../lib/firebase.js');
-
+// eslint-disable-next-line no-unused-vars
+const { MessageEmbed, CommandInteraction } = require('discord.js');
+const { db } = require('../lib/firebase');
 module.exports = {
   name: 'userBanned',
+
+  /**
+   *
+   * @param {CommandInteraction} interaction
+   * @param {Object} BUBanOptions
+   * @param {string} BUBanOptions.reason
+   * @param {number} BUBanOptions.daysOfMsgs
+   */
   // eslint-disable-next-line sort-keys
-  async execute(interaction, reason, daysOfMsgs) {
+  async execute(interaction, { reason, daysOfMsgs }) {
     const bannedUser = await interaction.options.getUser('user'),
-      serverDB = await db
-        .collection('servers')
-        .doc(`${interaction.guild.id}`)
-        .get();
+      embedBanLog = new MessageEmbed()
+        .setTitle('**BU Ban Log**')
+        .setColor('e1870a')
+        .setDescription(`\`${bannedUser.tag}\` ${bannedUser} got hit with the swift hammer of justice!\nID: \`${bannedUser.id}\`\nDays of messages deleted: ${daysOfMsgs}`)
+        .addFields([
+          {
+            name: '**Justice Ban Hammer Wielder**',
+            value: `${interaction.user.tag} ${interaction.user}`
+          },
+          {
+            name: '**Ban Reason**',
+            value: `${reason}`
+          }
+        ])
+        .setTimestamp();
 
-    /* console.log('Moderator: ', mod);
-       console.log('Banned user: ', bannedUser);
-       console.log('Reason: ', reason);
-       console.log('Guild: ', guild); */
     try {
-      if (serverDB.exists) {
-        const serverData = serverDB.data(),
-          webhookID = serverData.logWebhookID;
-        console.log('Doc data: ', serverData);
+      const loghook = await interaction.client.webhooksCache.find((webhook) => webhook.guildId === interaction.guild.id);
 
-        /* serverData format:
-           {
-           logChannelID: <channel ID>,
-           logWebhookID: <webhook ID>,
-           serverID: <server ID>
-           } */
-        console.log('logWebHookID: ', serverData.logWebhookID);
-
-        if (webhookID) {
-          const webhookClient = await interaction.client.fetchWebhook(webhookID),
-            // eslint-disable-next-line sort-vars
-            logEmb = {
-              color: 0xe1870a,
-              title: '**Ban Log**',
-              // eslint-disable-next-line sort-keys
-              description: 'A person got hit with the swift Hammer of Justice!',
-              thumbnail: {
-                url: bannedUser.displayAvatarURL()
-              },
-              // eslint-disable-next-line sort-keys
-              fields: [
-                {
-                  name: '**Justice Hammer Wielder**',
-                  value: `${interaction.user}`
-                },
-                {
-                  name: '**Justice Hammer Target**',
-                  value: `${bannedUser.tag} ${bannedUser}\nID: ${bannedUser.id}`
-                },
-                {
-                  name: '**Reason**',
-                  value: `${reason}`
-                },
-                {
-                  name: '**Days of messages deleted**',
-                  value: `${daysOfMsgs}`
-                }
-              ],
-              timestamp: new Date(),
-              // eslint-disable-next-line sort-keys
-              footer: {
-                text: bannedUser.id
-              }
-            };
-          webhookClient.send({
-            embeds: [logEmb]
-          });
-        }
-      }
-      else {
-        console.log(`No log channel configured for ${interaction.guild.name}`);
-      }
+      loghook.send({ embeds: [embedBanLog] });
+      console.log('Webhook fetched from Cache');
     }
     catch (error) {
-      console.log(error);
+      const serverDB = await db
+        .collection('servers')
+        .doc(interaction.guild.id)
+        .get();
+
+      if (serverDB.exists) {
+        const serverData = serverDB.data(),
+          serverWebhook = await interaction.client.fetchWebhook(serverData.logWebhookID);
+
+        serverWebhook.send({ embeds: [embedBanLog] });
+        console.log('Webhook fetched from API');
+      }
+      else {
+        console.log(`Logs channel not set in ${interaction.guild.name}`);
+      }
+      console.log('Error Dump:');
+      console.error(error);
     }
   }
 };

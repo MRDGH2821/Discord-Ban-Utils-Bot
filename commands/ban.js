@@ -65,12 +65,10 @@ module.exports = {
           ])
           .setTimestamp();
         await interaction.editReply({ embeds: [ban_success] });
-        await interaction.client.emit(
-          'userBanned',
-          interaction,
-          reason,
-          delete_msg_days
-        );
+        await interaction.client.emit('userBanned', interaction, {
+          daysOfMsgs: delete_msg_days,
+          reason
+        });
       }
       else {
         throw new Error(`Inside server? ${isInGuild}\nCan Ban? ${canBan}`);
