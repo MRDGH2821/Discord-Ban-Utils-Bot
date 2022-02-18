@@ -66,7 +66,7 @@ module.exports = {
 
         /* console.log('Type of Source:', typeof source);
            console.log('Source: ', source); */
-        if (typeof source === String) {
+        if (typeof source === 'string' || typeof source === String) {
           const rawEle = source.split(/\D+/gu),
             sourceBans = rawEle.map((element) => element.trim());
           advMode = false;
@@ -141,13 +141,12 @@ module.exports = {
               value: modeDesc
             }
           ]);
-        interaction.client.emit(
-          'importListSuccess',
-          interaction,
-          pasteLink,
-          inputReason,
-          advMode
-        );
+        interaction.client.emit('importListSuccess', interaction, {
+          advanceMode: advMode,
+          reason: inputReason,
+          uniqueBans,
+          url: pasteLink
+        });
         await interaction.editReply({
           content: 'Ban Import Success!',
           embeds: [import_success]
