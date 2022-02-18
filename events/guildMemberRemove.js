@@ -1,52 +1,55 @@
-const { db } = require('../lib/firebase.js');
+const { time } = require('@discordjs/builders');
+// eslint-disable-next-line no-unused-vars
+const { MessageEmbed, GuildMember } = require('discord.js');
+const { db } = require('../lib/firebase');
 
 module.exports = {
   name: 'guildMemberRemove',
+
+  /**
+   * function to execute on 'guildMemberRemove' event
+   * @async
+   * @function execute
+   * @param {GuildMember} member
+   */
   // eslint-disable-next-line sort-keys
   async execute(member) {
-    const serverDB = await db
-      .collection('servers')
-      .doc(`${member.guild.id}`)
-      .get();
-    try {
-      if (serverDB.exists) {
-        const serverData = serverDB.data(),
-          webhookID = serverData.logWebhookID;
-        console.log('Doc data: ', serverData);
-
-        /* serverData format:
-           {
-           logChannel: <channel ID>,
-           logWebhook: <webhook ID>,
-           serverID: <server ID>
-           } */
-        console.log('logWebHookID: ', serverData.logWebhookID);
-
-        if (webhookID) {
-          const webhookClient = await member.client.fetchWebhook(webhookID),
-            // eslint-disable-next-line sort-vars
-            logEmb = {
-              color: 0xd8d4d3,
-              title: '**Exit Log**',
-              // eslint-disable-next-line sort-keys
-              description: `${member.user.tag} ${member} left the server`,
-              timestamp: new Date(),
-              // eslint-disable-next-line sort-keys
-              footer: {
-                text: `${member.user.id}`
-              }
-            };
-          webhookClient.send({
-            embeds: [logEmb]
-          });
+    const exitLog = new MessageEmbed()
+      .setTimestamp()
+      .setTitle('**Audit Exit Log**')
+      .setColor('d8d4d3')
+      .setDescription(`${member.user.tag} ${member} left the server.\nID: \`${member.user.id}\``)
+      .addFields([
+        {
+          name: '**Joined at**',
+          value: time(member.joinedAt)
         }
-      }
-      else {
-        console.log(`No log channel configured for ${member.guild.name} `);
-      }
+      ]);
+
+    try {
+      const loghook = await member.client.webhooksCache.find((webhook) => webhook.guildId === member.guild.id);
+
+      loghook.send({ embeds: [exitLog] });
+      console.log('Webhook fetched from Cache');
     }
     catch (error) {
-      console.log(error);
+      const serverDB = await db
+        .collection('servers')
+        .doc(member.guild.id)
+        .get();
+
+      if (serverDB.exists) {
+        const serverData = serverDB.data(),
+          serverWebhook = await member.client.fetchWebhook(serverData.logWebhookID);
+
+        serverWebhook.send({ embeds: [exitLog] });
+        console.log('Webhook fetched from API');
+      }
+      else {
+        console.log(`Logs channel not set in ${member.guild.name}`);
+      }
+      console.log('Error Dump:');
+      console.error(error);
     }
   }
 };
