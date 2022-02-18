@@ -1,57 +1,63 @@
-const { db } = require('../lib/firebase.js');
+// eslint-disable-next-line no-unused-vars
+const { MessageEmbed, Interaction } = require('discord.js');
+const { db } = require('../lib/firebase');
 
 module.exports = {
   name: 'importListSuccess',
+
+  /**
+   * function to execute on 'importListSuccess' event
+   * @async
+   * @function execute
+   * @param {Interaction} interaction
+   * @param {Object} importOptions
+   * @param {@link} importOptions.url
+   * @param {string} importOptions.reason
+   * @param {boolean} importOptions.advanceMode
+   * @param {number} importOptions.uniqueBans
+   */
   // eslint-disable-next-line sort-keys
-  async execute(interaction, url, reason, advMode) {
-    const serverDB = await db
-      .collection('servers')
-      .doc(`${interaction.guild.id}`)
-      .get();
-    try {
-      if (serverDB.exists) {
-        const serverData = serverDB.data(),
-          webhookID = serverData.logWebhookID;
-        console.log('Doc data: ', serverData);
-
-        /* serverData format:
-           {
-           logChannel: <channel ID>,
-           logWebhook: <webhook ID>,
-           serverID: <server ID>
-           } */
-        console.log('logWebHookID: ', serverData.logWebhookID);
-
-        if (webhookID) {
-          const webhookClient = await interaction.client.fetchWebhook(webhookID),
-            // eslint-disable-next-line sort-vars
-            logEmb = {
-              color: 0xd8d4d3,
-              title: '**Import Log**',
-              // eslint-disable-next-line sort-keys
-              description: 'Ban List was just imported!',
-              fields: [
-                { name: '**Imported by**', value: `${interaction.user}` },
-                { name: '**URL**', value: url },
-                {
-                  name: '**Advance mode?**',
-                  value: `${advMode}`
-                },
-                { name: '**Reason**', value: reason }
-              ],
-              timestamp: new Date()
-            };
-          webhookClient.send({
-            embeds: [logEmb]
-          });
+  async execute(interaction, { url, reason, advanceMode, uniqueBans }) {
+    const importLog = new MessageEmbed()
+      .setTitle('**BU Import Log**')
+      .setColor('d8d4d3')
+      .setDescription(`Ban list of this server was just imported!\nImported by \`${interaction.user.tag}\` ${interaction.user}\nAdvanced mode: **\`${advanceMode}\`**\nUnique Bans: ${uniqueBans}`)
+      .addFields([
+        {
+          name: '**URL**',
+          value: url
+        },
+        {
+          name: '**Reason**',
+          value: `${reason}`
         }
-      }
-      else {
-        console.log(`No log channel configured for ${interaction.guild.name} `);
-      }
+      ])
+      .setTimestamp();
+
+    try {
+      const loghook = await interaction.client.webhooksCache.find((webhook) => webhook.guildId === interaction.guild.id);
+
+      loghook.send({ embeds: [importLog] });
+      console.log('Webhook fetched from Cache');
     }
     catch (error) {
-      console.log(error);
+      const serverDB = await db
+        .collection('servers')
+        .doc(interaction.guild.id)
+        .get();
+
+      if (serverDB.exists) {
+        const serverData = serverDB.data(),
+          serverWebhook = await interaction.client.fetchWebhook(serverData.logWebhookID);
+
+        serverWebhook.send({ embeds: [importLog] });
+        console.log('Webhook fetched from API');
+      }
+      else {
+        console.log(`Logs channel not set in ${interaction.guild.name}`);
+      }
+      console.log('Error Dump:');
+      console.error(error);
     }
   }
 };
