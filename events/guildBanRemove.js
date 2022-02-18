@@ -1,57 +1,42 @@
-const { db } = require('../lib/firebase.js');
+const { MessageEmbed } = require('discord.js');
+const { db } = require('../lib/firebase');
 
 module.exports = {
   name: 'guildBanRemove',
+
   // eslint-disable-next-line sort-keys
   async execute(member) {
-    const serverDB = await db
-      .collection('servers')
-      .doc(`${member.guild.id}`)
-      .get();
+    const unbanLog = new MessageEmbed()
+      .setTitle('**Audit Unban Log**')
+      .setColor('d8d4d3')
+      .setDescription(`${member.user.tag} ${member.user} is unbanned from the server\nID: \`${member.user.id}\``)
+      .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+      .setTimestamp();
 
     try {
-      if (serverDB.exists) {
-        const serverData = serverDB.data(),
-          webhookID = serverData.logWebhookID;
-        console.log('Doc data: ', serverData);
+      const loghook = await member.client.webhooksCache.find((webhook) => webhook.guildId === member.guild.id);
 
-        /* serverData format:
-           {
-           logChannel: <channel ID>,
-           logWebhook: <webhook ID>,
-           serverID: <server ID>
-           } */
-
-        console.log('logWebHookID: ', serverData.logWebhookID);
-
-        if (webhookID) {
-          const webhookClient = await member.client.fetchWebhook(webhookID),
-            // eslint-disable-next-line sort-vars
-            logEmb = {
-              color: 0xd8d4d3,
-              title: '**Unban Log**',
-              // eslint-disable-next-line sort-keys
-              description: `${member.user.tag} ${member.user} is unbanned from the server`,
-              thumbnail: {
-                url: member.user.displayAvatarURL({ dynamic: true })
-              },
-              timestamp: new Date(),
-              // eslint-disable-next-line sort-keys
-              footer: {
-                text: `${member.user.id}`
-              }
-            };
-          webhookClient.send({
-            embeds: [logEmb]
-          });
-        }
-      }
-      else {
-        console.log(`No log channel configured for ${member.guild.name} `);
-      }
+      loghook.send({ embeds: [unbanLog] });
+      console.log('Webhook fetched from Cache');
     }
     catch (error) {
-      console.log(error);
+      const serverDB = await db
+        .collection('servers')
+        .doc(member.guild.id)
+        .get();
+
+      if (serverDB.exists) {
+        const serverData = serverDB.data(),
+          serverWebhook = await member.client.fetchWebhook(serverData.logWebhookID);
+
+        serverWebhook.send({ embeds: [unbanLog] });
+        console.log('Webhook fetched from API');
+      }
+      else {
+        console.log(`Logs channel not set in ${member.guild.name}`);
+      }
+      console.log('Error Dump:');
+      console.error(error);
     }
   }
 };
