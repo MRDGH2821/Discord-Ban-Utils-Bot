@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const { MessageEmbed, Interaction } = require('discord.js');
-const { db } = require('../lib/firebase');
+const { db } = require('../lib/firebase.js');
+const { EMBCOLORS } = require('../lib/Constants.js');
 
 module.exports = {
   name: 'exportListSuccess',
@@ -17,7 +18,7 @@ module.exports = {
   // eslint-disable-next-line sort-keys
   async execute(interaction, { url, advanceMode }) {
     const exportLog = new MessageEmbed()
-      .setColor('d8d4d3')
+      .setColor(EMBCOLORS.whiteGray)
       .setTitle('**BU Export Log**')
       .setDescription(`Ban list of this server was just exported!\nExport Requested by ${interaction.user}\nAdvanced mode: **\`${advanceMode}\`**`)
       .addFields([

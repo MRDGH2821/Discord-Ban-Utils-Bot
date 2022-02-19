@@ -3,9 +3,9 @@ const axios = require('axios');
 // eslint-disable-next-line no-unused-vars
 const { Permissions, MessageEmbed, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { NUMBER } = require('../lib/Constants');
-const { SupportRow } = require('../lib/RowButtons');
-const { pasteCheck } = require('../lib/UtilityFunctions');
+const { SupportRow } = require('../lib/RowButtons.js');
+const { pasteCheck } = require('../lib/UtilityFunctions.js');
+const { NUMBER, EMBCOLORS } = require('../lib/Constants.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -19,7 +19,7 @@ module.exports = {
       .setName('reason')
       .setDescription('Enter a common reason. (Default is Banned by <you> on <today\'s date>)')),
 
-  note: 'For simple import type, provided/default reason is used. For advanced import type, included reason is used. Type of import is automatically detemined.',
+  note: 'For simple import type, provided/default reason is used. For advanced import type, included reason is used. Type of import is automatically determined.',
 
   /**
    * import ban list into current server
@@ -135,7 +135,7 @@ module.exports = {
 
         // eslint-disable-next-line one-var
         const import_success = new MessageEmbed()
-          .setColor('e7890c')
+          .setColor(EMBCOLORS.hammerHandle)
           .setTitle('**Ban Import Success!**')
           .setDescription(`Bans in list: ${bansInList}\nInvalid Bans: ${invalidBans}\nUnique Bans: ${uniqueBans}\nAdvanced Mode: ${advMode}`)
           .addFields([
@@ -165,9 +165,9 @@ module.exports = {
     }
     catch (error) {
       const import_fail = new MessageEmbed()
-        .setColor('ff0033')
+        .setColor(EMBCOLORS.error)
         .setTitle('**Cannot Import...**')
-        .setDescription('Cannot import ban list.\n\nIf this error is comming even after passing all checks, then please report the Error Dump section to developer.')
+        .setDescription('Cannot import ban list.\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.')
         .addFields([
           {
             name: '**Checks**',

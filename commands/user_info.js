@@ -2,7 +2,8 @@
 // eslint-disable-next-line no-unused-vars
 const { MessageEmbed, Permissions, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder, time } = require('@discordjs/builders');
-const { InviteRow } = require('../lib/RowButtons');
+const { EMBCOLORS } = require('../lib/Constants.js');
+const { InviteRow } = require('../lib/RowButtons.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -22,19 +23,17 @@ module.exports = {
   async execute(interaction) {
     await interaction.deferReply();
 
-    const user =
-      interaction.options.getUser('user') || interaction.user;
+    const user = interaction.options.getUser('user') || interaction.user;
     try {
       if (interaction.inGuild()) {
         const member =
-            interaction.options.getMember('user') ||
-            interaction.member,
+            interaction.options.getMember('user') || interaction.member,
           canBan = await member.permissions.has([Permissions.FLAGS.BAN_MEMBERS]),
           canKick = await member.permissions.has([Permissions.FLAGS.KICK_MEMBERS]),
           canManage = await member.permissions.has([Permissions.FLAGS.MANAGE_GUILD]),
           canTimeout = await member.permissions.has([Permissions.FLAGS.MODERATE_MEMBERS]),
           info_member = new MessageEmbed()
-            .setColor('d8d4d3')
+            .setColor(EMBCOLORS.whiteGray)
             .setTitle('**User info**')
             .setDescription(`Displaying information of ${member.user.tag} ${member} whose Snowflake ID is \`${member.id}\``)
             .setThumbnail(await member.displayAvatarURL({ dynamic: true }))
@@ -84,7 +83,7 @@ module.exports = {
       }
       else {
         const info_nonmember = new MessageEmbed()
-          .setColor('d8d4d3')
+          .setColor(EMBCOLORS.whiteGray)
           .setTitle('**User info**')
           .setDescription(`Displaying information of ${user.tag} ${user} whose Snowflake ID is \`${user.id}\``)
           .setThumbnail(user.displayAvatarURL({ dynamic: true }))
@@ -110,7 +109,7 @@ module.exports = {
         else {
           info_nonmember.addField(
             '**Can the target invite the bot?**',
-            `Well, they have the ability to invite ${interaction.client.user} atleast...`
+            `Well, they have the ability to invite ${interaction.client.user} at least...`
           );
         }
         await interaction.editReply({
@@ -121,7 +120,7 @@ module.exports = {
     }
     catch (error) {
       const info_nonmember = new MessageEmbed()
-        .setColor('ff0033')
+        .setColor(EMBCOLORS.error)
         .setTitle('**Cannot display User info...**')
         .setDescription(`There was some error while displaying information for ${user}\nPlease report Bot Error Dump to developer!`)
 

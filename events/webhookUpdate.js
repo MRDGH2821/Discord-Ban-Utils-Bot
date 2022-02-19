@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const { MessageEmbed, Channel } = require('discord.js');
-const { refreshCache, getWebhook } = require('../lib/WebhookCacheManager');
+const { EMBCOLORS } = require('../lib/Constants.js');
+const { refreshCache, getWebhook } = require('../lib/WebhookCacheManager.js');
 
 module.exports = {
   name: 'webhookUpdate',
@@ -30,6 +31,7 @@ module.exports = {
           webhookID: false
         },
         log_sample_2 = new MessageEmbed()
+          .setColor(EMBCOLORS.invisible)
           .setTitle('Test msg via WebhookChange Event')
           .setDescription(`This is a test log, should come in ${channel}.\nThis was sent because a webhook was updated in ${channel}.\n\nThis message will come everytime whenever a webhook is updated for ${channel}. The reason for this behavior is because ${channel} is configured as logs channel for ${channel.client.user}`)
           .addField(

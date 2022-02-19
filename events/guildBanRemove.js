@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const { MessageEmbed, GuildBan } = require('discord.js');
-const { db } = require('../lib/firebase');
+const { db } = require('../lib/firebase.js');
+const { EMBCOLORS } = require('../lib/Constants.js');
 
 module.exports = {
   name: 'guildBanRemove',
@@ -15,7 +16,7 @@ module.exports = {
   async execute(member) {
     const unbanLog = new MessageEmbed()
       .setTitle('**Audit Unban Log**')
-      .setColor('d8d4d3')
+      .setColor(EMBCOLORS.whiteGray)
       .setDescription(`${member.user.tag} ${member.user} is unbanned from the server\nID: \`${member.user.id}\``)
       .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
       .setTimestamp();

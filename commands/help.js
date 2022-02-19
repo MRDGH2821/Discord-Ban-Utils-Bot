@@ -2,10 +2,11 @@
 const { MessageEmbed, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { version } = require('../package.json');
-const { InviteRow, SupportRow } = require('../lib/RowButtons'),
+const { EMBCOLORS } = require('../lib/Constants.js');
+const { InviteRow, SupportRow } = require('../lib/RowButtons.js'),
   oldFields = [
     { name: '**/ban**', value: 'Bans the given user.' },
-    { name: '**/unban**', value: 'Unbans the given user.' },
+    { name: '**/unban**', value: 'Un-bans the given user.' },
     {
       name: '**/import_ban_list**',
       value: 'Imports the ban list from dpaste link'
@@ -51,7 +52,7 @@ module.exports = {
     .setName('help')
     .setDescription('The help section to get you started!'),
 
-  note: 'All commannds have an additional note like this which explain more about the respective command.',
+  note: 'All commands have an additional note like this which explain more about the respective command.',
 
   /**
    * display help section
@@ -62,7 +63,7 @@ module.exports = {
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
     const helpEmbed = new MessageEmbed()
-      .setColor('d8d4d3')
+      .setColor(EMBCOLORS.whiteGray)
       .setTitle('**Help Section**')
       .setDescription(`The help section for you to get started with the bot!\nIt helps you import, export & transfer bans from one server to another.\n\nBot version **\`${version}\`**`)
       .addFields(oldFields);

@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const { MessageEmbed, Interaction } = require('discord.js');
-const { db } = require('../lib/firebase');
+const { db } = require('../lib/firebase.js');
+const { EMBCOLORS } = require('../lib/Constants.js');
 
 module.exports = {
   name: 'importListSuccess',
@@ -20,7 +21,7 @@ module.exports = {
   async execute(interaction, { url, reason, advanceMode, uniqueBans }) {
     const importLog = new MessageEmbed()
       .setTitle('**BU Import Log**')
-      .setColor('d8d4d3')
+      .setColor(EMBCOLORS.hammerHandle)
       .setDescription(`Ban list of this server was just imported!\nImported by \`${interaction.user.tag}\` ${interaction.user}\nAdvanced mode: **\`${advanceMode}\`**\nUnique Bans: ${uniqueBans}`)
       .addFields([
         {

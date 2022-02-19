@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const { MessageEmbed, CommandInteraction } = require('discord.js');
-const { db } = require('../lib/firebase');
+const { db } = require('../lib/firebase.js');
+const { EMBCOLORS } = require('../lib/Constants.js');
 module.exports = {
   name: 'userBanned',
 
@@ -18,8 +19,9 @@ module.exports = {
     const bannedUser = interaction.options.getUser('user'),
       embedBanLog = new MessageEmbed()
         .setTitle('**BU Ban Log**')
-        .setColor('e1870a')
+        .setColor(EMBCOLORS.hammerHandle)
         .setDescription(`\`${bannedUser.tag}\` ${bannedUser} got hit with the swift hammer of justice!\nID: \`${bannedUser.id}\`\nDays of messages deleted: ${daysOfMsgs}`)
+        .setThumbnail(bannedUser.displayAvatarURL({ dynamic: true }))
         .addFields([
           {
             name: '**Justice Ban Hammer Wielder**',

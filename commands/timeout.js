@@ -1,9 +1,9 @@
 // eslint-disable-next-line no-unused-vars
 const { Permissions, MessageEmbed, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { NUMBER, TIME } = require('../lib/Constants');
-const { SupportRow, InviteRow } = require('../lib/RowButtons');
-const { timeoutDurationText } = require('../lib/UtilityFunctions');
+const { SupportRow, InviteRow } = require('../lib/RowButtons.js');
+const { NUMBER, TIME, EMBCOLORS } = require('../lib/Constants.js');
+const { timeoutDurationText } = require('../lib/UtilityFunctions.js');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('timeout')
@@ -61,7 +61,7 @@ module.exports = {
         await target.timeout(duration, reason);
         if (duration > NUMBER.zero) {
           const timeout_success = new MessageEmbed()
-            .setColor('e1870a')
+            .setColor(EMBCOLORS.freeze)
             .setTitle('**User put in Timeout!**')
             .setDescription(`User \`${target.tag}\` ${target} is put into timeout.`)
             .setThumbnail(target.displayAvatarURL({ dynamic: true }))
@@ -81,7 +81,7 @@ module.exports = {
         }
         else {
           const timeout_removed = new MessageEmbed()
-            .setColor('e1870a')
+            .setColor(EMBCOLORS.whiteGray)
             .setTitle('**Timeout Removed**')
             .setDescription(`User \`${target.user.tag}\` ${target} is out of timeout.`)
             .setTimestamp();
@@ -94,9 +94,9 @@ module.exports = {
     }
     catch (error) {
       const timeout_fail = new MessageEmbed()
-        .setColor('ff0033')
+        .setColor(EMBCOLORS.error)
         .setTitle('**Cannot Timeout...**')
-        .setDescription(`User ${target} cannot be put in Timeout :grimacing:\n\nIf this error is comming even after passing all checks, then please report the Error Dump section to developer.\n(In DM channel, user will be always null for obvious reasons.)`)
+        .setDescription(`User ${target} cannot be put in Timeout :grimacing:\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.\n(In DM channel, user will be always null for obvious reasons.)`)
         .addFields([
           {
             name: '**Checks**',

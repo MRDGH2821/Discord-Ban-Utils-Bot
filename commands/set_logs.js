@@ -6,10 +6,10 @@ const {
   CommandInteraction
 } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { db } = require('../lib/firebase');
-const { NUMBER } = require('../lib/Constants');
-const { createWebhook } = require('../lib/UtilityFunctions');
-const { SupportRow, InviteRow } = require('../lib/RowButtons');
+const { db } = require('../lib/firebase.js');
+const { NUMBER, EMBCOLORS } = require('../lib/Constants.js');
+const { createWebhook } = require('../lib/UtilityFunctions.js');
+const { SupportRow, InviteRow } = require('../lib/RowButtons.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -35,7 +35,7 @@ module.exports = {
     const channel = await interaction.options.getChannel('log_channel'),
       isInGuild = await interaction.inGuild(),
       logsProgress = new MessageEmbed()
-        .setColor('d8d4d3')
+        .setColor(EMBCOLORS.whiteGray)
         .setTitle('**Setting up Log Channel**')
         .setDescription(`Configuring ${channel} for logs.\nAfter configuration success, 2 log messages should come in that channel.`);
     let canManage = false;
@@ -71,7 +71,7 @@ module.exports = {
                 allhooks.forEach((hook) => {
                   hook.delete('Redundant webhook');
                 });
-                throw new Error(`Found ${qty} webhooks. Which are now deleted explictly.`);
+                throw new Error(`Found ${qty} webhooks. Which are now deleted explicitly.`);
               }
               else {
                 await interaction.editReply({
@@ -99,8 +99,9 @@ module.exports = {
               return createWebhook(channel);
             }),
           log_sample = new MessageEmbed()
+            .setColor(EMBCOLORS.invisible)
             .setTitle('Test msg via command')
-            .setDescription(`This is a test log, should come in ${channel}.\nThis is sent when the log channel is set via command.`),
+            .setDescription(`This is a test log, should come in ${channel}.\nThis is sent when the log channel is set via command. Another log message should come by which you can verify logging is working properly or not.`),
           setDBdata = {
             logChannelID: channel.id,
             logWebhookID: logWebhook.id,
@@ -132,9 +133,9 @@ module.exports = {
     }
     catch (error) {
       const log_set_fail = new MessageEmbed()
-        .setColor('ff0033')
+        .setColor(EMBCOLORS.error)
         .setTitle('**Cannot Set logs...**')
-        .setDescription('Cannot set logs :grimacing:\n\nIf this error is comming even after passing all checks, then please report the Error Dump section to developer.')
+        .setDescription('Cannot set logs :grimacing:\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.')
         .addFields([
           {
             name: '**Checks**',

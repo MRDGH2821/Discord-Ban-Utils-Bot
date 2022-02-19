@@ -1,12 +1,13 @@
 // eslint-disable-next-line no-unused-vars
 const { Permissions, MessageEmbed, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { SupportRow, InviteRow } = require('../lib/RowButtons');
+const { EMBCOLORS } = require('../lib/Constants.js');
+const { SupportRow, InviteRow } = require('../lib/RowButtons.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('unban')
-    .setDescription('Unbans a user')
+    .setDescription('Un-bans a user')
     .addUserOption((option) => option
       .setName('user')
       .setDescription('Enter the User ID (i.e. snowflake)')
@@ -31,7 +32,7 @@ module.exports = {
         // eslint-disable-next-line one-var
         const unban_success = new MessageEmbed()
           .setTitle('**User Unbanned!**')
-          .setColor('e1870a')
+          .setColor(EMBCOLORS.whiteGray)
           .setDescription(`User \`${target.tag}\` ${target} is unbanned from this server.\nID: \`${target.id}\``)
           .setThumbnail(target.displayAvatarURL({ dynamic: true }))
           .setTimestamp();
@@ -46,9 +47,9 @@ module.exports = {
     }
     catch (error) {
       const unban_fail = new MessageEmbed()
-        .setColor('ff0033')
+        .setColor(EMBCOLORS.error)
         .setTitle('**Cannot Unban...**')
-        .setDescription(`User ${target} cannot be unbanned :grimacing:\n\nIf this error is comming even after passing all checks, then please report the Error Dump section to developer.`)
+        .setDescription(`User ${target} cannot be unbanned :grimacing:\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.`)
         .addFields([
           {
             name: '**Checks**',

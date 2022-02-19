@@ -1,7 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 const { MessageEmbed, Permissions, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { SupportRow, InviteRow } = require('../lib/RowButtons');
+const { EMBCOLORS } = require('../lib/Constants.js');
+const { SupportRow, InviteRow } = require('../lib/RowButtons.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -41,7 +42,7 @@ module.exports = {
         await interaction.guild.members.kick(target, reason);
 
         const kick_success = new MessageEmbed()
-          .setColor('84929f')
+          .setColor(EMBCOLORS.wrenchHandle)
           .setTitle('**Kicking Wrench Deployed!**')
           .setDescription(`User \`${target.user.tag}\` ${target} is kicked from this server!`)
           .setThumbnail(target.displayAvatarURL({ dynamic: true }))
@@ -62,9 +63,9 @@ module.exports = {
     }
     catch (error) {
       const kick_fail = new MessageEmbed()
-        .setColor('ff0033')
+        .setColor(EMBCOLORS.error)
         .setTitle('**Cannot Kick...**')
-        .setDescription(`User ${target} cannot be kicked :grimacing:\n\nIf this error is comming even after passing all checks, then please report the Error Dump section to developer.`)
+        .setDescription(`User ${target} cannot be kicked :grimacing:\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.`)
         .addFields([
           {
             name: '**Checks**',

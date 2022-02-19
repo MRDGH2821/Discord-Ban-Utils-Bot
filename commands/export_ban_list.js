@@ -2,7 +2,8 @@ const dpst = require('dpaste-ts');
 // eslint-disable-next-line no-unused-vars
 const { MessageEmbed, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { InviteRow, SupportRow } = require('../lib/RowButtons');
+const { EMBCOLORS } = require('../lib/Constants.js');
+const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -30,7 +31,10 @@ module.exports = {
         const bans = await interaction.guild.bans.fetch(),
           outputAdv = `${interaction.guild.name}-${new Date()}.json`,
           outputSimple = `${interaction.guild.name}-${new Date()}.txt`,
-          resultAdv = [];
+          resultAdv = [],
+          resultEmb = new MessageEmbed()
+            .setTitle('**Exporting Ban List**')
+            .setColor(EMBCOLORS.whiteGray);
         let finalOutput = '',
           finalResult = '',
           finalType = '',
@@ -42,7 +46,10 @@ module.exports = {
             reason: `${ban.reason}`
           });
         });
-        await interaction.editReply(`Found ${bans.size} bans.\nAdvanced Mode: ${advMode}\nExporting...`);
+        resultEmb.setDescription(`Found ${bans.size} bans.\nAdvanced Mode: \`${advMode}\`\nExporting...`);
+        await interaction.editReply({
+          embeds: [resultEmb]
+        });
         if (advMode) {
           finalResult = JSON.stringify(resultAdv);
           finalOutput = outputAdv;
@@ -57,6 +64,12 @@ module.exports = {
           // eslint-disable-next-line new-cap
           .CreatePaste(finalResult, finalOutput, finalType)
           .then(async(url) => {
+            resultEmb
+              .setTitle('**Ban List Export Success!**')
+              .addField('**URL**', url);
+            await interaction.editReply({
+              embeds: [resultEmb]
+            });
             await interaction.followUp({
               components: [InviteRow],
               content: url
@@ -76,7 +89,7 @@ module.exports = {
     }
     catch (error) {
       const ban_fail = new MessageEmbed()
-        .setColor('ff0033')
+        .setColor(EMBCOLORS.error)
         .setTitle('**Cannot Export...**')
         .setDescription('Ban list cannot be exported.')
         .addFields([
@@ -87,7 +100,7 @@ module.exports = {
           {
             name: '**Possible solutions**',
             value:
-              'Use this command inside a server. Or wait for sometime for [dpaste API](https://dpaste.com/api/v2/) to cooldown.'
+              'Use this command inside a server. Or wait for sometime for [dpaste API](https://dpaste.com/api/v2/) to cool down.'
           },
           {
             name: '**Inputs given**',

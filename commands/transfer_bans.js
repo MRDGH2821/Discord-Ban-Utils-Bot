@@ -7,8 +7,8 @@ const {
   CommandInteraction
 } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { NUMBER } = require('../lib/Constants');
-const { SupportRow, InviteRow } = require('../lib/RowButtons');
+const { NUMBER, EMBCOLORS } = require('../lib/Constants.js');
+const { SupportRow, InviteRow } = require('../lib/RowButtons.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -32,8 +32,8 @@ module.exports = {
       if (isInGuild) {
         const botGuilds = interaction.client.guilds.cache,
           initial_Screen = new MessageEmbed()
-            .setColor('#D8D4D3')
-            .setTitle('**Ban List transferer**')
+            .setColor(EMBCOLORS.whiteGray)
+            .setTitle('**Ban List transferrer**')
             .setDescription('Fetching Mutual Servers on which you can transfer bans to. \nPlease wait...'),
           message = await interaction.editReply({
             embeds: [initial_Screen],
@@ -183,9 +183,9 @@ module.exports = {
     }
     catch (error) {
       const transfer_fail = new MessageEmbed()
-        .setColor('ff0033')
+        .setColor(EMBCOLORS.error)
         .setTitle('**Cannot Transfer...**')
-        .setDescription('Cannot transfer bans.\n\nIf this error is comming even after passing all checks, then please report the Error Dump section to developer.')
+        .setDescription('Cannot transfer bans.\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.')
         .addFields([
           {
             name: '**Checks**',

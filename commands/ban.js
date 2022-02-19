@@ -1,8 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 const { Permissions, MessageEmbed, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { default_delete_days } = require('../lib/Constants');
-const { SupportRow, InviteRow } = require('../lib/RowButtons');
+const { SupportRow, InviteRow } = require('../lib/RowButtons.js');
+const { default_delete_days, EMBCOLORS } = require('../lib/Constants.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -55,7 +55,7 @@ module.exports = {
         });
 
         const ban_success = new MessageEmbed()
-          .setColor('e1870a')
+          .setColor(EMBCOLORS.hammerHandle)
           .setTitle('**Ban Hammer Dropped!**')
           .setDescription(`User \`${target.tag}\` ${target} is banned from this server.\nNumber of messages (in days) deleted: ${delete_msg_days}`)
           .setThumbnail(target.displayAvatarURL({ dynamic: true }))
@@ -82,9 +82,9 @@ module.exports = {
     }
     catch (error) {
       const ban_fail = new MessageEmbed()
-        .setColor('ff0033')
+        .setColor(EMBCOLORS.error)
         .setTitle('**Cannot Ban...**')
-        .setDescription(`User ${target} cannot be banned :grimacing:\n\nIf this error is comming even after passing all checks, then please report the Error Dump section to developer.`)
+        .setDescription(`User ${target} cannot be banned :grimacing:\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.`)
         .addFields([
           {
             name: '**Checks**',

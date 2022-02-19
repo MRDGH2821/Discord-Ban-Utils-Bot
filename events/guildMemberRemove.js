@@ -1,7 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 const { MessageEmbed, GuildMember } = require('discord.js');
 const { time } = require('@discordjs/builders');
-const { db } = require('../lib/firebase');
+const { db } = require('../lib/firebase.js');
+const { EMBCOLORS } = require('../lib/Constants.js');
 
 module.exports = {
   name: 'guildMemberRemove',
@@ -17,7 +18,7 @@ module.exports = {
     const exitLog = new MessageEmbed()
       .setTimestamp()
       .setTitle('**Audit Exit Log**')
-      .setColor('d8d4d3')
+      .setColor(EMBCOLORS.wrenchHandle)
       .setDescription(`${member.user.tag} ${member} left the server.\nID: \`${member.user.id}\``)
       .addFields([
         {

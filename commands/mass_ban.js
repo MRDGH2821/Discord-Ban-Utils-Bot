@@ -10,8 +10,13 @@ const {
   CommandInteraction
 } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { SupportRow, InviteRow } = require('../lib/RowButtons');
-const { NUMBER, IDlen, link_expiry_days } = require('../lib/Constants');
+const { SupportRow, InviteRow } = require('../lib/RowButtons.js');
+const {
+  NUMBER,
+  IDlen,
+  link_expiry_days,
+  EMBCOLORS
+} = require('../lib/Constants');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -23,7 +28,7 @@ module.exports = {
       .setName('reason')
       .setDescription('Enter a common reason. (Default is Banned by <you> on <today\'s date>)')),
 
-  note: 'Default reason is: Massbanned by <you> on <today\'s date>.\nIt will automatically filter out duplicate bans.',
+  note: 'Default reason is: Mass banned by <you> on <today\'s date>.\nIt will automatically filter out duplicate bans.',
 
   /**
    * mass ban given IDs
@@ -42,7 +47,7 @@ module.exports = {
         .setStyle('DANGER')),
       reasonForBan =
         interaction.options.getString('reason') ||
-        `Massbanned by ${
+        `Mass banned by ${
           interaction.user.tag
         } on ${new Date().toDateString()} ||for no reason :joy:||`;
 
@@ -110,7 +115,7 @@ module.exports = {
         }
 
         const massBan_success = new MessageEmbed()
-          .setColor('e7890c')
+          .setColor(EMBCOLORS.hammerHandle)
           .setTitle('**Mass Ban Success!**')
           .setDescription(`Bans in list: ${sourceListLen}\nInvalid Bans: ${invalidBans}\nUnique Bans: ${uniqueBans}`)
           .addFields([
@@ -137,9 +142,9 @@ module.exports = {
           .setName(`Input IDs by ${interaction.user.tag}.txt`)
           .setDescription('This is the input given'),
         massBan_fail = new MessageEmbed()
-          .setColor('ff0033')
+          .setColor(EMBCOLORS.error)
           .setTitle('**Cannot Mass Ban...**')
-          .setDescription('Cannot mass ban.\n\nIf this error is comming even after passing all checks, then please report the Error Dump section to developer.')
+          .setDescription('Cannot mass ban.\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.')
           .addFields([
             {
               name: '**Checks**',

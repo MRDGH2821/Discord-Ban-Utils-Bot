@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const { MessageEmbed, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const { EMBCOLORS } = require('../lib/Constants.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -23,7 +24,7 @@ module.exports = {
       }),
       sentEmb = new MessageEmbed()
         .setTitle('**Ping Results**')
-        .setColor('d8d4d3')
+        .setColor(EMBCOLORS.whiteGray)
         .addFields([
           {
             name: '**Round Trip Latency**',
@@ -33,7 +34,7 @@ module.exports = {
           },
           {
             name: '**Websocket Heartbeat**',
-            value: `${interaction.client.ws.ping} ms\nIt is the average interval of a regularly sent signal indicating the healthy operation of the websocket connection. This is where the bot recieves events (for eg. command execution event)`
+            value: `${interaction.client.ws.ping} ms\nIt is the average interval of a regularly sent signal indicating the healthy operation of the websocket connection. This is where the bot receives events (for eg. command execution event)`
           }
         ]);
     await interaction.editReply({

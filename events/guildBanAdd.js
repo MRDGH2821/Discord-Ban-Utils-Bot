@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const { MessageEmbed, GuildBan } = require('discord.js');
-const { db } = require('../lib/firebase');
+const { db } = require('../lib/firebase.js');
+const { EMBCOLORS } = require('../lib/Constants.js');
 
 module.exports = {
   name: 'guildBanAdd',
@@ -15,7 +16,7 @@ module.exports = {
   async execute(guildBan) {
     // console.log(guildBan);
     const banLog = new MessageEmbed()
-        .setColor('e1870a')
+        .setColor(EMBCOLORS.hammerHandle)
         .setTitle('**Audit Ban Log**')
         .setThumbnail(guildBan.user.displayAvatarURL({ dynamic: true }))
         .setDescription(`\`${guildBan.user.tag}\` ${guildBan.user} got hit with the swift hammer of justice!\nID: \`${guildBan.user.id}\``)
