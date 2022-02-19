@@ -32,8 +32,8 @@ module.exports = {
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
-    const channel = await interaction.options.getChannel('log_channel'),
-      isInGuild = await interaction.inGuild(),
+    const channel = interaction.options.getChannel('log_channel'),
+      isInGuild = interaction.inGuild(),
       logsProgress = new MessageEmbed()
         .setColor(EMBCOLORS.whiteGray)
         .setTitle('**Setting up Log Channel**')
@@ -55,7 +55,7 @@ module.exports = {
         const logWebhook = await interaction.guild
             .fetchWebhooks()
             .then(async(webhooks) => {
-              const allhooks = await webhooks.filter((wh) => wh.owner === interaction.client.user);
+              const allhooks = webhooks.filter((wh) => wh.owner === interaction.client.user);
               // console.log(allhooks);
               if (allhooks.size > NUMBER.one) {
                 await interaction.editReply({

@@ -44,12 +44,12 @@ module.exports = {
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
-    const duration = await interaction.options.getInteger('duration'),
-      isInGuild = await interaction.inGuild(),
+    const duration = interaction.options.getInteger('duration'),
+      isInGuild = interaction.inGuild(),
       reason =
-        (await interaction.options.getString('reason')) ||
+        interaction.options.getString('reason') ||
         `Timed-out by ${interaction.user.tag} for ${timeoutDurationText(duration)} on ${new Date().toString()}`,
-      target = await interaction.options.getMember('user');
+      target = interaction.options.getMember('user');
     console.log(duration);
     let canTimeout = false,
       isModeratable = false;
@@ -63,7 +63,7 @@ module.exports = {
           const timeout_success = new MessageEmbed()
             .setColor(EMBCOLORS.freeze)
             .setTitle('**User put in Timeout!**')
-            .setDescription(`User \`${target.tag}\` ${target} is put into timeout.`)
+            .setDescription(`User \`${target.user.tag}\` ${target} is put into timeout.`)
             .setThumbnail(target.displayAvatarURL({ dynamic: true }))
             .addFields([
               {
