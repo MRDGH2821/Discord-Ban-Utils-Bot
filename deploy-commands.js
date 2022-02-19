@@ -7,6 +7,7 @@ const { clientId, guildId, token } = require('./lib/ConfigManager.js'),
     .filter((file) => file.endsWith('.js')),
   commands = [].map((command) => command.toJSON()),
   rest = new REST({ version: '9' }).setToken(token);
+
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
   commands.push(command.data.toJSON());
