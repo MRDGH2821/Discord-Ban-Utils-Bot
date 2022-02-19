@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { Client, Collection, Intents } = require('discord.js');
+const { Client, Collection, Intents, Permissions } = require('discord.js');
 const { refreshCache } = require('./lib/WebhookCacheManager.js');
 const { token } = require('./lib/ConfigManager.js'),
   eventFiles = fs
@@ -83,4 +83,27 @@ client.on('interactionCreate', async(interaction) => {
 
 client.login(token).then(() => {
   refreshCache(client);
+  const fileData = fs.readFileSync('./lib/InviteLink.json'),
+    invite = client.generateInvite({
+      permissions: [
+        Permissions.FLAGS.VIEW_AUDIT_LOG,
+        Permissions.FLAGS.KICK_MEMBERS,
+        Permissions.FLAGS.BAN_MEMBERS,
+        Permissions.FLAGS.MANAGE_WEBHOOKS,
+        Permissions.FLAGS.MODERATE_MEMBERS,
+        Permissions.FLAGS.SEND_MESSAGES,
+        Permissions.FLAGS.EMBED_LINKS,
+        Permissions.FLAGS.ATTACH_FILES,
+        Permissions.FLAGS.USE_APPLICATION_COMMANDS
+      ],
+      scopes: [
+        'bot',
+        'applications.commands'
+      ]
+    }),
+    jsonData = JSON.parse(fileData);
+  console.log(jsonData);
+  jsonData.link = invite;
+
+  fs.writeFile('./lib/InviteLink.json', JSON.stringify(jsonData), (error) => console.error(error));
 });
