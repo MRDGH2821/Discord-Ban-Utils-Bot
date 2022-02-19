@@ -28,13 +28,13 @@ module.exports = {
         .addFields([
           {
             name: '**Round Trip Latency**',
-            value: `${
+            value: `\`${
               sent.createdTimestamp - interaction.createdTimestamp
-            } ms\nThis describes the amount of time taken from creation of command message to the creation of the response message.\nThis is more relevant to end user.`
+            }\` ms\n\nThis describes the amount of time taken from creation of command message to the creation of the response message.\nThis is more relevant to end user.`
           },
           {
             name: '**Websocket Heartbeat**',
-            value: `${interaction.client.ws.ping} ms\nIt is the average interval of a regularly sent signal indicating the healthy operation of the websocket connection. This is where the bot receives events (for eg. command execution event)`
+            value: `\`${interaction.client.ws.ping}\` ms\n\nIt is the average interval of a regularly sent signal indicating the healthy operation of Discord API`
           }
         ]);
     await interaction.editReply({
