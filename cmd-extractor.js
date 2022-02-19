@@ -17,8 +17,8 @@ for (const file of commandFiles) {
 
 for (const dat of descriptions) {
   const format = {
-    name: `/${dat.name}`,
-    value: `${dat.description}\nNote: ${dat.note}`
+    name: `**/${dat.name}**`,
+    value: `${dat.description}\n**Note:** ${dat.note}`
   };
   final.push(format);
 }
