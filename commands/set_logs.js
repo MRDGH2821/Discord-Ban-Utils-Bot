@@ -1,9 +1,15 @@
-const { Permissions, MessageEmbed, Constants } = require('discord.js');
+const {
+  Permissions,
+  MessageEmbed,
+  Constants,
+  // eslint-disable-next-line no-unused-vars
+  CommandInteraction
+} = require('discord.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const { db } = require('../lib/firebase');
+const { NUMBER } = require('../lib/Constants');
 const { createWebhook } = require('../lib/UtilityFunctions');
 const { SupportRow, InviteRow } = require('../lib/RowButtons');
-const { db } = require('../lib/firebase');
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { NUMBER } = require('../lib/Constants');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -17,6 +23,12 @@ module.exports = {
 
   note: 'Type of logs sent: Ban list import-export log, Ban-unban log & member leaving server log. More type of logs coming soon.',
 
+  /**
+   * set a logs channel
+   * @async
+   * @function execute
+   * @param {CommandInteraction} interaction
+   */
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();

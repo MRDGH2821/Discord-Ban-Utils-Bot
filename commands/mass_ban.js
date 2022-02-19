@@ -1,14 +1,16 @@
 /* eslint-disable no-await-in-loop */
-const { SlashCommandBuilder } = require('@discordjs/builders');
 const { CreatePaste } = require('dpaste-ts');
-const { SupportRow, InviteRow } = require('../lib/RowButtons');
 const {
   Permissions,
   MessageActionRow,
   MessageButton,
   MessageEmbed,
-  MessageAttachment
+  MessageAttachment,
+  // eslint-disable-next-line no-unused-vars
+  CommandInteraction
 } = require('discord.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SupportRow, InviteRow } = require('../lib/RowButtons');
 const { NUMBER, IDlen, link_expiry_days } = require('../lib/Constants');
 
 module.exports = {
@@ -23,17 +25,23 @@ module.exports = {
 
   note: 'Default reason is: Massbanned by <you> on <today\'s date>.\nIt will automatically filter out duplicate bans.',
 
+  /**
+   * mass ban given IDs
+   * @async
+   * @function execute
+   * @param {CommandInteraction} interaction
+   */
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
-    const ids = await interaction.options.getString('ids'),
+    const ids = interaction.options.getString('ids'),
       isInGuild = interaction.inGuild(),
       notWorking = new MessageActionRow().addComponents(new MessageButton()
         .setCustomId('massban_notworking')
         .setLabel('Not working as expected?')
         .setStyle('DANGER')),
       reasonForBan =
-        (await interaction.options.getString('reason')) ||
+        interaction.options.getString('reason') ||
         `Massbanned by ${
           interaction.user.tag
         } on ${new Date().toDateString()} ||for no reason :joy:||`;

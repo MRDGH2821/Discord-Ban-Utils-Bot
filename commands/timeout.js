@@ -1,5 +1,6 @@
+// eslint-disable-next-line no-unused-vars
+const { Permissions, MessageEmbed, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { Permissions, MessageEmbed } = require('discord.js');
 const { NUMBER, TIME } = require('../lib/Constants');
 const { SupportRow, InviteRow } = require('../lib/RowButtons');
 const { timeoutDurationText } = require('../lib/UtilityFunctions');
@@ -34,6 +35,12 @@ module.exports = {
 
   note: 'Default reason is: Timed-out by <you> on <today\'s date>.',
 
+  /**
+   * timeout a user
+   * @async
+   * @function execute
+   * @param {CommandInteraction} interaction
+   */
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();

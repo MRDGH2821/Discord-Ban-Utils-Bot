@@ -1,5 +1,6 @@
+// eslint-disable-next-line no-unused-vars
+const { Permissions, MessageEmbed, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { Permissions, MessageEmbed } = require('discord.js');
 const { SupportRow, InviteRow } = require('../lib/RowButtons');
 
 module.exports = {
@@ -11,10 +12,16 @@ module.exports = {
       .setDescription('Enter the User ID (i.e. snowflake)')
       .setRequired(true)),
 
+  /**
+   * unban a user
+   * @async
+   * @function execute
+   * @param {CommandInteraction} interaction
+   */
   async execute(interaction) {
     await interaction.deferReply();
-    const isInGuild = await interaction.inGuild(),
-      target = await interaction.options.getUser('user');
+    const isInGuild = interaction.inGuild(),
+      target = interaction.options.getUser('user');
     let canUnban = false;
     try {
       canUnban = await interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS]);

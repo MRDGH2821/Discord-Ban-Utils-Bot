@@ -1,10 +1,11 @@
 /* eslint-disable no-await-in-loop */
 const axios = require('axios');
+// eslint-disable-next-line no-unused-vars
+const { Permissions, MessageEmbed, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { Permissions, MessageEmbed } = require('discord.js');
+const { NUMBER } = require('../lib/Constants');
 const { SupportRow } = require('../lib/RowButtons');
 const { pasteCheck } = require('../lib/UtilityFunctions');
-const { NUMBER } = require('../lib/Constants');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -20,6 +21,12 @@ module.exports = {
 
   note: 'For simple import type, provided/default reason is used. For advanced import type, included reason is used. Type of import is automatically detemined.',
 
+  /**
+   * import ban list into current server
+   * @async
+   * @function execute
+   * @param {CommandInteraction} interaction
+   */
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
@@ -28,10 +35,10 @@ module.exports = {
       isLinkValid = false;
 
     const inputReason =
-        (await interaction.options.getString('reason')) ||
+        interaction.options.getString('reason') ||
         `Ban Import by ${interaction.user.tag} on ${new Date().toDateString()}`,
-      isInGuild = await interaction.inGuild(),
-      pasteID = pasteCheck(await interaction.options.getString('dpaste_link')),
+      isInGuild = interaction.inGuild(),
+      pasteID = pasteCheck(interaction.options.getString('dpaste_link')),
       pasteLink = `https://dpaste.com/${pasteID}`,
       remoteSource = await axios(`${pasteLink}.txt`)
         .then((data) => {

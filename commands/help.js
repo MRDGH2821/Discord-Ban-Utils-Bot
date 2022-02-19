@@ -1,7 +1,8 @@
+// eslint-disable-next-line no-unused-vars
+const { MessageEmbed, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
-const { InviteRow, SupportRow } = require('../lib/RowButtons');
-const { version } = require('../package.json'),
+const { version } = require('../package.json');
+const { InviteRow, SupportRow } = require('../lib/RowButtons'),
   oldFields = [
     { name: '**/ban**', value: 'Bans the given user.' },
     { name: '**/unban**', value: 'Unbans the given user.' },
@@ -52,6 +53,12 @@ module.exports = {
 
   note: 'All commannds have an additional note like this which explain more about the respective command.',
 
+  /**
+   * display help section
+   * @async
+   * @function execute
+   * @param {CommandInteraction} interaction
+   */
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
     const helpEmbed = new MessageEmbed()

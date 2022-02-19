@@ -1,5 +1,15 @@
+// eslint-disable-next-line no-unused-vars
+const { ButtonInteraction } = require('discord.js');
+
 module.exports = {
   customId: 'massban_notworking',
+
+  /**
+   * reply with solution when mass ban command doesn't work as expected
+   * @async
+   * @function execute
+   * @param {ButtonInteraction} interacted
+   */
   async run(interacted) {
     await interacted.reply({
       content:

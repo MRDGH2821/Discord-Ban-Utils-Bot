@@ -1,7 +1,7 @@
 /* eslint-disable sort-vars */
-
+// eslint-disable-next-line no-unused-vars
+const { MessageEmbed, Permissions, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder, time } = require('@discordjs/builders');
-const { MessageEmbed, Permissions } = require('discord.js');
 const { InviteRow } = require('../lib/RowButtons');
 
 module.exports = {
@@ -12,17 +12,23 @@ module.exports = {
 
   note: 'If a server member is not found, will show your details. Using in DM will show different yet interesting information',
 
+  /**
+   * show user info
+   * @async
+   * @function execute
+   * @param {CommandInteraction} interaction
+   */
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
 
     const user =
-      (await interaction.options.getUser('user')) || (await interaction.user);
+      interaction.options.getUser('user') || interaction.user;
     try {
       if (interaction.inGuild()) {
         const member =
-            (await interaction.options.getMember('user')) ||
-            (await interaction.member),
+            interaction.options.getMember('user') ||
+            interaction.member,
           canBan = await member.permissions.has([Permissions.FLAGS.BAN_MEMBERS]),
           canKick = await member.permissions.has([Permissions.FLAGS.KICK_MEMBERS]),
           canManage = await member.permissions.has([Permissions.FLAGS.MANAGE_GUILD]),
@@ -81,7 +87,7 @@ module.exports = {
           .setColor('d8d4d3')
           .setTitle('**User info**')
           .setDescription(`Displaying information of ${user.tag} ${user} whose Snowflake ID is \`${user.id}\``)
-          .setThumbnail(await user.displayAvatarURL({ dynamic: true }))
+          .setThumbnail(user.displayAvatarURL({ dynamic: true }))
           .addFields([
             {
               name: '**When did they join Discord?**',

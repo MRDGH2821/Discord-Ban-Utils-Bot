@@ -1,5 +1,6 @@
+// eslint-disable-next-line no-unused-vars
+const { MessageEmbed, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -8,6 +9,12 @@ module.exports = {
 
   note: 'Shows ping results of both, complete round trip & Discord API responsiveness',
 
+  /**
+   * display bot latency & websocket latency
+   * @async
+   * @function execute
+   * @param {CommandInteraction} interaction
+   */
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
     const sent = await interaction.reply({

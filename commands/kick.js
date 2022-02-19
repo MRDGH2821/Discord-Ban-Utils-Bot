@@ -1,5 +1,6 @@
+// eslint-disable-next-line no-unused-vars
+const { MessageEmbed, Permissions, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed, Permissions } = require('discord.js');
 const { SupportRow, InviteRow } = require('../lib/RowButtons');
 
 module.exports = {
@@ -12,16 +13,22 @@ module.exports = {
 
   note: 'Default reason is: Kicked by <you> on <today\'s date>.',
 
+  /**
+   * kick a user
+   * @async
+   * @function execute
+   * @param {CommandInteraction} interaction
+   */
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
-    const isInGuild = await interaction.inGuild(),
+    const isInGuild = interaction.inGuild(),
       reason =
-        (await interaction.options.getString('reason')) ||
+        interaction.options.getString('reason') ||
         `Kicked by ${
           interaction.user.tag
         } on ${new Date().toDateString()} ||for no reason :joy:||`,
-      target = await interaction.options.getMember('user');
+      target = interaction.options.getMember('user');
 
     let canKick = false,
       isKickable = false;

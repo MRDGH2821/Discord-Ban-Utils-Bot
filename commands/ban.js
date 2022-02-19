@@ -1,7 +1,8 @@
-const { Permissions, MessageEmbed } = require('discord.js');
+// eslint-disable-next-line no-unused-vars
+const { Permissions, MessageEmbed, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { SupportRow, InviteRow } = require('../lib/RowButtons');
 const { default_delete_days } = require('../lib/Constants');
+const { SupportRow, InviteRow } = require('../lib/RowButtons');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -21,20 +22,25 @@ module.exports = {
 
   note: `Default reason is: Banned by <you> on <today's date>. Default & max days of messages deleted is ${default_delete_days}`,
 
+  /**
+   * ban a user
+   * @async
+   * @function execute
+   * @param {CommandInteraction} interaction
+   */
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
     const delete_msg_days =
-        (await interaction.options.getNumber('delete_messages')) ||
-        default_delete_days,
-      isInGuild = await interaction.inGuild(),
+        interaction.options.getNumber('delete_messages') || default_delete_days,
+      isInGuild = interaction.inGuild(),
       reason =
-        (await interaction.options.getString('reason')) ||
+        interaction.options.getString('reason') ||
         `Banned by ${
           interaction.user.tag
         } on ${new Date().toDateString()} ||for no reason :joy:||`,
-      target = await interaction.options.getUser('user');
-    // eslint-disable-next-line one-var
+      target = interaction.options.getUser('user');
+
     let canBan = false,
       isBannable = false;
 
@@ -65,7 +71,7 @@ module.exports = {
           ])
           .setTimestamp();
         await interaction.editReply({ embeds: [ban_success] });
-        await interaction.client.emit('userBanned', interaction, {
+        interaction.client.emit('userBanned', interaction, {
           daysOfMsgs: delete_msg_days,
           reason
         });

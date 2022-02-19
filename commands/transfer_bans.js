@@ -1,10 +1,12 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
 const {
   MessageEmbed,
   Permissions,
   MessageActionRow,
-  MessageSelectMenu
+  MessageSelectMenu,
+  // eslint-disable-next-line no-unused-vars
+  CommandInteraction
 } = require('discord.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 const { NUMBER } = require('../lib/Constants');
 const { SupportRow, InviteRow } = require('../lib/RowButtons');
 
@@ -15,14 +17,20 @@ module.exports = {
 
   note: 'It will automatically filter out duplicate bans while transferring. Transfers bans with their reasons.',
 
+  /**
+   * transfer bans across servers
+   * @async
+   * @function execute
+   * @param {CommandInteraction} interaction
+   */
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
-    const isInGuild = await interaction.inGuild();
+    const isInGuild = interaction.inGuild();
     let selectedServerName = '';
     try {
       if (isInGuild) {
-        const botGuilds = await interaction.client.guilds.cache,
+        const botGuilds = interaction.client.guilds.cache,
           initial_Screen = new MessageEmbed()
             .setColor('#D8D4D3')
             .setTitle('**Ban List transferer**')

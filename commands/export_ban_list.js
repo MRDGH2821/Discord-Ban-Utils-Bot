@@ -1,6 +1,7 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
 const dpst = require('dpaste-ts');
+// eslint-disable-next-line no-unused-vars
+const { MessageEmbed, CommandInteraction } = require('discord.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 const { InviteRow, SupportRow } = require('../lib/RowButtons');
 
 module.exports = {
@@ -13,11 +14,17 @@ module.exports = {
 
   note: 'Simple mode exports list which is compatible with other popular ban bots.\nAdvanced mode exports list with reason but only compatible with Ban Utils only.',
 
+  /**
+   * export ban list of current server
+   * @async
+   * @function execute
+   * @param {CommandInteraction} interaction
+   */
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
-    const advMode = (await interaction.options.getBoolean('advanced')) || false,
-      isInGuild = await interaction.inGuild();
+    const advMode = interaction.options.getBoolean('advanced') || false,
+      isInGuild = interaction.inGuild();
     try {
       if (isInGuild) {
         const bans = await interaction.guild.bans.fetch(),
