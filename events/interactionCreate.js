@@ -1,5 +1,15 @@
+// eslint-disable-next-line no-unused-vars
+const { Interaction } = require('discord.js');
+
 module.exports = {
   name: 'interactionCreate',
+
+  /**
+   * interaction create event
+   * @async
+   * @function execute
+   * @param {Interaction} interaction
+   */
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
     console.log(`${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.`);

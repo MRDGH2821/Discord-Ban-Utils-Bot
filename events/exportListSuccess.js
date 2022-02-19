@@ -1,16 +1,17 @@
-const { MessageEmbed } = require('discord.js');
+// eslint-disable-next-line no-unused-vars
+const { MessageEmbed, Interaction } = require('discord.js');
 const { db } = require('../lib/firebase');
 
 module.exports = {
   name: 'exportListSuccess',
 
   /**
-   * function to execute on 'exportListSuccess' event
+   * send log after successful export of ban list
    * @async
    * @function execute
    * @param {Interaction} interaction
    * @param {Object} exportOptions
-   * @param {@link} exportOptions.url
+   * @param {string} exportOptions.url
    * @param {boolean} exportOptions.advanceMode
    */
   // eslint-disable-next-line sort-keys

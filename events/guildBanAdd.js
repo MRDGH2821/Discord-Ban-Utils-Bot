@@ -1,9 +1,16 @@
-const { MessageEmbed } = require('discord.js');
+// eslint-disable-next-line no-unused-vars
+const { MessageEmbed, GuildBan } = require('discord.js');
 const { db } = require('../lib/firebase');
 
 module.exports = {
   name: 'guildBanAdd',
 
+  /**
+   * send log on new banned user
+   * @async
+   * @function execute
+   * @param {GuildBan} guildBan
+   */
   // eslint-disable-next-line sort-keys
   async execute(guildBan) {
     // console.log(guildBan);

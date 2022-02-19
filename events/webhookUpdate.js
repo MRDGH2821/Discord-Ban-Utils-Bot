@@ -1,7 +1,17 @@
-const { MessageEmbed } = require('discord.js');
+// eslint-disable-next-line no-unused-vars
+const { MessageEmbed, Channel } = require('discord.js');
 const { refreshCache, getWebhook } = require('../lib/WebhookCacheManager');
 
 module.exports = {
+  name: 'webhookUpdate',
+
+  /**
+   * send log when any webhook is updated
+   * @async
+   * @function execute
+   * @param {Channel} channel
+   */
+  // eslint-disable-next-line sort-keys
   async execute(channel) {
     try {
       console.log('New channel: ', channel.name);
@@ -34,6 +44,5 @@ module.exports = {
     catch {
       console.log('No self created webhooks found.');
     }
-  },
-  name: 'webhookUpdate'
+  }
 };

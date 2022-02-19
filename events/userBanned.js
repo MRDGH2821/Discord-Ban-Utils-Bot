@@ -5,7 +5,9 @@ module.exports = {
   name: 'userBanned',
 
   /**
-   *
+   * send log when user is banned via bot
+   * @async
+   * @function execute
    * @param {CommandInteraction} interaction
    * @param {Object} BUBanOptions
    * @param {string} BUBanOptions.reason
@@ -13,7 +15,7 @@ module.exports = {
    */
   // eslint-disable-next-line sort-keys
   async execute(interaction, { reason, daysOfMsgs }) {
-    const bannedUser = await interaction.options.getUser('user'),
+    const bannedUser = interaction.options.getUser('user'),
       embedBanLog = new MessageEmbed()
         .setTitle('**BU Ban Log**')
         .setColor('e1870a')

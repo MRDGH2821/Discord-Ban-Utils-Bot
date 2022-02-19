@@ -1,13 +1,13 @@
-const { time } = require('@discordjs/builders');
 // eslint-disable-next-line no-unused-vars
 const { MessageEmbed, GuildMember } = require('discord.js');
+const { time } = require('@discordjs/builders');
 const { db } = require('../lib/firebase');
 
 module.exports = {
   name: 'guildMemberRemove',
 
   /**
-   * function to execute on 'guildMemberRemove' event
+   * send a log when member leaves server
    * @async
    * @function execute
    * @param {GuildMember} member

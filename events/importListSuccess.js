@@ -6,7 +6,7 @@ module.exports = {
   name: 'importListSuccess',
 
   /**
-   * function to execute on 'importListSuccess' event
+   * send log after successful import of ban list
    * @async
    * @function execute
    * @param {Interaction} interaction
