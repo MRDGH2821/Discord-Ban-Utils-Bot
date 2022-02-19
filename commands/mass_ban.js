@@ -66,7 +66,7 @@ module.exports = {
         sourceURL = '';
 
       if (idList.length > NUMBER.zero) {
-        sourceList = idList.filter((id) => id.length >= IDlen.min && id.length <= IDlen.max);
+        sourceList = Array.from(new Set(idList.filter((id) => id.length >= IDlen.min && id.length <= IDlen.max)));
         sourceListLen = sourceList.length;
 
         if (sourceListLen > NUMBER.zero) {

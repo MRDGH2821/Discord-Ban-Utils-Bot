@@ -75,7 +75,7 @@ module.exports = {
            console.log('Source: ', source); */
         if (typeof source === 'string' || typeof source === String) {
           const rawEle = source.split(/\D+/gu),
-            sourceBans = rawEle.map((element) => element.trim());
+            sourceBans = Array.from(new Set(rawEle.map((element) => element.trim())));
           advMode = false;
           modeDesc = inputReason;
           bansInList = sourceBans.length;
