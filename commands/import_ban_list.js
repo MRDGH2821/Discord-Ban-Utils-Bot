@@ -19,7 +19,7 @@ module.exports = {
       .setName('reason')
       .setDescription('Enter a common reason. (Default is Banned by <you> on <today\'s date>)')),
 
-  note: 'For simple import type, provided/default reason is used. For advanced import type, included reason is used. Type of import is automatically determined.',
+  note: 'For simple import type, provided/default reason is used. For advanced import type, included reason is used. Type of import is automatically determined.\nLink should be of [dpaste](https://dpaste.com/). Other links are not supported',
 
   /**
    * import ban list into current server

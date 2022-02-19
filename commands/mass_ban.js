@@ -28,7 +28,7 @@ module.exports = {
       .setName('reason')
       .setDescription('Enter a common reason. (Default is Banned by <you> on <today\'s date>)')),
 
-  note: 'Default reason is: Mass banned by <you> on <today\'s date>.\nIt will automatically filter out duplicate bans.',
+  note: 'Default reason is: Mass banned by <you> on <today\'s date>.\nIt will automatically filter out duplicate bans.\nSometimes you might put multiple IDs but it doesn\'t work. \nYou may either put the IDs on [dpaste.com](https://dpaste.com) & use import command or follow this [video](https://youtu.be/gxAqukdjtM8)',
 
   /**
    * mass ban given IDs

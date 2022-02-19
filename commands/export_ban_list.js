@@ -13,7 +13,7 @@ module.exports = {
       .setName('advanced')
       .setDescription('Select true to export with reason. Default false')),
 
-  note: 'Simple mode exports list which is compatible with other popular ban bots.\nAdvanced mode exports list with reason but only compatible with Ban Utils only.',
+  note: 'Simple mode exports list which is compatible with other popular ban bots.\nAdvanced mode exports list with reason but only compatible with Ban Utils only.\nList is exported to [dpaste.com](https://dpaste.com/)',
 
   /**
    * export ban list of current server
