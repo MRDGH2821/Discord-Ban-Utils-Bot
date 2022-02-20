@@ -161,6 +161,13 @@ module.exports = {
                 embeds: [initial_Screen],
                 fetchReply: true
               });
+
+              interaction.client.emit('banTransfer', interaction, {
+                banDest: alreadyBanned.size,
+                banSource: sourceBans.size,
+                bansTransferred: actualTransfers,
+                destGuild: destinationGuild
+              });
             }
             else {
               // when the interaction times out

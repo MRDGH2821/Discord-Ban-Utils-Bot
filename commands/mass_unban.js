@@ -106,6 +106,11 @@ module.exports = {
           embeds: [massUnBan_success],
           fetchReply: true
         });
+        interaction.client.emit('massUnBanned', interaction, {
+          invalidBans,
+          listOfIDs: sourceList,
+          reason
+        });
       }
     }
     catch (error) {

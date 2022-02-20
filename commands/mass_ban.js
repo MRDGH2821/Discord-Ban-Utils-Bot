@@ -136,6 +136,13 @@ module.exports = {
           embeds: [massBan_success],
           fetchReply: true
         });
+
+        interaction.client.emit('massBanned', interaction, {
+          invalidBans,
+          listOfIDs: sourceList,
+          reason: reasonForBan,
+          uniqueBans
+        });
       }
     }
     catch (error) {
