@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const { MessageEmbed, Channel } = require('discord.js');
-const { EMBCOLORS } = require('../lib/Constants.js');
-const { refreshCache, getWebhook } = require('../lib/WebhookCacheManager.js');
+const { refreshCache } = require('../lib/WebhookCacheManager.js');
+// const { EMBCOLORS } = require('../lib/Constants.js');
 
 module.exports = {
   name: 'webhookUpdate',
@@ -25,7 +25,7 @@ module.exports = {
 
       /* console.log('After refresh:');
        console.log(showCache(channel.client)); */
-
+      /*
       const getArgs = {
           channelID: channel.id,
           webhookID: false
@@ -42,6 +42,7 @@ module.exports = {
       newHook.send({
         embeds: [log_sample_2]
       });
+      */
     }
     catch {
       console.log('No self created webhooks found.');
