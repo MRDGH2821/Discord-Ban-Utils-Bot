@@ -23,7 +23,17 @@ module.exports = {
    */
   // eslint-disable-next-line sort-keys
   async execute(interaction, { listOfIDs, reason, invalidBans, uniqueBans }) {
-    const idsInput = new MessageAttachment(Buffer.from(listOfIDs))
+    console.log(listOfIDs);
+
+    let stringOfIDs = '';
+
+    for (const id of listOfIDs) {
+      if (typeof id === 'string') {
+        stringOfIDs = `${stringOfIDs} ${id}`;
+      }
+    }
+
+    const idsInput = new MessageAttachment(Buffer.from(stringOfIDs))
         .setName(`Input IDs by ${interaction.user.tag}.txt`)
         .setDescription('This is the input given'),
       massban_log = new MessageEmbed()
@@ -49,7 +59,9 @@ module.exports = {
     try {
       const loghook = await interaction.client.webhooksCache.find((webhook) => webhook.guildId === interaction.guild.id);
 
-      loghook.send({ embeds: [massban_log], files: [idsInput] });
+      loghook
+        .send({ embeds: [massban_log], files: [idsInput] })
+        .catch(console.error);
       console.log('Webhook fetched from Cache');
     }
     catch (error) {
@@ -62,7 +74,7 @@ module.exports = {
         const serverData = serverDB.data(),
           serverWebhook = await interaction.client.fetchWebhook(serverData.logWebhookID);
 
-        serverWebhook.send({ embeds: [massban_log] });
+        serverWebhook.send({ embeds: [massban_log] }).catch(console.error);
         console.log('Webhook fetched from API');
       }
       else {

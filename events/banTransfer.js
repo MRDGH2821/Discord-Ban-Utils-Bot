@@ -40,8 +40,8 @@ module.exports = {
       const destHook = await interaction.client.webhooksCache.find((webhook) => webhook.guildId === destGuild.id),
         sourceHook = await interaction.client.webhooksCache.find((webhook) => webhook.guildId === interaction.guild.id);
 
-      destHook.send({ embeds: [transfer_log] });
-      sourceHook.send({ embeds: [transfer_log] });
+      destHook.send({ embeds: [transfer_log] }).catch(console.error);
+      sourceHook.send({ embeds: [transfer_log] }).catch(console.error);
       console.log('Webhook fetched from Cache');
     }
     catch (error) {
@@ -56,7 +56,7 @@ module.exports = {
         const sourceData = sourceDB.data(),
           sourceWebhook = await interaction.client.fetchWebhook(sourceData.logWebhookID);
 
-        sourceWebhook.send({ embeds: [transfer_log] });
+        sourceWebhook.send({ embeds: [transfer_log] }).catch(console.error);
         console.log('Webhook fetched from API');
       }
       else {
@@ -67,7 +67,7 @@ module.exports = {
         const destData = destDB.data(),
           destWebhook = await interaction.client.fetchWebhook(destData.logWebhookID);
 
-        destWebhook.send({ embeds: [transfer_log] });
+        destWebhook.send({ embeds: [transfer_log] }).catch(console.error);
         console.log('Webhook fetched from API');
       }
       else {

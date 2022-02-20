@@ -24,7 +24,7 @@ module.exports = {
     try {
       const loghook = await member.client.webhooksCache.find((webhook) => webhook.guildId === member.guild.id);
 
-      loghook.send({ embeds: [unbanLog] });
+      loghook.send({ embeds: [unbanLog] }).catch(console.error);
       console.log('Webhook fetched from Cache');
     }
     catch (error) {
@@ -37,7 +37,7 @@ module.exports = {
         const serverData = serverDB.data(),
           serverWebhook = await member.client.fetchWebhook(serverData.logWebhookID);
 
-        serverWebhook.send({ embeds: [unbanLog] });
+        serverWebhook.send({ embeds: [unbanLog] }).catch(console.error);
         console.log('Webhook fetched from API');
       }
       else {

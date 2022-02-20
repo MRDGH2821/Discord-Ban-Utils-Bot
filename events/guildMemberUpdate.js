@@ -29,7 +29,7 @@ module.exports = {
       try {
         const loghook = await newMember.client.webhooksCache.find((webhook) => webhook.guildId === newMember.guild.id);
 
-        loghook.send({ embeds: [timeout_log] });
+        loghook.send({ embeds: [timeout_log] }).catch(console.error);
         console.log('Webhook fetched from Cache');
       }
       catch (error) {
@@ -42,7 +42,7 @@ module.exports = {
           const serverData = serverDB.data(),
             serverWebhook = await newMember.client.fetchWebhook(serverData.logWebhookID);
 
-          serverWebhook.send({ embeds: [timeout_log] });
+          serverWebhook.send({ embeds: [timeout_log] }).catch(console.error);
           console.log('Webhook fetched from API');
         }
         else {

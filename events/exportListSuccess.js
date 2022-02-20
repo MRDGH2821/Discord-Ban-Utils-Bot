@@ -31,7 +31,7 @@ module.exports = {
     try {
       const loghook = await interaction.client.webhooksCache.find((webhook) => webhook.guildId === interaction.guild.id);
 
-      loghook.send({ embeds: [exportLog] });
+      loghook.send({ embeds: [exportLog] }).catch(console.error);
       console.log('Webhook fetched from Cache');
     }
     catch (error) {
@@ -44,7 +44,7 @@ module.exports = {
         const serverData = serverDB.data(),
           serverWebhook = await interaction.client.fetchWebhook(serverData.logWebhookID);
 
-        serverWebhook.send({ embeds: [exportLog] });
+        serverWebhook.send({ embeds: [exportLog] }).catch(console.error);
         console.log('Webhook fetched from API');
       }
       else {

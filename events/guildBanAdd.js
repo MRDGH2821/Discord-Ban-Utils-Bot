@@ -72,7 +72,7 @@ module.exports = {
       try {
         const loghook = await guildBan.client.webhooksCache.find((webhook) => webhook.guildId === guildBan.guild.id);
 
-        loghook.send({ embeds: [banLog] });
+        loghook.send({ embeds: [banLog] }).catch(console.error);
         console.log('Webhook fetched from Cache');
       }
       catch (error) {
@@ -85,7 +85,7 @@ module.exports = {
           const serverData = serverDB.data(),
             serverWebhook = await guildBan.client.fetchWebhook(serverData.logWebhookID);
 
-          serverWebhook.send({ embeds: [banLog] });
+          serverWebhook.send({ embeds: [banLog] }).catch(console.error);
           console.log('Webhook fetched from API');
         }
         else {
