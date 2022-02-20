@@ -29,12 +29,24 @@ for (const file of eventFiles) {
   const event = require(`./events/${file}`);
   //  console.log('Inside loop', event);
   if (event.once) {
-    client.once(event.name, (...args) => event.execute(...args));
-    // console.log('Inside If', event.name);
+    try {
+      client.once(event.name, (...args) => event.execute(...args));
+      // console.log('Inside If', event.name);
+    }
+    catch (error) {
+      console.log('Event error. Type: once');
+      console.log(error);
+    }
   }
   else {
-    client.on(event.name, (...args) => event.execute(...args));
-    // console.log('Inside else', event.name);
+    try {
+      client.on(event.name, (...args) => event.execute(...args));
+      // console.log('Inside else', event.name);
+    }
+    catch (error) {
+      console.log('Event error. Type: on');
+      console.log(error);
+    }
   }
 }
 
