@@ -34,7 +34,8 @@ module.exports = {
           initial_Screen = new MessageEmbed()
             .setColor(EMBCOLORS.whiteGray)
             .setTitle('**Ban List transferrer**')
-            .setDescription('Fetching Mutual Servers on which you can transfer bans to. \nPlease wait...'),
+            .setDescription('Fetching Mutual Servers on which you can transfer bans to. \nPlease wait...')
+            .setTimestamp(),
           message = await interaction.editReply({
             embeds: [initial_Screen],
             fetchReply: true
@@ -78,7 +79,9 @@ module.exports = {
             .setPlaceholder('Choose a server')
             .setMaxValues(NUMBER.one)
             .addOptions(serverList));
-          initial_Screen.setDescription('Select Target Server where you wish to transfer bans. Bans will be transferred from current server');
+          initial_Screen
+            .setDescription('Select Target Server where you wish to transfer bans. Bans will be transferred from current server')
+            .setTimestamp();
           await interaction.editReply({
             components: [selectServerRow],
             embeds: [initial_Screen],
@@ -91,7 +94,9 @@ module.exports = {
             if (interacted.user.id === interaction.user.id) {
               destinationGuild = await interaction.client.guilds.fetch(interacted.values[0]);
 
-              initial_Screen.setDescription(`Source Server: ${interaction.guild.name}\nDestination Server: ${destinationGuild.name}`);
+              initial_Screen
+                .setDescription(`Source Server: ${interaction.guild.name}\nDestination Server: ${destinationGuild.name}`)
+                .setTimestamp();
 
               await interaction.editReply({
                 components: [],
@@ -111,10 +116,12 @@ module.exports = {
 
           msgcollector.on('end', async(collected) => {
             if (collected.size === NUMBER.one) {
-              initial_Screen.addField(
-                '**Beginning Transfer...**',
-                'You can sit back and relax while the bot does the work for you!'
-              );
+              initial_Screen
+                .addField(
+                  '**Beginning Transfer...**',
+                  'You can sit back and relax while the bot does the work for you!'
+                )
+                .setTimestamp();
               await interaction.editReply({
                 embeds: [initial_Screen],
                 fetchReply: true
@@ -136,16 +143,18 @@ module.exports = {
                 });
               }
 
-              initial_Screen.addFields([
-                {
-                  name: '**Transfer Successful!**',
-                  value: `Bans were transferred from **\`${interaction.guild.name}\`** to **\`${destinationGuild.name}\`**`
-                },
-                {
-                  name: '**Statistics**',
-                  value: `Bans in \`${interaction.guild.name}\`: **\`${sourceBans.size}\`**\nBans in \`${destinationGuild.name}\`: **\`${alreadyBanned.size}\`**\nUnique Bans: **\`${actualTransfers}\`**`
-                }
-              ]);
+              initial_Screen
+                .addFields([
+                  {
+                    name: '**Transfer Successful!**',
+                    value: `Bans were transferred from **\`${interaction.guild.name}\`** to **\`${destinationGuild.name}\`**`
+                  },
+                  {
+                    name: '**Statistics**',
+                    value: `Bans in \`${interaction.guild.name}\`: **\`${sourceBans.size}\`**\nBans in \`${destinationGuild.name}\`: **\`${alreadyBanned.size}\`**\nUnique Bans: **\`${actualTransfers}\`**`
+                  }
+                ])
+                .setTimestamp();
 
               await interaction.editReply({
                 components: [],
@@ -155,7 +164,9 @@ module.exports = {
             }
             else {
               // when the interaction times out
-              initial_Screen.setDescription('Please Select Something!\nRe-run the command again!');
+              initial_Screen
+                .setDescription('Please Select Something!\nRe-run the command again!')
+                .setTimestamp();
 
               await interaction.editReply({
                 components: [],
@@ -168,7 +179,9 @@ module.exports = {
         }
         else {
           // when mutual servers are less than 1
-          initial_Screen.setDescription('No mutual servers found where you can ban!\nBest contact mutual server mods & tell them to do it');
+          initial_Screen
+            .setDescription('No mutual servers found where you can ban!\nBest contact mutual server mods & tell them to do it')
+            .setTimestamp();
 
           await interaction.editReply({
             components: [],
@@ -204,7 +217,8 @@ module.exports = {
             name: '**Bot Error Dump**',
             value: `${error}`
           }
-        ]);
+        ])
+        .setTimestamp();
 
       await interaction.editReply({
         components: [

@@ -97,7 +97,8 @@ module.exports = {
               name: '**Reason**',
               value: `${reason}`
             }
-          ]);
+          ])
+          .setTimestamp();
 
         await interaction.editReply({
           components: [notWorking],
@@ -133,7 +134,8 @@ module.exports = {
               name: '**Bot Error Dump**',
               value: `${error}`
             }
-          ]);
+          ])
+          .setTimestamp();
 
       await interaction.editReply({
         components: [

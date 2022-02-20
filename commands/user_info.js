@@ -56,7 +56,8 @@ module.exports = {
                   'R'
                 )}`
               }
-            ]);
+            ])
+            .setTimestamp();
 
         if (member.manageable) {
           info_member.addField(
@@ -92,7 +93,8 @@ module.exports = {
               name: '**When did they join Discord?**',
               value: `${time(user.createdAt)} i.e. ${time(user.createdAt, 'R')}`
             }
-          ]);
+          ])
+          .setTimestamp();
 
         if (user === interaction.client.user) {
           info_nonmember.addField(
@@ -129,7 +131,8 @@ module.exports = {
             name: '**Bot error dump**',
             value: `${error}`
           }
-        ]);
+        ])
+        .setTimestamp();
 
       await interaction.editReply({
         components: [InviteRow],

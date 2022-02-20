@@ -36,7 +36,8 @@ module.exports = {
             name: '**Websocket Heartbeat**',
             value: `\`${interaction.client.ws.ping}\` ms\n\nIt is the average interval of a regularly sent signal indicating the healthy operation of Discord API`
           }
-        ]);
+        ])
+        .setTimestamp();
     await interaction.editReply({
       content: 'Ping Results',
       embeds: [sentEmb]

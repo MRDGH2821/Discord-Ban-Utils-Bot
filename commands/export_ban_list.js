@@ -34,7 +34,8 @@ module.exports = {
           resultAdv = [],
           resultEmb = new MessageEmbed()
             .setTitle('**Exporting Ban List**')
-            .setColor(EMBCOLORS.whiteGray);
+            .setColor(EMBCOLORS.whiteGray)
+            .setTimestamp();
         let finalOutput = '',
           finalResult = '',
           finalType = '',
@@ -46,7 +47,9 @@ module.exports = {
             reason: `${ban.reason}`
           });
         });
-        resultEmb.setDescription(`Found ${bans.size} bans.\nAdvanced Mode: \`${advMode}\`\nExporting...`);
+        resultEmb
+          .setDescription(`Found ${bans.size} bans.\nAdvanced Mode: \`${advMode}\`\nExporting...`)
+          .setTimestamp();
         await interaction.editReply({
           embeds: [resultEmb]
         });
@@ -66,7 +69,8 @@ module.exports = {
           .then(async(url) => {
             resultEmb
               .setTitle('**Ban List Export Success!**')
-              .addField('**URL**', url);
+              .addField('**URL**', url)
+              .setTimestamp();
             await interaction.editReply({
               embeds: [resultEmb]
             });
@@ -110,7 +114,8 @@ module.exports = {
             name: '**Bot Error Dump**',
             value: `${error}`
           }
-        ]);
+        ])
+        .setTimestamp();
 
       await interaction.editReply({
         components: [

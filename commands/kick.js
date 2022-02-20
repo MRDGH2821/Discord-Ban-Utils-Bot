@@ -51,7 +51,8 @@ module.exports = {
               name: '**Reason**',
               value: reason
             }
-          ]);
+          ])
+          .setTimestamp();
 
         await interaction.editReply({
           embeds: [kick_success]
@@ -84,7 +85,8 @@ module.exports = {
             name: '**Bot Error Dump**',
             value: `${error}`
           }
-        ]);
+        ])
+        .setTimestamp();
       await interaction.editReply({
         components: [
           SupportRow,

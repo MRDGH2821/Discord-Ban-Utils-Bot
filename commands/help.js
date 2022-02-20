@@ -95,7 +95,8 @@ module.exports = {
       .setTitle('**Help Section**')
       .setDescription(`The help section for you to get started with the bot!\nIt helps you import, export & transfer bans from one server to another.\n\nBot version **\`${version}\`**`)
       .addFields(newFields)
-      .addFields(additionalFields);
+      .addFields(additionalFields)
+      .setTimestamp();
 
     await interaction.reply({
       components: [

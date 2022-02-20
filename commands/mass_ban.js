@@ -127,7 +127,8 @@ module.exports = {
               name: '**Massban List**',
               value: `${sourceURL}`
             }
-          ]);
+          ])
+          .setTimestamp();
 
         await interaction.editReply({
           components: [notWorking],
@@ -163,7 +164,8 @@ module.exports = {
               name: '**Bot Error Dump**',
               value: `${error}`
             }
-          ]);
+          ])
+          .setTimestamp();
 
       await interaction.editReply({
         components: [

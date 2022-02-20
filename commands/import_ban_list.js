@@ -147,7 +147,8 @@ module.exports = {
               name: '**Reason**',
               value: modeDesc
             }
-          ]);
+          ])
+          .setTimestamp();
         interaction.client.emit('importListSuccess', interaction, {
           advanceMode: advMode,
           reason: inputReason,
@@ -186,7 +187,8 @@ module.exports = {
             name: '**Bot error dump**',
             value: `${error}`
           }
-        ]);
+        ])
+        .setTimestamp();
       await interaction.editReply({
         components: [SupportRow],
         embeds: [import_fail]

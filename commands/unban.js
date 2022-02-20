@@ -68,7 +68,8 @@ module.exports = {
             name: '**Bot Error Dump**',
             value: `${error}`
           }
-        ]);
+        ])
+        .setTimestamp();
 
       await interaction.editReply({
         components: [

@@ -37,7 +37,8 @@ module.exports = {
       logsProgress = new MessageEmbed()
         .setColor(EMBCOLORS.whiteGray)
         .setTitle('**Setting up Log Channel**')
-        .setDescription(`Configuring ${channel} for logs.\nAfter configuration success, 2 log messages should come in that channel.`);
+        .setDescription(`Configuring ${channel} for logs.\nAfter configuration success, 2 log messages should come in that channel.`)
+        .setTimestamp();
     let canManage = false;
 
     try {
@@ -46,10 +47,12 @@ module.exports = {
       if (isInGuild && canManage) {
         await interaction.editReply({
           embeds: [
-            logsProgress.addField(
-              'Step 1',
-              'Checking if there are any existing webhooks...'
-            )
+            logsProgress
+              .addField(
+                'Step 1',
+                'Checking if there are any existing webhooks...'
+              )
+              .setTimestamp()
           ]
         });
         const logWebhook = await interaction.guild
@@ -60,10 +63,9 @@ module.exports = {
               if (allhooks.size > NUMBER.one) {
                 await interaction.editReply({
                   embeds: [
-                    logsProgress.addField(
-                      'Step 2',
-                      'Deleting duplicate webhooks...'
-                    )
+                    logsProgress
+                      .addField('Step 2', 'Deleting duplicate webhooks...')
+                      .setTimestamp()
                   ]
                 });
                 const qty = allhooks.size;
@@ -76,10 +78,12 @@ module.exports = {
               else {
                 await interaction.editReply({
                   embeds: [
-                    logsProgress.addField(
-                      'Step 2',
-                      'Editing target channel of webhook...'
-                    )
+                    logsProgress
+                      .addField(
+                        'Step 2',
+                        'Editing target channel of webhook...'
+                      )
+                      .setTimestamp()
                   ]
                 });
                 const hook = allhooks.first();
@@ -92,7 +96,11 @@ module.exports = {
             })
             .catch(async(error) => {
               await interaction.editReply({
-                embeds: [logsProgress.addField('Step 2.5', 'Creating new webhook...')]
+                embeds: [
+                  logsProgress
+                    .addField('Step 2.5', 'Creating new webhook...')
+                    .setTimestamp()
+                ]
               });
               console.error(error);
               console.log('Creating new webhook...');
@@ -101,7 +109,8 @@ module.exports = {
           log_sample = new MessageEmbed()
             .setColor(EMBCOLORS.invisible)
             .setTitle('Test msg via command')
-            .setDescription(`This is a test log, should come in ${channel}.\nThis is sent when the log channel is set via command. Another log message should come by which you can verify logging is working properly or not.`),
+            .setDescription(`This is a test log, should come in ${channel}.\nThis is sent when the log channel is set via command. Another log message should come by which you can verify logging is working properly or not.`)
+            .setTimestamp(),
           setDBdata = {
             logChannelID: channel.id,
             logWebhookID: logWebhook.id,
@@ -109,7 +118,7 @@ module.exports = {
           };
 
         await interaction.editReply({
-          embeds: [logsProgress.addField('Step 3', 'Saving data...')]
+          embeds: [logsProgress.addField('Step 3', 'Saving data...').setTimestamp()]
         });
         await db
           .collection('servers')
@@ -122,6 +131,7 @@ module.exports = {
             logsProgress
               .setTitle('**Log Channel configured!**')
               .addField('Success!', `Configured ${channel} for logs.`)
+              .setTimestamp()
           ]
         });
 
@@ -154,7 +164,8 @@ module.exports = {
             name: '**Bot Error Dump**',
             value: `${error}`
           }
-        ]);
+        ])
+        .setTimestamp();
 
       await interaction.editReply({
         components: [
