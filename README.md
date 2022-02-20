@@ -1,7 +1,4 @@
-# CAUTION!
-
-Please read the [caution notes](./Caution.md) for v2.5.2+
-There is now a significant change in usage of config files!
+**Bot version 3.0 released! Please read [Caution](./Caution.md) notes!** 
 
 # Discord-Ban-Utils-Bot
 
