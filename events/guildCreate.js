@@ -69,6 +69,9 @@ module.exports = {
           })
           .catch(console.error);
       }
+      else {
+        console.log('No data found in database for new server');
+      }
     }
     catch (error) {
       console.log('Server data doesn\'t exist\n\nError dump:');
