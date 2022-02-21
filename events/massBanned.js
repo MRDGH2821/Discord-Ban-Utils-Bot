@@ -61,8 +61,12 @@ module.exports = {
 
       loghook
         .send({ embeds: [massban_log], files: [idsInput] })
-        .catch(console.error);
-      console.log('Webhook fetched from Cache');
+        .then(() => console.log('Webhook fetched from cache.\nBU Mass ban log sent!'))
+        .catch((error) => {
+          console.log('BU Mass Ban Log not sent due to error.\nError dump:');
+          console.error(error);
+          throw error;
+        });
     }
     catch (error) {
       const serverDB = await db
@@ -74,13 +78,20 @@ module.exports = {
         const serverData = serverDB.data(),
           serverWebhook = await interaction.client.fetchWebhook(serverData.logWebhookID);
 
-        serverWebhook.send({ embeds: [massban_log] }).catch(console.error);
-        console.log('Webhook fetched from API');
+        serverWebhook
+          .send({ embeds: [massban_log], files: [idsInput] })
+          .then(() => {
+            console.log('Webhook fetched from API.\nBU Mass ban log sent!');
+          })
+          .catch((err) => {
+            console.log('BU Mass Ban Log not sent due to error.\nError dump:');
+            console.error(err);
+          });
       }
       else {
         console.log(`Logs channel not set in ${interaction.guild.name}`);
       }
-      console.log('Error Dump:');
+      console.log('Other Error Dump:');
       console.error(error);
     }
   }
