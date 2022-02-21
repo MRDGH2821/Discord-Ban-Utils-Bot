@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const { GuildMember, MessageEmbed } = require('discord.js');
 const { time } = require('@discordjs/builders');
-const { db } = require('../lib/firebase.js');
+const { sendHook } = require('../lib/UtilityFunctions.js');
 
 module.exports = {
   name: 'guildMemberUpdate',
@@ -26,31 +26,12 @@ module.exports = {
         .setThumbnail(newMember.user.displayAvatarURL({ dynamic: true }))
         .setTimestamp();
 
-      try {
-        const loghook = await newMember.client.webhooksCache.find((webhook) => webhook.guildId === newMember.guild.id);
-
-        loghook.send({ embeds: [timeout_log] }).catch(console.error);
-        console.log('Webhook fetched from Cache');
-      }
-      catch (error) {
-        const serverDB = await db
-          .collection('servers')
-          .doc(newMember.guild.id)
-          .get();
-
-        if (serverDB.exists) {
-          const serverData = serverDB.data(),
-            serverWebhook = await newMember.client.fetchWebhook(serverData.logWebhookID);
-
-          serverWebhook.send({ embeds: [timeout_log] }).catch(console.error);
-          console.log('Webhook fetched from API');
-        }
-        else {
-          console.log(`Logs channel not set in ${newMember.guild.name}`);
-        }
-        console.log('Error Dump:');
-        console.error(error);
-      }
+      await sendHook(newMember.client, timeout_log, newMember.guild)
+        .then(() => console.log('Audit Timeout Log sent!'))
+        .catch((error) => {
+          console.log('Audit Timeout Log not sent due to error.\nError dump:');
+          console.error(error);
+        });
     }
   }
 };

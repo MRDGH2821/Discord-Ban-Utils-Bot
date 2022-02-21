@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const { MessageEmbed, GuildBan } = require('discord.js');
-const { db } = require('../lib/firebase.js');
 const { EMBCOLORS } = require('../lib/Constants.js');
+const { sendHook } = require('../lib/UtilityFunctions.js');
 
 module.exports = {
   name: 'guildBanRemove',
@@ -21,30 +21,11 @@ module.exports = {
       .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
       .setTimestamp();
 
-    try {
-      const loghook = await member.client.webhooksCache.find((webhook) => webhook.guildId === member.guild.id);
-
-      loghook.send({ embeds: [unbanLog] }).catch(console.error);
-      console.log('Webhook fetched from Cache');
-    }
-    catch (error) {
-      const serverDB = await db
-        .collection('servers')
-        .doc(member.guild.id)
-        .get();
-
-      if (serverDB.exists) {
-        const serverData = serverDB.data(),
-          serverWebhook = await member.client.fetchWebhook(serverData.logWebhookID);
-
-        serverWebhook.send({ embeds: [unbanLog] }).catch(console.error);
-        console.log('Webhook fetched from API');
-      }
-      else {
-        console.log(`Logs channel not set in ${member.guild.name}`);
-      }
-      console.log('Error Dump:');
-      console.error(error);
-    }
+    await sendHook(member.client, unbanLog, member.guild)
+      .then(() => console.log('Audit Un-Ban Log sent!'))
+      .catch((error) => {
+        console.log('Audit Un-Ban Log not sent due to error.\nError dump:');
+        console.error(error);
+      });
   }
 };

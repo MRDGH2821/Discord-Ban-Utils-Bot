@@ -1,8 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 const { MessageEmbed, GuildMember } = require('discord.js');
 const { time } = require('@discordjs/builders');
-const { db } = require('../lib/firebase.js');
 const { EMBCOLORS } = require('../lib/Constants.js');
+const { sendHook } = require('../lib/UtilityFunctions.js');
 
 module.exports = {
   name: 'guildMemberRemove',
@@ -27,30 +27,11 @@ module.exports = {
         }
       ]);
 
-    try {
-      const loghook = await member.client.webhooksCache.find((webhook) => webhook.guildId === member.guild.id);
-
-      loghook.send({ embeds: [exitLog] }).catch(console.error);
-      console.log('Webhook fetched from Cache');
-    }
-    catch (error) {
-      const serverDB = await db
-        .collection('servers')
-        .doc(member.guild.id)
-        .get();
-
-      if (serverDB.exists) {
-        const serverData = serverDB.data(),
-          serverWebhook = await member.client.fetchWebhook(serverData.logWebhookID);
-
-        serverWebhook.send({ embeds: [exitLog] }).catch(console.error);
-        console.log('Webhook fetched from API');
-      }
-      else {
-        console.log(`Logs channel not set in ${member.guild.name}`);
-      }
-      console.log('Error Dump:');
-      console.error(error);
-    }
+    await sendHook(member.client, exitLog, member.guild)
+      .then(() => console.log('Audit Exit Log sent!'))
+      .catch((error) => {
+        console.log('Audit Exit Log not sent due to error.\nError dump:');
+        console.error(error);
+      });
   }
 };

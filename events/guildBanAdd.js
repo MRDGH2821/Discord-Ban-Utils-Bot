@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const { MessageEmbed, GuildBan } = require('discord.js');
-const { db } = require('../lib/firebase.js');
 const { EMBCOLORS } = require('../lib/Constants.js');
+const { sendHook } = require('../lib/UtilityFunctions.js');
 
 module.exports = {
   name: 'guildBanAdd',
@@ -69,31 +69,12 @@ module.exports = {
       ]);
     }
     if (!isBannedViaCmd) {
-      try {
-        const loghook = await guildBan.client.webhooksCache.find((webhook) => webhook.guildId === guildBan.guild.id);
-
-        loghook.send({ embeds: [banLog] }).catch(console.error);
-        console.log('Webhook fetched from Cache');
-      }
-      catch (error) {
-        const serverDB = await db
-          .collection('servers')
-          .doc(guildBan.guild.id)
-          .get();
-
-        if (serverDB.exists) {
-          const serverData = serverDB.data(),
-            serverWebhook = await guildBan.client.fetchWebhook(serverData.logWebhookID);
-
-          serverWebhook.send({ embeds: [banLog] }).catch(console.error);
-          console.log('Webhook fetched from API');
-        }
-        else {
-          console.log(`Logs channel not set in ${guildBan.guild.name}`);
-        }
-        console.log('Error Dump:');
-        console.error(error);
-      }
+      await sendHook(guildBan.client, banLog, guildBan.guild)
+        .then(() => console.log('Audit Ban Log sent!'))
+        .catch((error) => {
+          console.log('Audit Ban Log not sent due to error.\nError dump:');
+          console.error(error);
+        });
     }
   }
 };

@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const { MessageEmbed, Interaction } = require('discord.js');
-const { db } = require('../lib/firebase.js');
 const { EMBCOLORS } = require('../lib/Constants.js');
+const { sendHook } = require('../lib/UtilityFunctions.js');
 
 module.exports = {
   name: 'importListSuccess',
@@ -35,30 +35,11 @@ module.exports = {
       ])
       .setTimestamp();
 
-    try {
-      const loghook = await interaction.client.webhooksCache.find((webhook) => webhook.guildId === interaction.guild.id);
-
-      loghook.send({ embeds: [importLog] }).catch(console.error);
-      console.log('Webhook fetched from Cache');
-    }
-    catch (error) {
-      const serverDB = await db
-        .collection('servers')
-        .doc(interaction.guild.id)
-        .get();
-
-      if (serverDB.exists) {
-        const serverData = serverDB.data(),
-          serverWebhook = await interaction.client.fetchWebhook(serverData.logWebhookID);
-
-        serverWebhook.send({ embeds: [importLog] }).catch(console.error);
-        console.log('Webhook fetched from API');
-      }
-      else {
-        console.log(`Logs channel not set in ${interaction.guild.name}`);
-      }
-      console.log('Error Dump:');
-      console.error(error);
-    }
+    await sendHook(interaction.client, importLog, interaction.guild)
+      .then(() => console.log('Audit Ban Log sent!'))
+      .catch((error) => {
+        console.log('Audit Ban Log not sent due to error.\nError dump:');
+        console.error(error);
+      });
   }
 };

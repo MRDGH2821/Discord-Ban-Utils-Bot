@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const { Interaction, Guild, MessageEmbed } = require('discord.js');
 const { EMBCOLORS } = require('../lib/Constants.js');
-const { db } = require('../lib/firebase.js');
+const { sendHook } = require('../lib/UtilityFunctions.js');
 
 module.exports = {
   name: 'banTransfer',
@@ -36,46 +36,17 @@ module.exports = {
           value: `Bans in source: **\`${banSource}\`**\nBans in destination:**\`${banDest}\`**\nUnique Bans: **\`${bansTransferred}\`**`
         }
       ]);
-    try {
-      const destHook = await interaction.client.webhooksCache.find((webhook) => webhook.guildId === destGuild.id),
-        sourceHook = await interaction.client.webhooksCache.find((webhook) => webhook.guildId === interaction.guild.id);
-
-      destHook.send({ embeds: [transfer_log] }).catch(console.error);
-      sourceHook.send({ embeds: [transfer_log] }).catch(console.error);
-      console.log('Webhook fetched from Cache');
-    }
-    catch (error) {
-      const destDB = await db.collection('servers').doc(destGuild.id)
-          .get(),
-        sourceDB = await db
-          .collection('servers')
-          .doc(interaction.guild.id)
-          .get();
-
-      if (sourceDB.exists) {
-        const sourceData = sourceDB.data(),
-          sourceWebhook = await interaction.client.fetchWebhook(sourceData.logWebhookID);
-
-        sourceWebhook.send({ embeds: [transfer_log] }).catch(console.error);
-        console.log('Webhook fetched from API');
-      }
-      else {
-        console.log(`Logs channel not set in ${interaction.guild.name}`);
-      }
-
-      if (destDB.exists) {
-        const destData = destDB.data(),
-          destWebhook = await interaction.client.fetchWebhook(destData.logWebhookID);
-
-        destWebhook.send({ embeds: [transfer_log] }).catch(console.error);
-        console.log('Webhook fetched from API');
-      }
-      else {
-        console.log(`Logs channel not set in ${interaction.guild.name}`);
-      }
-
-      console.log('Error Dump:');
-      console.error(error);
-    }
+    await sendHook(interaction.client, transfer_log, interaction.guild)
+      .then(() => console.log('BU Ban Transfer Log sent!'))
+      .catch((error) => {
+        console.log('BU Ban Transfer Log not sent due to error.\nError dump:');
+        console.error(error);
+      });
+    await sendHook(interaction.client, transfer_log, destGuild)
+      .then(() => console.log('BU Ban Transfer Log sent!'))
+      .catch((error) => {
+        console.log('BU Ban Transfer Log not sent due to error.\nError dump:');
+        console.error(error);
+      });
   }
 };
