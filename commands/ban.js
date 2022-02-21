@@ -46,7 +46,7 @@ module.exports = {
 
     try {
       canBan = await interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS]);
-      isBannable = target.bannable;
+      isBannable = interaction.options.getMember('user').bannable;
 
       if (isInGuild && canBan) {
         await interaction.guild.members.ban(target, {
