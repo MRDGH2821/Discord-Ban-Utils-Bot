@@ -2,7 +2,16 @@
   "JavaScript": {
     "beautifiers": ["ESLint"],
     "ESLint": {
-      "prefer_beautifier_config": "./.eslintrc.json"
+      "prefer_beautifier_config": true
     }
+  },
+  "Markdown": {
+    "beautifiers": ["Prettier"],
+    "pragma_insert": false,
+    "pragma_require": false
+  },
+  "JSON": {
+    "beautifiers": ["Prettier"],
+    "prefer_beautifier_config": true
   }
 }

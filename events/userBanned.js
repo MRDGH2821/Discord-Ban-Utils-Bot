@@ -1,80 +1,44 @@
-const { db } = require('../lib/firebase.js');
-
+// eslint-disable-next-line no-unused-vars
+const { MessageEmbed, CommandInteraction } = require('discord.js');
+const { EMBCOLORS } = require('../lib/Constants.js');
+const { sendHook } = require('../lib/UtilityFunctions.js');
 module.exports = {
   name: 'userBanned',
+
+  /**
+   * send log when user is banned via bot
+   * @async
+   * @function execute
+   * @param {CommandInteraction} interaction - interaction object
+   * @param {Object} BUBanOptions - ban options object
+   * @param {string} BUBanOptions.reason - reason for ban
+   * @param {number} BUBanOptions.daysOfMsgs - number of days of messages to be deleted
+   */
   // eslint-disable-next-line sort-keys
-  async execute(interaction, reason, daysOfMsgs) {
-    const bannedUser = await interaction.options.getUser('user'),
-      serverDB = await db
-        .collection('servers')
-        .doc(`${interaction.guild.id}`)
-        .get();
+  async execute(interaction, { reason, daysOfMsgs }) {
+    const bannedUser = interaction.options.getUser('user'),
+      embedBanLog = new MessageEmbed()
+        .setTitle('**BU Ban Log**')
+        .setColor(EMBCOLORS.hammerHandle)
+        .setDescription(`\`${bannedUser.tag}\` ${bannedUser} got hit with the swift hammer of justice!\nID: \`${bannedUser.id}\`\nDays of messages deleted: ${daysOfMsgs}`)
+        .setThumbnail(bannedUser.displayAvatarURL({ dynamic: true }))
+        .addFields([
+          {
+            name: '**Justice Ban Hammer Wielder**',
+            value: `${interaction.user.tag} ${interaction.user}`
+          },
+          {
+            name: '**Ban Reason**',
+            value: `${reason}`
+          }
+        ])
+        .setTimestamp();
 
-    /* console.log('Moderator: ', mod);
-       console.log('Banned user: ', bannedUser);
-       console.log('Reason: ', reason);
-       console.log('Guild: ', guild); */
-    try {
-      if (serverDB.exists) {
-        const serverData = serverDB.data(),
-          webhookID = serverData.logWebhookID;
-        console.log('Doc data: ', serverData);
-
-        /* serverData format:
-           {
-           logChannelID: <channel ID>,
-           logWebhookID: <webhook ID>,
-           serverID: <server ID>
-           } */
-        console.log('logWebHookID: ', serverData.logWebhookID);
-
-        if (webhookID) {
-          const webhookClient = await interaction.client.fetchWebhook(webhookID),
-            // eslint-disable-next-line sort-vars
-            logEmb = {
-              color: 0xe1870a,
-              title: '**Ban Log**',
-              // eslint-disable-next-line sort-keys
-              description: 'A person got hit with the swift Hammer of Justice!',
-              thumbnail: {
-                url: bannedUser.displayAvatarURL()
-              },
-              // eslint-disable-next-line sort-keys
-              fields: [
-                {
-                  name: '**Justice Hammer Wielder**',
-                  value: `${interaction.user}`
-                },
-                {
-                  name: '**Justice Hammer Target**',
-                  value: `${bannedUser.tag} ${bannedUser}\nID: ${bannedUser.id}`
-                },
-                {
-                  name: '**Reason**',
-                  value: `${reason}`
-                },
-                {
-                  name: '**Days of messages deleted**',
-                  value: `${daysOfMsgs}`
-                }
-              ],
-              timestamp: new Date(),
-              // eslint-disable-next-line sort-keys
-              footer: {
-                text: bannedUser.id
-              }
-            };
-          webhookClient.send({
-            embeds: [logEmb]
-          });
-        }
-      }
-      else {
-        console.log(`No log channel configured for ${interaction.guild.name}`);
-      }
-    }
-    catch (error) {
-      console.log(error);
-    }
+    await sendHook(interaction.client, embedBanLog, interaction.guild)
+      .then(() => console.log('BU Ban Log sent!'))
+      .catch((error) => {
+        console.log('BU Ban Log not sent due to error.\nError dump:');
+        console.error(error);
+      });
   }
 };

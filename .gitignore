@@ -14,3 +14,9 @@ prod.env
 command-exports
 .vscode/*
 .env.dev
+
+already-old-files
+cmd.json
+commands/guildban.txt
+commands/list.txt
+deploy-stats.txt

@@ -1,8 +1,8 @@
-const { Permissions } = require('discord.js');
+// eslint-disable-next-line no-unused-vars
+const { Permissions, MessageEmbed, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
-const { NotInsideServer, NoPerms } = require('../lib/ErrorEmbeds.js'),
-  default_days = 7;
+const { SupportRow, InviteRow } = require('../lib/RowButtons.js');
+const { default_delete_days, EMBCOLORS } = require('../lib/Constants.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -10,110 +10,111 @@ module.exports = {
     .setDescription('Bans a user')
     .addUserOption((option) => option
       .setName('user')
-      .setDescription('Enter the User ID (i.e. snowflake) or tag them')
+      .setDescription('Enter user ID (i.e. snowflake) or tag them')
       .setRequired(true))
     .addStringOption((option) => option
       .setName('reason')
-      .setDescription('Enter Reason. (Default: No reason Given)'))
+      .setDescription('Enter Reason. (Default: Banned by <you> on <today\'s date>)'))
     .addNumberOption((option) => option
       .setName('delete_messages')
-      .setDescription('Enter number of days of msgs to delete')),
+      .setDescription('Enter number of msgs (in days) to delete. (Max and Default is 7 days')
+      .setMaxValue(default_delete_days)),
 
+  note: `Default reason is: Banned by <you> on <today's date>. Default & max days of messages deleted is ${default_delete_days}`,
+
+  /**
+   * ban a user
+   * @async
+   * @function execute
+   * @param {CommandInteraction} interaction - interaction object
+   */
+  // eslint-disable-next-line sort-keys
   async execute(interaction) {
     await interaction.deferReply();
     const delete_msg_days =
-        (await interaction.options.getNumber('delete_messages')) ||
-        default_days,
-      reas =
-        (await interaction.options.getString('reason')) ||
+        interaction.options.getNumber('delete_messages') || default_delete_days,
+      isInGuild = interaction.inGuild(),
+      reason =
+        interaction.options.getString('reason') ||
         `Banned by ${
           interaction.user.tag
         } on ${new Date().toDateString()} ||for no reason :joy:||`,
-      target = await interaction.options.getUser('user');
+      target = interaction.options.getUser('user');
+
+    let canBan = false,
+      isBannable = false;
 
     try {
-      if (!interaction.guild) {
-        // if not in server
-        await interaction.editReply({
-          components: [InviteRow],
-          embeds: [NotInsideServer]
-        });
-      }
-      else if (
+      canBan = await interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS]);
+      isBannable = interaction.options.getMember('user').bannable;
 
-      /*
-      else if (!target.bannable) {
-        await interaction.editReply({
-          components: [SupportRow],
-          embeds: [
-            {
-              title: '**Cannot Ban...**',
-              // eslint-disable-next-line sort-keys
-              description: `User ${target} cannot be banned :grimacing:\n\nPlease move the bot role higher than that user for this command to work.`,
-              // eslint-disable-next-line sort-keys
-              color: 0xff0033
-            }
-          ]
-        });
-      }
-      */
-        interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
-      ) {
-        // drop the Ban Hammer!
+      if (isInGuild && canBan) {
         await interaction.guild.members.ban(target, {
           days: delete_msg_days,
-          reason: reas
+          reason
         });
 
-        await interaction.editReply({
-          // content: `User \`${target.tag}\` is banned from this server. \nReason: ${reas}.`,
-          embeds: [
+        const ban_success = new MessageEmbed()
+          .setColor(EMBCOLORS.hammerHandle)
+          .setTitle('**Ban Hammer Dropped!**')
+          .setDescription(`User \`${target.tag}\` ${target} is banned from this server.\nNumber of messages (in days) deleted: ${delete_msg_days}`)
+          .setThumbnail(target.displayAvatarURL({ dynamic: true }))
+          .addFields([
             {
-              color: 0xe1870a,
-              title: '**Ban Hammer Dropped!**',
-              // eslint-disable-next-line sort-keys
-              description: `User \`${target.tag}\` ${target} is banned from this server.\nNumber of days of msgs deleted: ${delete_msg_days}`,
-              thumbnail: { url: target.displayAvatarURL({ dynamic: true }) },
-              // eslint-disable-next-line sort-keys
-              fields: [
-                {
-                  name: '**Reason**',
-                  value: reas
-                }
-              ],
-              timestamp: new Date(),
-              // eslint-disable-next-line sort-keys
-              footer: {
-                text: target.id
-              }
+              name: '**Reason**',
+              value: `${reason}`
+            },
+            {
+              name: '**Target ID**',
+              value: `${target.id}`
             }
-          ]
+          ])
+          .setTimestamp();
+        await interaction.editReply({ embeds: [ban_success] });
+        interaction.client.emit('userBanned', interaction, {
+          daysOfMsgs: delete_msg_days,
+          reason
         });
-        await interaction.client.emit(
-          'userBanned',
-          interaction,
-          // target,
-          reas,
-          delete_msg_days
-        );
       }
       else {
-        // when no ban permissions
-        NoPerms.fields = {
-          name: '**Permissions required**',
-          value: 'BAN_MEMBERS'
-        };
-        await interaction.editReply({
-          components: [InviteRow],
-          embeds: [NoPerms]
-        });
+        throw new Error(`Inside server? ${isInGuild}\nCan Ban? ${canBan}`);
       }
     }
-    catch (err) {
+    catch (error) {
+      const ban_fail = new MessageEmbed()
+        .setColor(EMBCOLORS.error)
+        .setTitle('**Cannot Ban...**')
+        .setDescription(`User ${target} cannot be banned :grimacing:\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.`)
+        .addFields([
+          {
+            name: '**Checks**',
+            value: `Executed In server? **\`${isInGuild}\`**\nCan you ban? **\`${canBan}\`**\nTarget bannable? **\`${isBannable}\`**`
+          },
+          {
+            name: '**Possible solutions**',
+            value:
+              'Use this command inside a server where you have required permissions. Also make sure the bot role is above that user\'s highest role for this command to work.'
+          },
+          {
+            name: '**Inputs given**',
+            value: `User: ${target}  ${target.id}\nReason: ${reason}\nNumber of msgs (in days) to be deleted: ${delete_msg_days}`
+          },
+          {
+            name: '**Bot Error Dump**',
+            value: `${error}`
+          }
+        ])
+        .setTimestamp();
+
       await interaction.editReply({
-        components: [SupportRow],
-        content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${err}\``
+        components: [
+          SupportRow,
+          InviteRow
+        ],
+        embeds: [ban_fail]
       });
+
+      console.error(error);
     }
   }
 };

@@ -1,65 +1,87 @@
-const { Permissions } = require('discord.js');
+// eslint-disable-next-line no-unused-vars
+const { Permissions, MessageEmbed, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
-const { NotInsideServer, NoPerms } = require('../lib/ErrorEmbeds.js');
+const { EMBCOLORS } = require('../lib/Constants.js');
+const { SupportRow, InviteRow } = require('../lib/RowButtons.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('unban')
-    .setDescription('Unbans a user')
-    .addUserOption((option) => option
-      .setName('user')
-      .setDescription('Enter the User ID (i.e. snowflake)')
-      .setRequired(true)),
+    .setDescription('Un-bans a user')
+    .addUserOption((option) =>
+      option
+        .setName('user')
+        .setDescription('Enter the User ID (i.e. snowflake)')
+        .setRequired(true)
+    ),
 
+  /**
+   * unban a user
+   * @async
+   * @function execute
+   * @param {CommandInteraction} interaction - interaction object
+   */
   async execute(interaction) {
     await interaction.deferReply();
-    const target = await interaction.options.getUser('user');
+    const isInGuild = interaction.inGuild(),
+      target = interaction.options.getUser('user');
+    let canUnban = false;
     try {
-      if (!interaction.guild) {
-        await interaction.editReply({
-          components: [InviteRow],
-          embeds: [NotInsideServer]
-        });
-      }
-      else if (
-        interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])
-      ) {
+      canUnban = await interaction.member.permissions.has([
+        Permissions.FLAGS.BAN_MEMBERS
+      ]);
+      if (isInGuild && canUnban) {
         await interaction.guild.members.unban(target);
+
+        // eslint-disable-next-line one-var
+        const unban_success = new MessageEmbed()
+          .setTitle('**User Unbanned!**')
+          .setColor(EMBCOLORS.whiteGray)
+          .setDescription(
+            `User \`${target.tag}\` ${target} is unbanned from this server.\nID: \`${target.id}\``
+          )
+          .setThumbnail(target.displayAvatarURL({ dynamic: true }))
+          .setTimestamp();
+
         await interaction.editReply({
-          embeds: [
-            {
-              color: 0xe1870a,
-              title: '**User Unbanned!**',
-              // eslint-disable-next-line sort-keys
-              description: `User \`${target.tag}\` ${target} is unbanned from this server.`,
-              thumbnail: { url: target.displayAvatarURL({ dynamic: true }) },
-              timestamp: new Date(),
-              // eslint-disable-next-line sort-keys
-              footer: {
-                text: `${target.id}`
-              }
-            }
-          ]
+          embeds: [unban_success]
         });
+      } else {
+        throw new Error(`Inside server? ${isInGuild}\nCan Unban? ${canUnban}`);
       }
-      else {
-        // when no ban permissions
-        NoPerms.fields = {
-          name: '**Permissions required**',
-          value: 'BAN_MEMBERS'
-        };
-        await interaction.editReply({
-          components: [InviteRow],
-          embeds: [NoPerms]
-        });
-      }
-    }
-    catch (error) {
+    } catch (error) {
+      const unban_fail = new MessageEmbed()
+        .setColor(EMBCOLORS.error)
+        .setTitle('**Cannot Unban...**')
+        .setDescription(
+          `User ${target} cannot be unbanned :grimacing:\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.`
+        )
+        .addFields([
+          {
+            name: '**Checks**',
+            value: `Executed In server? **\`${isInGuild}\`**\nCan you unban? **\`${canUnban}\`**`
+          },
+          {
+            name: '**Possible solutions**',
+            value:
+              'Use this command inside a server where you have required permissions.'
+          },
+          {
+            name: '**Inputs given**',
+            value: `User: ${target}  \`${target.id}\``
+          },
+          {
+            name: '**Bot Error Dump**',
+            value: `${error}`
+          }
+        ])
+        .setTimestamp();
+
       await interaction.editReply({
-        components: [SupportRow],
-        content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${error}\``
+        components: [SupportRow, InviteRow],
+        embeds: [unban_fail]
       });
+      console.error(error);
     }
   }
 };

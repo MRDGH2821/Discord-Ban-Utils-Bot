@@ -1,98 +1,106 @@
-const { Permissions } = require('discord.js');
+// eslint-disable-next-line no-unused-vars
+const { MessageEmbed, Permissions, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
-const { NotInsideServer, NoPerms } = require('../lib/ErrorEmbeds.js');
+const { EMBCOLORS } = require('../lib/Constants.js');
+const { SupportRow, InviteRow } = require('../lib/RowButtons.js');
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('kick')
     .setDescription('Kicks a user')
-    .addUserOption((option) => option.setName('user').setDescription('Tag a user')
-      .setRequired(true))
-    .addStringOption((option) => option
-      .setName('reason')
-      .setDescription('Enter reason for Kick. Will be sent as DM to user')),
+    .addUserOption((option) =>
+      option.setName('user').setDescription('Tag a user').setRequired(true)
+    )
+    .addStringOption((option) =>
+      option.setName('reason').setDescription('Enter reason for Kick if any.')
+    ),
 
+  note: "Default reason is: Kicked by <you> on <today's date>.",
+
+  /**
+   * kick a user
+   * @async
+   * @function execute
+   * @param {CommandInteraction} interaction - interaction object
+   */
+  // eslint-disable-next-line sort-keys
   async execute(interaction) {
-    const reason =
-        (await interaction.options.getString('reason')) ||
-        '||for no reason :joy:||',
-      target = await interaction.options.getMember('user');
-    //  const tartag = target.user.tag;
+    await interaction.deferReply();
+    const isInGuild = interaction.inGuild(),
+      reason =
+        interaction.options.getString('reason') ||
+        `Kicked by ${
+          interaction.user.tag
+        } on ${new Date().toDateString()} ||for no reason :joy:||`,
+      target = interaction.options.getMember('user');
+
+    let canKick = false,
+      isKickable = false;
+
     try {
-      if (!interaction.guild) {
-        await interaction.reply({
-          components: [InviteRow],
-          embeds: [NotInsideServer]
+      canKick = await interaction.member.permissions.has([
+        Permissions.FLAGS.KICK_MEMBERS
+      ]);
+      isKickable = target.kickable;
+
+      if (isInGuild && canKick) {
+        await interaction.guild.members.kick(target, reason);
+
+        const kick_success = new MessageEmbed()
+          .setColor(EMBCOLORS.wrenchHandle)
+          .setTitle('**Kicking Wrench Deployed!**')
+          .setDescription(
+            `User \`${target.user.tag}\` ${target} is kicked from this server!`
+          )
+          .setThumbnail(target.displayAvatarURL({ dynamic: true }))
+          .addFields([
+            {
+              name: '**Reason**',
+              value: reason
+            }
+          ])
+          .setTimestamp();
+
+        await interaction.editReply({
+          embeds: [kick_success]
         });
+      } else {
+        throw new Error(
+          `Inside server? ${isInGuild}\nCan Kick? ${canKick}\nTarget kickable? ${isKickable}`
+        );
       }
-      else if (
-        !interaction.member.permissions.has([Permissions.FLAGS.KICK_MEMBERS])
-      ) {
-        NoPerms.fields = [
+    } catch (error) {
+      const kick_fail = new MessageEmbed()
+        .setColor(EMBCOLORS.error)
+        .setTitle('**Cannot Kick...**')
+        .setDescription(
+          `User ${target} cannot be kicked :grimacing:\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.`
+        )
+        .addFields([
           {
-            name: '**Permissions Required**',
-            value: 'KICK_MEMBERS'
+            name: '**Checks**',
+            value: `Executed In server? **\`${isInGuild}\`**\nCan you kick? **\`${canKick}\`**\nTarget kickable? **\`${isKickable}\`**`
+          },
+          {
+            name: '**Possible solutions**',
+            value:
+              "Use this command inside a server where you have required permissions. Also make sure the bot role is above that user's highest role for this command to work."
+          },
+          {
+            name: '**Inputs given**',
+            value: `User: ${target}  ${target.id}\nReason: ${reason}`
+          },
+          {
+            name: '**Bot Error Dump**',
+            value: `${error}`
           }
-        ];
-        await interaction.reply({
-          components: [InviteRow],
-          embeds: [NoPerms]
-        });
-      }
-      // checks if target user can be kicked or not
-      else if (target.kickable) {
-        // if there is a reason specified, DM it to the user.
-        if (reason) {
-          try {
-            await target.user.send(`Reason for kicking from ${interaction.guild.name}: ${reason}`);
-          }
-          catch (error) {
-            console.log('Reason cannot be DM-ed');
-          }
-        }
-        await interaction.reply({
-          // content: `User \`${target.tag}\` is banned from this server. \nReason: ${reas}.`,
-          embeds: [
-            {
-              color: 0x84929f,
-              title: '**Kicking Wrench Deployed!**',
-              // eslint-disable-next-line sort-keys
-              description: `User \`${target.user.tag}\` ${target} is kicked from this server!`,
-              thumbnail: { url: target.displayAvatarURL({ dynamic: true }) },
-              // eslint-disable-next-line sort-keys
-              fields: [
-                {
-                  name: '**Reason**',
-                  value: `${reason}`
-                }
-              ]
-            }
-          ]
-        });
-        await target.kick();
-      }
-      // if user cannot be kicked
-      else {
-        await interaction.reply({
-          // content: 'Kicking Wrench cannot kick...',
-          components: [SupportRow],
-          embeds: [
-            {
-              title: '**Cannot Kick...**',
-              // eslint-disable-next-line sort-keys
-              description: `User ${target} cannot be kicked :grimacing:\n\nPlease move the bot role higher than that user for this command to work.`,
-              // eslint-disable-next-line sort-keys
-              color: 0xff0033
-            }
-          ]
-        });
-      }
-    }
-    catch (error) {
-      await interaction.reply({
-        components: [SupportRow],
-        content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${error}\``
+        ])
+        .setTimestamp();
+      await interaction.editReply({
+        components: [SupportRow, InviteRow],
+        embeds: [kick_fail]
       });
+      console.log(error);
     }
   }
 };

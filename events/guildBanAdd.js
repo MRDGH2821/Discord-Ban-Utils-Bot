@@ -1,96 +1,82 @@
-const { db } = require('../lib/firebase.js');
+// eslint-disable-next-line no-unused-vars
+const { MessageEmbed, GuildBan } = require('discord.js');
+const { EMBCOLORS } = require('../lib/Constants.js');
+const { sendHook } = require('../lib/UtilityFunctions.js');
 
 module.exports = {
   name: 'guildBanAdd',
+
+  /**
+   * send log on new banned user
+   * @async
+   * @function execute
+   * @param {GuildBan} guildBan - guild ban object
+   */
   // eslint-disable-next-line sort-keys
-  async execute(ban) {
-    const embed = {
-        color: 0xe1870a,
-        title: '**User banned!**',
-        // eslint-disable-next-line sort-keys
-        thumbnail: { url: ban.user.displayAvatarURL({ dynamic: true }) },
-        // eslint-disable-next-line sort-keys
-        fields: [
+  async execute(guildBan) {
+    // console.log(guildBan);
+    if (guildBan.user.id !== guildBan.client.user.id) {
+      const banLog = new MessageEmbed()
+          .setColor(EMBCOLORS.hammerHandle)
+          .setTitle('**Audit Ban Log**')
+          .setThumbnail(guildBan.user.displayAvatarURL({ dynamic: true }))
+          .setDescription(`\`${guildBan.user.tag}\` ${guildBan.user} got hit with the swift hammer of justice!\nID: \`${guildBan.user.id}\``)
+          .setTimestamp(),
+        fetchedLogs = await guildBan.guild.fetchAuditLogs({
+          limit: 1,
+          type: 'MEMBER_BAN_ADD'
+        }),
+        // since there's only 1 audit log entry in this collection, grab the first one
+        firstBanLog = fetchedLogs.entries.first(),
+        { executor, reason, target } = firstBanLog,
+        isBannedViaCmd = guildBan.client.user.id === executor.id;
+      if (!firstBanLog) {
+        banLog.addField([
           {
-            name: '**Reason**',
-            value: `${ban.reason}`
+            name: '**Justice Ban Hammer Wielder**',
+            value:
+              'Unfortunately that could not be determined even from Audit logs'
+          },
+          {
+            name: '**Ban Reason**',
+            value: `${reason}`
           }
-        ],
-        footer: { text: `ID: ${ban.user.id}` },
-        timestamp: new Date()
-      },
-      fetchedLogs = await ban.guild.fetchAuditLogs({
-        limit: 1,
-        type: 'MEMBER_BAN_ADD'
-      }),
-      // since there's only 1 audit log entry in this collection, grab the first one
-      firstBanLog = fetchedLogs.entries.first(),
-
-      /* now grab the user object of the person who banned the member
-         Also grab the target of this action to double-check things */
-      { executor, target } = firstBanLog;
-
-    // perform a coherence check to make sure that there's *something*
-    if (!firstBanLog) {
-      const line = `${ban.user.tag} ${ban.user} was banned from ${ban.guild.name}.`;
-      embed.description = line;
-      embed.fields.push({
-        name: '**Justice Hammer Wielder**',
-        value: 'No audit log could be found.'
-      });
-      console.log(line, 'No audit log could be found.');
-    }
-
-    /* update the output with a bit more information
-       Also run a check to make sure that the log returned was for the same banned member */
-    if (target.id === ban.user.id) {
-      const line = `${ban.user.tag} ${ban.user} got hit with the swift hammer of justice in the guild ${ban.guild.name}!`;
-      console.log(line, 'Justice Hammer Wielder: ', executor.tag);
-      embed.description = line;
-      embed.fields.push({
-        name: '**Justice Hammer Wielder**',
-        value: `${executor.tag} ${executor}`
-      });
-    }
-    else {
-      const line = `${ban.user.tag} ${ban.user} got hit with the swift hammer of justice in the guild ${ban.guild.name}!`;
-      console.log(line, 'Audit log fetch was inconclusive.');
-      embed.description = line;
-      embed.fields.push({
-        name: '**Justice Hammer Wielder**',
-        value: 'Audit log fetch was inconclusive.'
-      });
-    }
-
-    // eslint-disable-next-line one-var
-    const serverDB = await db.collection('servers').doc(ban.guild.id)
-      .get();
-
-    try {
-      const isBannedViaCmd = ban.client.user.id === executor.id;
-      console.log('Ban.client: ', ban.client.user.id);
-      console.log('Executor: ', executor.id);
-      if (!isBannedViaCmd) {
-        if (serverDB.exists) {
-          const serverData = serverDB.data(),
-            webhookID = serverData.logWebhookID;
-          console.log('Doc data: ', serverData);
-          console.log('logWebHookID: ', serverData.logWebhookID);
-
-          if (webhookID) {
-            const webhookClient = await ban.guild.client.fetchWebhook(webhookID);
-            webhookClient.send({
-              embeds: [embed]
-            });
-          }
-        }
-        else {
-          console.log(`No log channel configured for ${ban.guild.name}`);
-        }
+        ]);
+        console.log('No audit log found');
       }
-    }
-    catch (error) {
-      console.log(error);
+
+      if (target.id === guildBan.user.id) {
+        banLog.addFields([
+          {
+            name: '**Justice Ban Hammer Wielder**',
+            value: `${executor} ${executor.tag}`
+          },
+          {
+            name: '**Ban Reason**',
+            value: `${reason}`
+          }
+        ]);
+      }
+      else {
+        banLog.addFields([
+          {
+            name: '**Justice Ban Hammer Wielder**',
+            value: 'Audit log fetch was inconclusive.'
+          },
+          {
+            name: '**Ban Reason**',
+            value: `${reason}`
+          }
+        ]);
+      }
+      if (!isBannedViaCmd) {
+        await sendHook(guildBan.client, banLog, guildBan.guild)
+          .then(() => console.log('Audit Ban Log sent!'))
+          .catch((error) => {
+            console.log('Audit Ban Log not sent due to error.\nError dump:');
+            console.error(error);
+          });
+      }
     }
   }
 };

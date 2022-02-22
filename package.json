@@ -1,29 +1,28 @@
 {
   "name": "discord-ban-utils-bot",
-  "version": "2.5.7",
+  "version": "3.0.0",
   "description": "Discord Ban Utilities for Mutual Servers!",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prestart": "node deploy-commands.js",
+    "deploy": "node deploy-commands.js",
+    "prestart": "npm run deploy",
     "start": "node index.js",
-    "predev": "node deploy-commands.js",
+    "predev": "npm run deploy",
     "dev": "nodemon index.js",
     "lint": "eslint . --fix",
     "pretty": "prettier --write .",
     "postpretty": "npm run lint",
     "fire:test": "node ./lib/firebase.js",
-    "commit": "cz"
+    "commit": "cz",
+    "extract:cmd": "node cmd-extractor.js",
+    "pm2:prod": "pm2 startOrRestart ban-utils.config.js --env prod",
+    "pm2:dev": "pm2 startOrRestart ./ban-utils.config.js --env dev"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MRDGH2821/Discord-Ban-Utils-Bot.git"
   },
-  "keywords": [
-    "discord",
-    "ban",
-    "utilities"
-  ],
+  "keywords": ["discord", "ban", "utilities"],
   "author": {
     "name": "MRDGH2821",
     "url": "https://github.com/MRDGH2821"
@@ -42,8 +41,9 @@
   "dependencies": {
     "@discordjs/builders": "^0.12.0",
     "@discordjs/rest": "^0.3.0",
+    "axios": "^0.26.0",
     "custom-env": "^2.0.1",
-    "discord-api-types": "^0.26.1",
+    "discord-api-types": "^0.27.2",
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
     "dpaste-ts": "^1.0.4",
@@ -53,7 +53,7 @@
     "ansi-regex": "^6.0.1",
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^8.8.0",
+    "eslint": "^8.9.0",
     "prettier": "^2.5.1",
     "prettier-config-mrdgh2821": "^1.0.0"
   },
@@ -61,7 +61,6 @@
     "node": ">= 16.6.0"
   },
   "private": true,
-  "prettier": "prettier-config-mrdgh2821",
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"

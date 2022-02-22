@@ -14,7 +14,7 @@ module.exports = {
     {
       autorestart: false,
       name: 'Deploy BU Bot',
-      script: './deploy-check.js',
+      script: 'deploy-check.js',
       watch: false
     }
   ]

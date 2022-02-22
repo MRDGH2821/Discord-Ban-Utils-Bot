@@ -1,5 +1,6 @@
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
+const { refreshCache } = require('./lib/WebhookCacheManager.js');
 const { token } = require('./lib/ConfigManager.js'),
   eventFiles = fs
     .readdirSync('./events')
@@ -28,16 +29,29 @@ for (const file of eventFiles) {
   const event = require(`./events/${file}`);
   //  console.log('Inside loop', event);
   if (event.once) {
-    client.once(event.name, (...args) => event.execute(...args));
-    // console.log('Inside If', event.name);
+    try {
+      client.once(event.name, (...args) => event.execute(...args));
+      // console.log('Inside If', event.name);
+    }
+    catch (error) {
+      console.log('Event error. Type: once');
+      console.log(error);
+    }
   }
   else {
-    client.on(event.name, (...args) => event.execute(...args));
-    // console.log('Inside else', event.name);
+    try {
+      client.on(event.name, (...args) => event.execute(...args));
+      // console.log('Inside else', event.name);
+    }
+    catch (error) {
+      console.log('Event error. Type: on');
+      console.log(error);
+    }
   }
 }
 
 client.commands = new Collection();
+client.webhooksCache = new Collection();
 
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
@@ -79,4 +93,6 @@ client.on('interactionCreate', async(interaction) => {
   // console.log('${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.');
 });
 
-client.login(token);
+client.login(token).then(() => {
+  refreshCache(client);
+});

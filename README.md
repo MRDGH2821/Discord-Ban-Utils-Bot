@@ -1,7 +1,4 @@
-# CAUTION!
-
-Please read the [caution notes](./Caution.md) for v2.5.2
-There is now a significant change in usage of config files!
+**Bot version 3.0 released! Please read [Caution](./Caution.md) notes!**
 
 # Discord-Ban-Utils-Bot
 
@@ -11,7 +8,7 @@ Discord Ban Utilities for Mutual Servers!
 
 Hosted on ~~my personal Raspberry Pi 2B+~~ Google Cloud VM Instance E2.
 
-Invite Link - [click here](https://discord.com/api/oauth2/authorize?client_id=897454611370213436&permissions=1377073907846&scope=bot%20applications.commands)
+Invite Link - [click here](https://discord.com/api/oauth2/authorize?client_id=897454611370213436&permissions=1377073941638&scope=bot%20applications.commands)
 
 Join my server - <https://discord.gg/MPtE9zsBs5>
 
@@ -19,7 +16,7 @@ This bot project was inspired by the project [here](https://github.com/Permissio
 
 ## Bot Permissions
 
-![Bot Permissions](https://i.imgur.com/ZcJaN4y.png)
+![Bot Permissions](https://i.imgur.com/FjELQce.png)
 
 ## Firebase integration
 
@@ -62,6 +59,7 @@ pm2 start ban-utils-bot.sh --name "Ban Utils Bot" --watch
 Use the following command:
 
 ```bash
+git reset --hard
 git pull
 ```
 

@@ -1,5 +1,9 @@
 # CAUTION!
 
+## v3.0 notice!!
+
+Requires new permissions. Please re-invite the bot!
+
 ## v2.5.2 notice!!
 
 This release has now shifted to use `.env` instead of `config.json`

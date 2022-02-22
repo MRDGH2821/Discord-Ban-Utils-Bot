@@ -1,6 +1,6 @@
-const { exec } = require('child_process');
 const crypto = require('crypto');
-const fs = require('fs/promises'),
+const fs = require('fs/promises');
+const { exec } = require('child_process'),
   packagePath = './package.json',
   statPath = './deploy-stats.txt';
 

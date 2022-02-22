@@ -32,10 +32,6 @@ for (const file of commandFiles) {
   }
 })();
 
-module.exports = {
-  commands
-};
-
 /* all commands deleter
    rest.get(Routes.applicationGuildCommands(clientId, guildId))
    .then(data => {

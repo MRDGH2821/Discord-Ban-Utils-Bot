@@ -1,16 +1,19 @@
+// eslint-disable-next-line no-unused-vars
+const { Client } = require('discord.js');
 const { version } = require('../package.json');
 
 module.exports = {
   name: 'ready',
   once: true,
 
+  /**
+   * ready event
+   * @function execute
+   * @param {Client} client - client object
+   */
   // eslint-disable-next-line sort-keys
   execute(client) {
     console.log(`Ready! Logged in as ${client.user.tag}`);
-
-    /* client.user.setActivity(`/help. Bot Version: ${version}`, {
-       type: 'LISTENING',
-       }); */
     const activities = [
         {
           msg: `/help in ${client.guilds.cache.size} servers`,

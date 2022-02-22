@@ -1,31 +1,44 @@
 const {
+  MessageEmbed,
   Permissions,
   MessageActionRow,
   MessageSelectMenu,
-  MessageEmbed,
-  MessageButton
+  // eslint-disable-next-line no-unused-vars
+  CommandInteraction
 } = require('discord.js');
-const { Routes } = require('discord-api-types/v9');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { REST } = require('@discordjs/rest');
-const { token } = require('../lib/ConfigManager.js');
-const { InviteRow, SupportRow } = require('../lib/RowButtons.js'),
-  rest = new REST({ version: '9' }).setToken(token);
+const { NUMBER, EMBCOLORS } = require('../lib/Constants.js');
+const { SupportRow, InviteRow } = require('../lib/RowButtons.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('transfer_bans')
     .setDescription('Transfers Bans across servers'),
 
+  note: 'It will automatically filter out duplicate bans while transferring. Transfers bans with their reasons.',
+
+  /**
+   * transfer bans across servers
+   * @async
+   * @function execute
+   * @param {CommandInteraction} interaction - interaction object
+   */
+  // eslint-disable-next-line sort-keys
   async execute(interaction) {
+    await interaction.deferReply();
+    const isInGuild = interaction.inGuild();
+    let selectedServerName = '';
     try {
-      if (interaction.guild) {
-        const guilds = [],
+      if (isInGuild) {
+        const botGuilds = interaction.client.guilds.cache,
           initial_Screen = new MessageEmbed()
-            .setColor('#D8D4D3')
-            .setTitle('**Ban List transferer**')
-            .setDescription('Fetching Mutual Servers on which you can transfer bans to. \nPlease wait...'),
-          message = await interaction.reply({
+            .setColor(EMBCOLORS.whiteGray)
+            .setTitle('**Ban List transferrer**')
+            .setDescription(
+              'Fetching Mutual Servers on which you can transfer bans to. \nPlease wait...'
+            )
+            .setTimestamp(),
+          message = await interaction.editReply({
             embeds: [initial_Screen],
             fetchReply: true
           }),
@@ -33,12 +46,11 @@ module.exports = {
             componentType: 'SELECT_MENU',
             time: 15000
           }),
-          servers = [],
-          // fetch bans from current server
-          sourcebans = await rest.get(Routes.guildBans(interaction.guild.id));
-        // fetches mutual servers where interaction user can ban
+          mutualBanGuilds = [],
+          serverList = [],
+          sourceBans = await interaction.guild.bans.fetch();
 
-        for (const [, guild] of interaction.client.guilds.cache) {
+        for (const [, guild] of botGuilds) {
           // eslint-disable-next-line no-await-in-loop
           await guild.members
             .fetch({
@@ -47,164 +59,134 @@ module.exports = {
             })
             .then((member) => {
               if (member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) {
-                guilds.push(guild);
+                mutualBanGuilds.push(guild);
               }
             })
-            .catch((error) => {
-              console.log(error);
-            });
+            .catch((error) => console.error(error));
         }
 
-        // puts Name & Server ID in an array except current serevr
-
-        for (let index = 0; index < Object.keys(guilds).length; index++) {
-          if (
-            Object.entries(guilds)[index][1].name !== interaction.guild.name
-          ) {
-            servers.push({
-              label: Object.entries(guilds)[index][1].name,
-              value: Object.entries(guilds)[index][1].id
+        mutualBanGuilds.forEach((guild) => {
+          if (guild.name !== interaction.guild.name) {
+            serverList.push({
+              label: guild.name,
+              value: guild.id
             });
           }
-        }
+        });
+        console.log(serverList);
 
-        /* checks if mutual servers list has atleast 1 server.
-           This command is point less if you don't have another mutual server with bot.
-           Hence the check */
-        // eslint-disable-next-line no-magic-numbers
-        if (Object.keys(servers).length > 0) {
-          const row = new MessageActionRow().addComponents(new MessageSelectMenu()
-            .setCustomId('select-server')
-            .setPlaceholder('Choose a Server')
-          // eslint-disable-next-line no-magic-numbers
-            .setMaxValues(1)
-            .addOptions(servers));
-
-          initial_Screen.setDescription('Select Target Server where you wish to transfer bans. Bans will be transferred from current server');
-
+        if (serverList.length > NUMBER.zero) {
+          const selectServerRow = new MessageActionRow().addComponents(
+            new MessageSelectMenu()
+              .setCustomId('select-server')
+              .setPlaceholder('Choose a server')
+              .setMaxValues(NUMBER.one)
+              .addOptions(serverList)
+          );
+          initial_Screen
+            .setDescription(
+              'Select Target Server where you wish to transfer bans. Bans will be transferred from current server'
+            )
+            .setTimestamp();
           await interaction.editReply({
-            components: [row],
+            components: [selectServerRow],
             embeds: [initial_Screen],
             fetchReply: true
           });
-          // eslint-disable-next-line init-declarations
-          let destname, toGuildId;
 
-          // collectors to collect selected server
-          msgcollector.on('collect', async(interacted) => {
-            // this if statement is for checking if buttons are selected by interaction.user or not.
+          let destinationGuild = '';
+
+          msgcollector.on('collect', async (interacted) => {
             if (interacted.user.id === interaction.user.id) {
-              destname = await interaction.client.guilds.cache.get(interacted.values[0]).name;
-              toGuildId = await interaction.client.guilds.cache.get(interacted.values[0]).id;
+              destinationGuild = await interaction.client.guilds.fetch(
+                interacted.values[0]
+              );
 
-              initial_Screen.setDescription(`Source server: ${interaction.guild.name}\nDestination Server: ${destname}`);
-              // interaction.client.guilds.cache.get(i.values[0]).name
+              initial_Screen
+                .setDescription(
+                  `Source Server: ${interaction.guild.name}\nDestination Server: ${destinationGuild.name}`
+                )
+                .setTimestamp();
 
               await interaction.editReply({
                 components: [],
                 embeds: [initial_Screen],
                 fetchReply: true
               });
-            }
-            else {
+              selectedServerName = destinationGuild.name;
+              msgcollector.stop(`Selected guild: ${destinationGuild.name}`);
+            } else {
               await interacted.reply({
-                content: 'These buttons aren\'t for you!',
+                content: "These buttons aren't for you!",
                 ephemeral: true
               });
             }
-
-            /*  possibly avoided race condition
-                // Double assignment to ensure values are properly passed
-               destname = await interaction.client.guilds.cache.get(interacted.values[0])
-                 .name;
-               toGuildId = await interaction.client.guilds.cache.get(interacted.values[0])
-                 .id; */
           });
 
-          // console.log('Source Bans:\n\n', bans);
-
-          msgcollector.on('end', async(collected) => {
-            // eslint-disable-next-line no-magic-numbers
-            if (collected.size === 1) {
+          msgcollector.on('end', async (collected) => {
+            if (collected.size === NUMBER.one) {
               initial_Screen
                 .addField(
                   '**Beginning Transfer...**',
                   'You can sit back and relax while the bot does the work for you!'
                 )
-                .setFooter('Transfer has begun, still you should check destination server setting\'s ban section.');
-
+                .setTimestamp();
               await interaction.editReply({
                 embeds: [initial_Screen],
                 fetchReply: true
               });
-              console.log(`Collected ${collected.size} interactions. Collected: ${collected}`);
 
-              const alreadybanned = await rest.get(Routes.guildBans(toGuildId)),
-                fromGuildId = interaction.guild.id;
-              // console.log('Already banned\n\n', alreadybaned);
+              const alreadyBanned = await destinationGuild.bans.fetch();
 
-              try {
-                // tries to ban users.
-                console.log(`Fetching bans for guild ${destname}...`);
-                console.log(`Found ${sourcebans.length} bans.`);
-                console.log(`Applying bans to guild ${toGuildId}...`);
-                let actualTransfers = 0;
-                for (const newBan of sourcebans.filter((newPotentialBan) => !alreadybanned.some((banned) => banned.user.id === newPotentialBan.user.id))) {
-                  // eslint-disable-next-line no-magic-numbers
-                  actualTransfers += 1;
-                  // console.log(`Banning user ${v.user.username}#${v.user.discriminator}...`);
-                  // eslint-disable-next-line no-await-in-loop
-                  await interaction.editReply({
-                    content: `Banning user ${newBan.user.username}#${newBan.user.discriminator}...`
-                  });
-                  // eslint-disable-next-line no-await-in-loop
-                  await rest.put(Routes.guildBan(toGuildId, newBan.user.id), {
-                    reason: newBan.reason
-                  });
-                }
-                //  interaction.client.guilds.cache.get(toGuildId).name
-                initial_Screen
-                  .addField(
-                    '**Transfer Successfull!**',
-                    `Found ${sourcebans.length} in current server.\nTransferred successfully to ${destname}.\nUnique Bans: ${actualTransfers}`
-                  )
-                  .setFooter(`Check by going into destination server's ban section. It should be increased by ${actualTransfers}`);
-                console.log(`Successfully transferred all bans from ${fromGuildId} to ${toGuildId}.`);
-                await interaction.editReply({
-                  components: [],
-                  content: 'Ban Transfer Successful!',
-                  embeds: [initial_Screen],
-                  fetchReply: true
+              console.log('Type of Source bans:', typeof sourceBans);
+              console.log('Type of Already banned:', typeof alreadyBanned);
+
+              let actualTransfers = 0;
+              for (const [, newBaninfo] of sourceBans.difference(
+                alreadyBanned
+              )) {
+                actualTransfers += NUMBER.one;
+
+                const { user, reason } = newBaninfo;
+
+                destinationGuild.members.ban(user.id, {
+                  reason
                 });
               }
-              catch (error) {
-                // crash prevention code. Bot might hit API Rate limit when ban list is too big.
-                const apiErrorRow = new MessageActionRow()
-                  .addComponents(new MessageButton()
-                    .setLabel('Report Issue at GitHub')
-                    .setURL('https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues')
-                    .setStyle('LINK'))
-                  .addComponents(new MessageButton()
-                    .setLabel('Report Issue at Support Server')
-                    .setURL('https://discord.gg/MPtE9zsBs5')
-                    .setStyle('LINK'));
-                initial_Screen.addField(
-                  '**Error**',
-                  `Seems like I failed. Try again after sometime?\n\nError Dump:\n ${error}`
-                );
-                console.log(error);
-                await interaction.editReply({
-                  component: [apiErrorRow],
-                  embeds: [initial_Screen],
-                  fetchReply: true
-                });
-              }
-            }
-            else {
+
+              initial_Screen
+                .addFields([
+                  {
+                    name: '**Transfer Successful!**',
+                    value: `Bans were transferred from **\`${interaction.guild.name}\`** to **\`${destinationGuild.name}\`**`
+                  },
+                  {
+                    name: '**Statistics**',
+                    value: `Bans in \`${interaction.guild.name}\`: **\`${sourceBans.size}\`**\nBans in \`${destinationGuild.name}\`: **\`${alreadyBanned.size}\`**\nUnique Bans: **\`${actualTransfers}\`**`
+                  }
+                ])
+                .setTimestamp();
+
+              await interaction.editReply({
+                components: [],
+                embeds: [initial_Screen],
+                fetchReply: true
+              });
+
+              interaction.client.emit('banTransfer', interaction, {
+                banDest: alreadyBanned.size,
+                banSource: sourceBans.size,
+                bansTransferred: actualTransfers,
+                destGuild: destinationGuild
+              });
+            } else {
               // when the interaction times out
               initial_Screen
-                .setDescription('Please Select Something!')
-                .setFooter('Re-run the command again!');
+                .setDescription(
+                  'Please Select Something!\nRe-run the command again!'
+                )
+                .setTimestamp();
+
               await interaction.editReply({
                 components: [],
                 embeds: [initial_Screen],
@@ -213,31 +195,56 @@ module.exports = {
               });
             }
           });
-        }
-        else {
+        } else {
           // when mutual servers are less than 1
           initial_Screen
-            .setDescription('No mutual servers found where you can ban!')
-            .setFooter('Best contact mutual server mods & tell them to do it');
+            .setDescription(
+              'No mutual servers found where you can ban!\nBest contact mutual server mods & tell them to do it'
+            )
+            .setTimestamp();
+
           await interaction.editReply({
             components: [],
             embeds: [initial_Screen],
             fetchReply: true
           });
         }
+      } else {
+        throw new Error(`Inside server? ${isInGuild}`);
       }
-      else {
-        await interaction.reply({
-          components: [InviteRow],
-          content: 'Its best if this command is used inside a server.'
-        });
-      }
-    }
-    catch (error) {
-      await interaction.reply({
-        components: [SupportRow],
-        content: `Unexpected Error Occured! \nPlease Report to the Developer. \nError Dump:\n\`${error}\``
+    } catch (error) {
+      const transfer_fail = new MessageEmbed()
+        .setColor(EMBCOLORS.error)
+        .setTitle('**Cannot Transfer...**')
+        .setDescription(
+          'Cannot transfer bans.\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.'
+        )
+        .addFields([
+          {
+            name: '**Checks**',
+            value: `Executed In server? **\`${isInGuild}\`**`
+          },
+          {
+            name: '**Possible solutions**',
+            value:
+              "Use this command inside a server. Also make sure that in the other server you have ban permissions & this bot's role is above most of the roles."
+          },
+          {
+            name: '**Selected Server**',
+            value: `${selectedServerName}`
+          },
+          {
+            name: '**Bot Error Dump**',
+            value: `${error}`
+          }
+        ])
+        .setTimestamp();
+
+      await interaction.editReply({
+        components: [SupportRow, InviteRow],
+        embeds: [transfer_fail]
       });
+      console.error(error);
     }
   }
 };
@@ -258,3 +265,6 @@ module.exports = {
 
 /* 28 Dec 2021
    Bot Developer now definitely knows how to inform the mod. */
+
+/* 12 Jan 2022
+   Command refactored to use DJS constructs instead of REST API */

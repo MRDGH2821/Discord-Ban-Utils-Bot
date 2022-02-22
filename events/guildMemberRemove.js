@@ -1,52 +1,39 @@
-const { db } = require('../lib/firebase.js');
+// eslint-disable-next-line no-unused-vars
+const { MessageEmbed, GuildMember } = require('discord.js');
+const { time } = require('@discordjs/builders');
+const { EMBCOLORS } = require('../lib/Constants.js');
+const { sendHook } = require('../lib/UtilityFunctions.js');
 
 module.exports = {
   name: 'guildMemberRemove',
+
+  /**
+   * send a log when member leaves server
+   * @async
+   * @function execute
+   * @param {GuildMember} member - guild member object
+   */
   // eslint-disable-next-line sort-keys
   async execute(member) {
-    const serverDB = await db
-      .collection('servers')
-      .doc(`${member.guild.id}`)
-      .get();
-    try {
-      if (serverDB.exists) {
-        const serverData = serverDB.data(),
-          webhookID = serverData.logWebhookID;
-        console.log('Doc data: ', serverData);
+    if (member.user.id !== member.client.user.id) {
+      const exitLog = new MessageEmbed()
+        .setTimestamp()
+        .setTitle('**Audit Exit Log**')
+        .setColor(EMBCOLORS.wrenchHandle)
+        .setDescription(`${member.user.tag} ${member} left the server.\nID: \`${member.user.id}\``)
+        .addFields([
+          {
+            name: '**Joined at**',
+            value: time(member.joinedAt)
+          }
+        ]);
 
-        /* serverData format:
-           {
-           logChannel: <channel ID>,
-           logWebhook: <webhook ID>,
-           serverID: <server ID>
-           } */
-        console.log('logWebHookID: ', serverData.logWebhookID);
-
-        if (webhookID) {
-          const webhookClient = await member.client.fetchWebhook(webhookID),
-            // eslint-disable-next-line sort-vars
-            logEmb = {
-              color: 0xd8d4d3,
-              title: '**Exit Log**',
-              // eslint-disable-next-line sort-keys
-              description: `${member.user.tag} ${member} left the server`,
-              timestamp: new Date(),
-              // eslint-disable-next-line sort-keys
-              footer: {
-                text: `${member.user.id}`
-              }
-            };
-          webhookClient.send({
-            embeds: [logEmb]
-          });
-        }
-      }
-      else {
-        console.log(`No log channel configured for ${member.guild.name} `);
-      }
-    }
-    catch (error) {
-      console.log(error);
+      await sendHook(member.client, exitLog, member.guild)
+        .then(() => console.log('Audit Exit Log sent!'))
+        .catch((error) => {
+          console.log('Audit Exit Log not sent due to error.\nError dump:');
+          console.error(error);
+        });
     }
   }
 };
