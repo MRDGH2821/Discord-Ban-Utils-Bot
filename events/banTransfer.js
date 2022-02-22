@@ -25,9 +25,7 @@ module.exports = {
     const transfer_log = new MessageEmbed()
       .setTitle('**BU Ban Transfer Log**')
       .setColor(EMBCOLORS.whiteGray)
-      .setDescription(
-        `Source server: ${interaction.guild.name}\nDestination server: ${destGuild.name}`
-      )
+      .setDescription(`Source server: ${interaction.guild.name}\nDestination server: ${destGuild.name}`)
       .addFields([
         {
           name: '**Transfer initiated by**',

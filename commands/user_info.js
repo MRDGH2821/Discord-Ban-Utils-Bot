@@ -9,9 +9,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('user_info')
     .setDescription('Display info about given user.')
-    .addUserOption((option) =>
-      option.setName('user').setDescription('Select user to know info')
-    ),
+    .addUserOption((option) => option.setName('user').setDescription('Select user to know info')),
 
   note: 'If a server member is not found, will show your details. Using in DM will show different yet interesting information',
 
@@ -30,24 +28,14 @@ module.exports = {
       if (interaction.inGuild()) {
         const member =
             interaction.options.getMember('user') || interaction.member,
-          canBan = await member.permissions.has([
-            Permissions.FLAGS.BAN_MEMBERS
-          ]),
-          canKick = await member.permissions.has([
-            Permissions.FLAGS.KICK_MEMBERS
-          ]),
-          canManage = await member.permissions.has([
-            Permissions.FLAGS.MANAGE_GUILD
-          ]),
-          canTimeout = await member.permissions.has([
-            Permissions.FLAGS.MODERATE_MEMBERS
-          ]),
+          canBan = await member.permissions.has([Permissions.FLAGS.BAN_MEMBERS]),
+          canKick = await member.permissions.has([Permissions.FLAGS.KICK_MEMBERS]),
+          canManage = await member.permissions.has([Permissions.FLAGS.MANAGE_GUILD]),
+          canTimeout = await member.permissions.has([Permissions.FLAGS.MODERATE_MEMBERS]),
           info_member = new MessageEmbed()
             .setColor(EMBCOLORS.whiteGray)
             .setTitle('**User info**')
-            .setDescription(
-              `Displaying information of ${member.user.tag} ${member} whose Snowflake ID is \`${member.id}\``
-            )
+            .setDescription(`Displaying information of ${member.user.tag} ${member} whose Snowflake ID is \`${member.id}\``)
             .setThumbnail(await member.displayAvatarURL({ dynamic: true }))
             .addFields([
               {
@@ -76,12 +64,14 @@ module.exports = {
             '**Can this bot take mod actions on the user?**',
             `**\`${member.manageable}\`**`
           );
-        } else if (member.user === interaction.client.user) {
+        }
+        else if (member.user === interaction.client.user) {
           info_member.addField(
             '**Can this bot take mod actions on the user?**',
             `Why would I, ${member} take actions on myself?:joy:`
           );
-        } else {
+        }
+        else {
           info_member.addField(
             '**Can this bot take mod actions on the user?**',
             `**\`${member.manageable}\`**\n\nTo make this \`true\`, move ${interaction.client.user}'s bot role above the highest role of ${member}. This will not work if ${member} is the owner of ${interaction.guild.name}`
@@ -91,13 +81,12 @@ module.exports = {
         await interaction.editReply({
           embeds: [info_member]
         });
-      } else {
+      }
+      else {
         const info_nonmember = new MessageEmbed()
           .setColor(EMBCOLORS.whiteGray)
           .setTitle('**User info**')
-          .setDescription(
-            `Displaying information of ${user.tag} ${user} whose Snowflake ID is \`${user.id}\``
-          )
+          .setDescription(`Displaying information of ${user.tag} ${user} whose Snowflake ID is \`${user.id}\``)
           .setThumbnail(user.displayAvatarURL({ dynamic: true }))
           .addFields([
             {
@@ -112,12 +101,14 @@ module.exports = {
             '**Can the target invite the bot?**',
             'I wish I could invite myself in servers where there is a need for transferring ban list from one server to another or for exporting ban list of given server. But I must wait ⏰ & be prepared 💪 for such a time to come! 🎉'
           );
-        } else if (user.bot) {
+        }
+        else if (user.bot) {
           info_nonmember.addField(
             '**Can the target invite the bot?**',
             `Unfortunately no, ${user} is a bot it seems`
           );
-        } else {
+        }
+        else {
           info_nonmember.addField(
             '**Can the target invite the bot?**',
             `Well, they have the ability to invite ${interaction.client.user} at least...`
@@ -128,13 +119,12 @@ module.exports = {
           embeds: [info_nonmember]
         });
       }
-    } catch (error) {
+    }
+    catch (error) {
       const info_nonmember = new MessageEmbed()
         .setColor(EMBCOLORS.error)
         .setTitle('**Cannot display User info...**')
-        .setDescription(
-          `There was some error while displaying information for ${user}\nPlease report Bot Error Dump to developer!`
-        )
+        .setDescription(`There was some error while displaying information for ${user}\nPlease report Bot Error Dump to developer!`)
 
         .addFields([
           {

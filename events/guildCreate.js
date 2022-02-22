@@ -15,7 +15,8 @@ module.exports = {
    */
   // eslint-disable-next-line sort-keys
   async execute(guild) {
-    const serverDB = await db.collection('servers').doc(guild.id).get();
+    const serverDB = await db.collection('servers').doc(guild.id)
+      .get();
     try {
       if (serverDB.exists) {
         const guildData = serverDB.data(),
@@ -23,9 +24,7 @@ module.exports = {
           newWebhook = await guild
             .fetchWebhooks()
             .then((webhooks) => {
-              const allhooks = webhooks.filter(
-                (wh) => wh.owner === guild.client.user
-              );
+              const allhooks = webhooks.filter((wh) => wh.owner === guild.client.user);
               // console.log(allhooks);
               if (allhooks.size > NUMBER.one) {
                 const qty = allhooks.size;
@@ -33,10 +32,9 @@ module.exports = {
                 allhooks.forEach((hook) => {
                   hook.delete('Redundant webhook');
                 });
-                throw new Error(
-                  `Found ${qty} webhooks. Which are now deleted explicitly.`
-                );
-              } else {
+                throw new Error(`Found ${qty} webhooks. Which are now deleted explicitly.`);
+              }
+              else {
                 const hook = allhooks.first();
                 // console.log(hook);
                 hook.edit({
@@ -58,9 +56,7 @@ module.exports = {
           settingsRestored = new MessageEmbed()
             .setTitle('**Log Channel Settings Restored**')
             .setColor(EMBCOLORS.invisible)
-            .setDescription(
-              `Log settings are now restored.\nBot logs will now come at <#${guildData.logChannelID}>`
-            )
+            .setDescription(`Log settings are now restored.\nBot logs will now come at <#${guildData.logChannelID}>`)
             .setTimestamp();
 
         await db
@@ -74,11 +70,13 @@ module.exports = {
             embeds: [settingsRestored]
           })
           .catch(console.error);
-      } else {
+      }
+      else {
         console.log('No data found in database for new server');
       }
-    } catch (error) {
-      console.log("Server data doesn't exist\n\nError dump:");
+    }
+    catch (error) {
+      console.log('Server data doesn\'t exist\n\nError dump:');
       console.error(error);
     }
   }

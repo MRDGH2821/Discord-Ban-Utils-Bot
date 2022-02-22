@@ -15,13 +15,11 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('set_logs')
     .setDescription('Set a log channel')
-    .addChannelOption((option) =>
-      option
-        .setName('log_channel')
-        .setDescription('Select Log Channel')
-        .setRequired(true)
-        .addChannelType(Constants.ChannelTypes.GUILD_TEXT)
-    ),
+    .addChannelOption((option) => option
+      .setName('log_channel')
+      .setDescription('Select Log Channel')
+      .setRequired(true)
+      .addChannelType(Constants.ChannelTypes.GUILD_TEXT)),
 
   note: 'Type of logs sent: \n1. Ban list import-export log \n2. Ban-Unban & Timeout log  \n3. Member leaving server log \n4. Ban transfer log\nMore type of & detailed logs coming soon.',
 
@@ -39,17 +37,13 @@ module.exports = {
       logsProgress = new MessageEmbed()
         .setColor(EMBCOLORS.whiteGray)
         .setTitle('**Setting up Log Channel**')
-        .setDescription(
-          `Configuring ${channel} for logs.\nAfter configuration success, a log message should come in that channel.`
-        )
+        .setDescription(`Configuring ${channel} for logs.\nAfter configuration success, a log message should come in that channel.`)
         .setTimestamp();
     let canManage = false;
 
     try {
       canManage =
-        (await interaction.member.permissions.has([
-          Permissions.FLAGS.MANAGE_GUILD
-        ])) || false;
+        (await interaction.member.permissions.has([Permissions.FLAGS.MANAGE_GUILD])) || false;
       if (isInGuild && canManage) {
         await interaction.editReply({
           embeds: [
@@ -63,10 +57,8 @@ module.exports = {
         });
         const logWebhook = await interaction.guild
             .fetchWebhooks()
-            .then(async (webhooks) => {
-              const allhooks = webhooks.filter(
-                (wh) => wh.owner === interaction.client.user
-              );
+            .then(async(webhooks) => {
+              const allhooks = webhooks.filter((wh) => wh.owner === interaction.client.user);
               // console.log(allhooks);
               if (allhooks.size > NUMBER.one) {
                 await interaction.editReply({
@@ -81,10 +73,9 @@ module.exports = {
                 allhooks.forEach((hook) => {
                   hook.delete('Redundant webhook');
                 });
-                throw new Error(
-                  `Found ${qty} webhooks. Which are now deleted explicitly.`
-                );
-              } else {
+                throw new Error(`Found ${qty} webhooks. Which are now deleted explicitly.`);
+              }
+              else {
                 await interaction.editReply({
                   embeds: [
                     logsProgress
@@ -103,7 +94,7 @@ module.exports = {
                 return hook;
               }
             })
-            .catch(async (error) => {
+            .catch(async(error) => {
               await interaction.editReply({
                 embeds: [
                   logsProgress
@@ -118,9 +109,7 @@ module.exports = {
           log_sample = new MessageEmbed()
             .setColor(EMBCOLORS.invisible)
             .setTitle('Test msg via command')
-            .setDescription(
-              `This is a test log, should come in ${channel}.\nThis is sent when the log channel is set via command.`
-            )
+            .setDescription(`This is a test log, should come in ${channel}.\nThis is sent when the log channel is set via command.`)
             .setTimestamp(),
           setDBdata = {
             logChannelID: channel.id,
@@ -129,9 +118,7 @@ module.exports = {
           };
 
         await interaction.editReply({
-          embeds: [
-            logsProgress.addField('Step 3', 'Saving data...').setTimestamp()
-          ]
+          embeds: [logsProgress.addField('Step 3', 'Saving data...').setTimestamp()]
         });
         await db
           .collection('servers')
@@ -149,18 +136,16 @@ module.exports = {
         });
 
         logWebhook.send({ embeds: [log_sample] });
-      } else {
-        throw new Error(
-          `Inside server? ${isInGuild}\nCan Manage Server? ${canManage}`
-        );
       }
-    } catch (error) {
+      else {
+        throw new Error(`Inside server? ${isInGuild}\nCan Manage Server? ${canManage}`);
+      }
+    }
+    catch (error) {
       const log_set_fail = new MessageEmbed()
         .setColor(EMBCOLORS.error)
         .setTitle('**Cannot Set logs...**')
-        .setDescription(
-          'Cannot set logs :grimacing:\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.'
-        )
+        .setDescription('Cannot set logs :grimacing:\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.')
         .addFields([
           {
             name: '**Checks**',
@@ -183,7 +168,10 @@ module.exports = {
         .setTimestamp();
 
       await interaction.editReply({
-        components: [SupportRow, InviteRow],
+        components: [
+          SupportRow,
+          InviteRow
+        ],
         embeds: [log_set_fail]
       });
       console.log(error);

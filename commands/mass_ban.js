@@ -22,18 +22,13 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('mass_ban')
     .setDescription('Mass Bans given IDs')
-    .addStringOption((option) =>
-      option.setName('ids').setDescription('Enter IDs').setRequired(true)
-    )
-    .addStringOption((option) =>
-      option
-        .setName('reason')
-        .setDescription(
-          "Enter a common reason. (Default is Banned by <you> on <today's date>)"
-        )
-    ),
+    .addStringOption((option) => option.setName('ids').setDescription('Enter IDs')
+      .setRequired(true))
+    .addStringOption((option) => option
+      .setName('reason')
+      .setDescription('Enter a common reason. (Default is Banned by <you> on <today\'s date>)')),
 
-  note: "Default reason is: Mass banned by <you> on <today's date>.\nIt will automatically filter out duplicate bans.\nSometimes you might put multiple IDs but it doesn't work. \nYou may either put the IDs on [dpaste.com](https://dpaste.com) & use import command or follow this [video](https://youtu.be/gxAqukdjtM8)",
+  note: 'Default reason is: Mass banned by <you> on <today\'s date>.\nIt will automatically filter out duplicate bans.\nSometimes you might put multiple IDs but it doesn\'t work. \nYou may either put the IDs on [dpaste.com](https://dpaste.com) & use import command or follow this [video](https://youtu.be/gxAqukdjtM8)',
 
   /**
    * mass ban given IDs
@@ -46,12 +41,10 @@ module.exports = {
     await interaction.deferReply();
     const ids = interaction.options.getString('ids'),
       isInGuild = interaction.inGuild(),
-      notWorking = new MessageActionRow().addComponents(
-        new MessageButton()
-          .setCustomId('massban_notworking')
-          .setLabel('Not working as expected?')
-          .setStyle('DANGER')
-      ),
+      notWorking = new MessageActionRow().addComponents(new MessageButton()
+        .setCustomId('massban_notworking')
+        .setLabel('Not working as expected?')
+        .setStyle('DANGER')),
       reasonForBan =
         interaction.options.getString('reason') ||
         `Mass banned by ${
@@ -73,13 +66,7 @@ module.exports = {
         sourceURL = '';
 
       if (idList.length > NUMBER.zero) {
-        sourceList = Array.from(
-          new Set(
-            idList.filter(
-              (id) => id.length >= IDlen.min && id.length <= IDlen.max
-            )
-          )
-        );
+        sourceList = Array.from(new Set(idList.filter((id) => id.length >= IDlen.min && id.length <= IDlen.max)));
         sourceListLen = sourceList.length;
 
         if (sourceListLen > NUMBER.zero) {
@@ -90,36 +77,29 @@ module.exports = {
             'text',
             link_expiry_days
           );
-        } else {
+        }
+        else {
           throw new Error('Given input does not have Discord IDs');
         }
-      } else {
+      }
+      else {
         throw new Error('Given input does not have Discord IDs');
       }
 
-      canBan = await interaction.member.permissions.has([
-        Permissions.FLAGS.BAN_MEMBERS
-      ]);
+      canBan = await interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS]);
 
       if (isInGuild && canBan) {
         console.log(sourceList);
-        await interaction.editReply(
-          `${sourceListLen} bans are being banned in background. Sit back and relax for a while!`
-        );
+        await interaction.editReply(`${sourceListLen} bans are being banned in background. Sit back and relax for a while!`);
 
         let invalidBans = NUMBER.zero,
           uniqueBans = NUMBER.zero;
 
-        for (const newban of sourceList.filter(
-          (newPotentialBan) =>
-            !currentBanListProcessed.some(
-              (previousBan) => previousBan.user.id === newPotentialBan
-            )
-        )) {
+        for (const newban of sourceList.filter((newPotentialBan) => !currentBanListProcessed.some((previousBan) => previousBan.user.id === newPotentialBan))) {
           uniqueBans += NUMBER.one;
           await interaction.client.users
             .fetch(newban)
-            .then(async (user) => {
+            .then(async(user) => {
               console.log('Banning user: ', user.tag);
               await interaction.editReply(`Banning user ${user.tag}...`);
               await interaction.guild.members.ban(user, {
@@ -137,9 +117,7 @@ module.exports = {
         const massBan_success = new MessageEmbed()
           .setColor(EMBCOLORS.hammerHandle)
           .setTitle('**Mass Ban Success!**')
-          .setDescription(
-            `Bans in list: ${sourceListLen}\nInvalid Bans: ${invalidBans}\nUnique Bans: ${uniqueBans}`
-          )
+          .setDescription(`Bans in list: ${sourceListLen}\nInvalid Bans: ${invalidBans}\nUnique Bans: ${uniqueBans}`)
           .addFields([
             {
               name: '**Reason**',
@@ -166,16 +144,15 @@ module.exports = {
           uniqueBans
         });
       }
-    } catch (error) {
+    }
+    catch (error) {
       const idsInput = new MessageAttachment(Buffer.from(ids))
           .setName(`Input IDs by ${interaction.user.tag}.txt`)
           .setDescription('This is the input given'),
         massBan_fail = new MessageEmbed()
           .setColor(EMBCOLORS.error)
           .setTitle('**Cannot Mass Ban...**')
-          .setDescription(
-            'Cannot mass ban.\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.'
-          )
+          .setDescription('Cannot mass ban.\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.')
           .addFields([
             {
               name: '**Checks**',
@@ -198,7 +175,10 @@ module.exports = {
           .setTimestamp();
 
       await interaction.editReply({
-        components: [SupportRow, InviteRow],
+        components: [
+          SupportRow,
+          InviteRow
+        ],
         content: 'Mass Ban Failure...',
         embeds: [massBan_fail],
         files: [idsInput]

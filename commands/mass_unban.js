@@ -16,16 +16,11 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('mass_unban')
     .setDescription('Mass Un-Bans given IDs')
-    .addStringOption((option) =>
-      option.setName('ids').setDescription('Enter IDs').setRequired(true)
-    )
-    .addStringOption((option) =>
-      option
-        .setName('reason')
-        .setDescription(
-          "Enter a common reason. (Default is un-banned by <you> on <today's date>)"
-        )
-    ),
+    .addStringOption((option) => option.setName('ids').setDescription('Enter IDs')
+      .setRequired(true))
+    .addStringOption((option) => option
+      .setName('reason')
+      .setDescription('Enter a common reason. (Default is un-banned by <you> on <today\'s date>)')),
 
   note: 'Refer /mass_ban notes',
 
@@ -40,12 +35,10 @@ module.exports = {
     await interaction.deferReply();
     const ids = interaction.options.getString('ids'),
       isInGuild = interaction.inGuild(),
-      notWorking = new MessageActionRow().addComponents(
-        new MessageButton()
-          .setCustomId('massban_notworking')
-          .setLabel('Not working as expected?')
-          .setStyle('DANGER')
-      ),
+      notWorking = new MessageActionRow().addComponents(new MessageButton()
+        .setCustomId('massban_notworking')
+        .setLabel('Not working as expected?')
+        .setStyle('DANGER')),
       reason =
         interaction.options.getString('reason') ||
         `Mass un-banned by ${
@@ -61,38 +54,29 @@ module.exports = {
       let sourceList = [];
 
       if (idList.length > NUMBER.zero) {
-        sourceList = Array.from(
-          new Set(
-            idList.filter(
-              (id) => id.length >= IDlen.min && id.length <= IDlen.max
-            )
-          )
-        );
+        sourceList = Array.from(new Set(idList.filter((id) => id.length >= IDlen.min && id.length <= IDlen.max)));
         sourceListLen = sourceList.length;
 
         if (sourceListLen < NUMBER.zero) {
           throw new Error('Given input does not have Discord IDs');
         }
-      } else {
+      }
+      else {
         throw new Error('Given input does not have Discord IDs');
       }
 
-      canUnBan = await interaction.member.permissions.has([
-        Permissions.FLAGS.BAN_MEMBERS
-      ]);
+      canUnBan = await interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS]);
 
       if (isInGuild && canUnBan) {
         console.log(sourceList);
-        await interaction.editReply(
-          `Un-banning ${sourceListLen} users in background. Sit back and relax for a while!`
-        );
+        await interaction.editReply(`Un-banning ${sourceListLen} users in background. Sit back and relax for a while!`);
 
         let invalidBans = NUMBER.zero;
 
         for (const newban of sourceList) {
           await interaction.client.users
             .fetch(newban)
-            .then(async (user) => {
+            .then(async(user) => {
               console.log('Un-Banning user: ', user.tag);
               await interaction.editReply(`Un-Banning user ${user.tag}...`);
               await interaction.guild.members.unban(user, { reason });
@@ -107,9 +91,7 @@ module.exports = {
         const massUnBan_success = new MessageEmbed()
           .setColor(EMBCOLORS.hammerHandle)
           .setTitle('**Mass Un-Ban Success!**')
-          .setDescription(
-            `IDs in list: ${sourceListLen}\nInvalid Bans: ${invalidBans}`
-          )
+          .setDescription(`IDs in list: ${sourceListLen}\nInvalid Bans: ${invalidBans}`)
           .addFields([
             {
               name: '**Reason**',
@@ -130,16 +112,15 @@ module.exports = {
           reason
         });
       }
-    } catch (error) {
+    }
+    catch (error) {
       const idsInput = new MessageAttachment(Buffer.from(ids))
           .setName(`Input IDs by ${interaction.user.tag}.txt`)
           .setDescription('This is the input given'),
         massUnBan_fail = new MessageEmbed()
           .setColor(EMBCOLORS.error)
           .setTitle('**Cannot Mass Un-Ban...**')
-          .setDescription(
-            'Cannot mass un-ban.\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.'
-          )
+          .setDescription('Cannot mass un-ban.\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.')
           .addFields([
             {
               name: '**Checks**',
@@ -162,7 +143,10 @@ module.exports = {
           .setTimestamp();
 
       await interaction.editReply({
-        components: [SupportRow, InviteRow],
+        components: [
+          SupportRow,
+          InviteRow
+        ],
         content: 'Mass Un-Ban Failure...',
         embeds: [massUnBan_fail],
         files: [idsInput]

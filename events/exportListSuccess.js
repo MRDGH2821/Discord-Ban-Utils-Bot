@@ -20,9 +20,7 @@ module.exports = {
     const exportLog = new MessageEmbed()
       .setColor(EMBCOLORS.whiteGray)
       .setTitle('**BU Export Log**')
-      .setDescription(
-        `Ban list of this server was just exported!\nExport Requested by ${interaction.user}\nAdvanced mode: **\`${advanceMode}\`**`
-      )
+      .setDescription(`Ban list of this server was just exported!\nExport Requested by ${interaction.user}\nAdvanced mode: **\`${advanceMode}\`**`)
       .addFields([
         {
           name: '**URL**',
