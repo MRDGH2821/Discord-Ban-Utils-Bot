@@ -46,7 +46,6 @@ module.exports = {
 
     try {
       canBan = await interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS]);
-      isBannable = interaction.options.getMember('user').bannable;
 
       if (isInGuild && canBan) {
         await interaction.guild.members.ban(target, {
@@ -75,8 +74,10 @@ module.exports = {
           daysOfMsgs: delete_msg_days,
           reason
         });
+        isBannable = true;
       }
       else {
+        isBannable = false;
         throw new Error(`Inside server? ${isInGuild}\nCan Ban? ${canBan}`);
       }
     }
