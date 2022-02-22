@@ -21,7 +21,7 @@ module.exports = {
       /* console.log('Before refresh:');
        console.log(showCache(channel.client)); */
       console.log('Refresh started!');
-      await refreshCache(channel.client, channel);
+      await refreshCache(channel.client);
 
       /* console.log('After refresh:');
        console.log(showCache(channel.client)); */
