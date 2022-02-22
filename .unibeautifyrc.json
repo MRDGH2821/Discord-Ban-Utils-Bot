@@ -1,10 +1,7 @@
 {
   "JavaScript": {
-    "beautifiers": ["Prettier", "ESLint"],
+    "beautifiers": ["ESLint"],
     "ESLint": {
-      "prefer_beautifier_config": true
-    },
-    "Prettier": {
       "prefer_beautifier_config": true
     }
   },
