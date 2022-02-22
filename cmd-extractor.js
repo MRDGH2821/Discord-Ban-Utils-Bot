@@ -1,5 +1,6 @@
 const fs = require('fs');
 const { open } = require('fs/promises'),
+  cmdInfo = { info: [] },
   commandFiles = fs
     .readdirSync('./commands')
     .filter((file) => file.endsWith('.js')),
@@ -22,8 +23,8 @@ for (const dat of descriptions) {
   };
   final.push(format);
 }
-
+cmdInfo.info = final;
 open('./cmd.json', 'w').then((file) => {
-  file.writeFile(JSON.stringify(final));
+  file.writeFile(JSON.stringify(cmdInfo));
   console.log('Information extracted!');
 });
