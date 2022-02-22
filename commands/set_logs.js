@@ -21,7 +21,7 @@ module.exports = {
       .setRequired(true)
       .addChannelType(Constants.ChannelTypes.GUILD_TEXT)),
 
-  note: 'Type of logs sent: \n1.Ban list import-export log \n2.Ban-unban log  \n3.Member leaving server log. \nMore type of logs coming soon.',
+  note: 'Type of logs sent: \n1.Ban list import-export log \n2.Ban-unban & Timeout log  \n3.Member leaving server log. \n4.Ban transfer log\nMore type of & detailed logs coming soon.',
 
   /**
    * set a logs channel
