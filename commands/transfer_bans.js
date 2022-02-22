@@ -127,23 +127,39 @@ module.exports = {
                 fetchReply: true
               });
 
-              const alreadyBanned = await destinationGuild.bans.fetch();
+              const alreadyBanned = await destinationGuild.bans.fetch(),
+                totallyNewBans = sourceBans.difference(alreadyBanned);
 
-              console.log('Type of Source bans:', typeof sourceBans);
-              console.log('Type of Already banned:', typeof alreadyBanned);
-
-              let actualTransfers = 0;
-              for (const [, newBaninfo] of sourceBans.difference(alreadyBanned)) {
-                actualTransfers += NUMBER.one;
-
-                const { user, reason } = newBaninfo;
-
-                destinationGuild.members.ban(user.id, {
-                  reason
-                });
+              let actualTransfers = 0,
+                stopError = 'none',
+                stopFlag = false;
+              for (const [, { user, reason }] of totallyNewBans) {
+                // eslint-disable-next-line no-negated-condition
+                if (!stopFlag) {
+                  // eslint-disable-next-line no-await-in-loop
+                  await destinationGuild.members
+                    .ban(user.id, {
+                      reason
+                    })
+                    // eslint-disable-next-line no-loop-func
+                    .then(() => {
+                      actualTransfers += NUMBER.one;
+                      interaction.editReply(`(${actualTransfers}/${totallyNewBans.size})`);
+                    })
+                    // eslint-disable-next-line no-loop-func
+                    .catch((error) => {
+                      console.error(error);
+                      stopError = error;
+                      stopFlag = true;
+                    });
+                }
+                else {
+                  break;
+                }
               }
 
               initial_Screen
+                .setTitle('**Ban List Transfer Successful!**')
                 .addFields([
                   {
                     name: '**Transfer Successful!**',
@@ -151,7 +167,26 @@ module.exports = {
                   },
                   {
                     name: '**Statistics**',
-                    value: `Bans in \`${interaction.guild.name}\`: **\`${sourceBans.size}\`**\nBans in \`${destinationGuild.name}\`: **\`${alreadyBanned.size}\`**\nUnique Bans: **\`${actualTransfers}\`**`
+                    value: `Bans in \`${interaction.guild.name}\`: **\`${
+                      sourceBans.size
+                    }\`**\nBans in \`${
+                      destinationGuild.name
+                    }\`:\n  Before - **\`${
+                      alreadyBanned.size
+                    }\`**\n  After - **\`${
+                      alreadyBanned.size + actualTransfers
+                    }\`**\nNew Bans: **\`${
+                      totallyNewBans.size
+                    }\`**\nActual Ban transfers: **\`${actualTransfers}\`**`
+                  },
+                  {
+                    name: '**Note**',
+                    value:
+                      'If "Actual Ban transfers" doesn\'t match with "New Bans" it means: Max number of bans for non-guild members have been exceeded. Please try again after 36 hours.'
+                  },
+                  {
+                    name: '**Hidden Errors, if any**',
+                    value: `${stopError}`
                   }
                 ])
                 .setTimestamp();
@@ -214,7 +249,7 @@ module.exports = {
           {
             name: '**Possible solutions**',
             value:
-              'Use this command inside a server. Also make sure that in the other server you have ban permissions & this bot\'s role is above most of the roles.'
+              'Use this command inside a server. Also make sure that in the other server you have ban permissions & this bot\'s role is above most of the roles. \nIt can also happen that the destination server has reached max limit of banning non-member users. In this case, all you need to do is wait for atleast 36 hours. '
           },
           {
             name: '**Selected Server**',
@@ -258,3 +293,6 @@ module.exports = {
 
 /* 12 Jan 2022
    Command refactored to use DJS constructs instead of REST API */
+
+/* 22 Feb 2022
+   Accounted for max non-member guild bans */

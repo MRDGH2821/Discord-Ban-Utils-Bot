@@ -33,7 +33,7 @@ module.exports = {
         },
         {
           name: '**Transfer Statistics**',
-          value: `Bans in source: **\`${banSource}\`**\nBans in destination:**\`${banDest}\`**\nUnique Bans: **\`${bansTransferred}\`**`
+          value: `Bans in source: **\`${banSource}\`**\nBans in destination:**\`${banDest}\`**\nActual Ban Transfers: **\`${bansTransferred}\`**`
         }
       ]);
     await sendHook(interaction.client, transfer_log, interaction.guild)
