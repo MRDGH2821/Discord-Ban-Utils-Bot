@@ -4,16 +4,17 @@
   "description": "Discord Ban Utilities for Mutual Servers!",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prestart": "node deploy-commands.js",
+    "deploy": "node deploy-commands.js",
+    "prestart": "npm run deploy",
     "start": "node index.js",
-    "predev": "node deploy-commands.js",
+    "predev": "npm run deploy",
     "dev": "nodemon index.js",
     "lint": "eslint . --fix",
     "pretty": "prettier --write .",
     "postpretty": "npm run lint",
     "fire:test": "node ./lib/firebase.js",
-    "commit": "cz"
+    "commit": "cz",
+    "extract:cmd": "node cmd-extractor.js"
   },
   "repository": {
     "type": "git",
