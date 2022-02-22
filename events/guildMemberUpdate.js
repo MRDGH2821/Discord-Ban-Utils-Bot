@@ -2,6 +2,7 @@
 const { GuildMember, MessageEmbed } = require('discord.js');
 const { time } = require('@discordjs/builders');
 const { sendHook } = require('../lib/UtilityFunctions.js');
+const { EMBCOLORS } = require('../lib/Constants.js');
 
 module.exports = {
   name: 'guildMemberUpdate',
@@ -18,6 +19,7 @@ module.exports = {
     if (newMember.isCommunicationDisabled()) {
       const timeout_log = new MessageEmbed()
         .setTitle('**Audit Timeout Log**')
+        .setColor(EMBCOLORS.freeze)
         .setDescription(`${newMember.user.tag} ${
           newMember.user
         } is put on timeout.\nTimeout duration: ${time(newMember.communicationDisabledUntil)} i.e. ${time(newMember.communicationDisabledUntil, 'R')}\nID: \`${
