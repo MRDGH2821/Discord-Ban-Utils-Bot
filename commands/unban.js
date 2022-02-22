@@ -64,7 +64,7 @@ module.exports = {
           {
             name: '**Possible solutions**',
             value:
-              'Use this command inside a server where you have required permissions.'
+              'Use this command inside a server where you have required permissions. Or the given member was not banned in this server.'
           },
           {
             name: '**Inputs given**',
