@@ -37,7 +37,7 @@ module.exports = {
       logsProgress = new MessageEmbed()
         .setColor(EMBCOLORS.whiteGray)
         .setTitle('**Setting up Log Channel**')
-        .setDescription(`Configuring ${channel} for logs.\nAfter configuration success, 2 log messages should come in that channel.`)
+        .setDescription(`Configuring ${channel} for logs.\nAfter configuration success, a log message should come in that channel.`)
         .setTimestamp();
     let canManage = false;
 
@@ -109,7 +109,7 @@ module.exports = {
           log_sample = new MessageEmbed()
             .setColor(EMBCOLORS.invisible)
             .setTitle('Test msg via command')
-            .setDescription(`This is a test log, should come in ${channel}.\nThis is sent when the log channel is set via command. Another log message should come by which you can verify logging is working properly or not.`)
+            .setDescription(`This is a test log, should come in ${channel}.\nThis is sent when the log channel is set via command.`)
             .setTimestamp(),
           setDBdata = {
             logChannelID: channel.id,
