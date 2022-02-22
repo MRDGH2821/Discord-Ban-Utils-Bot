@@ -10,12 +10,12 @@ module.exports = {
    * send ban transfer log on both servers
    * @async
    * @function execute
-   * @param {Interaction} interaction
-   * @param {Object} transferInfo
-   * @param {number} transferInfo.banDest
-   * @param {number} transferInfo.banSource
-   * @param {number} transferInfo.bansTransferred
-   * @param {Guild} transferInfo.destGuild
+   * @param {Interaction} interaction - interaction object
+   * @param {Object} transferInfo - transfer info object
+   * @param {number} transferInfo.banDest - number of bans in destination guild
+   * @param {number} transferInfo.banSource - number of bans in source guild
+   * @param {number} transferInfo.bansTransferred - number of bans actually transferred
+   * @param {Guild} transferInfo.destGuild - destination guild object
    */
   // eslint-disable-next-line sort-keys
   async execute(
@@ -25,7 +25,9 @@ module.exports = {
     const transfer_log = new MessageEmbed()
       .setTitle('**BU Ban Transfer Log**')
       .setColor(EMBCOLORS.whiteGray)
-      .setDescription(`Source server: ${interaction.guild.name}\nDestination server: ${destGuild.name}`)
+      .setDescription(
+        `Source server: ${interaction.guild.name}\nDestination server: ${destGuild.name}`
+      )
       .addFields([
         {
           name: '**Transfer initiated by**',

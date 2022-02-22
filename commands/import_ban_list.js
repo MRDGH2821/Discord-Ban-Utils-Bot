@@ -11,13 +11,19 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('import_ban_list')
     .setDescription('Imports ban list into current server')
-    .addStringOption((option) => option
-      .setName('dpaste_link')
-      .setDescription('Enter full dpaste link')
-      .setRequired(true))
-    .addStringOption((option) => option
-      .setName('reason')
-      .setDescription('Enter a common reason. (Default is Banned by <you> on <today\'s date>)')),
+    .addStringOption((option) =>
+      option
+        .setName('dpaste_link')
+        .setDescription('Enter full dpaste link')
+        .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName('reason')
+        .setDescription(
+          "Enter a common reason. (Default is Banned by <you> on <today's date>)"
+        )
+    ),
 
   note: 'For simple import type, provided/default reason is used. For advanced import type, included reason is used. Type of import is automatically determined.\nLink should be of [dpaste](https://dpaste.com/). Other links are not supported',
 
@@ -25,7 +31,7 @@ module.exports = {
    * import ban list into current server
    * @async
    * @function execute
-   * @param {CommandInteraction} interaction
+   * @param {CommandInteraction} interaction - interaction object
    */
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
@@ -51,7 +57,9 @@ module.exports = {
         });
 
     try {
-      canBan = await interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS]);
+      canBan = await interaction.member.permissions.has([
+        Permissions.FLAGS.BAN_MEMBERS
+      ]);
 
       if (isInGuild && canBan) {
         const finalBanList = [],
@@ -63,7 +71,9 @@ module.exports = {
           source = remoteSource.data;
         isLinkValid = true;
         // console.log(remoteSource.data);
-        await interaction.editReply('Parsing... (If it is taking long time, it means the link was invalid & bot has probably crashed)');
+        await interaction.editReply(
+          'Parsing... (If it is taking long time, it means the link was invalid & bot has probably crashed)'
+        );
 
         let advMode = false,
           bansInList = 0,
@@ -75,14 +85,23 @@ module.exports = {
            console.log('Source: ', source); */
         if (typeof source === 'string' || typeof source === String) {
           const rawEle = source.split(/\D+/gu),
-            sourceBans = Array.from(new Set(rawEle.map((element) => element.trim())));
+            sourceBans = Array.from(
+              new Set(rawEle.map((element) => element.trim()))
+            );
           advMode = false;
           modeDesc = inputReason;
           bansInList = sourceBans.length;
 
-          await interaction.editReply(`Type of import: Simple.\nInput reason will be used for banning: ${inputReason}\nBan list: ${bansInList}\n\nSit back & relax for a while!`);
+          await interaction.editReply(
+            `Type of import: Simple.\nInput reason will be used for banning: ${inputReason}\nBan list: ${bansInList}\n\nSit back & relax for a while!`
+          );
 
-          for (const newban of sourceBans.filter((newPotentialBan) => !previousbans.some((previousban) => previousban.user.id === newPotentialBan))) {
+          for (const newban of sourceBans.filter(
+            (newPotentialBan) =>
+              !previousbans.some(
+                (previousban) => previousban.user.id === newPotentialBan
+              )
+          )) {
             const finalBan = {
               id: newban,
               reason: inputReason
@@ -90,19 +109,25 @@ module.exports = {
             finalBanList.push(finalBan);
             uniqueBans += NUMBER.one;
           }
-        }
-        else {
+        } else {
           advMode = true;
           bansInList = source.length;
           modeDesc = `Included reason used for banning. \nFor missing ones input reason was used: ${inputReason}`;
 
-          await interaction.editReply(`Type of import: Advanced.\nIncluded reason will be used for banning. \nFor missing ones input reason will be used: ${inputReason}\nBan list: ${source.length}\n\nSit back & relax for a while!`);
+          await interaction.editReply(
+            `Type of import: Advanced.\nIncluded reason will be used for banning. \nFor missing ones input reason will be used: ${inputReason}\nBan list: ${source.length}\n\nSit back & relax for a while!`
+          );
 
-          for (const newban of source.filter((newPotentialBan) => !previousbans.some((previousban) => previousban.user.id === newPotentialBan.id))) {
+          for (const newban of source.filter(
+            (newPotentialBan) =>
+              !previousbans.some(
+                (previousban) => previousban.user.id === newPotentialBan.id
+              )
+          )) {
             const finalBan = {
               id: newban.id,
               // eslint-disable-next-line no-ternary
-              reason: (/n+u+l+l/iu).test(newban.reason)
+              reason: /n+u+l+l/iu.test(newban.reason)
                 ? inputReason
                 : newban.reason
             };
@@ -113,7 +138,7 @@ module.exports = {
 
         for (const newBan of finalBanList) {
           // eslint-disable-next-line no-loop-func
-          await interaction.client.users.fetch(newBan.id).then(async(user) => {
+          await interaction.client.users.fetch(newBan.id).then(async (user) => {
             console.log('Banning user: ', user.tag);
             await interaction.editReply(`Banning user ${user.tag}...`);
             await interaction.guild.members
@@ -137,7 +162,9 @@ module.exports = {
         const import_success = new MessageEmbed()
           .setColor(EMBCOLORS.hammerHandle)
           .setTitle('**Ban Import Success!**')
-          .setDescription(`Bans in list: ${bansInList}\nInvalid Bans: ${invalidBans}\nUnique Bans: ${uniqueBans}\nAdvanced Mode: ${advMode}`)
+          .setDescription(
+            `Bans in list: ${bansInList}\nInvalid Bans: ${invalidBans}\nUnique Bans: ${uniqueBans}\nAdvanced Mode: ${advMode}`
+          )
           .addFields([
             {
               name: '**Ban list link**',
@@ -159,16 +186,18 @@ module.exports = {
           content: 'Ban Import Success!',
           embeds: [import_success]
         });
+      } else {
+        throw new Error(
+          `Inside server? ${isInGuild}\nCan Ban? ${canBan}\nIs Link valid? ${isLinkValid}`
+        );
       }
-      else {
-        throw new Error(`Inside server? ${isInGuild}\nCan Ban? ${canBan}\nIs Link valid? ${isLinkValid}`);
-      }
-    }
-    catch (error) {
+    } catch (error) {
       const import_fail = new MessageEmbed()
         .setColor(EMBCOLORS.error)
         .setTitle('**Cannot Import...**')
-        .setDescription('Cannot import ban list.\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.')
+        .setDescription(
+          'Cannot import ban list.\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.'
+        )
         .addFields([
           {
             name: '**Checks**',

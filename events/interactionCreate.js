@@ -8,7 +8,7 @@ module.exports = {
    * interaction create event
    * @async
    * @function execute
-   * @param {Interaction} interaction
+   * @param {Interaction} interaction - interaction object
    */
   // eslint-disable-next-line sort-keys
   async execute(interaction) {

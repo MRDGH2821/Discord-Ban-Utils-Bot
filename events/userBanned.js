@@ -9,10 +9,10 @@ module.exports = {
    * send log when user is banned via bot
    * @async
    * @function execute
-   * @param {CommandInteraction} interaction
-   * @param {Object} BUBanOptions
-   * @param {string} BUBanOptions.reason
-   * @param {number} BUBanOptions.daysOfMsgs
+   * @param {CommandInteraction} interaction - interaction object
+   * @param {Object} BUBanOptions - ban options object
+   * @param {string} BUBanOptions.reason - reason for ban
+   * @param {number} BUBanOptions.daysOfMsgs - number of days of messages to be deleted
    */
   // eslint-disable-next-line sort-keys
   async execute(interaction, { reason, daysOfMsgs }) {

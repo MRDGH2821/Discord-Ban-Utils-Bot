@@ -11,7 +11,7 @@ module.exports = {
    * send a log when member leaves server
    * @async
    * @function execute
-   * @param {GuildMember} member
+   * @param {GuildMember} member - guild member object
    */
   // eslint-disable-next-line sort-keys
   async execute(member) {

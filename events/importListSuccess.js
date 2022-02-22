@@ -10,12 +10,12 @@ module.exports = {
    * send log after successful import of ban list
    * @async
    * @function execute
-   * @param {Interaction} interaction
-   * @param {Object} importOptions
-   * @param {@link} importOptions.url
-   * @param {string} importOptions.reason
-   * @param {boolean} importOptions.advanceMode
-   * @param {number} importOptions.uniqueBans
+   * @param {Interaction} interaction - interaction object
+   * @param {Object} importOptions - import options object
+   * @param {@link} importOptions.url - url to import from
+   * @param {string} importOptions.reason - reason specified for ban list
+   * @param {boolean} importOptions.advanceMode - whether ban list was in advanced mode or not
+   * @param {number} importOptions.uniqueBans - number of non-duplicate bans
    */
   // eslint-disable-next-line sort-keys
   async execute(interaction, { url, reason, advanceMode, uniqueBans }) {

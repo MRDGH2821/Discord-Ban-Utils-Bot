@@ -14,12 +14,12 @@ module.exports = {
    * send mass ban log
    * @async
    * @function execute
-   * @param {CommandInteraction} interaction - Command interaction object
-   * @param {Object} MassBanInfo - Mass ban information
-   * @param {string[]} MassBanInfo.listOfIDs - Array of IDs
-   * @param {string} MassBanInfo.reason - Reason for mass ban
-   * @param {number} MassBanInfo.invalidBans - Number of invalid IDs
-   * @param {number} MassBanInfo.uniqueBans - Number of Unique ID bans
+   * @param {CommandInteraction} interaction - command interaction object
+   * @param {Object} MassBanInfo - mass ban information object
+   * @param {string[]} MassBanInfo.listOfIDs - array of IDs
+   * @param {string} MassBanInfo.reason - reason for mass ban
+   * @param {number} MassBanInfo.invalidBans - number of invalid IDs
+   * @param {number} MassBanInfo.uniqueBans - number of Unique ID bans
    */
   // eslint-disable-next-line sort-keys
   async execute(interaction, { listOfIDs, reason, invalidBans, uniqueBans }) {

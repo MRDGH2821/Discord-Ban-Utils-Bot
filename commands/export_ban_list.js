@@ -9,9 +9,11 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('export_ban_list')
     .setDescription('Exports ban list of current server')
-    .addBooleanOption((option) => option
-      .setName('advanced')
-      .setDescription('Select true to export with reason. Default false')),
+    .addBooleanOption((option) =>
+      option
+        .setName('advanced')
+        .setDescription('Select true to export with reason. Default false')
+    ),
 
   note: 'Simple mode exports list which is compatible with other popular ban bots.\nAdvanced mode exports list with reason but only compatible with Ban Utils only.\nList is exported to [dpaste.com](https://dpaste.com/)',
 
@@ -19,7 +21,7 @@ module.exports = {
    * export ban list of current server
    * @async
    * @function execute
-   * @param {CommandInteraction} interaction
+   * @param {CommandInteraction} interaction - interaction object
    */
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
@@ -48,7 +50,9 @@ module.exports = {
           });
         });
         resultEmb
-          .setDescription(`Found ${bans.size} bans.\nAdvanced Mode: \`${advMode}\`\nExporting...`)
+          .setDescription(
+            `Found ${bans.size} bans.\nAdvanced Mode: \`${advMode}\`\nExporting...`
+          )
           .setTimestamp();
         await interaction.editReply({
           embeds: [resultEmb]
@@ -57,8 +61,7 @@ module.exports = {
           finalResult = JSON.stringify(resultAdv);
           finalOutput = outputAdv;
           finalType = 'json';
-        }
-        else {
+        } else {
           finalResult = resultSimple;
           finalOutput = outputSimple;
           finalType = 'text';
@@ -66,7 +69,7 @@ module.exports = {
         dpst
           // eslint-disable-next-line new-cap
           .CreatePaste(finalResult, finalOutput, finalType)
-          .then(async(url) => {
+          .then(async (url) => {
             resultEmb
               .setTitle('**Ban List Export Success!**')
               .addField('**URL**', url)
@@ -86,12 +89,12 @@ module.exports = {
           .catch((error) => {
             throw error;
           });
+      } else {
+        throw new Error(
+          'Cannot export outside sever. Please use this command inside server.'
+        );
       }
-      else {
-        throw new Error('Cannot export outside sever. Please use this command inside server.');
-      }
-    }
-    catch (error) {
+    } catch (error) {
       const ban_fail = new MessageEmbed()
         .setColor(EMBCOLORS.error)
         .setTitle('**Cannot Export...**')
@@ -118,10 +121,7 @@ module.exports = {
         .setTimestamp();
 
       await interaction.editReply({
-        components: [
-          SupportRow,
-          InviteRow
-        ],
+        components: [SupportRow, InviteRow],
         embeds: [ban_fail]
       });
       console.error(error);

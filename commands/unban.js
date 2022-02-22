@@ -8,16 +8,18 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('unban')
     .setDescription('Un-bans a user')
-    .addUserOption((option) => option
-      .setName('user')
-      .setDescription('Enter the User ID (i.e. snowflake)')
-      .setRequired(true)),
+    .addUserOption((option) =>
+      option
+        .setName('user')
+        .setDescription('Enter the User ID (i.e. snowflake)')
+        .setRequired(true)
+    ),
 
   /**
    * unban a user
    * @async
    * @function execute
-   * @param {CommandInteraction} interaction
+   * @param {CommandInteraction} interaction - interaction object
    */
   async execute(interaction) {
     await interaction.deferReply();
@@ -25,7 +27,9 @@ module.exports = {
       target = interaction.options.getUser('user');
     let canUnban = false;
     try {
-      canUnban = await interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS]);
+      canUnban = await interaction.member.permissions.has([
+        Permissions.FLAGS.BAN_MEMBERS
+      ]);
       if (isInGuild && canUnban) {
         await interaction.guild.members.unban(target);
 
@@ -33,23 +37,25 @@ module.exports = {
         const unban_success = new MessageEmbed()
           .setTitle('**User Unbanned!**')
           .setColor(EMBCOLORS.whiteGray)
-          .setDescription(`User \`${target.tag}\` ${target} is unbanned from this server.\nID: \`${target.id}\``)
+          .setDescription(
+            `User \`${target.tag}\` ${target} is unbanned from this server.\nID: \`${target.id}\``
+          )
           .setThumbnail(target.displayAvatarURL({ dynamic: true }))
           .setTimestamp();
 
         await interaction.editReply({
           embeds: [unban_success]
         });
-      }
-      else {
+      } else {
         throw new Error(`Inside server? ${isInGuild}\nCan Unban? ${canUnban}`);
       }
-    }
-    catch (error) {
+    } catch (error) {
       const unban_fail = new MessageEmbed()
         .setColor(EMBCOLORS.error)
         .setTitle('**Cannot Unban...**')
-        .setDescription(`User ${target} cannot be unbanned :grimacing:\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.`)
+        .setDescription(
+          `User ${target} cannot be unbanned :grimacing:\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.`
+        )
         .addFields([
           {
             name: '**Checks**',
@@ -72,10 +78,7 @@ module.exports = {
         .setTimestamp();
 
       await interaction.editReply({
-        components: [
-          SupportRow,
-          InviteRow
-        ],
+        components: [SupportRow, InviteRow],
         embeds: [unban_fail]
       });
       console.error(error);

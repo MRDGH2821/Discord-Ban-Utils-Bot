@@ -14,7 +14,7 @@ module.exports = {
    * display bot latency & websocket latency
    * @async
    * @function execute
-   * @param {CommandInteraction} interaction
+   * @param {CommandInteraction} interaction - interaction object
    */
   // eslint-disable-next-line sort-keys
   async execute(interaction) {

@@ -31,7 +31,7 @@ module.exports = {
    * display help section
    * @async
    * @function execute
-   * @param {CommandInteraction} interaction
+   * @param {CommandInteraction} interaction - interaction object
    */
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
@@ -45,16 +45,15 @@ module.exports = {
       helpEmbed = new MessageEmbed()
         .setColor(EMBCOLORS.whiteGray)
         .setTitle('**Help Section**')
-        .setDescription('The help section for you to get started with the bot!\nIt helps you import, export & transfer bans from one server to another.')
+        .setDescription(
+          'The help section for you to get started with the bot!\nIt helps you import, export & transfer bans from one server to another.'
+        )
         .addFields(cmdInfo)
         .addFields(additionalFields)
         .setTimestamp();
 
     await interaction.reply({
-      components: [
-        InviteRow,
-        SupportRow
-      ],
+      components: [InviteRow, SupportRow],
       embeds: [helpEmbed]
     });
   }

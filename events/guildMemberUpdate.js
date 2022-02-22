@@ -10,8 +10,8 @@ module.exports = {
    * send timeout log
    * @async
    * @function execute
-   * @param {GuildMember} oldMember
-   * @param {GuildMember} newMember
+   * @param {GuildMember} oldMember - old guild member object
+   * @param {GuildMember} newMember - new guild member object
    */
   // eslint-disable-next-line sort-keys
   async execute(oldMember, newMember) {

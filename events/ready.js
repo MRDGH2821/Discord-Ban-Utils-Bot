@@ -9,7 +9,7 @@ module.exports = {
   /**
    * ready event
    * @function execute
-   * @param {Client} client
+   * @param {Client} client - client object
    */
   // eslint-disable-next-line sort-keys
   execute(client) {

@@ -10,7 +10,7 @@ module.exports = {
    * send log when any webhook is updated
    * @async
    * @function execute
-   * @param {Channel} channel
+   * @param {Channel} channel - channel object
    */
   // eslint-disable-next-line sort-keys
   async execute(channel) {

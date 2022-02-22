@@ -10,7 +10,7 @@ module.exports = {
    * send log on new unbanned user
    * @async
    * @function execute
-   * @param {GuildBan} member
+   * @param {GuildBan} member - guild ban object
    */
   // eslint-disable-next-line sort-keys
   async execute(member) {

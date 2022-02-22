@@ -10,17 +10,19 @@ module.exports = {
    * send log after successful export of ban list
    * @async
    * @function execute
-   * @param {Interaction} interaction
-   * @param {Object} exportOptions
-   * @param {string} exportOptions.url
-   * @param {boolean} exportOptions.advanceMode
+   * @param {Interaction} interaction - interaction object
+   * @param {Object} exportOptions - export options object
+   * @param {string} exportOptions.url - url of exported list
+   * @param {boolean} exportOptions.advanceMode - whether list was in advanced mode
    */
   // eslint-disable-next-line sort-keys
   async execute(interaction, { url, advanceMode }) {
     const exportLog = new MessageEmbed()
       .setColor(EMBCOLORS.whiteGray)
       .setTitle('**BU Export Log**')
-      .setDescription(`Ban list of this server was just exported!\nExport Requested by ${interaction.user}\nAdvanced mode: **\`${advanceMode}\`**`)
+      .setDescription(
+        `Ban list of this server was just exported!\nExport Requested by ${interaction.user}\nAdvanced mode: **\`${advanceMode}\`**`
+      )
       .addFields([
         {
           name: '**URL**',

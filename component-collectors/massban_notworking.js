@@ -8,7 +8,7 @@ module.exports = {
    * reply with solution when mass ban command doesn't work as expected
    * @async
    * @function execute
-   * @param {ButtonInteraction} interacted
+   * @param {ButtonInteraction} interacted - button interaction object
    */
   async run(interacted) {
     await interacted.reply({

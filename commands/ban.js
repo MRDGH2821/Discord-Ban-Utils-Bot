@@ -26,7 +26,7 @@ module.exports = {
    * ban a user
    * @async
    * @function execute
-   * @param {CommandInteraction} interaction
+   * @param {CommandInteraction} interaction - interaction object
    */
   // eslint-disable-next-line sort-keys
   async execute(interaction) {
