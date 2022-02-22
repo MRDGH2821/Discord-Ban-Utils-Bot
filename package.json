@@ -14,7 +14,9 @@
     "postpretty": "npm run lint",
     "fire:test": "node ./lib/firebase.js",
     "commit": "cz",
-    "extract:cmd": "node cmd-extractor.js"
+    "extract:cmd": "node cmd-extractor.js",
+    "pm2:prod": "pm2 startOrRestart ban-utils.config.js --env prod",
+    "pm2:dev": "pm2 startOrRestart ./ban-utils.config.js --env dev"
   },
   "repository": {
     "type": "git",
