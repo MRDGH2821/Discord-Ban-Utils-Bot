@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 const {
   MessageEmbed,
   Permissions,
@@ -15,7 +16,7 @@ module.exports = {
     .setName('transfer_bans')
     .setDescription('Transfers Bans across servers'),
 
-  note: 'It will automatically filter out duplicate bans while transferring. Transfers bans with their reasons.',
+  note: 'It will automatically filter out duplicate bans while transferring. Transfers bans with their reasons. \nSometimes: \n1. Bans might not transfer, it is because max number of bans for non-server members have been exceeded. Please try again after 36 hours.\n2. Whole transfer process takes longer than 10 minutes and gets stuck, it is because token to edit msg (to show status) expired thus bot rebooted. Please try again after 6 hours.',
 
   /**
    * transfer bans across servers
@@ -30,7 +31,7 @@ module.exports = {
     let selectedServerName = 'none';
     try {
       if (isInGuild) {
-        const botGuilds = interaction.client.guilds.cache,
+        const botGuilds = await interaction.client.guilds.cache,
           initial_Screen = new MessageEmbed()
             .setColor(EMBCOLORS.whiteGray)
             .setTitle('**Ban List transferrer**')
@@ -55,8 +56,8 @@ module.exports = {
               force: true,
               user: interaction.user
             })
-            .then((member) => {
-              if (member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) {
+            .then(async(member) => {
+              if (await member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) {
                 mutualBanGuilds.push(guild);
               }
             })
@@ -142,9 +143,9 @@ module.exports = {
                       reason
                     })
                     // eslint-disable-next-line no-loop-func
-                    .then(() => {
+                    .then(async() => {
                       actualTransfers += NUMBER.one;
-                      interaction.editReply(`(${actualTransfers}/${totallyNewBans.size})`);
+                      await interaction.editReply(`(${actualTransfers}/${totallyNewBans.size})`);
                     })
                     // eslint-disable-next-line no-loop-func
                     .catch((error) => {
@@ -249,11 +250,16 @@ module.exports = {
           {
             name: '**Possible solutions**',
             value:
-              'Use this command inside a server. Also make sure that in the other server you have ban permissions & this bot\'s role is above most of the roles. \nIt can also happen that the destination server has reached max limit of banning non-member users. In this case, all you need to do is wait for atleast 36 hours. '
+              'Use this command inside a server. Also make sure that in the other server you have ban permissions & this bot\'s role is above most of the roles.'
           },
           {
             name: '**Selected Server**',
             value: `${selectedServerName}`
+          },
+          {
+            name: '**Additional Notes**',
+            value:
+              'One thing that might happen is that the destination server has reached max limit of banning non-member users. In this case, all you need to do is wait for atleast 36 hours. \nAlso whole transfer process is taking longer than 10 minutes and gets stuck, it is because it is because token to edit msg (to show status) expired thus bot rebooted. Please try again after 6 hours.'
           },
           {
             name: '**Bot Error Dump**',
@@ -296,3 +302,6 @@ module.exports = {
 
 /* 22 Feb 2022
    Accounted for max non-member guild bans */
+
+/* 23 Feb 2022
+   Accounted for interaction token expiry */

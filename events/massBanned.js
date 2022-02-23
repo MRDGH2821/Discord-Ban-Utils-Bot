@@ -5,7 +5,7 @@ const {
   MessageAttachment
 } = require('discord.js');
 const { EMBCOLORS } = require('../lib/Constants.js');
-const { db } = require('../lib/firebase.js');
+const { sendHook } = require('../lib/UtilityFunctions.js');
 
 module.exports = {
   name: 'massBanned',
@@ -54,45 +54,17 @@ module.exports = {
             value: `Invalid IDs: ${invalidBans}\nUnique Bans: ${uniqueBans}`
           }
         ])
-        .setTimestamp();
+        .setTimestamp(),
+      payload = {
+        embeds: [massban_log],
+        files: [idsInput]
+      };
 
-    try {
-      const loghook = await interaction.client.webhooksCache.find((webhook) => webhook.guildId === interaction.guild.id);
-
-      loghook
-        .send({ embeds: [massban_log], files: [idsInput] })
-        .then(() => console.log('Webhook fetched from cache.\nBU Mass ban log sent!'))
-        .catch((error) => {
-          console.log('BU Mass Ban Log not sent due to error.\nError dump:');
-          console.error(error);
-          throw error;
-        });
-    }
-    catch (error) {
-      const serverDB = await db
-        .collection('servers')
-        .doc(interaction.guild.id)
-        .get();
-
-      if (serverDB.exists) {
-        const serverData = serverDB.data(),
-          serverWebhook = await interaction.client.fetchWebhook(serverData.logWebhookID);
-
-        serverWebhook
-          .send({ embeds: [massban_log], files: [idsInput] })
-          .then(() => {
-            console.log('Webhook fetched from API.\nBU Mass ban log sent!');
-          })
-          .catch((err) => {
-            console.log('BU Mass Ban Log not sent due to error.\nError dump:');
-            console.error(err);
-          });
-      }
-      else {
-        console.log(`Logs channel not set in ${interaction.guild.name}`);
-      }
-      console.log('Other Error Dump:');
-      console.error(error);
-    }
+    await sendHook(interaction.client, payload, interaction.guild)
+      .then(() => console.log('BU Mass Ban Log sent!'))
+      .catch((error) => {
+        console.log('BU Mass Ban Log not sent due to error.\nError dump:');
+        console.error(error);
+      });
   }
 };

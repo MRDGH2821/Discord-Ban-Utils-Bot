@@ -15,13 +15,15 @@ module.exports = {
   // eslint-disable-next-line sort-keys
   async execute(member) {
     const unbanLog = new MessageEmbed()
-      .setTitle('**Audit Unban Log**')
-      .setColor(EMBCOLORS.whiteGray)
-      .setDescription(`${member.user.tag} ${member.user} is unbanned from the server\nID: \`${member.user.id}\``)
-      .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
-      .setTimestamp();
-
-    await sendHook(member.client, unbanLog, member.guild)
+        .setTitle('**Audit Unban Log**')
+        .setColor(EMBCOLORS.whiteGray)
+        .setDescription(`${member.user.tag} ${member.user} is unbanned from the server\nID: \`${member.user.id}\``)
+        .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+        .setTimestamp(),
+      unbanPayload = {
+        embeds: [unbanLog]
+      };
+    await sendHook(member.client, unbanPayload, member.guild)
       .then(() => console.log('Audit Un-Ban Log sent!'))
       .catch((error) => {
         console.log('Audit Un-Ban Log not sent due to error.\nError dump:');

@@ -20,25 +20,27 @@ module.exports = {
   // eslint-disable-next-line sort-keys
   async execute(interaction, { url, reason, advanceMode, uniqueBans }) {
     const importLog = new MessageEmbed()
-      .setTitle('**BU Import Log**')
-      .setColor(EMBCOLORS.hammerHandle)
-      .setDescription(`Ban list of this server was just imported!\nImported by \`${interaction.user.tag}\` ${interaction.user}\nAdvanced mode: **\`${advanceMode}\`**\nUnique Bans: ${uniqueBans}`)
-      .addFields([
-        {
-          name: '**URL**',
-          value: url
-        },
-        {
-          name: '**Reason**',
-          value: `${reason}`
-        }
-      ])
-      .setTimestamp();
-
-    await sendHook(interaction.client, importLog, interaction.guild)
-      .then(() => console.log('Audit Ban Log sent!'))
+        .setTitle('**BU Import Log**')
+        .setColor(EMBCOLORS.hammerHandle)
+        .setDescription(`Ban list of this server was just imported!\nImported by \`${interaction.user.tag}\` ${interaction.user}\nAdvanced mode: **\`${advanceMode}\`**\nUnique Bans: ${uniqueBans}`)
+        .addFields([
+          {
+            name: '**URL**',
+            value: url
+          },
+          {
+            name: '**Reason**',
+            value: `${reason}`
+          }
+        ])
+        .setTimestamp(),
+      payload = {
+        embeds: [importLog]
+      };
+    await sendHook(interaction.client, payload, interaction.guild)
+      .then(() => console.log('BU Import Log sent!'))
       .catch((error) => {
-        console.log('Audit Ban Log not sent due to error.\nError dump:');
+        console.log('BU Import Log not sent due to error.\nError dump:');
         console.error(error);
       });
   }

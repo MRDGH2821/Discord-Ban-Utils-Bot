@@ -35,6 +35,9 @@ module.exports = {
     await interaction.deferReply();
     const ids = interaction.options.getString('ids'),
       isInGuild = interaction.inGuild(),
+      massUnBan_process = new MessageEmbed()
+        .setTitle('**Mass Un-Banner**')
+        .setColor(EMBCOLORS.whiteGray),
       notWorking = new MessageActionRow().addComponents(new MessageButton()
         .setCustomId('massban_notworking')
         .setLabel('Not working as expected?')
@@ -68,23 +71,28 @@ module.exports = {
       canUnBan = await interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS]);
 
       if (isInGuild && canUnBan) {
-        console.log(sourceList);
-        await interaction.editReply(`Un-banning ${sourceListLen} users in background. Sit back and relax for a while!`);
+        // console.log(sourceList);
+        massUnBan_process.setDescription(`Un-banning ${sourceListLen} users in background. Sit back and relax for a while!`);
+        await interaction.editReply({
+          embeds: [massUnBan_process]
+        });
 
-        let invalidBans = NUMBER.zero;
+        let actuallyUnBanned = NUMBER.zero,
+          invalidBans = NUMBER.zero;
 
         for (const newban of sourceList) {
-          await interaction.client.users
-            .fetch(newban)
-            .then(async(user) => {
-              console.log('Un-Banning user: ', user.tag);
-              await interaction.editReply(`Un-Banning user ${user.tag}...`);
-              await interaction.guild.members.unban(user, { reason });
+          await interaction.guild.members
+            .unban(newban, { reason })
+            // eslint-disable-next-line no-loop-func
+            .then(async() => {
+              actuallyUnBanned += NUMBER.one;
+              await interaction.editReply(`(${actuallyUnBanned}/${sourceListLen - invalidBans})`);
             })
             // eslint-disable-next-line no-loop-func
-            .catch((error) => {
+            .catch(async(error) => {
               console.error(error);
               invalidBans += NUMBER.one;
+              await interaction.editReply(`(${actuallyUnBanned}/${sourceListLen - invalidBans})`);
             });
         }
 

@@ -1,6 +1,6 @@
 {
   "name": "discord-ban-utils-bot",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Discord Ban Utilities for Mutual Servers!",
   "main": "index.js",
   "scripts": {
@@ -22,11 +22,7 @@
     "type": "git",
     "url": "git+https://github.com/MRDGH2821/Discord-Ban-Utils-Bot.git"
   },
-  "keywords": [
-    "discord",
-    "ban",
-    "utilities"
-  ],
+  "keywords": ["discord", "ban", "utilities"],
   "author": {
     "name": "MRDGH2821",
     "url": "https://github.com/MRDGH2821"

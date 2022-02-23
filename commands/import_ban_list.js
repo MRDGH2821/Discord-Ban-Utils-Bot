@@ -34,13 +34,17 @@ module.exports = {
     let canBan = false,
       isLinkValid = false;
 
-    const inputReason =
+    const import_process = new MessageEmbed()
+        .setTitle('**Ban List Importer**')
+        .setColor(EMBCOLORS.whiteGray),
+      inputReason =
         interaction.options.getString('reason') ||
         `Ban Import by ${interaction.user.tag} on ${new Date().toDateString()}`,
       isInGuild = interaction.inGuild(),
       pasteID = pasteCheck(interaction.options.getString('dpaste_link')),
       pasteLink = `https://dpaste.com/${pasteID}`;
 
+    import_process.addField('**URL**', `${pasteLink}`);
     try {
       canBan = await interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS]);
 
@@ -63,10 +67,12 @@ module.exports = {
           source = remoteSource.data;
         isLinkValid = true;
         // console.log(remoteSource.data);
-        await interaction.editReply('Parsing... (If it is taking long time, it means the link was invalid & bot has probably crashed)');
+        import_process.setDescription('Parsing... (If it is taking long time, it means the link was invalid & bot has probably crashed)');
+        await interaction.editReply({ embeds: [import_process] });
 
         let advMode = false,
           bansInList = 0,
+          count = 0,
           invalidBans = 0,
           modeDesc = '',
           uniqueBans = 0;
@@ -79,8 +85,10 @@ module.exports = {
           advMode = false;
           modeDesc = inputReason;
           bansInList = sourceBans.length;
-
-          await interaction.editReply(`Type of import: Simple.\nInput reason will be used for banning: ${inputReason}\nBan list: ${bansInList}\n\nSit back & relax for a while!`);
+          import_process.setDescription(`Type of import: Simple.\nInput reason will be used for banning: ${inputReason}\nBan list: ${bansInList}\n\nSit back & relax for a while!`);
+          await interaction.editReply({
+            embeds: [import_process]
+          });
 
           for (const newban of sourceBans.filter((newPotentialBan) => !previousbans.some((previousban) => previousban.user.id === newPotentialBan))) {
             const finalBan = {
@@ -95,8 +103,10 @@ module.exports = {
           advMode = true;
           bansInList = source.length;
           modeDesc = `Included reason used for banning. \nFor missing ones input reason was used: ${inputReason}`;
-
-          await interaction.editReply(`Type of import: Advanced.\nIncluded reason will be used for banning. \nFor missing ones input reason will be used: ${inputReason}\nBan list: ${source.length}\n\nSit back & relax for a while!`);
+          import_process.setDescription(`Type of import: Advanced.\nIncluded reason will be used for banning. \nFor missing ones input reason will be used: ${inputReason}\nBan list: ${source.length}\n\nSit back & relax for a while!`);
+          await interaction.editReply({
+            embeds: [import_process]
+          });
 
           for (const newban of source.filter((newPotentialBan) => !previousbans.some((previousban) => previousban.user.id === newPotentialBan.id))) {
             const finalBan = {
@@ -112,20 +122,21 @@ module.exports = {
         }
 
         for (const newBan of finalBanList) {
-          // eslint-disable-next-line no-loop-func
-          await interaction.client.users.fetch(newBan.id).then(async(user) => {
-            console.log('Banning user: ', user.tag);
-            await interaction.editReply(`Banning user ${user.tag}...`);
-            await interaction.guild.members
-              .ban(user, {
-                reason: newBan.reason
-              })
-              .catch((error) => {
-                console.log(error);
-                invalidBans += NUMBER.one;
-                uniqueBans -= NUMBER.one;
-              });
-          });
+          await interaction.guild.members
+            .ban(newBan.id, {
+              reason: newBan.reason
+            })
+            // eslint-disable-next-line no-loop-func
+            .then(async() => {
+              count += NUMBER.one;
+              await interaction.editReply(`(${count} of ${finalBanList.length})`);
+            })
+            // eslint-disable-next-line no-loop-func
+            .catch((error) => {
+              console.log(error);
+              invalidBans += NUMBER.one;
+              uniqueBans -= NUMBER.one;
+            });
         }
 
         console.log('Final ban list length: ', finalBanList.length);
