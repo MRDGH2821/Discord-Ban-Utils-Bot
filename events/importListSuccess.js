@@ -35,12 +35,12 @@ module.exports = {
         ])
         .setTimestamp(),
       payload = {
-        embeds: importLog
+        embeds: [importLog]
       };
     await sendHook(interaction.client, payload, interaction.guild)
-      .then(() => console.log('Audit Ban Log sent!'))
+      .then(() => console.log('BU Import Log sent!'))
       .catch((error) => {
-        console.log('Audit Ban Log not sent due to error.\nError dump:');
+        console.log('BU Import Log not sent due to error.\nError dump:');
         console.error(error);
       });
   }
