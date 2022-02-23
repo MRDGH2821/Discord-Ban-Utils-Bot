@@ -30,7 +30,7 @@ module.exports = {
     let selectedServerName = 'none';
     try {
       if (isInGuild) {
-        const botGuilds = interaction.client.guilds.cache,
+        const botGuilds = await interaction.client.guilds.cache,
           initial_Screen = new MessageEmbed()
             .setColor(EMBCOLORS.whiteGray)
             .setTitle('**Ban List transferrer**')
@@ -55,8 +55,8 @@ module.exports = {
               force: true,
               user: interaction.user
             })
-            .then((member) => {
-              if (member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) {
+            .then(async(member) => {
+              if (await member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) {
                 mutualBanGuilds.push(guild);
               }
             })
@@ -142,9 +142,9 @@ module.exports = {
                       reason
                     })
                     // eslint-disable-next-line no-loop-func
-                    .then(() => {
+                    .then(async() => {
                       actualTransfers += NUMBER.one;
-                      interaction.editReply(`(${actualTransfers}/${totallyNewBans.size})`);
+                      await interaction.editReply(`(${actualTransfers}/${totallyNewBans.size})`);
                     })
                     // eslint-disable-next-line no-loop-func
                     .catch((error) => {
