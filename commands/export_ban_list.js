@@ -45,11 +45,11 @@ module.exports = {
           embeds: [resultEmb]
         });
         if (advMode) {
-          const urls = exportBanAdv(bans, interaction.guild.name);
+          const urls = await exportBanAdv(bans, interaction.guild.name);
           let urlFormat = '';
-          for (let index = 0; index < urls.length; index++) {
-            urlFormat = `${urlFormat}\nPart ${index}: ${urls[index]}`;
-          }
+          urls.forEach((url) => {
+            urlFormat = `${urlFormat}\n${url}`;
+          });
           // eslint-disable-next-line one-var
           const urlsAttachment = new MessageAttachment(Buffer.from(urlFormat))
             .setName(`Ban list links of ${interaction.guild.name}.txt`)
@@ -71,11 +71,11 @@ module.exports = {
           });
         }
         else {
-          const urls = exportBanSimple(bans, interaction.guild.name);
+          const urls = await exportBanSimple(bans, interaction.guild.name);
           let urlFormat = '';
-          for (let index = 0; index < urls.length; index++) {
-            urlFormat = `${urlFormat}\nPart ${index}: ${urls[index]}`;
-          }
+          urls.forEach((url) => {
+            urlFormat = `${urlFormat}\n${url}`;
+          });
           // eslint-disable-next-line one-var
           const urlsAttachment = new MessageAttachment(Buffer.from(urlFormat))
             .setName(`Ban list links of ${interaction.guild.name}.txt`)
