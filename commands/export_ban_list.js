@@ -46,6 +46,7 @@ module.exports = {
         });
         if (advMode) {
           const urls = await exportBanAdv(bans, interaction.guild.name);
+
           let urlFormat = '';
           urls.forEach((url) => {
             urlFormat = `${urlFormat}\n${url}`;
@@ -65,9 +66,11 @@ module.exports = {
             embeds: [resultEmb],
             files: [urlsAttachment]
           });
+
           interaction.client.emit('exportListSuccess', interaction, {
             advanceMode: advMode,
-            files: urlsAttachment
+            files: urlsAttachment,
+            parts: urls.length
           });
         }
         else {
@@ -93,7 +96,8 @@ module.exports = {
           });
           interaction.client.emit('exportListSuccess', interaction, {
             advanceMode: advMode,
-            files: urlsAttachment
+            files: urlsAttachment,
+            parts: urls.length
           });
         }
       }

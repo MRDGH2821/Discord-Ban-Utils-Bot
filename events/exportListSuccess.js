@@ -14,13 +14,14 @@ module.exports = {
    * @param {Object} exportOptions - export options object
    * @param {MessageAttachment} exportOptions.files - urls of exported list
    * @param {boolean} exportOptions.advanceMode - whether list was in advanced mode
+   * @param {number} exportOptions.parts - number of parts
    */
   // eslint-disable-next-line sort-keys
-  async execute(interaction, { advanceMode, files }) {
+  async execute(interaction, { advanceMode, files, parts }) {
     const exportLog = new MessageEmbed()
         .setColor(EMBCOLORS.whiteGray)
         .setTitle('**BU Export Log**')
-        .setDescription(`Ban list of this server was just exported!\nExport Requested by ${interaction.user}\nAdvanced mode: **\`${advanceMode}\`**`)
+        .setDescription(`Ban list of this server was just exported!\nExport Requested by ${interaction.user}\nAdvanced mode: **\`${advanceMode}\`**\nParts: ${parts}`)
         .setTimestamp(),
       payload = {
         embeds: [exportLog],
