@@ -24,7 +24,7 @@ module.exports = {
         .setTimestamp(),
       payload = {
         embeds: [exportLog],
-        files
+        files: [files]
       };
     await sendHook(interaction.client, payload, interaction.guild)
       .then(() => console.log('BU Export Log sent!'))

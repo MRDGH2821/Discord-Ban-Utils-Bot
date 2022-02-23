@@ -32,9 +32,11 @@ module.exports = {
             value: `${reason}`
           }
         ])
-        .setTimestamp();
-
-    await sendHook(interaction.client, embedBanLog, interaction.guild)
+        .setTimestamp(),
+      payload = {
+        embeds: [embedBanLog]
+      };
+    await sendHook(interaction.client, payload, interaction.guild)
       .then(() => console.log('BU Ban Log sent!'))
       .catch((error) => {
         console.log('BU Ban Log not sent due to error.\nError dump:');

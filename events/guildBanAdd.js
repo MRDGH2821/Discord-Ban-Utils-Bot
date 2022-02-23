@@ -70,7 +70,10 @@ module.exports = {
         ]);
       }
       if (!isBannedViaCmd) {
-        await sendHook(guildBan.client, banLog, guildBan.guild)
+        const payload = {
+          embeds: [banLog]
+        };
+        await sendHook(guildBan.client, payload, guildBan.guild)
           .then(() => console.log('Audit Ban Log sent!'))
           .catch((error) => {
             console.log('Audit Ban Log not sent due to error.\nError dump:');

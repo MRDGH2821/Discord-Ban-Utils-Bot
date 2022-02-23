@@ -23,20 +23,23 @@ module.exports = {
     { banDest, banSource, bansTransferred, destGuild }
   ) {
     const transfer_log = new MessageEmbed()
-      .setTitle('**BU Ban Transfer Log**')
-      .setColor(EMBCOLORS.whiteGray)
-      .setDescription(`Source server: ${interaction.guild.name}\nDestination server: ${destGuild.name}`)
-      .addFields([
-        {
-          name: '**Transfer initiated by**',
-          value: `${interaction.user.tag} ${interaction.user}`
-        },
-        {
-          name: '**Transfer Statistics**',
-          value: `Bans in source: **\`${banSource}\`**\nBans in destination:**\`${banDest}\`**\nActual Ban Transfers: **\`${bansTransferred}\`**`
-        }
-      ]);
-    await sendHook(interaction.client, transfer_log, interaction.guild)
+        .setTitle('**BU Ban Transfer Log**')
+        .setColor(EMBCOLORS.whiteGray)
+        .setDescription(`Source server: ${interaction.guild.name}\nDestination server: ${destGuild.name}`)
+        .addFields([
+          {
+            name: '**Transfer initiated by**',
+            value: `${interaction.user.tag} ${interaction.user}`
+          },
+          {
+            name: '**Transfer Statistics**',
+            value: `Bans in source: **\`${banSource}\`**\nBans in destination:**\`${banDest}\`**\nActual Ban Transfers: **\`${bansTransferred}\`**`
+          }
+        ]),
+      transfer_payload = {
+        embeds: [transfer_log]
+      };
+    await sendHook(interaction.client, transfer_payload, interaction.guild)
       .then(() => console.log('BU Ban Transfer Log sent!'))
       .catch((error) => {
         console.log('BU Ban Transfer Log not sent due to error.\nError dump:');
