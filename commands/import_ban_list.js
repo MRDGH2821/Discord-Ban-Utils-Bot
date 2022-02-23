@@ -67,6 +67,7 @@ module.exports = {
 
         let advMode = false,
           bansInList = 0,
+          count = 0,
           invalidBans = 0,
           modeDesc = '',
           uniqueBans = 0;
@@ -115,7 +116,8 @@ module.exports = {
           // eslint-disable-next-line no-loop-func
           await interaction.client.users.fetch(newBan.id).then(async(user) => {
             console.log('Banning user: ', user.tag);
-            await interaction.editReply(`Banning user ${user.tag}...`);
+            count += NUMBER.one;
+            await interaction.editReply(`Banning user ${user.tag}...\n(${count} of ${finalBanList.length})`);
             await interaction.guild.members
               .ban(user, {
                 reason: newBan.reason
