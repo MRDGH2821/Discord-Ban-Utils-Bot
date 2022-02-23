@@ -41,6 +41,9 @@ module.exports = {
     await interaction.deferReply();
     const ids = interaction.options.getString('ids'),
       isInGuild = interaction.inGuild(),
+      massBan_process = new MessageEmbed()
+        .setTitle('**Mass Banner**')
+        .setColor(EMBCOLORS.whiteGray),
       notWorking = new MessageActionRow().addComponents(new MessageButton()
         .setCustomId('massban_notworking')
         .setLabel('Not working as expected?')
@@ -89,31 +92,32 @@ module.exports = {
       canBan = await interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS]);
 
       if (isInGuild && canBan) {
-        console.log(sourceList);
-        await interaction.editReply(`${sourceListLen} bans are being banned in background. Sit back and relax for a while!`);
+        // console.log(sourceList);
+        const totallyNewBans = sourceList.filter((newPotentialBan) => !currentBanListProcessed.some((previousBan) => previousBan.user.id === newPotentialBan));
+        massBan_process.setDescription(`${totallyNewBans.length} bans are being banned in background. Sit back and relax for a while!`);
+        await interaction.editReply({ embeds: [massBan_process] });
 
         let invalidBans = NUMBER.zero,
           uniqueBans = NUMBER.zero;
 
-        for (const newban of sourceList.filter((newPotentialBan) => !currentBanListProcessed.some((previousBan) => previousBan.user.id === newPotentialBan))) {
-          uniqueBans += NUMBER.one;
-          await interaction.client.users
-            .fetch(newban)
-            .then(async(user) => {
-              console.log('Banning user: ', user.tag);
-              await interaction.editReply(`Banning user ${user.tag}...`);
-              await interaction.guild.members.ban(user, {
-                reason: reasonForBan
-              });
+        for (const newban of totallyNewBans) {
+          await interaction.guild.members
+            .ban(newban, {
+              reason: reasonForBan
+            })
+            // eslint-disable-next-line no-loop-func
+            .then(async() => {
+              uniqueBans += NUMBER.one;
+              await interaction.editReply(`(${uniqueBans}/${totallyNewBans.length})`);
             })
             // eslint-disable-next-line no-loop-func
             .catch((error) => {
               console.error(error);
               invalidBans += NUMBER.one;
-              uniqueBans -= NUMBER.one;
             });
         }
 
+        // eslint-disable-next-line one-var
         const massBan_success = new MessageEmbed()
           .setColor(EMBCOLORS.hammerHandle)
           .setTitle('**Mass Ban Success!**')
