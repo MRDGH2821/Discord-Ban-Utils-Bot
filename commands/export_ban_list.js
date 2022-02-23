@@ -1,9 +1,13 @@
-const dpst = require('dpaste-ts');
-// eslint-disable-next-line no-unused-vars
-const { MessageEmbed, CommandInteraction } = require('discord.js');
+const {
+  // eslint-disable-next-line no-unused-vars
+  CommandInteraction,
+  MessageEmbed,
+  MessageAttachment
+} = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { EMBCOLORS } = require('../lib/Constants.js');
 const { InviteRow, SupportRow } = require('../lib/RowButtons.js');
+const { exportBanAdv, exportBanSimple } = require('../lib/UtilityFunctions.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -29,24 +33,11 @@ module.exports = {
     try {
       if (isInGuild) {
         const bans = await interaction.guild.bans.fetch(),
-          outputAdv = `${interaction.guild.name}-${new Date()}.json`,
-          outputSimple = `${interaction.guild.name}-${new Date()}.txt`,
-          resultAdv = [],
           resultEmb = new MessageEmbed()
             .setTitle('**Exporting Ban List**')
             .setColor(EMBCOLORS.whiteGray)
             .setTimestamp();
-        let finalOutput = '',
-          finalResult = '',
-          finalType = '',
-          resultSimple = '';
-        bans.forEach((ban) => {
-          resultSimple = `${resultSimple} ${ban.user.id}`;
-          resultAdv.push({
-            id: `${ban.user.id}`,
-            reason: `${ban.reason}`
-          });
-        });
+
         resultEmb
           .setDescription(`Found ${bans.size} bans.\nAdvanced Mode: \`${advMode}\`\nExporting...`)
           .setTimestamp();
@@ -54,38 +45,57 @@ module.exports = {
           embeds: [resultEmb]
         });
         if (advMode) {
-          finalResult = JSON.stringify(resultAdv);
-          finalOutput = outputAdv;
-          finalType = 'json';
+          const urls = exportBanAdv(bans, interaction.guild.name);
+          let urlFormat = '';
+          for (let index = 0; index < urls.length; index++) {
+            urlFormat = `${urlFormat}\nPart ${index}: ${urls[index]}`;
+          }
+          // eslint-disable-next-line one-var
+          const urlsAttachment = new MessageAttachment(Buffer.from(urlFormat))
+            .setName(`Ban list links of ${interaction.guild.name}.txt`)
+            .setDescription('This is the list of links');
+
+          resultEmb
+            .setTitle('**Ban List Export Success!**')
+            .addField('**Number of parts**', `${urls.length}`)
+            .setTimestamp();
+
+          await interaction.editReply({
+            components: [InviteRow],
+            embeds: [resultEmb],
+            files: [urlsAttachment]
+          });
+          interaction.client.emit('exportListSuccess', interaction, {
+            advanceMode: advMode,
+            files: urlsAttachment
+          });
         }
         else {
-          finalResult = resultSimple;
-          finalOutput = outputSimple;
-          finalType = 'text';
-        }
-        dpst
-          // eslint-disable-next-line new-cap
-          .CreatePaste(finalResult, finalOutput, finalType)
-          .then(async(url) => {
-            resultEmb
-              .setTitle('**Ban List Export Success!**')
-              .addField('**URL**', url)
-              .setTimestamp();
-            await interaction.editReply({
-              embeds: [resultEmb]
-            });
-            await interaction.followUp({
-              components: [InviteRow],
-              content: url
-            });
-            interaction.client.emit('exportListSuccess', interaction, {
-              advanceMode: advMode,
-              url
-            });
-          })
-          .catch((error) => {
-            throw error;
+          const urls = exportBanSimple(bans, interaction.guild.name);
+          let urlFormat = '';
+          for (let index = 0; index < urls.length; index++) {
+            urlFormat = `${urlFormat}\nPart ${index}: ${urls[index]}`;
+          }
+          // eslint-disable-next-line one-var
+          const urlsAttachment = new MessageAttachment(Buffer.from(urlFormat))
+            .setName(`Ban list links of ${interaction.guild.name}.txt`)
+            .setDescription('This is the list of links');
+
+          resultEmb
+            .setTitle('**Ban List Export Success!**')
+            .addField('**Number of parts**', `${urls.length}`)
+            .setTimestamp();
+
+          await interaction.editReply({
+            components: [InviteRow],
+            embeds: [resultEmb],
+            files: [urlsAttachment]
           });
+          interaction.client.emit('exportListSuccess', interaction, {
+            advanceMode: advMode,
+            files: urlsAttachment
+          });
+        }
       }
       else {
         throw new Error('Cannot export outside sever. Please use this command inside server.');
