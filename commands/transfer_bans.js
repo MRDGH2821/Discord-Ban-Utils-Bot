@@ -15,7 +15,7 @@ module.exports = {
     .setName('transfer_bans')
     .setDescription('Transfers Bans across servers'),
 
-  note: 'It will automatically filter out duplicate bans while transferring. Transfers bans with their reasons.',
+  note: 'It will automatically filter out duplicate bans while transferring. Transfers bans with their reasons. \nSometimes bans might not transfer, the reason is most likely to be: Max number of bans for non-server members have been exceeded. Please try again after 36 hours.',
 
   /**
    * transfer bans across servers
