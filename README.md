@@ -6,7 +6,7 @@ Discord Ban Utilities for Mutual Servers!
 
 ~~Currently the Bot is in development.~~ Bot development is supposedly finished. And can be used publicly!
 
-Hosted on ~~my personal Raspberry Pi 2B+~~ Google Cloud VM Instance E2.
+Hosted on Microsoft Azure B1ms Instance.
 
 Invite Link - [click here](https://discord.com/api/oauth2/authorize?client_id=897454611370213436&permissions=1377073941638&scope=bot%20applications.commands)
 
