@@ -9,20 +9,25 @@
     "start": "node index.js",
     "predev": "npm run deploy",
     "dev": "nodemon index.js",
-    "lint": "eslint . --fix",
-    "pretty": "prettier --write .",
+    "lint": "npx eslint . --fix",
+    "pretty": "npx prettier --write .",
     "postpretty": "npm run lint",
     "fire:test": "node ./lib/firebase.js",
     "commit": "cz",
     "extract:cmd": "node cmd-extractor.js",
     "pm2:prod": "pm2 startOrRestart ban-utils.config.js --env prod",
-    "pm2:dev": "pm2 startOrRestart ./ban-utils.config.js --env dev"
+    "pm2:dev": "pm2 startOrRestart ./ban-utils.config.js --env dev",
+    "lint:mega": "npx mega-linter-runner@latest --flavor javascript"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MRDGH2821/Discord-Ban-Utils-Bot.git"
   },
-  "keywords": ["discord", "ban", "utilities"],
+  "keywords": [
+    "discord",
+    "ban",
+    "utilities"
+  ],
   "author": {
     "name": "MRDGH2821",
     "url": "https://github.com/MRDGH2821"
