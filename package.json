@@ -29,5 +29,11 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "optionalDependencies": {
+    "@sapphire/cli": "^1.6.1"
+  },
+  "devDependencies": {
+    "prettier-config-mrdgh2821": "^3.0.0"
   }
 }
