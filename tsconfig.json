@@ -1,9 +1,10 @@
 {
-	"extends": "@sapphire/ts-config",
-	"compilerOptions": {
-		"rootDir": "src",
-		"outDir": "dist",
-		"tsBuildInfoFile": "dist/.tsbuildinfo"
-	},
-	"include": ["src"]
+  "extends": "@sapphire/ts-config",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/.tsbuildinfo",
+    "composite": true
+  },
+  "include": ["src"]
 }
