@@ -1,0 +1,34 @@
+{
+  "name": "Node.js & TypeScript",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:18",
+  "postCreateCommand": "npm install",
+  "features": {
+    "ghcr.io/devcontainers-contrib/features/typescript:2": {},
+    "ghcr.io/devcontainers/features/desktop-lite:1": {},
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/dhoeric/features/hadolint:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "christian-kohler.npm-intellisense",
+        "christian-kohler.path-intellisense",
+        "cschlosser.doxdocgen",
+        "dbaeumer.vscode-eslint",
+        "eamodio.gitlens",
+        "esbenp.prettier-vscode",
+        "exiasr.hadolint",
+        "MichaelCurrin.auto-commit-msg",
+        "p42ai.refactor",
+        "Phu1237.vs-browser",
+        "redhat.vscode-yaml",
+        "spmeesseman.vscode-taskexplorer",
+        "streetsidesoftware.code-spell-checker",
+        "usernamehw.errorlens"
+      ]
+    }
+  },
+  "forwardPorts": [5901, 6080],
+  "remoteUser": "root"
+}
