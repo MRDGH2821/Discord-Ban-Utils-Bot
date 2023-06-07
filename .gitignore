@@ -21,3 +21,4 @@ commands/guildban.txt
 commands/list.txt
 deploy-stats.txt
 megalinter-reports/*
+old/*

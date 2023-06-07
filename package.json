@@ -1,36 +1,13 @@
 {
   "name": "discord-ban-utils-bot",
-  "version": "3.0.4",
   "description": "Discord Ban Utilities for Mutual Servers!",
-  "main": "index.js",
-  "scripts": {
-    "deploy": "node deploy-commands.js",
-    "prestart": "npm run deploy",
-    "start": "node index.js",
-    "predev": "npm run deploy",
-    "dev": "nodemon index.js",
-    "lint": "npx eslint . --fix",
-    "pretty": "npx prettier --write .",
-    "postpretty": "npm run lint",
-    "fire:test": "node ./lib/firebase.js",
-    "commit": "cz",
-    "extract:cmd": "node cmd-extractor.js",
-    "pm2:prod": "pm2 startOrRestart ban-utils.config.js --env prod",
-    "pm2:dev": "pm2 startOrRestart ./ban-utils.config.js --env dev",
-    "lint:mega": "npx mega-linter-runner@latest --flavor javascript"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MRDGH2821/Discord-Ban-Utils-Bot.git"
-  },
-  "keywords": [
-    "discord",
-    "ban",
-    "utilities"
-  ],
+  "version": "3.0.4",
   "author": {
     "name": "MRDGH2821",
     "url": "https://github.com/MRDGH2821"
+  },
+  "bugs": {
+    "url": "https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues"
   },
   "contributors": [
     {
@@ -38,37 +15,19 @@
       "url": "https://github.com/AroLeaf"
     }
   ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues"
-  },
   "homepage": "https://github.com/MRDGH2821/Discord-Ban-Utils-Bot#readme",
-  "dependencies": {
-    "@discordjs/builders": "^0.12.0",
-    "@discordjs/rest": "^0.3.0",
-    "axios": "^0.26.0",
-    "custom-env": "^2.0.1",
-    "discord-api-types": "^0.27.2",
-    "discord.js": "^13.6.0",
-    "dotenv": "^16.0.0",
-    "dpaste-ts": "^1.0.4",
-    "firebase-admin": "^10.0.2"
-  },
-  "devDependencies": {
-    "ansi-regex": "^6.0.1",
-    "commitizen": "^4.2.4",
-    "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^8.9.0",
-    "prettier": "^2.5.1",
-    "prettier-config-mrdgh2821": "^1.0.0"
-  },
-  "engines": {
-    "node": ">= 16.6.0"
-  },
+  "keywords": [
+    "discord",
+    "ban",
+    "utilities"
+  ],
+  "license": "MIT",
   "private": true,
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MRDGH2821/Discord-Ban-Utils-Bot.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
