@@ -45,3 +45,4 @@ discord-ban-utils-bot-firebase-adminsdk-ohwmr-1392181386.json
 lib/firebase-service-acc/*.json
 megalinter-reports/*
 old/*
+firebase-service-acc/*.json
