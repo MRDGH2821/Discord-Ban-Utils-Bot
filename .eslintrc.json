@@ -1,7 +1,17 @@
 {
-  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "airbnb-ts-prettier"
+  ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": ["./tsconfig.json"]
+  },
+  "rules": {
+    "class-methods-use-this": [
+      "error",
+      { "exceptMethods": ["printBanner", "run"] }
+    ]
   }
 }
