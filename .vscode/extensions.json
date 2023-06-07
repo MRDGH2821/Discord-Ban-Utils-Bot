@@ -1,0 +1,18 @@
+{
+  "recommendations": [
+    "christian-kohler.npm-intellisense",
+    "christian-kohler.path-intellisense",
+    "cschlosser.doxdocgen",
+    "dbaeumer.vscode-eslint",
+    "eamodio.gitlens",
+    "esbenp.prettier-vscode",
+    "exiasr.hadolint",
+    "michaelcurrin.auto-commit-msg",
+    "p42ai.refactor",
+    "redhat.vscode-yaml",
+    "spmeesseman.vscode-taskexplorer",
+    "streetsidesoftware.code-spell-checker",
+    "tal7aouy.indent-colorizer",
+    "usernamehw.errorlens"
+  ]
+}
