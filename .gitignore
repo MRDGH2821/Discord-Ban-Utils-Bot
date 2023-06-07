@@ -1,24 +1,47 @@
-node_modules
-config.json
+# Ignore a blackhole and the folder for development
+node_modules/
+.vs/
+.idea/
+*.iml
+
+# Yarn files
+.yarn/install-state.gz
+.yarn/build-state.yml
+
+# Environment variables
+.DS_Store
+dist/
+
+# Ignore the config file (contains sensitive information such as tokens)
 betaconfig.json
-Backup-Commands/*
-lib/firebase-service-acc/*.json
-discord-ban-utils-bot-firebase-adminsdk-ohwmr-1392181386.json
-.env.beta
-.env.production
+config.json
+config.ts
+
+# Ignore heapsnapshot and log files
+*.heapsnapshot
+*.log
+
+# Environment variables
 .env
+.env.beta
+.env.dev
+.env.development.local
+.env.local
+.env.prod
+.env.production
+.env.production.local
+.env.test.local
 beta.env
 prod.env
-.env.prod
-
-command-exports
-.vscode/*
-.env.dev
 
 already-old-files
+Backup-Commands/*
 cmd.json
+command-exports
 commands/guildban.txt
 commands/list.txt
 deploy-stats.txt
+discord-ban-utils-bot-firebase-adminsdk-ohwmr-1392181386.json
+lib/firebase-service-acc/*.json
 megalinter-reports/*
 old/*

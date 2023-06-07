@@ -2,6 +2,7 @@
   "name": "discord-ban-utils-bot",
   "description": "Discord Ban Utilities for Mutual Servers!",
   "version": "3.0.4",
+  "type": "commonjs",
   "author": {
     "name": "MRDGH2821",
     "url": "https://github.com/MRDGH2821"
@@ -28,12 +29,34 @@
     "url": "git+https://github.com/MRDGH2821/Discord-Ban-Utils-Bot.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "sapphire": "sapphire",
+    "generate": "sapphire generate",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "start": "node dist/index.js",
+    "dev": "npm run build && npm run start",
+    "watch:start": "tsc-watch --onSuccess \"npm run start\"",
+    "format": "prettier --write \"src/\"",
+    "lint": "eslint --fix ."
   },
-  "optionalDependencies": {
-    "@sapphire/cli": "^1.6.1"
+  "dependencies": {
+    "@sapphire/decorators": "^6.0.1",
+    "@sapphire/discord.js-utilities": "6.0.7",
+    "@sapphire/framework": "^4.4.3",
+    "@sapphire/plugin-logger": "^3.0.3",
+    "@sapphire/utilities": "^3.11.1",
+    "@skyra/env-utilities": "^1.2.0",
+    "colorette": "^2.0.20",
+    "discord.js": "^14.10.2"
   },
   "devDependencies": {
-    "prettier-config-mrdgh2821": "^3.0.0"
+    "prettier-config-mrdgh2821": "^3.0.0",
+    "@sapphire/cli": "^1.6.1",
+    "@sapphire/ts-config": "^4.0.0",
+    "@types/node": "^18.16.3",
+    "@types/ws": "^8.5.4",
+    "prettier": "^2.8.8",
+    "tsc-watch": "^6.0.4",
+    "typescript": "^5.0.4"
   }
 }
