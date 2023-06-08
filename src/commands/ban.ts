@@ -123,7 +123,7 @@ export default class UserCommand extends Command {
           files: [
             {
               name: "Ban Error.txt",
-              attachment: Buffer.from(error),
+              attachment: Buffer.from(JSON.stringify(error, null, 2)),
             },
           ],
         })
