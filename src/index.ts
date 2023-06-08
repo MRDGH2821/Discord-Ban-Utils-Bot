@@ -1,5 +1,5 @@
 import { LogLevel, SapphireClient } from "@sapphire/framework";
-import { GatewayIntentBits } from "discord.js";
+import { GatewayIntentBits, Partials } from "discord.js";
 import "./lib/setup";
 
 const client = new SapphireClient({
@@ -9,14 +9,18 @@ const client = new SapphireClient({
     level: LogLevel.Debug,
   },
   intents: [
+    GatewayIntentBits.AutoModerationConfiguration,
+    GatewayIntentBits.AutoModerationExecution,
     GatewayIntentBits.DirectMessages,
-    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildModeration,
     GatewayIntentBits.Guilds,
-    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildWebhooks,
   ],
   loadMessageCommandListeners: true,
+  partials: [Partials.GuildMember, Partials.User],
 });
-
+client.stores.registerPath(__dirname);
 const main = async () => {
   try {
     client.logger.info("Logging in");
