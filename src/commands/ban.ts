@@ -5,8 +5,8 @@ import {
   ApplicationCommandType,
   MessageFlags,
   PermissionFlagsBits,
-  bold,
 } from "discord.js";
+import { COLORS } from "../lib/Constants";
 
 @ApplyOptions<Command.Options>({
   name: "ban",
@@ -39,7 +39,7 @@ export default class UserCommand extends Command {
           autocomplete: true,
         },
         {
-          name: "delete-messages",
+          name: "delete_messages",
           description: "The number of days to delete messages for",
           type: ApplicationCommandOptionType.Integer,
           required: false,
@@ -56,13 +56,13 @@ export default class UserCommand extends Command {
     const val = interaction.options.getFocused();
 
     const possibleReasons = [
+      `Banned by ${interaction.user.tag} on ${new Date().toDateString()}`,
       "Spamming in chat",
       "Raiding the server",
       "Posted NSFW",
       "Harassing other users",
       "Advertising without permission",
       "Malicious Bot",
-      `Banned by ${interaction.user.tag} on ${new Date().toDateString()}`,
     ].filter((reason) => reason.toLowerCase().includes(val.toLowerCase()));
 
     return interaction.respond(
@@ -79,7 +79,7 @@ export default class UserCommand extends Command {
     const convict = interaction.options.getUser("user", true);
     const reason = interaction.options.getString("reason", true);
     const deleteMsgDays =
-      interaction.options.getInteger("delete-messages") || 7;
+      interaction.options.getInteger("delete_messages") || undefined;
 
     if (!interaction.guild) {
       return interaction.reply({
@@ -97,18 +97,19 @@ export default class UserCommand extends Command {
         interaction.reply({
           embeds: [
             {
-              title: bold("Ban Hammer Dropped!"),
+              title: "**Ban Hammer Dropped!**",
+              color: COLORS.hammerHandle,
               description: `\`${convict.tag}\` ${convict} is banned from this server.`,
               thumbnail: {
                 url: convict.displayAvatarURL(),
               },
               fields: [
                 {
-                  name: bold("Reason"),
+                  name: "**Reason**",
                   value: reason,
                 },
                 {
-                  name: bold("Convict ID"),
+                  name: "**Convict ID**",
                   value: convict.id,
                 },
               ],
@@ -117,16 +118,57 @@ export default class UserCommand extends Command {
           ],
         })
       )
-      .catch((error) =>
-        interaction.reply({
-          content: "An Error occurred while banning.",
-          files: [
+      .catch(async (error) => {
+        const canBan =
+          interaction.memberPermissions?.has(PermissionFlagsBits.BanMembers) ||
+          false;
+
+        const isBannable =
+          (await interaction.guild?.members
+            .fetch({
+              user: convict,
+            })
+            .then((convictMember) => convictMember.bannable)) ?? true;
+
+        return interaction.reply({
+          embeds: [
             {
-              name: "Ban Error.txt",
-              attachment: Buffer.from(JSON.stringify(error, null, 2)),
+              title: "**Cannot Ban...**",
+              description: `User ${convict} cannot be banned :grimacing:\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.`,
+              color: COLORS.error,
+              fields: [
+                {
+                  name: "**Checks**",
+                  value: `Can you ban? **\`${canBan}\`**\nUser bannable? **\`${isBannable}\`**`,
+                },
+                {
+                  name: "**Possible Solutions**",
+                  value: `Make sure you have ban permissions.\nAlso make sure that the bot role is above ${convict}'s highest role for this command to work.`,
+                },
+                {
+                  name: "**Inputs given**",
+                  value: `User: ${convict} \`${convict.tag}\`\nID: \`${convict.id}\`\nReason: ${reason}\nNumber of msgs (in days) to be deleted: ${deleteMsgDays}`,
+                },
+                {
+                  name: "**Error Dump**",
+                  value: `${error}`,
+                },
+              ],
             },
           ],
-        })
-      );
+          files: [
+            {
+              name: "Ban Error Dump.txt",
+              attachment: Buffer.from(
+                `${error}\n-------------------\n\n${JSON.stringify(
+                  error,
+                  null,
+                  2
+                )}`
+              ),
+            },
+          ],
+        });
+      });
   }
 }
