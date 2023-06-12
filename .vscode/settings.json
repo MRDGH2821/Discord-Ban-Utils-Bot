@@ -1,3 +1,3 @@
 {
-    "git.enableCommitSigning": true
+  "git.enableCommitSigning": true
 }

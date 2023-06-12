@@ -1,3 +1,3 @@
 module.exports = {
-  ...require("prettier-config-mrdgh2821"),
+  ...require('prettier-config-mrdgh2821'),
 };

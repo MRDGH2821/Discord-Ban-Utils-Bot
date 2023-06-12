@@ -7,4 +7,4 @@ export enum COLORS {
   freeze = 0x65919d,
 }
 
-export const EMPTY_STRING = "\u200b";
+export const EMPTY_STRING = '\u200b';

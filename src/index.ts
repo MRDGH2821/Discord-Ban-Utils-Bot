@@ -1,9 +1,9 @@
-import { LogLevel, SapphireClient } from "@sapphire/framework";
-import { GatewayIntentBits, Partials } from "discord.js";
-import "./lib/setup";
+import { LogLevel, SapphireClient } from '@sapphire/framework';
+import { GatewayIntentBits, Partials } from 'discord.js';
+import './lib/setup';
 
 const client = new SapphireClient({
-  defaultPrefix: "!",
+  defaultPrefix: '!',
   caseInsensitiveCommands: true,
   logger: {
     level: LogLevel.Debug,
@@ -23,9 +23,9 @@ const client = new SapphireClient({
 client.stores.registerPath(__dirname);
 const main = async () => {
   try {
-    client.logger.info("Logging in");
+    client.logger.info('Logging in');
     await client.login();
-    client.logger.info("Logged in");
+    client.logger.info('Logged in');
   } catch (error) {
     client.logger.fatal(error);
     client.destroy();
