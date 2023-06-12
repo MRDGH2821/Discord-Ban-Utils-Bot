@@ -65,3 +65,17 @@ export function logSuccessCommand(
     `${successLoggerData.shard} - ${successLoggerData.commandName} ${successLoggerData.author} ${successLoggerData.sentAt}`,
   );
 }
+
+/**
+ * truncates string to given length and appends "..."
+ * @function truncateString
+ * @param {string} str - input string
+ * @param {number} num - truncate length
+ * @returns {string} - truncated string
+ */
+export function truncateString(str: string, num: number): string {
+  if (str.length <= num) {
+    return str;
+  }
+  return `${str.slice(0, num)}...`;
+}
