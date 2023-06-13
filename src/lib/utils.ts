@@ -6,7 +6,10 @@ import {
   type MessageCommandSuccessPayload,
 } from '@sapphire/framework';
 import { cyan } from 'colorette';
-import type { APIUser, Guild, User } from 'discord.js';
+import type {
+  APIEmbed, APIUser, Guild, User,
+} from 'discord.js';
+import { COLORS } from './Constants';
 
 function getShardInfo(id: number) {
   return `[${cyan(id.toString())}]`;
@@ -78,4 +81,54 @@ export function truncateString(str: string, num: number): string {
     return str;
   }
   return `${str.slice(0, num)}...`;
+}
+
+type DebugEmbedOptions = {
+  title: string;
+  description: string;
+  error: Error;
+  checks: { question: string; result: boolean }[];
+  solution: string;
+  inputs: { name: string; value: string }[];
+};
+
+/**
+ * Creates a debug embed
+ * @function debugErrorEmbed
+ * @param options {DebugEmbedOptions} - options for the debug embed
+ * @returns {APIEmbed} - the debug embed
+ */
+export function debugErrorEmbed(options: DebugEmbedOptions): APIEmbed {
+  return {
+    title: options.title,
+    description: options.description,
+    color: COLORS.error,
+    fields: [
+      {
+        name: '**Checks**',
+        value: options.checks
+          .map((check) => `${check.question}? **\`${check.result}\`**`)
+          .join('\n'),
+      },
+      {
+        name: '**Possible Solutions**',
+        value: options.solution,
+      },
+      {
+        name: '**Inputs**',
+        value: options.inputs.map((input) => `${input.name}: ${input.value}`).join('\n'),
+      },
+      {
+        name: '**Error Message**',
+        value: options.error.message,
+      },
+    ],
+  };
+}
+
+export function debugErrorFile(error: Error) {
+  return {
+    name: 'Error Dump.txt',
+    attachment: Buffer.from(`${error}\n-------------------\n\n${JSON.stringify(error, null, 2)}`),
+  };
 }
