@@ -86,7 +86,7 @@ export function truncateString(str: string, num: number): string {
 type DebugEmbedOptions = {
   title: string;
   description: string;
-  error: Error;
+  error: Error | unknown;
   checks: { question: string; result: boolean }[];
   solution: string;
   inputs: { name: string; value: string }[];
@@ -120,7 +120,7 @@ export function debugErrorEmbed(options: DebugEmbedOptions): APIEmbed {
       },
       {
         name: '**Error Message**',
-        value: options.error.message,
+        value: `${options.error}`,
       },
     ],
   };
