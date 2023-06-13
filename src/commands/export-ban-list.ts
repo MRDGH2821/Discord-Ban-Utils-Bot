@@ -12,7 +12,7 @@ import {
 } from 'discord.js';
 import { createPaste } from 'dpaste-ts';
 import { COLORS } from '../lib/Constants';
-import { truncateString } from '../lib/utils';
+import { debugErrorEmbed, truncateString } from '../lib/utils';
 
 @ApplyOptions<Command.Options>({
   name: 'export-ban-list',
@@ -86,34 +86,59 @@ export default class UserCommand extends Command {
     };
 
     await interaction.reply({ embeds: [statusEmbed] });
+    try {
+      const links = await this.exportBanList(includeReason, bans, interaction.guild.name);
 
-    const links = await this.exportBanList(includeReason, bans, interaction.guild.name);
+      const resultEmbed: APIEmbed = {
+        title: '**Ban List Export Success!**',
+        color: COLORS.whiteGray,
+        fields: [
+          {
+            name: '**Number of parts**',
+            value: `${links.length}`,
+          },
+          {
+            name: '**Links**',
+            value: links.join('\n'),
+          },
+        ],
+        timestamp: new Date().toISOString(),
+      };
 
-    const resultEmbed: APIEmbed = {
-      title: '**Ban List Export Success!**',
-      color: COLORS.whiteGray,
-      fields: [
-        {
-          name: '**Number of parts**',
-          value: `${links.length}`,
-        },
-        {
-          name: '**Links**',
-          value: links.join('\n'),
-        },
-      ],
-      timestamp: new Date().toISOString(),
-    };
-
-    return interaction.reply({
-      embeds: [resultEmbed],
-      files: [
-        {
-          attachment: Buffer.from(links.toString()),
-          name: `Ban List of ${interaction.guild.name}.txt`,
-          description: 'Ban list links',
-        },
-      ],
-    });
+      return await interaction.reply({
+        embeds: [resultEmbed],
+        files: [
+          {
+            attachment: Buffer.from(links.toString()),
+            name: `Ban List of ${interaction.guild.name}.txt`,
+            description: 'Ban list links',
+          },
+        ],
+      });
+    } catch (err) {
+      this.container.logger.error(err);
+      return interaction.reply({
+        embeds: [
+          debugErrorEmbed({
+            title: 'Error while exporting ban list',
+            description: 'An error occurred while exporting ban list',
+            error: err,
+            checks: [
+              {
+                question: 'None',
+                result: true,
+              },
+            ],
+            inputs: [
+              {
+                name: 'Include Reason',
+                value: `${includeReason}`,
+              },
+            ],
+            solution: 'Please wait for sometime before trying again.',
+          }),
+        ],
+      });
+    }
   }
 }
