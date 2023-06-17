@@ -12,7 +12,7 @@ import { createPaste, getRawPaste } from 'dpaste-ts';
 import { sequentialPromises } from 'yaspr';
 import { COLORS } from '../lib/Constants';
 import type { BanEntityWithReason } from '../lib/typeDefs';
-import { truncateString } from '../lib/utils';
+import { fetchAllBans, truncateString } from '../lib/utils';
 
 @ApplyOptions<Command.Options>({
   name: 'import-ban-list',
@@ -126,7 +126,7 @@ export default class UserCommand extends Command {
 
     const successBans = new Set<BanEntityWithReason>();
     const failedBans = new Set<BanEntityWithReason>();
-    const bansInGuild = new Set((await interaction.guild.bans.fetch()).keys());
+    const bansInGuild = new Set((await fetchAllBans(interaction.guild)).keys());
 
     this.container.logger.debug(bansInGuild.size);
     const uniqueList = list.filter((ban) => !bansInGuild.has(ban.id));
