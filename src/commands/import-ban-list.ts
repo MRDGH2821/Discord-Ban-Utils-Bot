@@ -117,17 +117,17 @@ export default class UserCommand extends Command {
       ],
     });
 
-    const successBans: BanEntityWithReason[] = [];
-    const failedBans: BanEntityWithReason[] = [];
+    const successBans = new Set<BanEntityWithReason>();
+    const failedBans = new Set<BanEntityWithReason>();
     const performBan = async (ban: BanEntityWithReason) => {
       await retry(
         async () => interaction.guild.members
           .ban(ban.id, { reason: ban.reason || defaultReason })
           .then(() => {
-            successBans.push(ban);
+            successBans.add(ban);
           })
           .catch(() => {
-            failedBans.push(ban);
+            failedBans.add(ban);
             return sleepSync(1000);
           }),
         3,
@@ -145,11 +145,11 @@ export default class UserCommand extends Command {
       fields: [
         {
           name: 'Successful bans',
-          value: successBans.length.toString(),
+          value: successBans.size.toString(),
         },
         {
           name: 'Failed bans',
-          value: failedBans.length.toString(),
+          value: failedBans.size.toString(),
         },
         {
           name: 'Total bans',
@@ -165,7 +165,7 @@ export default class UserCommand extends Command {
     return interaction.editReply({
       embeds: [banStats],
       components:
-        failedBans.length > 0
+        failedBans.size > 0
           ? [
             {
               type: ComponentType.ActionRow,
