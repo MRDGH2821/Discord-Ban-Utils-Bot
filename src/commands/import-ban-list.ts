@@ -49,7 +49,7 @@ export default class UserCommand extends Command {
         ephemeral: true,
       });
     }
-
+    await interaction.deferReply();
     const link = interaction.options.getString('link', true);
 
     const data = await getRawPaste(link);
@@ -82,10 +82,12 @@ export default class UserCommand extends Command {
     if (processedList.isOk()) {
       return this.initiateBans(interaction, processedList.value, defaultReason);
     }
-
-    return interaction.reply({
+    this.container.logger.debug({
+      processedListWithReason: processedListWithReason.isOk(),
+      processedList: processedList.isOk(),
+    });
+    return interaction.editReply({
       content: 'Invalid ban list',
-      ephemeral: true,
     });
   }
 
@@ -97,9 +99,8 @@ export default class UserCommand extends Command {
   ) {
     // this.container.logger.debug(JSON.stringify(list));
     if (!interaction.guild || !interaction.inGuild() || !interaction.inCachedGuild()) {
-      return interaction.reply({
+      return interaction.editReply({
         content: 'This command can only be used in a guild.',
-        ephemeral: true,
       });
     }
     this.container.logger.debug('Starting bans in:', interaction.guild.name);
@@ -127,6 +128,7 @@ export default class UserCommand extends Command {
     const failedBans = new Set<BanEntityWithReason>();
     const bansInGuild = new Set((await interaction.guild.bans.fetch()).keys());
 
+    this.container.logger.debug(bansInGuild.size);
     const uniqueList = list.filter((ban) => !bansInGuild.has(ban.id));
     const performBan = async (ban: BanEntityWithReason) => {
       await retry(
@@ -152,13 +154,17 @@ export default class UserCommand extends Command {
     }));
     this.container.logger.debug(
       'Ban stats:\n',
-      JSON.stringify({
-        Server: interaction.guild.name,
-        Success: successBans.size,
-        Failed: failedBans.size,
-        Unique: uniqueList.length,
-        Total: list.length,
-      }),
+      JSON.stringify(
+        {
+          Server: interaction.guild.name,
+          Success: successBans.size,
+          Failed: failedBans.size,
+          Unique: uniqueList.length,
+          Total: list.length,
+        },
+        null,
+        2,
+      ),
     );
     return interaction.editReply({
       embeds: [
