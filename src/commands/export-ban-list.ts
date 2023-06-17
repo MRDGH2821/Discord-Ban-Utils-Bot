@@ -104,6 +104,11 @@ export default class UserCommand extends Command {
 
       const resultEmbed: APIEmbed = {
         title: '**Ban List Export Success!**',
+        description: `Total Bans Found: ${bans.size}\n\nEach link contains ${
+          includeReason ? 350 : 1000
+        } bans.\nExcept the last one, which contains ${
+          includeReason ? bans.size % 350 : bans.size % 1000
+        } bans.`,
         color: COLORS.whiteGray,
         fields: [
           {
