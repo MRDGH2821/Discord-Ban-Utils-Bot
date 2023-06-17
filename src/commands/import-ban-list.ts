@@ -54,8 +54,14 @@ export default class UserCommand extends Command {
     const link = interaction.options.getString('link', true);
 
     const data = await getRawPaste(link);
-
-    const bans = JSON.parse(data) as BanType[];
+    const bans = () => {
+      try {
+        return JSON.parse(data);
+      } catch (e) {
+        const ids = data.split(/(?<id>\d{17,20})/gimu).map((id) => id.trim());
+        return Array.from(new Set(ids));
+      }
+    };
     const defaultReason = `Imported by ${interaction.user.username} from ${link}`;
     this.container.logger.debug(data);
     const banListWithReason = s.array(
@@ -64,12 +70,12 @@ export default class UserCommand extends Command {
         reason: s.string.default(defaultReason),
       }),
     );
-    const processedListWithReason = banListWithReason.run(bans);
+    const processedListWithReason = banListWithReason.run(bans());
 
     const banList = s
       .array(s.string)
       .transform((value) => value.map((v) => ({ id: v, reason: defaultReason })));
-    const processedList = banList.run(bans);
+    const processedList = banList.run(bans());
 
     if (processedListWithReason.isOk()) {
       return this.initiateBans(interaction, processedListWithReason.value, defaultReason);
