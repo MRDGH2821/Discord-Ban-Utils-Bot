@@ -63,16 +63,13 @@ export default class UserCommand extends Command {
       .transform((value) => value.map((v) => ({ id: v, reason: defaultReason })));
     const processedList = banList.run(bans);
 
-    const validatedList: BanEntityWithReason[] = [];
-
     if (processedListWithReason.isOk()) {
-      validatedList.concat(processedListWithReason.value);
-      return this.initiateBans(interaction, validatedList, defaultReason);
+      return this.initiateBans(interaction, processedListWithReason.value, defaultReason);
     }
     if (processedList.isOk()) {
-      validatedList.concat(processedList.value);
-      return this.initiateBans(interaction, validatedList, defaultReason);
+      return this.initiateBans(interaction, processedList.value, defaultReason);
     }
+
     return interaction.reply({
       content: 'Invalid ban list',
       ephemeral: true,
