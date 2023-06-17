@@ -2,10 +2,17 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
 import { s } from '@sapphire/shapeshift';
 import { retry, sleepSync } from '@sapphire/utilities';
-import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
-import { getRawPaste } from 'dpaste-ts';
+import {
+  ApplicationCommandOptionType,
+  ButtonStyle,
+  ComponentType,
+  PermissionFlagsBits,
+  type APIEmbed,
+} from 'discord.js';
+import { createPaste, getRawPaste } from 'dpaste-ts';
 import { sequentialPromises } from 'yaspr';
 import type { BanEntityWithReason, BanType } from '../lib/typeDefs';
+import { truncateString } from '../lib/utils';
 
 @ApplyOptions<Command.Options>({
   name: 'import-ban-list',
@@ -49,7 +56,7 @@ export default class UserCommand extends Command {
 
     const bans = JSON.parse(data) as BanType[];
     const defaultReason = `Imported by ${interaction.user.username} from ${link}`;
-
+    this.container.logger.debug(data);
     const banListWithReason = s.array(
       s.object({
         id: s.string,
@@ -82,6 +89,7 @@ export default class UserCommand extends Command {
     list: BanEntityWithReason[],
     defaultReason: string,
   ) {
+    this.container.logger.debug(list);
     if (!interaction.guild || !interaction.inGuild() || !interaction.inCachedGuild()) {
       return interaction.reply({
         content: 'This command can only be used in a guild.',
@@ -128,6 +136,50 @@ export default class UserCommand extends Command {
       });
     };
 
-    return sequentialPromises(list, performBan);
+    const banStats: APIEmbed = {
+      title: 'Ban list imported!',
+      description: 'Ban statistics:',
+      fields: [
+        {
+          name: 'Successful bans',
+          value: successBans.length.toString(),
+        },
+        {
+          name: 'Failed bans',
+          value: failedBans.length.toString(),
+        },
+        {
+          name: 'Total bans',
+          value: list.length.toString(),
+        },
+      ],
+    };
+
+    await sequentialPromises(list, performBan).catch(async (err) => interaction.editReply({
+      content: `An error occurred while importing ban list: ${err.message}`,
+    }));
+
+    return interaction.editReply({
+      embeds: [banStats],
+      components:
+        failedBans.length > 0
+          ? [
+            {
+              type: ComponentType.ActionRow,
+              components: [
+                {
+                  type: ComponentType.Button,
+                  label: 'Unsuccessful ban list link',
+                  style: ButtonStyle.Link,
+                  url: await createPaste({
+                    content: JSON.stringify(failedBans, null, 2),
+                    title: `[FAILED] ${truncateString(interaction.guild.name, 10)} Ban List`,
+                  }),
+                },
+              ],
+            },
+          ]
+          : undefined,
+    });
   }
 }
