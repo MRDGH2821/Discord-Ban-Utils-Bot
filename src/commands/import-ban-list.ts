@@ -58,7 +58,9 @@ export default class UserCommand extends Command {
     );
     const processedListWithReason = banListWithReason.run(bans);
 
-    const banList = s.array(s.string);
+    const banList = s
+      .array(s.string)
+      .transform((value) => value.map((v) => ({ id: v, reason: defaultReason })));
     const processedList = banList.run(bans);
 
     const validatedList: BanEntityWithReason[] = [];
@@ -68,9 +70,7 @@ export default class UserCommand extends Command {
       return this.initiateBans(interaction, validatedList, defaultReason);
     }
     if (processedList.isOk()) {
-      processedList.value.forEach((ban) => {
-        validatedList.push({ id: ban, reason: defaultReason });
-      });
+      validatedList.concat(processedList.value);
       return this.initiateBans(interaction, validatedList, defaultReason);
     }
     return interaction.reply({
