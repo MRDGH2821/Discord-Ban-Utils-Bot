@@ -44,7 +44,7 @@ export default class UserCommand extends Command {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private async banListLink<T>(array: T, title: string) {
+  private async banListLink(array: Array<any>, title: string) {
     return createPaste({
       content: JSON.stringify(array),
       title,
