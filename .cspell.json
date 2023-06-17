@@ -52,6 +52,7 @@
     "paren",
     "parens",
     "Parens",
+    "pastebin",
     "plusplus",
     "postpretty",
     "predev",
@@ -61,6 +62,7 @@
     "stroustrup",
     "tsbuildinfo",
     "unban",
-    "Unban"
+    "Unban",
+    "yaspr"
   ]
 }
