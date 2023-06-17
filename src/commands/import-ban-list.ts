@@ -92,6 +92,12 @@ export default class UserCommand extends Command {
       await interaction.deferReply();
     }
 
+    if (list.length === 0) {
+      return interaction.editReply({
+        content: 'No bans found in the list',
+      });
+    }
+
     await interaction.editReply({
       embeds: [
         {
