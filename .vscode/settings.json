@@ -1,5 +1,10 @@
 {
   "git.enableCommitSigning": true,
   "prettier.prettierPath": "./node_modules/prettier",
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "editor.codeActionsOnSave": {
+    "source.formatDocument": true,
+    "source.organizeImports": true,
+    "source.fixAll.eslint": true
+  }
 }
