@@ -120,7 +120,7 @@ export function debugErrorEmbed(options: DebugEmbedOptions): APIEmbed {
       },
       {
         name: '**Error Message**',
-        value: `${options.error}`,
+        value: `${options.error}\n\n${JSON.stringify(options.error, null, 2)}}`,
       },
     ],
   };
