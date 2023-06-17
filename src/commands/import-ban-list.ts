@@ -125,6 +125,9 @@ export default class UserCommand extends Command {
 
     const successBans = new Set<BanEntityWithReason>();
     const failedBans = new Set<BanEntityWithReason>();
+    const bansInGuild = new Set((await interaction.guild.bans.fetch()).keys());
+
+    const uniqueList = list.filter((ban) => !bansInGuild.has(ban.id));
     const performBan = async (ban: BanEntityWithReason) => {
       await retry(
         async () => interaction.guild.members
@@ -140,36 +143,40 @@ export default class UserCommand extends Command {
       );
 
       return interaction.editReply({
-        content: `(${list.findIndex((b) => b.id === ban.id) + 1}/${list.length})`,
+        content: `(${successBans.size + failedBans.size}/${uniqueList.length})`,
       });
     };
 
-    const banStats: APIEmbed = {
+    await sequentialPromises(uniqueList, performBan).catch(async (err) => interaction.editReply({
+      content: `An error occurred while importing ban list: ${err.message}`,
+    }));
+
+    return interaction.editReply({
+      embeds: [
+        {
       title: 'Ban list imported!',
       description: 'Ban statistics:',
       color: COLORS.hammerHandle,
       fields: [
         {
           name: 'Successful bans',
-          value: successBans.size.toString(),
+              value: `${successBans.size}`,
         },
         {
           name: 'Failed bans',
-          value: failedBans.size.toString(),
+              value: `${failedBans.size}`,
+            },
+            {
+              name: 'Unique Bans',
+              value: `${uniqueList.length}`,
         },
         {
           name: 'Total bans',
-          value: list.length.toString(),
+              value: `${list.length}`,
         },
       ],
-    };
-
-    await sequentialPromises(list, performBan).catch(async (err) => interaction.editReply({
-      content: `An error occurred while importing ban list: ${err.message}`,
-    }));
-
-    return interaction.editReply({
-      embeds: [banStats],
+        },
+      ],
       components:
         failedBans.size > 0
           ? [
@@ -181,7 +188,7 @@ export default class UserCommand extends Command {
                   label: 'Unsuccessful ban list link',
                   style: ButtonStyle.Link,
                   url: await createPaste({
-                    content: JSON.stringify(failedBans, null, 2),
+                    content: JSON.stringify(Array.from(failedBans), null, 2),
                     title: `[FAILED] ${truncateString(interaction.guild.name, 10)} Ban List`,
                   }),
                 },
