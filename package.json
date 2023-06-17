@@ -44,10 +44,12 @@
     "@sapphire/discord.js-utilities": "^7.0.0",
     "@sapphire/framework": "^4.4.4",
     "@sapphire/plugin-logger": "^3.0.4",
+    "@sapphire/shapeshift": "^3.9.2",
     "@sapphire/utilities": "^3.12.0",
     "colorette": "^2.0.20",
     "discord.js": "^14.11.0",
-    "dpaste-ts": "^2.0.0"
+    "dpaste-ts": "^2.0.0",
+    "yaspr": "^1.0.2"
   },
   "devDependencies": {
     "@sapphire/cli": "^1.6.1",
@@ -56,7 +58,7 @@
     "@types/ws": "^8.5.5",
     "@typescript-eslint/eslint-plugin": "^5.59.11",
     "@typescript-eslint/parser": "^5.59.11",
-    "eslint": "^8.42.0",
+    "eslint": "^8.43.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "prettier": "^2.8.8",
