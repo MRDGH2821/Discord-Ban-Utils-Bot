@@ -11,8 +11,9 @@ import {
   type APIEmbed,
 } from 'discord.js';
 import { createPaste } from 'dpaste-ts';
+import { sequentialPromises } from 'yaspr';
 import { COLORS } from '../lib/Constants';
-import { debugErrorEmbed, truncateString } from '../lib/utils';
+import { debugErrorEmbed, fetchAllBans, truncateString } from '../lib/utils';
 
 @ApplyOptions<Command.Options>({
   name: 'export-ban-list',
@@ -62,9 +63,17 @@ export default class UserCommand extends Command {
 
     const chunks = includeReason ? chunk(banListWithReason, 350) : chunk(banList, 1000);
 
-    const links = chunks.map(async (list, index) => this.banListLink(list, `${truncateString(guildName, 10)} Ban List [Part ${index + 1}]`));
+    let idx = 1;
+    const getLink = async (list: (typeof chunks)[0]) => {
+      const link = await this.banListLink(
+        list,
+        `${truncateString(guildName, 10)} Ban List [${idx}/${chunks.length}]`,
+      );
+      idx += 1;
+      return link;
+    };
 
-    return Promise.all(links);
+    return sequentialPromises(chunks, getLink);
   }
 
   public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
@@ -78,7 +87,9 @@ export default class UserCommand extends Command {
       });
     }
 
-    const bans = await interaction.guild.bans.fetch();
+    await interaction.deferReply();
+
+    const bans = await fetchAllBans(interaction.guild);
 
     const statusEmbed: APIEmbed = {
       title: '**Exporting Ban List**',
@@ -87,7 +98,7 @@ export default class UserCommand extends Command {
       timestamp: new Date().toISOString(),
     };
 
-    await interaction.reply({ embeds: [statusEmbed] });
+    await interaction.editReply({ embeds: [statusEmbed] });
     try {
       const links = await this.exportBanList(includeReason, bans, interaction.guild.name);
 
@@ -111,7 +122,7 @@ export default class UserCommand extends Command {
         embeds: [resultEmbed],
         files: [
           {
-            attachment: Buffer.from(links.toString()),
+            attachment: Buffer.from(links.join('\n')),
             name: `Ban List of ${interaction.guild.name}.txt`,
             description: 'Ban list links',
           },
