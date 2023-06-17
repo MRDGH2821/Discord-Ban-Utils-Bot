@@ -68,7 +68,7 @@ export default class UserCommand extends Command {
   }
 
   public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-    const includeReason = interaction.options.getBoolean('include-reason') || true;
+    const includeReason = !!interaction.options.getBoolean('include-reason');
     if (!interaction.guild) {
       return interaction.reply({
         content: 'Please use this command inside server',
