@@ -7,12 +7,11 @@ import {
   ButtonStyle,
   ComponentType,
   PermissionFlagsBits,
-  type APIEmbed,
 } from 'discord.js';
 import { createPaste, getRawPaste } from 'dpaste-ts';
 import { sequentialPromises } from 'yaspr';
 import { COLORS } from '../lib/Constants';
-import type { BanEntityWithReason, BanType } from '../lib/typeDefs';
+import type { BanEntityWithReason } from '../lib/typeDefs';
 import { truncateString } from '../lib/utils';
 
 @ApplyOptions<Command.Options>({
@@ -63,7 +62,7 @@ export default class UserCommand extends Command {
       }
     };
     const defaultReason = `Imported by ${interaction.user.username} from ${link}`;
-    this.container.logger.debug(data);
+    // this.container.logger.debug(data);
     const banListWithReason = s.array(
       s.object({
         id: s.string,
@@ -96,13 +95,14 @@ export default class UserCommand extends Command {
     list: BanEntityWithReason[],
     defaultReason: string,
   ) {
-    this.container.logger.debug(list);
+    // this.container.logger.debug(JSON.stringify(list));
     if (!interaction.guild || !interaction.inGuild() || !interaction.inCachedGuild()) {
       return interaction.reply({
         content: 'This command can only be used in a guild.',
         ephemeral: true,
       });
     }
+    this.container.logger.debug('Starting bans in:', interaction.guild.name);
     if (!interaction.deferred) {
       await interaction.deferReply();
     }
@@ -150,31 +150,40 @@ export default class UserCommand extends Command {
     await sequentialPromises(uniqueList, performBan).catch(async (err) => interaction.editReply({
       content: `An error occurred while importing ban list: ${err.message}`,
     }));
-
+    this.container.logger.debug(
+      'Ban stats:\n',
+      JSON.stringify({
+        Server: interaction.guild.name,
+        Success: successBans.size,
+        Failed: failedBans.size,
+        Unique: uniqueList.length,
+        Total: list.length,
+      }),
+    );
     return interaction.editReply({
       embeds: [
         {
-      title: 'Ban list imported!',
-      description: 'Ban statistics:',
-      color: COLORS.hammerHandle,
-      fields: [
-        {
-          name: 'Successful bans',
+          title: 'Ban list imported!',
+          description: 'Ban statistics:',
+          color: COLORS.hammerHandle,
+          fields: [
+            {
+              name: 'Successful bans',
               value: `${successBans.size}`,
-        },
-        {
-          name: 'Failed bans',
+            },
+            {
+              name: 'Failed bans',
               value: `${failedBans.size}`,
             },
             {
               name: 'Unique Bans',
               value: `${uniqueList.length}`,
-        },
-        {
-          name: 'Total bans',
+            },
+            {
+              name: 'Total bans',
               value: `${list.length}`,
-        },
-      ],
+            },
+          ],
         },
       ],
       components:
