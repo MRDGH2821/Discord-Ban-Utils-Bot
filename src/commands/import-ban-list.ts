@@ -128,7 +128,7 @@ export default class UserCommand extends Command {
     const failedBans = new Set<BanEntityWithReason>();
     const bansInGuild = new Set((await fetchAllBans(interaction.guild)).keys());
 
-    this.container.logger.debug(bansInGuild.size);
+    // this.container.logger.debug(bansInGuild.size);
     const uniqueList = list.filter((ban) => !bansInGuild.has(ban.id));
     const performBan = async (ban: BanEntityWithReason) => {
       await retry(
