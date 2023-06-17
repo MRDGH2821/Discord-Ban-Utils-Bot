@@ -11,6 +11,7 @@ import {
 } from 'discord.js';
 import { createPaste, getRawPaste } from 'dpaste-ts';
 import { sequentialPromises } from 'yaspr';
+import { COLORS } from '../lib/Constants';
 import type { BanEntityWithReason, BanType } from '../lib/typeDefs';
 import { truncateString } from '../lib/utils';
 
@@ -111,6 +112,7 @@ export default class UserCommand extends Command {
         {
           title: 'Importing ban list',
           description: `Found ${list.length} bans`,
+          color: COLORS.whiteGray,
         },
       ],
     });
@@ -139,6 +141,7 @@ export default class UserCommand extends Command {
     const banStats: APIEmbed = {
       title: 'Ban list imported!',
       description: 'Ban statistics:',
+      color: COLORS.hammerHandle,
       fields: [
         {
           name: 'Successful bans',
