@@ -105,7 +105,7 @@ export default class UserCommand extends Command {
         timestamp: new Date().toISOString(),
       };
 
-      return await interaction.reply({
+      return await interaction.editReply({
         embeds: [resultEmbed],
         files: [
           {
@@ -117,7 +117,7 @@ export default class UserCommand extends Command {
       });
     } catch (err) {
       this.container.logger.error(err);
-      return interaction.reply({
+      return interaction.editReply({
         embeds: [
           debugErrorEmbed({
             title: 'Error while exporting ban list',
