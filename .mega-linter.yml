@@ -20,10 +20,12 @@ LINTER_RULES_PATH: .
 PRINT_ALPACA: false
 
 PRE_COMMANDS:
-  - command: 'npm ci'
+  - command: 'npm install'
     cwd: 'workspace'
 POST_COMMANDS:
-  - command: 'npm run pretty'
+  - command: 'npm run format'
+    cwd: 'workspace'
+  - command: 'npm run lint'
     cwd: 'workspace'
 IGNORE_GITIGNORED_FILES: true
 
