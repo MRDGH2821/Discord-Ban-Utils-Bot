@@ -1,19 +1,16 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
-import { chunk } from '@sapphire/utilities';
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
-  Collection,
-  GuildBan,
+  ButtonStyle,
+  ComponentType,
   MessageFlags,
   PermissionFlagsBits,
   type APIEmbed,
 } from 'discord.js';
-import { createPaste } from 'dpaste-ts';
-import { sequentialPromises } from 'yaspr';
 import { COLORS } from '../lib/Constants';
-import { debugErrorEmbed, fetchAllBans, truncateString } from '../lib/utils';
+import type { BanExportOptions } from '../lib/typeDefs';
 
 @ApplyOptions<Command.Options>({
   name: 'export-ban-list',
@@ -44,119 +41,84 @@ export default class UserCommand extends Command {
     });
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  private async banListLink(array: Array<any>, title: string) {
-    return createPaste({
-      content: JSON.stringify(array),
-      title,
-      syntax: 'text',
-    });
-  }
-
-  private async exportBanList(
-    includeReason: boolean,
-    bans: Collection<string, GuildBan>,
-    guildName: string,
-  ) {
-    const banListWithReason = bans.map((ban) => ({ id: ban.user.id, reason: ban.reason }));
-    const banList = bans.map((ban) => ban.user.id);
-
-    const chunks = includeReason ? chunk(banListWithReason, 350) : chunk(banList, 1000);
-
-    let idx = 1;
-    const getLink = async (list: (typeof chunks)[0]) => {
-      const link = await this.banListLink(
-        list,
-        `${truncateString(guildName, 10)} Ban List [${idx}/${chunks.length}]`,
-      );
-      idx += 1;
-      return link;
-    };
-
-    return sequentialPromises(chunks, getLink);
-  }
-
   public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
     const reasonFlag = interaction.options.getBoolean('include-reason');
     const includeReason = reasonFlag === null ? true : reasonFlag;
 
-    if (!interaction.guild) {
+    if (!interaction.guild || !interaction.inGuild() || !interaction.inCachedGuild()) {
       return interaction.reply({
         content: 'Please use this command inside server',
         flags: MessageFlags.Ephemeral,
       });
     }
 
-    await interaction.deferReply();
-
-    const bans = await fetchAllBans(interaction.guild);
-
-    const statusEmbed: APIEmbed = {
-      title: '**Exporting Ban List**',
-      color: COLORS.whiteGray,
-      description: `Found ${bans.size} bans.\nIncluding Reason?: ${includeReason}`,
-      timestamp: new Date().toISOString(),
-    };
-
-    await interaction.editReply({ embeds: [statusEmbed] });
-    try {
-      const links = await this.exportBanList(includeReason, bans, interaction.guild.name);
-
-      const resultEmbed: APIEmbed = {
-        title: '**Ban List Export Success!**',
-        description: `Total Bans Found: ${bans.size}\n\nEach link contains ${
-          includeReason ? 350 : 1000
-        } bans.\nExcept the last one, which contains ${
-          includeReason ? bans.size % 350 : bans.size % 1000
-        } bans.`,
-        color: COLORS.whiteGray,
-        fields: [
-          {
-            name: '**Number of parts**',
-            value: `${links.length}`,
-          },
-          {
-            name: '**Links**',
-            value: links.join('\n'),
-          },
-        ],
-        timestamp: new Date().toISOString(),
-      };
-
-      return await interaction.editReply({
-        embeds: [resultEmbed],
-        files: [
-          {
-            attachment: Buffer.from(links.join('\n')),
-            name: `Ban List of ${interaction.guild.name}.txt`,
-            description: 'Ban list links',
-          },
-        ],
-      });
-    } catch (err) {
-      this.container.logger.error(err);
-      return interaction.editReply({
+    return interaction
+      .reply({
         embeds: [
-          debugErrorEmbed({
-            title: 'Error while exporting ban list',
-            description: 'An error occurred while exporting ban list',
-            error: err,
-            checks: [
-              {
-                question: 'None',
-                result: true,
-              },
-            ],
-            inputs: [
-              {
-                name: 'Include Reason',
-                value: `${includeReason}`,
-              },
-            ],
-            solution: 'Please wait for sometime before trying again.',
-          }),
+          {
+            title: '**Confirm Export**',
+            description:
+              'Exporting a ban list may take a long time and cannot be cancelled once started. \nAre you sure you want to export?',
+          },
         ],
+        components: [
+          {
+            type: ComponentType.ActionRow,
+            components: [
+              {
+                type: ComponentType.Button,
+                style: ButtonStyle.Success,
+                label: 'Yes',
+                custom_id: 'export-ban-list-yes',
+              },
+              {
+                type: ComponentType.Button,
+                style: ButtonStyle.Danger,
+                label: 'No',
+                custom_id: 'export-ban-list-no',
+              },
+            ],
+          },
+        ],
+      })
+      .then((itxResponse) => itxResponse.awaitMessageComponent({
+        filter(btx) {
+          return btx.user.id === interaction.user.id;
+        },
+        componentType: ComponentType.Button,
+        dispose: true,
+      }))
+      .then((btx) => {
+        if (btx.customId === 'export-ban-list-yes') {
+          const statusEmbed: APIEmbed = {
+            title: '**Ban List export Scheduled**',
+            color: COLORS.whiteGray,
+            description:
+              "Ban list export is scheduled. You will be notified in this channel when it's done.",
+            timestamp: new Date().toISOString(),
+          };
+
+          const exportBanOptions: BanExportOptions = {
+            sourceGuild: btx.guild,
+            includeReason,
+            notifyInChannel: btx.message.channel,
+            requesterUser: interaction.user,
+            sourceMessage: btx.message,
+          };
+
+          interaction.client.emit('exportBanList', exportBanOptions);
+
+          return interaction.editReply({ embeds: [statusEmbed] });
+        }
+        return btx.editReply({
+          embeds: [
+            {
+              title: '**Export Cancelled**',
+              color: COLORS.whiteGray,
+            },
+          ],
+          components: [],
+        });
       });
-    }
   }
 }
