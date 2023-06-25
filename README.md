@@ -32,8 +32,8 @@ For more info check [here](./lib/firebase-service-acc/README.md)
 
 ## Hosting
 
-1.  Clone this repo.
-2.  Create a file named `.env.prod` & put the given text -
+1. Clone this repo.
+2. Create a file named `.env.prod` & put the given text -
 
 ```environment
 TOKEN = insert bot token
@@ -43,8 +43,8 @@ GUILDID = insert one of your server's ID
 
 You can also copy [`.env.sample`](./.env.sample) file and rename it to `.env.prod`.
 
-3.  Install dependencies by using `npm install`.
-4.  Use `npm start` to run the bot code.
+3. Install dependencies by using `npm install`.
+4. Use `npm start` to run the bot code.
 
 For more info click [here](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot) & [here](https://discordjs.guide/creating-your-bot/)
 
@@ -74,7 +74,7 @@ Feel free to make your own improved version of the bot!
 Made using Canva.
 See [here](https://www.canva.com/design/DAEsnh6KHfM/DTA-pMkWSqigGIgLA9Y39w/view?utm_content=DAEsnh6KHfM&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink) in high resolution.
 
-## Note from developer:
+## Note from developer
 
 ~~I still think that this bot is far from crash proof. I have done enough testing, but still some edge cases might be left out.~~
 Bot has become nearly crash proof. And will also show what the error was.
