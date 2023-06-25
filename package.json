@@ -1,14 +1,25 @@
 {
   "name": "discord-ban-utils-bot",
-  "description": "Discord Ban Utilities for Mutual Servers!",
   "version": "3.0.4",
-  "type": "commonjs",
+  "private": true,
+  "description": "Discord Ban Utilities for Mutual Servers!",
+  "keywords": [
+    "discord",
+    "ban",
+    "utilities"
+  ],
+  "homepage": "https://github.com/MRDGH2821/Discord-Ban-Utils-Bot#readme",
+  "bugs": {
+    "url": "https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MRDGH2821/Discord-Ban-Utils-Bot.git"
+  },
+  "license": "MIT",
   "author": {
     "name": "MRDGH2821",
     "url": "https://github.com/MRDGH2821"
-  },
-  "bugs": {
-    "url": "https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues"
   },
   "contributors": [
     {
@@ -16,29 +27,17 @@
       "url": "https://github.com/AroLeaf"
     }
   ],
-  "homepage": "https://github.com/MRDGH2821/Discord-Ban-Utils-Bot#readme",
-  "keywords": [
-    "discord",
-    "ban",
-    "utilities"
-  ],
-  "license": "MIT",
-  "private": true,
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MRDGH2821/Discord-Ban-Utils-Bot.git"
-  },
   "scripts": {
-    "sapphire": "sapphire",
-    "generate": "sapphire generate",
     "build": "tsc",
-    "watch": "tsc -w",
-    "start": "node dist/index.js",
     "dev": "npm run build && npm run dev:start",
-    "dev:start":"node -r dotenv/config dist/index.js",
-    "watch:start": "tsc-watch --onSuccess \"npm run dev:start\"",
+    "dev:start": "node -r dotenv/config dist/index.js",
     "format": "prettier --write .",
-    "lint": "eslint --fix . --ignore-path .gitignore"
+    "generate": "sapphire generate",
+    "lint": "eslint --fix . --ignore-path .gitignore",
+    "sapphire": "sapphire",
+    "start": "node dist/index.js",
+    "watch": "tsc -w",
+    "watch:start": "tsc-watch --onSuccess \"npm run dev:start\""
   },
   "dependencies": {
     "@sapphire/decorators": "^6.0.1",
@@ -55,17 +54,18 @@
   "devDependencies": {
     "@sapphire/cli": "^1.6.1",
     "@sapphire/ts-config": "^4.0.0",
-    "@types/node": "^18.16.3",
+    "@types/node": "^18.16.18",
     "@types/ws": "^8.5.5",
-    "@typescript-eslint/eslint-plugin": "^5.59.11",
-    "@typescript-eslint/parser": "^5.59.11",
-    "dotenv": "^16.3.0",
+    "@typescript-eslint/eslint-plugin": "^5.60.0",
+    "@typescript-eslint/parser": "^5.60.0",
+    "dotenv": "^16.3.1",
     "eslint": "^8.43.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "prettier": "^2.8.8",
     "prettier-config-mrdgh2821": "^3.0.0",
     "prettier-plugin-organize-imports": "^3.2.2",
+    "prettier-plugin-packagejson": "^2.4.3",
     "tsc-watch": "^6.0.4",
     "typescript": "^5.1.3"
   }
