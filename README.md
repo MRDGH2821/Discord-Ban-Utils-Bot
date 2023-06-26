@@ -26,22 +26,20 @@ So to setup logging follow these steps:
 1. Create a Firebase project.
 2. Go to project settings
 3. In Firebase Admin SDK section, click on `Node.js` & finally on `Generate new private key`.
-4. Copy this private key (i.e. the json file which gets downloaded) into `./lib/firebase-service-acc/`
+4. Copy this private key (i.e. the json file which gets downloaded) into `./firebase-service-acc/`
 
-For more info check [here](./lib/firebase-service-acc/README.md)
+For more info check [here](./firebase-service-acc/README.md)
 
 ## Hosting
 
 1. Clone this repo.
-2. Create a file named `.env.prod` & put the given text -
+2. Create a file named `.env` & put the given text -
 
 ```environment
-TOKEN = insert bot token
-CLIENTID = insert bot clientID
-GUILDID = insert one of your server's ID
+DISCORD_TOKEN = insert bot token
 ```
 
-You can also copy [`.env.sample`](./.env.sample) file and rename it to `.env.prod`.
+You can also copy [`.env.sample`](./.env.sample) file and rename it to `.env`.
 
 3. Install dependencies by using `npm install`.
 4. Use `npm start` to run the bot code.
@@ -52,6 +50,12 @@ You may also use pm2. Check the guide [here](https://discordjs.guide/improving-d
 
 ```bash
 pm2 start ban-utils-bot.sh --name "Ban Utils Bot" --watch
+```
+
+Or Docker:
+
+```bash
+docker compose up -d --build app
 ```
 
 ## How to update self-hosted version?/How to reset the Bot code?
@@ -78,4 +82,4 @@ See [here](https://www.canva.com/design/DAEsnh6KHfM/DTA-pMkWSqigGIgLA9Y39w/view?
 
 ~~I still think that this bot is far from crash proof. I have done enough testing, but still some edge cases might be left out.~~
 Bot has become nearly crash proof. And will also show what the error was.
-Still I have configured my bot to restart on crash (using pm2), it would be nice if you report the issue ASAP to me.
+Still I have configured my bot to restart on crash (using docker), it would be nice if you report the issue ASAP to me.
