@@ -1,14 +1,13 @@
-import { initializeApp } from 'firebase-admin';
-import { readFileSync, readdirSync } from 'fs';
-import Nodefire from 'nodefire';
+import { initializeApp } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
+import fs from 'fs';
 import * as path from 'path';
-
-Nodefire.setCacheSize(50);
+import './EnvConfig';
 
 const basePath = path.resolve(process.cwd(), 'firebase-service-acc');
 if (process.env.NODE_ENV !== 'development') {
   process.env.FIRESTORE_EMULATOR_HOST = '';
-  const configs = readdirSync(basePath).filter((file) => file.endsWith('.json'));
+  const configs = fs.readdirSync(basePath).filter((file) => file.endsWith('.json'));
 
   console.debug(configs);
   configs.sort();
@@ -16,7 +15,7 @@ if (process.env.NODE_ENV !== 'development') {
   const validConfigs = configs.filter((config) => {
     const configPath = path.resolve(basePath, config);
     // console.log(configPath);
-    const configContents = JSON.parse(readFileSync(configPath).toString());
+    const configContents = JSON.parse(fs.readFileSync(configPath).toString());
     // console.log(configContents);
 
     if (configContents.type === 'service_account') {
@@ -28,10 +27,8 @@ if (process.env.NODE_ENV !== 'development') {
   // console.log(certPath);
   process.env.GOOGLE_APPLICATION_CREDENTIALS = certPath;
 }
-const app = initializeApp();
-
-app.firestore().settings({ ignoreUndefinedProperties: true });
-
-const db = new Nodefire(app.database().ref());
+initializeApp();
+const db = getFirestore();
+db.settings({ ignoreUndefinedProperties: true });
 
 export default db;
