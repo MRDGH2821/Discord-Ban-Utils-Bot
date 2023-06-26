@@ -1,0 +1,11 @@
+{
+  "customCatalog": {
+    "schemas": [
+      {
+        "name": "TS Config Schema",
+        "fileMatch": ["tsconfig.json", "tsconfig.*.json"],
+        "location": "https://json.schemastore.org/tsconfig.json"
+      }
+    ]
+  }
+}

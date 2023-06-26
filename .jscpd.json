@@ -1,15 +1,20 @@
 {
-  "threshold": 0,
-  "reporters": ["html", "markdown"],
+  "gitignore": true,
   "ignore": [
-    "**/node_modules/**",
+    "./src/listeners/**",
+    "**.lock**",
     "**/.git/**",
-    "**/.rbenv/**",
-    "**/.venv/**",
-    "**/*cache*/**",
     "**/.github/**",
     "**/.idea/**",
-    "**/report/**",
-    "**/*.svg"
-  ]
+    "**/.rbenv/**",
+    "**/.venv/**",
+    "**/.yarn/**",
+    "**/*.svg",
+    "**/*cache*/**",
+    "**/dist/**",
+    "**/node_modules/**",
+    "**/report/**"
+  ],
+  "reporters": ["html", "markdown"],
+  "threshold": 0
 }
