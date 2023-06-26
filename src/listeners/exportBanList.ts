@@ -77,6 +77,10 @@ export default class UserEvent extends Listener {
           },
         ],
         timestamp: new Date().toISOString(),
+        footer: {
+          text: `Requested by ${options.requesterUser.tag}`,
+          icon_url: options.requesterUser.displayAvatarURL(),
+        },
       };
 
       return await notifyInChannel.send({
