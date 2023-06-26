@@ -104,6 +104,7 @@ export default class UserCommand extends Command {
       notifyInChannel: msg.channel,
       requesterUser: interaction.user,
       sourceMessage: msg,
+      list,
     };
     interaction.client.emit('importBanList', importOptions);
     return msg;
