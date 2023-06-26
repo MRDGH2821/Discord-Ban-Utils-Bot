@@ -3,7 +3,7 @@ import type {
 } from 'discord.js';
 
 export type BanEntity = User['id'];
-export type BanEntityWithReason = { id: BanEntity; reason: string | null | undefined };
+export type BanEntityWithReason = { id: BanEntity; reason?: string | null };
 export type BanType = BanEntity | BanEntityWithReason;
 
 export type BanExportOptions = {
@@ -19,4 +19,5 @@ export type BanImportOptions = {
   requesterUser: User;
   notifyInChannel: TextBasedChannel;
   sourceMessage: Message;
+  list: NonNullable<BanEntityWithReason>[];
 };
