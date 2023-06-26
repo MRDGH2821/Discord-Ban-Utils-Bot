@@ -45,7 +45,7 @@ export default class UserCommand extends Command {
     const link = interaction.options.getString('link', true);
 
     const data = await getRawPaste(link);
-    const defaultReason = `Imported by ${interaction.user.username} from ${link}`;
+    const defaultReason = `Imported by ${interaction.user.username} on ${new Date().toUTCString()}`;
 
     const transformer = (value: string) => ({ id: value, reason: defaultReason });
     const BanEntitiesSchema = s
