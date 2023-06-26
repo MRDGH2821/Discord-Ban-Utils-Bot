@@ -31,6 +31,7 @@
     "build": "tsc",
     "dev": "npm run build && npm run dev:start",
     "dev:start": "node -r dotenv/config dist/index.js",
+    "docker:app": "docker compose up -d --build app",
     "format": "prettier --write .",
     "generate": "sapphire generate",
     "lint": "eslint --fix . --ignore-path .gitignore",
