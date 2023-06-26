@@ -1,6 +1,6 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
-import { MessageFlags, PermissionFlagsBits } from 'discord.js';
+import { ApplicationCommandOptionType, MessageFlags, PermissionFlagsBits } from 'discord.js';
 
 @ApplyOptions<Command.Options>({
   name: 'test',
@@ -11,9 +11,18 @@ import { MessageFlags, PermissionFlagsBits } from 'discord.js';
 export default class UserCommand extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {
     registry.registerChatInputCommand(
-      (builder) => builder //
-        .setName(this.name)
-        .setDescription(this.description),
+      {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'db test',
+            description: 'A db test',
+            required: true,
+            type: ApplicationCommandOptionType.String,
+          },
+        ],
+      },
       {
         guildIds: ['897498649410560032', '897849061980373022'],
       },
@@ -27,44 +36,14 @@ export default class UserCommand extends Command {
         flags: MessageFlags.Ephemeral,
       });
     }
-    const first5 = await interaction.guild.bans.fetch({ limit: 5 });
-    const beforeLastOfFirst5 = await interaction.guild.bans.fetch({
-      limit: 5,
-      before: first5.lastKey(),
-    });
-    const afterLastOfFirst5 = await interaction.guild.bans.fetch({
-      limit: 5,
-      after: first5.lastKey(),
-    });
 
-    const beforeFirstOfFirst5 = await interaction.guild.bans.fetch({
-      limit: 5,
-      before: first5.firstKey(),
-    });
-    const afterFirstOfFirst5 = await interaction.guild.bans.fetch({
-      limit: 5,
-      after: first5.firstKey(),
-    });
+    const { options } = interaction;
+    const dbTest = options.getString('db test', true);
 
-    const formatBans = (bans: typeof first5) => bans.map((ban) => ban.user.id).join('\n');
+    console.log(dbTest);
 
     return interaction.reply({
-      content: `
-**First 5**
-${formatBans(first5)}
-
-**Before Last of First 5**
-${formatBans(beforeLastOfFirst5)}
-
-**After Last of First 5**
-${formatBans(afterLastOfFirst5)}
-
-**Before First of First 5**
-${formatBans(beforeFirstOfFirst5)}
-
-**After First of First 5**
-${formatBans(afterFirstOfFirst5)}
-`,
+      content: `dbTest: ${dbTest}`,
     });
   }
 }
