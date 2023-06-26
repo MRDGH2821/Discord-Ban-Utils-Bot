@@ -1,6 +1,7 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
 import { s } from '@sapphire/shapeshift';
+import { Time } from '@sapphire/time-utilities';
 import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
 import { getRawPaste } from 'dpaste-ts';
 import { COLORS } from '../lib/Constants';
@@ -13,6 +14,9 @@ import type { BanEntity, BanEntityWithReason, BanImportOptions } from '../lib/ty
   requiredUserPermissions: [PermissionFlagsBits.BanMembers],
   preconditions: ['GuildOnly'],
   detailedDescription: 'Imports ban list via link.\nSupported links - dpaste.com and pastebin.com',
+  cooldownDelay: Time.Hour,
+  cooldownLimit: 1,
+  cooldownFilteredUsers: process.env.OWNER_ID ? [process.env.OWNER_ID] : undefined,
 })
 export default class UserCommand extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {
