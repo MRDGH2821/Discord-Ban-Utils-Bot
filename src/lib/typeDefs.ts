@@ -2,8 +2,8 @@ import type {
   Guild, Message, TextBasedChannel, User,
 } from 'discord.js';
 
-export type BanEntity = string;
-export type BanEntityWithReason = { id: string; reason: string | null | undefined };
+export type BanEntity = User['id'];
+export type BanEntityWithReason = { id: BanEntity; reason: string | null | undefined };
 export type BanType = BanEntity | BanEntityWithReason;
 
 export type BanExportOptions = {
@@ -11,5 +11,12 @@ export type BanExportOptions = {
   requesterUser: User;
   notifyInChannel: TextBasedChannel;
   includeReason: boolean;
+  sourceMessage: Message;
+};
+
+export type BanImportOptions = {
+  destinationGuild: Guild;
+  requesterUser: User;
+  notifyInChannel: TextBasedChannel;
   sourceMessage: Message;
 };
