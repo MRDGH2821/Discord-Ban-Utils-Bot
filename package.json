@@ -51,7 +51,6 @@
     "discord.js": "^14.11.0",
     "dpaste-ts": "^2.0.0",
     "firebase-admin": "^11.9.0",
-    "nodefire": "^3.5.1",
     "tslib": "^2.5.3",
     "yaspr": "^1.0.2"
   },
