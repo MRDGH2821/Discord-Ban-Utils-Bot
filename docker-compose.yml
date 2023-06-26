@@ -1,0 +1,9 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+    container_name: ban-utils-bot
+    env_file: .env
+    restart: always
