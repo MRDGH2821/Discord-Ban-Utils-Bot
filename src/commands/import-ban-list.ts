@@ -1,18 +1,10 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
 import { s } from '@sapphire/shapeshift';
-import { retry, sleepSync } from '@sapphire/utilities';
-import {
-  ApplicationCommandOptionType,
-  ButtonStyle,
-  ComponentType,
-  PermissionFlagsBits,
-} from 'discord.js';
-import { createPaste, getRawPaste } from 'dpaste-ts';
-import { sequentialPromises } from 'yaspr';
+import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
+import { getRawPaste } from 'dpaste-ts';
 import { COLORS } from '../lib/Constants';
-import type { BanEntityWithReason } from '../lib/typeDefs';
-import { fetchAllBans, truncateString } from '../lib/utils';
+import type { BanEntity, BanEntityWithReason, BanImportOptions } from '../lib/typeDefs';
 
 @ApplyOptions<Command.Options>({
   name: 'import-ban-list',
@@ -53,164 +45,67 @@ export default class UserCommand extends Command {
     const link = interaction.options.getString('link', true);
 
     const data = await getRawPaste(link);
-    const bans = () => {
-      try {
-        return JSON.parse(data);
-      } catch (e) {
-        const ids = data.split(/(?<id>\d{17,20})/gimu).map((id) => id.trim());
-        return Array.from(new Set(ids));
-      }
-    };
     const defaultReason = `Imported by ${interaction.user.username} from ${link}`;
-    // this.container.logger.debug(data);
-    const banListWithReason = s.array(
+
+    const transformer = (value: string) => ({ id: value, reason: defaultReason });
+    const BanEntitiesSchema = s
+      .array<BanEntity>(s.string.lengthGreaterThan(1))
+      .transform<BanEntityWithReason[]>((values) => values.map((v) => transformer(v)));
+
+    const BanEntitiesWithReasonSchema = s.array<BanEntityWithReason>(
       s.object({
         id: s.string,
         reason: s.string.default(defaultReason),
-      }),
+      }).required,
     );
-    const processedListWithReason = banListWithReason.run(bans());
 
-    const banList = s
-      .array(s.string)
-      .transform((value) => value.map((v) => ({ id: v, reason: defaultReason })));
-    const processedList = banList.run(bans());
-
-    if (processedListWithReason.isOk()) {
-      return this.initiateBans(interaction, processedListWithReason.value, defaultReason);
+    try {
+      const parsedData = JSON.parse(data);
+      const validatedData = BanEntitiesWithReasonSchema.parse(parsedData);
+      return await this.importBans(interaction, validatedData, interaction.guild);
+    } catch (e) {
+      try {
+        const validatedData = BanEntitiesSchema.parse(data);
+        return this.importBans(interaction, validatedData, interaction.guild);
+      } catch {
+        return interaction.editReply({
+          content: 'Invalid data',
+        });
+      }
     }
-    if (processedList.isOk()) {
-      return this.initiateBans(interaction, processedList.value, defaultReason);
-    }
-    this.container.logger.debug({
-      processedListWithReason: processedListWithReason.isOk(),
-      processedList: processedList.isOk(),
-    });
-    return interaction.editReply({
-      content: 'Invalid ban list',
-    });
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  public async initiateBans(
+  public async importBans(
     interaction: Command.ChatInputCommandInteraction,
     list: BanEntityWithReason[],
-    defaultReason: string,
+    guild: NonNullable<Command.ChatInputCommandInteraction['guild']>,
   ) {
-    // this.container.logger.debug(JSON.stringify(list));
-    if (!interaction.guild || !interaction.inGuild() || !interaction.inCachedGuild()) {
-      return interaction.editReply({
-        content: 'This command can only be used in a guild.',
-      });
-    }
-    this.container.logger.debug('Starting bans in:', interaction.guild.name);
-    if (!interaction.deferred) {
-      await interaction.deferReply();
-    }
-
-    if (list.length === 0) {
-      return interaction.editReply({
-        content: 'No bans found in the list',
-      });
-    }
-
-    await interaction.editReply({
+    const msg = await interaction.editReply({
       embeds: [
         {
           title: 'Importing ban list',
-          description: `Found ${list.length} bans`,
+          description: `Found ${list.length} bans.\n\nYou will be notified here when the import is complete.`,
           color: COLORS.whiteGray,
         },
       ],
     });
-
-    const successBans = new Set<BanEntityWithReason>();
-    const failedBans = new Set<BanEntityWithReason>();
-    const bansInGuild = new Set((await fetchAllBans(interaction.guild)).keys());
-
-    // this.container.logger.debug(bansInGuild.size);
-    const uniqueList = list.filter((ban) => !bansInGuild.has(ban.id));
-    const performBan = async (ban: BanEntityWithReason) => {
-      await retry(
-        async () => interaction.guild.members
-          .ban(ban.id, { reason: ban.reason || defaultReason })
-          .then(() => {
-            successBans.add(ban);
-          })
-          .catch(() => {
-            failedBans.add(ban);
-            return sleepSync(1000);
-          }),
-        3,
-      );
-
-      return interaction.editReply({
-        content: `(${successBans.size + failedBans.size}/${uniqueList.length})`,
-      });
-    };
-
-    await sequentialPromises(uniqueList, performBan).catch(async (err) => interaction.editReply({
-      content: `An error occurred while importing ban list: ${err.message}`,
-    }));
     this.container.logger.debug(
-      'Ban stats:\n',
-      JSON.stringify(
-        {
-          Server: interaction.guild.name,
-          Success: successBans.size,
-          Failed: failedBans.size,
-          Unique: uniqueList.length,
-          Total: list.length,
-        },
-        null,
-        2,
-      ),
+      'Found',
+      list.length,
+      'bans to import in guild',
+      guild.name,
+      '(',
+      guild.id,
+      ')',
     );
-    return interaction.editReply({
-      embeds: [
-        {
-          title: 'Ban list imported!',
-          description: 'Ban statistics:',
-          color: COLORS.hammerHandle,
-          fields: [
-            {
-              name: 'Successful bans',
-              value: `${successBans.size}`,
-            },
-            {
-              name: 'Failed bans',
-              value: `${failedBans.size}`,
-            },
-            {
-              name: 'Unique Bans',
-              value: `${uniqueList.length}`,
-            },
-            {
-              name: 'Total bans',
-              value: `${list.length}`,
-            },
-          ],
-        },
-      ],
-      components:
-        failedBans.size > 0
-          ? [
-            {
-              type: ComponentType.ActionRow,
-              components: [
-                {
-                  type: ComponentType.Button,
-                  label: 'Unsuccessful ban list link',
-                  style: ButtonStyle.Link,
-                  url: await createPaste({
-                    content: JSON.stringify(Array.from(failedBans), null, 2),
-                    title: `[FAILED] ${truncateString(interaction.guild.name, 10)} Ban List`,
-                  }),
-                },
-              ],
-            },
-          ]
-          : undefined,
-    });
+
+    const importOptions: BanImportOptions = {
+      destinationGuild: guild,
+      notifyInChannel: msg.channel,
+      requesterUser: msg.author,
+      sourceMessage: msg,
+    };
+    interaction.client.emit('importBanList', importOptions);
+    return msg;
   }
 }
