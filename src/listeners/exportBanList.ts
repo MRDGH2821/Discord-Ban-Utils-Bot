@@ -84,7 +84,7 @@ export default class UserEvent extends Listener {
       };
 
       return await notifyInChannel.send({
-        content: `${options.sourceMessage.author}`,
+        content: `${options.requesterUser}`,
         embeds: [resultEmbed],
         files: [
           {
@@ -97,7 +97,7 @@ export default class UserEvent extends Listener {
     } catch (err) {
       this.container.logger.error(err);
       return notifyInChannel.send({
-        content: `${options.sourceMessage.author}`,
+        content: `${options.requesterUser}`,
         embeds: [
           debugErrorEmbed({
             title: 'Error while exporting ban list',
