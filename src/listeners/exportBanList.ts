@@ -1,10 +1,7 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Listener } from '@sapphire/framework';
 import { chunk } from '@sapphire/utilities';
-import type {
-  APIEmbed, Collection,
-  GuildBan,
-} from 'discord.js';
+import type { APIEmbed, Collection, GuildBan } from 'discord.js';
 import { createPaste } from 'dpaste-ts';
 import { sequentialPromises } from 'yaspr';
 import { COLORS } from '../lib/Constants';
