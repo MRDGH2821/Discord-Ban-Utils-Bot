@@ -1,7 +1,7 @@
 {
   "name": "Node.js & TypeScript",
   "image": "mcr.microsoft.com/devcontainers/typescript-node:18",
-  "postCreateCommand": "npm install",
+  "postCreateCommand": "bash .devcontainer/setup.sh",
   "features": {
     "ghcr.io/devcontainers-contrib/features/typescript:2": {},
     "ghcr.io/devcontainers/features/desktop-lite:1": {},
