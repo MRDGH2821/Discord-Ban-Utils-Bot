@@ -5,7 +5,9 @@ import type { APIEmbed, Collection, GuildBan } from 'discord.js';
 import { createPaste } from 'dpaste-ts';
 import { sequentialPromises } from 'yaspr';
 import { COLORS } from '../lib/Constants';
-import type { BanExportOptions } from '../lib/typeDefs';
+import type {
+  BanEntity, BanEntityWithReason, BanExportOptions, BanType,
+} from '../lib/typeDefs';
 import { debugErrorEmbed, fetchAllBans, truncateString } from '../lib/utils';
 
 @ApplyOptions<Listener.Options>({
@@ -14,7 +16,7 @@ import { debugErrorEmbed, fetchAllBans, truncateString } from '../lib/utils';
 })
 export default class UserEvent extends Listener {
   // eslint-disable-next-line class-methods-use-this
-  private async banListLink(array: Array<any>, title: string) {
+  private async banListLink<T>(array: Array<T>, title: string) {
     return createPaste({
       content: JSON.stringify(array),
       title,
@@ -27,10 +29,15 @@ export default class UserEvent extends Listener {
     bans: Collection<string, GuildBan>,
     guildName: string,
   ) {
-    const banListWithReason = bans.map((ban) => ({ id: ban.user.id, reason: ban.reason }));
-    const banList = bans.map((ban) => ban.user.id);
+    const banListWithReason = bans.map<BanEntityWithReason>((ban) => ({
+      id: ban.user.id,
+      reason: ban.reason,
+    }));
+    const banList = bans.map<BanEntity>((ban) => ban.user.id);
 
-    const chunks = includeReason ? chunk(banListWithReason, 350) : chunk(banList, 1000);
+    const chunks: BanType[][] = includeReason
+      ? chunk(banListWithReason, 350)
+      : chunk(banList, 1000);
 
     let idx = 1;
     const getLink = async (list: (typeof chunks)[0]) => {
