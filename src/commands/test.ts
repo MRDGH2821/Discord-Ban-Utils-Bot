@@ -16,7 +16,7 @@ export default class UserCommand extends Command {
         description: this.description,
         options: [
           {
-            name: 'db test',
+            name: 'db-test',
             description: 'A db test',
             required: true,
             type: ApplicationCommandOptionType.String,
@@ -38,7 +38,7 @@ export default class UserCommand extends Command {
     }
 
     const { options } = interaction;
-    const dbTest = options.getString('db test', true);
+    const dbTest = options.getString('db-test', true);
 
     console.log(dbTest);
 
