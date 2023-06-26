@@ -1,5 +1,3 @@
-**Bot version 3.0 released! Please read [Caution](./Caution.md) notes!**
-
 # Discord-Ban-Utils-Bot
 
 Discord Ban Utilities for Mutual Servers!
