@@ -52,12 +52,16 @@ export default class UserEvent extends Listener {
     return sequentialPromises(chunks, getLink);
   }
 
-  public async run(options: BanExportOptions) {
-    const bans = await fetchAllBans(options.sourceGuild);
-    const { includeReason, notifyInChannel } = options;
-    try {
-      const links = await this.exportBanList(includeReason, bans, options.sourceGuild.name);
+  public async run({
+    sourceGuild: guild,
+    requesterUser: user,
+    sourceMessage: message,
+    includeReason,
+  }: BanExportOptions) {
+    const bans = await fetchAllBans(guild);
 
+    try {
+      const links = await this.exportBanList(includeReason, bans, guild.name);
       const resultEmbed: APIEmbed = {
         title: '**Ban List Export Success!**',
         description: `Total Bans Found: ${bans.size}\n\nEach link contains ${
@@ -78,26 +82,26 @@ export default class UserEvent extends Listener {
         ],
         timestamp: new Date().toISOString(),
         footer: {
-          text: `Requested by ${options.requesterUser.tag}`,
-          icon_url: options.requesterUser.displayAvatarURL(),
+          text: `Requested by ${user.tag}`,
+          icon_url: user.displayAvatarURL(),
         },
       };
 
-      return await notifyInChannel.send({
-        content: `${options.requesterUser}`,
+      return await message.reply({
+        content: `${user}`,
         embeds: [resultEmbed],
         files: [
           {
             attachment: Buffer.from(links.join('\n')),
-            name: `Ban List of ${options.sourceGuild.name}.txt`,
+            name: `Ban List of ${guild.name}.txt`,
             description: 'Ban list links',
           },
         ],
       });
     } catch (err) {
       this.container.logger.error(err);
-      return notifyInChannel.send({
-        content: `${options.requesterUser}`,
+      return message.reply({
+        content: `${user}`,
         embeds: [
           debugErrorEmbed({
             title: 'Error while exporting ban list',

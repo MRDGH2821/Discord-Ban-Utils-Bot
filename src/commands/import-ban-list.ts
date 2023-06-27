@@ -105,7 +105,6 @@ export default class UserCommand extends Command {
 
     const importOptions: BanImportOptions = {
       destinationGuild: guild,
-      notifyInChannel: msg.channel,
       requesterUser: interaction.user,
       sourceMessage: msg,
       list,

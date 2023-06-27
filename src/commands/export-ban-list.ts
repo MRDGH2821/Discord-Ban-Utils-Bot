@@ -101,7 +101,6 @@ export default class UserCommand extends Command {
           const exportBanOptions: BanExportOptions = {
             sourceGuild: btx.guild,
             includeReason,
-            notifyInChannel: btx.message.channel,
             requesterUser: interaction.user,
             sourceMessage: btx.message,
           };

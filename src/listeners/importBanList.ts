@@ -13,20 +13,18 @@ import { fetchAllBans, truncateString } from '../lib/utils';
   event: 'importBanList',
 })
 export default class UserEvent extends Listener {
-  public override async run(options: BanImportOptions) {
+  public override async run({
+    list,
+    destinationGuild: guild,
+    requesterUser: user,
+    sourceMessage: message,
+  }: BanImportOptions) {
     // this.container.logger.debug(JSON.stringify(list));
-    const {
-      list,
-      destinationGuild: guild,
-      notifyInChannel: channel,
-      requesterUser: user,
-      sourceMessage: message,
-    } = options;
 
     this.container.logger.debug('Starting bans in:', guild.name);
 
     if (list.length === 0) {
-      return channel.send({
+      return message.reply({
         content: 'No bans found in the list',
       });
     }
@@ -69,7 +67,7 @@ export default class UserEvent extends Listener {
         2,
       ),
     );
-    return channel.send({
+    return message.reply({
       content: `${user}`,
       embeds: [
         {
