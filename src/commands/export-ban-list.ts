@@ -107,7 +107,7 @@ export default class UserCommand extends Command {
 
           interaction.client.emit('exportBanList', exportBanOptions);
 
-          return interaction.editReply({ embeds: [statusEmbed] });
+          return interaction.editReply({ embeds: [statusEmbed], components: [] });
         }
         return btx.editReply({
           embeds: [
