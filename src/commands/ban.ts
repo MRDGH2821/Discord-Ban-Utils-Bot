@@ -54,7 +54,7 @@ export default class UserCommand extends Command {
     const val = interaction.options.getFocused();
 
     const possibleReasons = [
-      `Banned by ${interaction.user.tag} on ${new Date().toDateString()}`,
+      `Banned by ${interaction.user.username} on ${new Date().toDateString()}`,
       'Spamming in chat',
       'Raiding the server',
       'Posted NSFW',
@@ -93,7 +93,7 @@ export default class UserCommand extends Command {
           {
             title: '**Ban Hammer Dropped!**',
             color: COLORS.hammerHandle,
-            description: `\`${convict.tag}\` ${convict} is banned from this server.`,
+            description: `\`${convict.username}\` ${convict} is banned from this server.`,
             thumbnail: {
               url: convict.displayAvatarURL(),
             },
@@ -137,7 +137,7 @@ export default class UserCommand extends Command {
                 },
                 {
                   name: '**Inputs given**',
-                  value: `User: ${convict} \`${convict.tag}\`\nID: \`${convict.id}\`\nReason: ${reason}\nNumber of msgs (in days) to be deleted: ${deleteMsgDays}`,
+                  value: `User: ${convict} \`${convict.username}\`\nID: \`${convict.id}\`\nReason: ${reason}\nNumber of msgs (in days) to be deleted: ${deleteMsgDays}`,
                 },
                 {
                   name: '**Error Dump**',

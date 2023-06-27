@@ -82,7 +82,7 @@ export default class UserEvent extends Listener {
         ],
         timestamp: new Date().toISOString(),
         footer: {
-          text: `Requested by ${user.tag}`,
+          text: `Requested by ${user.username}`,
           icon_url: user.displayAvatarURL(),
         },
       };

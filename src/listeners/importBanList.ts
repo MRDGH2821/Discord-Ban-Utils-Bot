@@ -93,7 +93,7 @@ export default class UserEvent extends Listener {
             },
           ],
           footer: {
-            text: `Requested by ${user.tag}`,
+            text: `Requested by ${user.username}`,
             icon_url: user.displayAvatarURL(),
           },
         },
