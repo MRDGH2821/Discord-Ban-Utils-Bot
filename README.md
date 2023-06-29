@@ -2,8 +2,6 @@
 
 Discord Ban Utilities for Mutual Servers!
 
-~~Currently the Bot is in development.~~ Bot development is supposedly finished. And can be used publicly!
-
 Hosted on Microsoft Azure B1ms Instance.
 
 Invite Link - [click here](https://discord.com/api/oauth2/authorize?client_id=897454611370213436&permissions=1377073941638&scope=bot%20applications.commands)
@@ -44,13 +42,7 @@ You can also copy [`.env.sample`](./.env.sample) file and rename it to `.env`.
 
 For more info click [here](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot) & [here](https://discordjs.guide/creating-your-bot/)
 
-You may also use pm2. Check the guide [here](https://discordjs.guide/improving-dev-environment/pm2.html)
-
-```bash
-pm2 start ban-utils-bot.sh --name "Ban Utils Bot" --watch
-```
-
-Or Docker:
+Or Use Docker to start:
 
 ```bash
 docker compose up -d --build app
@@ -70,11 +62,6 @@ git pull
 [MIT](./LICENSE)
 
 Feel free to make your own improved version of the bot!
-
-## Icon
-
-Made using Canva.
-See [here](https://www.canva.com/design/DAEsnh6KHfM/DTA-pMkWSqigGIgLA9Y39w/view?utm_content=DAEsnh6KHfM&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink) in high resolution.
 
 ## Note from developer
 
