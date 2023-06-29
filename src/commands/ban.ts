@@ -7,6 +7,7 @@ import {
   PermissionFlagsBits,
 } from 'discord.js';
 import { COLORS } from '../lib/Constants';
+import { debugErrorEmbed, debugErrorFile } from '../lib/utils';
 
 @ApplyOptions<Command.Options>({
   name: 'ban',
@@ -122,38 +123,39 @@ export default class UserCommand extends Command {
 
         return interaction.reply({
           embeds: [
-            {
+            debugErrorEmbed({
               title: '**Cannot Ban...**',
               description: `User ${convict} cannot be banned :grimacing:\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.`,
-              color: COLORS.error,
-              fields: [
+              checks: [
                 {
-                  name: '**Checks**',
-                  value: `Can you ban? **\`${canBan}\`**\nUser bannable? **\`${isBannable}\`**`,
+                  question: 'Can you ban?',
+                  result: canBan,
                 },
                 {
-                  name: '**Possible Solutions**',
-                  value: `Make sure you have ban permissions.\nAlso make sure that the bot role is above ${convict}'s highest role for this command to work.`,
-                },
-                {
-                  name: '**Inputs given**',
-                  value: `User: ${convict} \`${convict.username}\`\nID: \`${convict.id}\`\nReason: ${reason}\nNumber of msgs (in days) to be deleted: ${deleteMsgDays}`,
-                },
-                {
-                  name: '**Error Dump**',
-                  value: `${error}`,
+                  question: 'Is User bannable?',
+                  result: isBannable,
                 },
               ],
-            },
+              inputs: [
+                {
+                  name: 'User',
+                  value: `${convict} \`${convict.username}\``,
+                },
+
+                {
+                  name: 'Reason',
+                  value: reason,
+                },
+                {
+                  name: 'Number of msgs (in days) to be deleted',
+                  value: `${deleteMsgDays || 0}`,
+                },
+              ],
+              error,
+              solution: `Make sure you have ban permissions.\nAlso make sure that the bot role is above ${convict}'s highest role for this command to work.`,
+            }),
           ],
-          files: [
-            {
-              name: 'Ban Error Dump.txt',
-              attachment: Buffer.from(
-                `${error}\n-------------------\n\n${JSON.stringify(error, null, 2)}`,
-              ),
-            },
-          ],
+          files: [debugErrorFile(error)],
         });
       });
   }
