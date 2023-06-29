@@ -2,9 +2,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { Events, Listener } from '@sapphire/framework';
 import { AuditLogEvent, GuildBan, type APIEmbed } from 'discord.js';
 import { COLORS } from '../lib/Constants';
-import db from '../lib/Firestore';
-
-const config = db.collection('config');
+import Database from '../lib/Database';
 
 @ApplyOptions<Listener.Options>({
   name: 'New Guild Ban',
@@ -44,8 +42,23 @@ export default class UserEvent extends Listener<typeof Events.GuildBanAdd> {
       });
     }
 
-    const data = (await config.doc(ban.guild.id).get()).data();
+    const settings = await Database.getSettings(ban.guild.id);
+    if (!settings || !settings?.sendBanLog) {
+      return;
+    }
 
-    // TODO: Send webhook message log
+    const webhooks = await ban.guild.fetchWebhooks();
+
+    const webhook = webhooks.find(
+      (w) => w.id === settings.webhookId || w.owner?.id === this.container.client.user?.id,
+    );
+    if (!webhook) {
+      return;
+    }
+
+    await webhook.send({
+      embeds: [banEmbed],
+      username: 'BU Audit Log',
+    });
   }
 }
