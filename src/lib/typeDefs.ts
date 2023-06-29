@@ -17,3 +17,23 @@ export type BanImportOptions = {
   sourceMessage: Message;
   list: NonNullable<BanEntityWithReason>[];
 };
+
+export type SettingsOptions = {
+  sendBanLog?: boolean;
+  sendUnbanLog?: boolean;
+  sendExitLog?: boolean;
+  sendJoinLog?: boolean;
+  sendKickLog?: boolean;
+  sendTimeoutLog?: boolean;
+  sendUnTimeoutLog?: boolean;
+  sendBanImportLog?: boolean;
+  sendBanExportLog?: boolean;
+  sendBanCopyLog?: boolean;
+  sendMassBanLog?: boolean;
+  sendMassUnbanLog?: boolean;
+};
+
+export type CoreSettingsOptions = {
+  webhookId: string;
+  guildId: string;
+};
