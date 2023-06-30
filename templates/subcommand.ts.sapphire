@@ -1,0 +1,38 @@
+{
+  "category": "commands"
+}
+---
+import { ApplyOptions } from '@sapphire/decorators';
+import { Subcommand } from '@sapphire/plugin-subcommands';
+import { ApplicationCommandOptionType } from 'discord.js';
+
+@ApplyOptions<Subcommand.Options>({
+  name: 'settings',
+  description: 'A basic command',
+  subcommands: [
+    {
+      name: 'sub-command',
+      type: 'method',
+      chatInputRun: 'subChatInputRun',
+    },
+  ],
+})
+export default class UserCommand extends Subcommand {
+  registerApplicationCommands(registry: Subcommand.Registry) {
+    registry.registerChatInputCommand({
+      name: this.name,
+      description: this.description,
+      options: [
+        {
+          name: 'sub-command',
+          description: 'does something',
+          type: ApplicationCommandOptionType.Subcommand,
+        },
+      ],
+    });
+  }
+
+  public async subChatInputRun(interaction: Subcommand.ChatInputCommandInteraction) {
+    this.container.logger.info('subChatInputRun');
+  }
+}
