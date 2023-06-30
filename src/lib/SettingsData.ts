@@ -1,5 +1,5 @@
 import db from './Firestore';
-import type { CoreSettingsOptions, SettingsOptions } from './typeDefs';
+import type { CoreSettingsOptions, SettingsOptions, SettingsParameter } from './typeDefs';
 
 export default class SettingsData implements SettingsOptions, CoreSettingsOptions {
   sendBanLog?: boolean;
@@ -47,7 +47,20 @@ export default class SettingsData implements SettingsOptions, CoreSettingsOption
     this.sendMassUnbanLog = options.sendMassUnbanLog;
   }
 
-  modifySetting(setting: keyof SettingsOptions, value: boolean) {
+  modifySettings(settings: SettingsParameter[]) {
+    const newSettings = settings.reduce<SettingsOptions>((acc, curr) => {
+      acc[curr] = true;
+      return acc;
+    }, {});
+    Object.assign(this, newSettings);
+
+    return db
+      .collection('settings')
+      .doc(this.guildId)
+      .set(newSettings, { merge: true, mergeFields: settings });
+  }
+
+  modifySetting(setting: SettingsParameter, value: boolean) {
     const newSettings = { [setting]: value };
     Object.assign(this, newSettings);
 
