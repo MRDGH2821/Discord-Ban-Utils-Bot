@@ -59,7 +59,7 @@ git pull
 
 ## License
 
-[MIT](./LICENSE)
+[MIT](./LICENCE.md)
 
 Feel free to make your own improved version of the bot!
 
