@@ -37,3 +37,5 @@ export type CoreSettingsOptions = {
   webhookId: string;
   guildId: string;
 };
+
+export type SettingsParameter = keyof SettingsOptions;
