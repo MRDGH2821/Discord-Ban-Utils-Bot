@@ -28,8 +28,8 @@ For more info check [here](./firebase-service-acc/README.md)
 
 ## Hosting
 
-1. Clone this repo.
-2. Create a file named `.env` & put the given text -
+- Clone this repo.
+- Create a file named `.env` & put the given text -
 
 ```environment
 DISCORD_TOKEN = insert bot token
@@ -37,8 +37,8 @@ DISCORD_TOKEN = insert bot token
 
 You can also copy [`.env.sample`](./.env.sample) file and rename it to `.env`.
 
-3. Install dependencies by using `npm install`.
-4. Use `npm start` to run the bot code.
+- Install dependencies by using `npm install`.
+- Use `npm start` to run the bot code.
 
 For more info click [here](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot) & [here](https://discordjs.guide/creating-your-bot/)
 
