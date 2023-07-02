@@ -11,7 +11,8 @@ import type {
   APIEmbed, APIUser, Guild, User,
 } from 'discord.js';
 import { COLORS } from './Constants';
-import type { SettingsOptions, SettingsParameter } from './typeDefs';
+import Database from './Database';
+import type { SendLogOptions, SettingsOptions, SettingsParameter } from './typeDefs';
 
 function getShardInfo(id: number) {
   return `[${cyan(id.toString())}]`;
@@ -167,3 +168,27 @@ export const selectedSettingsValidator = s
     acc[curr] = true;
     return acc;
   }, {}));
+
+export async function sendLog({
+  guild, title, description, type,
+}: SendLogOptions) {
+  const settings = await Database.getSettings(guild.id);
+  if (!settings) return;
+  if (!settings.webhookId) return;
+  if (!settings[type]) return;
+
+  const hook = await guild
+    .fetchWebhooks()
+    .then((hooks) => hooks.find((h) => h.id === settings.webhookId));
+  if (!hook) return;
+
+  hook.send({
+    embeds: [
+      {
+        title,
+        description,
+        color: COLORS.invisible,
+      },
+    ],
+  });
+}
