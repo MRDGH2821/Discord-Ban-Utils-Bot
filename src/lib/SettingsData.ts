@@ -72,4 +72,29 @@ export default class SettingsData implements SettingsOptions, CoreSettingsOption
       .doc(this.guildId)
       .set(newSettings, { merge: true, mergeFields: [setting] });
   }
+
+  toJSON() {
+    return {
+      sendBanLog: this.sendBanLog || false,
+      sendUnbanLog: this.sendUnbanLog || false,
+      sendExitLog: this.sendExitLog || false,
+      sendJoinLog: this.sendJoinLog || false,
+      sendKickLog: this.sendKickLog || false,
+      sendTimeoutLog: this.sendTimeoutLog || false,
+      sendUnTimeoutLog: this.sendUnTimeoutLog || false,
+      sendBanImportLog: this.sendBanImportLog || false,
+      sendBanExportLog: this.sendBanExportLog || false,
+      sendBanCopyLog: this.sendBanCopyLog || false,
+      sendMassBanLog: this.sendMassBanLog || false,
+      sendMassUnbanLog: this.sendMassUnbanLog || false,
+      guildId: this.guildId,
+      webhookId: this.webhookId,
+    };
+  }
+
+  toString() {
+    return Object.entries(this)
+      .map(([key, value]) => `${key}: ${value}`)
+      .join('\n');
+  }
 }
