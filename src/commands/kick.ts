@@ -55,26 +55,8 @@ export default class UserCommand extends Command {
       });
     }
 
-    const mod = interaction.member;
-
-    if (!isGuildMember(mod)) {
-      return interaction.reply({
-        content: 'Cannot kick because you are not in the server',
-        ephemeral: true,
-      });
-    }
-
-    const myself = interaction.guild.members.me;
-
-    if (!isGuildMember(myself)) {
-      return interaction.reply({
-        content: 'Cannot kick because I am not in the server',
-        ephemeral: true,
-      });
-    }
-
-    return interaction.guild.members
-      .kick(convict, reason)
+    return convict
+      .kick(reason)
       .then(() =>
         interaction.reply({
           embeds: [
@@ -105,16 +87,9 @@ export default class UserCommand extends Command {
             debugErrorEmbed({
               title: '**Cannot kick...**',
               checks: [
+                { question: '**Is bot above member?**', result: convict.manageable },
                 {
-                  question: '**Can Bot Kick Member?**',
-                  result: convict.roles.highest.position < myself.roles.highest.position,
-                },
-                {
-                  question: '**Can You kick Member?**',
-                  result: convict.roles.highest.position < mod.roles.highest.position,
-                },
-                {
-                  question: '**Is member kickable?**',
+                  question: '**Is member kickable by bot?**',
                   result: convict.kickable,
                 },
               ],
