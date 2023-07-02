@@ -5,11 +5,13 @@ import {
   type ContextMenuCommandSuccessPayload,
   type MessageCommandSuccessPayload,
 } from '@sapphire/framework';
+import { s } from '@sapphire/shapeshift';
 import { cyan } from 'colorette';
 import type {
   APIEmbed, APIUser, Guild, User,
 } from 'discord.js';
 import { COLORS } from './Constants';
+import type { SettingsOptions, SettingsParameter } from './typeDefs';
 
 function getShardInfo(id: number) {
   return `[${cyan(id.toString())}]`;
@@ -143,3 +145,25 @@ export async function fetchAllBans(guild: Guild) {
   }
   return masterBanList;
 }
+
+export const selectedSettingsValidator = s
+  .array(
+    s.enum<SettingsParameter>(
+      'sendBanLog',
+      'sendUnbanLog',
+      'sendExitLog',
+      'sendJoinLog',
+      'sendKickLog',
+      'sendTimeoutLog',
+      'sendUnTimeoutLog',
+      'sendBanImportLog',
+      'sendBanExportLog',
+      'sendBanCopyLog',
+      'sendMassBanLog',
+      'sendMassUnbanLog',
+    ),
+  )
+  .transform((values) => values.reduce<SettingsOptions>((acc, curr) => {
+    acc[curr] = true;
+    return acc;
+  }, {}));
