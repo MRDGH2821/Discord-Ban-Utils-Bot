@@ -133,7 +133,7 @@ export default class UserCommand extends Command {
                   result: canBan,
                 },
                 {
-                  question: 'Is User bannable?',
+                  question: 'Is User bannable by bot?',
                   result: isBannable,
                 },
               ],
