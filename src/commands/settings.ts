@@ -1,16 +1,20 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Subcommand } from '@sapphire/plugin-subcommands';
+import { codeBlock } from '@sapphire/utilities';
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
   ChannelType,
   ComponentType,
   PermissionFlagsBits,
+  TextChannel,
   type APIEmbed,
   type APISelectMenuOption,
 } from 'discord.js';
-import { COLORS } from '../lib/Constants';
+import { COLORS, WEBHOOK_ICON } from '../lib/Constants';
+import Database from '../lib/Database';
 import type { SettingsParameter } from '../lib/typeDefs';
+import { selectedSettingsValidator } from '../lib/utils';
 
 interface SettingsOpt extends APISelectMenuOption {
   value: SettingsParameter;
@@ -44,7 +48,7 @@ export default class UserCommand extends Subcommand {
           options: [
             {
               name: 'log_channel',
-              description: 'Sets the log channel',
+              description: 'Choose a log channel',
               type: ApplicationCommandOptionType.Channel,
               channel_types: [ChannelType.GuildText],
               channelTypes: [ChannelType.GuildText],
@@ -70,13 +74,11 @@ export default class UserCommand extends Subcommand {
       {
         label: 'Ban Log',
         value: 'sendBanLog',
-        default: true,
         description: 'Send a Ban Log (excludes mass bans)',
       },
       {
         label: 'Unban Log',
         value: 'sendUnbanLog',
-        default: true,
         description: 'Send an Unban Log',
       },
       {
@@ -131,22 +133,88 @@ export default class UserCommand extends Subcommand {
       },
     ];
 
-    return interaction.reply({
-      embeds: [settingsEmbed],
-      components: [
-        {
-          type: ComponentType.ActionRow,
-          components: [
+    return interaction
+      .reply({
+        embeds: [settingsEmbed],
+        components: [
+          {
+            type: ComponentType.ActionRow,
+            components: [
+              {
+                type: ComponentType.StringSelect,
+                custom_id: 'selected-settings',
+                min_values: 1,
+                max_values: settingOptions.length,
+                options: settingOptions,
+              },
+            ],
+          },
+        ],
+      })
+      .then((msg) => msg.awaitMessageComponent({
+        componentType: ComponentType.StringSelect,
+        filter: (i) => i.user.id === interaction.user.id,
+        dispose: true,
+      }))
+      .then(async (selectMenu) => {
+        const parsedSettings = selectedSettingsValidator.parse(selectMenu.values);
+
+        this.container.logger.debug(parsedSettings);
+
+        await interaction.editReply({
+          embeds: [
             {
-              type: ComponentType.StringSelect,
-              custom_id: 'selected-settings',
-              min_values: 1,
-              max_values: settingOptions.length,
-              options: settingOptions,
+              title: '**New settings applied!**',
+              color: COLORS.invisible,
+              description: `These are the new settings you have applied.\nLogging Channel: ${channel}\n\n${codeBlock(
+                'json',
+                JSON.stringify(parsedSettings, null, 2),
+              )}`,
             },
           ],
-        },
-      ],
+          components: [],
+        });
+
+        return parsedSettings;
+      })
+      .then(async (settings) => {
+        const webhook = await this.getWebhook(channel);
+        const data = await Database.newServerSetting({
+          guildId: channel.guildId,
+          webhookId: webhook.id,
+        });
+        return data.modifySettings(settings);
+      })
+      .then(() => interaction.followUp({
+        content: 'Settings have been saved successfully!',
+        ephemeral: true,
+      }));
+  }
+
+  public async getWebhook(channel: TextChannel, cleanUp = true) {
+    const webhooks = await channel.guild.fetchWebhooks();
+    const myWebhooks = webhooks
+      .filter((w) => w.owner?.id === this.container.client.user?.id)
+      .sort((a, b) => b.createdTimestamp - a.createdTimestamp);
+
+    const selectedWebhook = myWebhooks.first();
+    if (selectedWebhook) {
+      if (cleanUp) {
+        await Promise.all(
+          myWebhooks.filter((w) => w.id !== selectedWebhook.id).map((w) => w.delete()),
+        );
+      }
+      return selectedWebhook.edit({
+        name: 'Ban Utils Logs',
+        avatar: WEBHOOK_ICON,
+        channel: channel.id,
+        reason: 'Updating a webhook for Ban Utils bot',
+      });
+    }
+    return channel.createWebhook({
+      name: 'Ban Utils Logs',
+      avatar: WEBHOOK_ICON,
+      reason: 'Creating a webhook for Ban Utils bot',
     });
   }
 }
