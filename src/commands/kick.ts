@@ -75,64 +75,66 @@ export default class UserCommand extends Command {
 
     return interaction.guild.members
       .kick(convict, reason)
-      .then(() => interaction.reply({
-        embeds: [
-          {
-            title: '**Kicking Wrench Thrown!**',
-            color: COLORS.wrenchHandle,
-            description: `\`${convict.user.username}\` ${convict} is kicked from this server.`,
-            thumbnail: {
-              url: convict.displayAvatarURL(),
+      .then(() =>
+        interaction.reply({
+          embeds: [
+            {
+              title: '**Kicking Wrench Thrown!**',
+              color: COLORS.wrenchHandle,
+              description: `\`${convict.user.username}\` ${convict} is kicked from this server.`,
+              thumbnail: {
+                url: convict.displayAvatarURL(),
+              },
+              fields: [
+                {
+                  name: '**Reason**',
+                  value: reason,
+                },
+                {
+                  name: '**Convict ID**',
+                  value: convict.id,
+                },
+              ],
+              timestamp: new Date().toISOString(),
             },
-            fields: [
-              {
-                name: '**Reason**',
-                value: reason,
-              },
-              {
-                name: '**Convict ID**',
-                value: convict.id,
-              },
-            ],
-            timestamp: new Date().toISOString(),
-          },
-        ],
-      }))
-      .catch((err) => interaction.reply({
-        embeds: [
-          debugErrorEmbed({
-            title: '**Cannot kick...**',
-            checks: [
-              {
-                question: '**Can Bot Kick Member?**',
-                result: convict.roles.highest.position < myself.roles.highest.position,
-              },
-              {
-                question: '**Can You kick Member?**',
-                result: convict.roles.highest.position < mod.roles.highest.position,
-              },
-              {
-                question: '**Is member kickable?**',
-                result: convict.kickable,
-              },
-            ],
-            error: err,
-            description: `Failed to kick ${convict.user} :grimacing:\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.`,
-            inputs: [
-              {
-                name: 'Convict',
-                value: convict.user.toString(),
-              },
-              {
-                name: 'Reason',
-                value: reason || 'No Reason given',
-              },
-            ],
-            solution:
+          ],
+        }))
+      .catch((err) =>
+        interaction.reply({
+          embeds: [
+            debugErrorEmbed({
+              title: '**Cannot kick...**',
+              checks: [
+                {
+                  question: '**Can Bot Kick Member?**',
+                  result: convict.roles.highest.position < myself.roles.highest.position,
+                },
+                {
+                  question: '**Can You kick Member?**',
+                  result: convict.roles.highest.position < mod.roles.highest.position,
+                },
+                {
+                  question: '**Is member kickable?**',
+                  result: convict.kickable,
+                },
+              ],
+              error: err,
+              description: `Failed to kick ${convict.user} :grimacing:\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.`,
+              inputs: [
+                {
+                  name: 'Convict',
+                  value: convict.user.toString(),
+                },
+                {
+                  name: 'Reason',
+                  value: reason || 'No Reason given',
+                },
+              ],
+              solution:
                 'Make sure that the you & bot both have permissions to kick and the highest role is above the member you are trying to kick',
-          }),
-        ],
-        files: [debugErrorFile(err)],
-      }));
+            }),
+          ],
+          files: [debugErrorFile(err)],
+        }));
   }
 }

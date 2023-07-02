@@ -81,13 +81,14 @@ export default class UserCommand extends Command {
           },
         ],
       })
-      .then((itxResponse) => itxResponse.awaitMessageComponent({
-        filter(btx) {
-          return btx.user.id === interaction.user.id;
-        },
-        componentType: ComponentType.Button,
-        dispose: true,
-      }))
+      .then((itxResponse) =>
+        itxResponse.awaitMessageComponent({
+          filter(btx) {
+            return btx.user.id === interaction.user.id;
+          },
+          componentType: ComponentType.Button,
+          dispose: true,
+        }))
       .then((btx) => {
         if (btx.customId === 'export-ban-list-yes') {
           const statusEmbed: APIEmbed = {

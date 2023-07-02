@@ -89,29 +89,30 @@ export default class UserCommand extends Command {
         deleteMessageSeconds: deleteMsgDays,
         reason,
       })
-      .then(() => interaction.reply({
-        embeds: [
-          {
-            title: '**Ban Hammer Dropped!**',
-            color: COLORS.hammerHandle,
-            description: `\`${convict.username}\` ${convict} is banned from this server.`,
-            thumbnail: {
-              url: convict.displayAvatarURL(),
+      .then(() =>
+        interaction.reply({
+          embeds: [
+            {
+              title: '**Ban Hammer Dropped!**',
+              color: COLORS.hammerHandle,
+              description: `\`${convict.username}\` ${convict} is banned from this server.`,
+              thumbnail: {
+                url: convict.displayAvatarURL(),
+              },
+              fields: [
+                {
+                  name: '**Reason**',
+                  value: reason,
+                },
+                {
+                  name: '**Convict ID**',
+                  value: convict.id,
+                },
+              ],
+              timestamp: new Date().toISOString(),
             },
-            fields: [
-              {
-                name: '**Reason**',
-                value: reason,
-              },
-              {
-                name: '**Convict ID**',
-                value: convict.id,
-              },
-            ],
-            timestamp: new Date().toISOString(),
-          },
-        ],
-      }))
+          ],
+        }))
       .catch(async (error) => {
         const canBan = interaction.memberPermissions?.has(PermissionFlagsBits.BanMembers) || false;
 

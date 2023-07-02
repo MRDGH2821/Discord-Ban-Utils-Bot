@@ -164,10 +164,11 @@ export const selectedSettingsValidator = s
       'sendMassUnbanLog',
     ),
   )
-  .transform((values) => values.reduce<SettingsOptions>((acc, curr) => {
-    acc[curr] = true;
-    return acc;
-  }, {}));
+  .transform((values) =>
+    values.reduce<SettingsOptions>((acc, curr) => {
+      acc[curr] = true;
+      return acc;
+    }, {}));
 
 export async function sendLog({
   guild, title, description, type,

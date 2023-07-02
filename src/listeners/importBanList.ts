@@ -35,24 +35,27 @@ export default class UserEvent extends Listener {
 
     // this.container.logger.debug(bansInGuild.size);
     const uniqueList = list.filter((ban) => !bansInGuild.has(ban.id));
-    const performBan = async (ban: BanEntityWithReason) => retry(
-      async () => guild.members
-        .ban(ban.id, {
-          reason: ban.reason || `Imported by ${user.username} on ${new Date().toUTCString()}`,
-        })
-        .then(() => {
-          successBans.add(ban);
-        })
-        .catch(() => {
-          failedBans.add(ban);
-          return sleepSync(1000);
-        }),
-      3,
-    );
+    const performBan = async (ban: BanEntityWithReason) =>
+      retry(
+        async () =>
+          guild.members
+            .ban(ban.id, {
+              reason: ban.reason || `Imported by ${user.username} on ${new Date().toUTCString()}`,
+            })
+            .then(() => {
+              successBans.add(ban);
+            })
+            .catch(() => {
+              failedBans.add(ban);
+              return sleepSync(1000);
+            }),
+        3,
+      );
 
-    await sequentialPromises(uniqueList, performBan).catch(async (err) => message.reply({
-      content: `${user}\nAn error occurred while importing ban list: ${err.message}`,
-    }));
+    await sequentialPromises(uniqueList, performBan).catch(async (err) =>
+      message.reply({
+        content: `${user}\nAn error occurred while importing ban list: ${err.message}`,
+      }));
     this.container.logger.debug(
       'Ban stats:\n',
       JSON.stringify(

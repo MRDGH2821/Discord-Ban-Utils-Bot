@@ -151,11 +151,12 @@ export default class UserCommand extends Subcommand {
           },
         ],
       })
-      .then((msg) => msg.awaitMessageComponent({
-        componentType: ComponentType.StringSelect,
-        filter: (i) => i.user.id === interaction.user.id,
-        dispose: true,
-      }))
+      .then((msg) =>
+        msg.awaitMessageComponent({
+          componentType: ComponentType.StringSelect,
+          filter: (i) => i.user.id === interaction.user.id,
+          dispose: true,
+        }))
       .then(async (selectMenu) => {
         const parsedSettings = selectedSettingsValidator.parse(selectMenu.values);
 
@@ -185,10 +186,11 @@ export default class UserCommand extends Subcommand {
         });
         return data.modifySettings(settings);
       })
-      .then(() => interaction.followUp({
-        content: 'Settings have been saved successfully!',
-        ephemeral: true,
-      }));
+      .then(() =>
+        interaction.followUp({
+          content: 'Settings have been saved successfully!',
+          ephemeral: true,
+        }));
   }
 
   public async getWebhook(channel: TextChannel, cleanUp = true) {

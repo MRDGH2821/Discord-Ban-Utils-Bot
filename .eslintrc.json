@@ -11,6 +11,7 @@
       {
         "exceptMethods": ["printBanner", "run", "chatInputRun", "autocompleteRun"]
       }
-    ]
+    ],
+    "implicit-arrow-linebreak": "off"
   }
 }
