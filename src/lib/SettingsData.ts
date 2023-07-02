@@ -47,17 +47,20 @@ export default class SettingsData implements SettingsOptions, CoreSettingsOption
     this.sendMassUnbanLog = options.sendMassUnbanLog;
   }
 
-  modifySettings(settings: SettingsParameter[]) {
-    const newSettings = settings.reduce<SettingsOptions>((acc, curr) => {
-      acc[curr] = true;
-      return acc;
-    }, {});
-    Object.assign(this, newSettings);
+  modifySettings(settings: SettingsParameter[] | SettingsOptions) {
+    let newSettings: SettingsOptions;
+    if (Array.isArray(settings)) {
+      newSettings = settings.reduce<SettingsOptions>((acc, curr) => {
+        acc[curr] = true;
+        return acc;
+      }, {});
+      Object.assign(this, newSettings);
+    } else {
+      newSettings = settings;
+      Object.assign(this, settings);
+    }
 
-    return db
-      .collection('settings')
-      .doc(this.guildId)
-      .set(newSettings, { merge: true, mergeFields: settings });
+    return db.collection('settings').doc(this.guildId).set(newSettings, { merge: true });
   }
 
   modifySetting(setting: SettingsParameter, value: boolean) {
