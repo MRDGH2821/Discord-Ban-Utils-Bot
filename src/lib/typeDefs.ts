@@ -39,3 +39,7 @@ export type CoreSettingsOptions = {
 };
 
 export type SettingsParameter = keyof SettingsOptions;
+
+export type CoreSettingsParameter = keyof CoreSettingsOptions;
+
+export type AllSettingsParamenter = SettingsParameter | CoreSettingsParameter;
