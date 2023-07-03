@@ -77,7 +77,7 @@ export default class UserCommand extends Command {
     const reason = interaction.options.getString('reason', true);
     const deleteMsgDays = interaction.options.getInteger('delete_messages') || undefined;
 
-    if (!interaction.guild) {
+    if (!interaction.inGuild() || !interaction.guild) {
       return interaction.reply({
         content: 'This command can only be used in a guild.',
         flags: MessageFlags.Ephemeral,
