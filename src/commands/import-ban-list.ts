@@ -4,7 +4,7 @@ import { s } from '@sapphire/shapeshift';
 import { Time } from '@sapphire/time-utilities';
 import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
 import { getRawPaste } from 'dpaste-ts';
-import { COLORS } from '../lib/Constants';
+import { COLORS, NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
 import type { BanEntity, BanEntityWithReason, BanImportOptions } from '../lib/typeDefs';
 
 @ApplyOptions<Command.Options>({
@@ -41,10 +41,18 @@ export default class UserCommand extends Command {
   public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
     if (!interaction.guild || !interaction.inGuild() || !interaction.inCachedGuild()) {
       return interaction.reply({
-        content: 'This command can only be used in a guild.',
+        content: SERVER_ONLY,
         ephemeral: true,
       });
     }
+
+    if (!interaction.memberPermissions.has(PermissionFlagsBits.BanMembers)) {
+      return interaction.reply({
+        content: NOT_PERMITTED,
+        ephemeral: true,
+      });
+    }
+
     await interaction.deferReply();
     const link = interaction.options.getString('link', true);
 

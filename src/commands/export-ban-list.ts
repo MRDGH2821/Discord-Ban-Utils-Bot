@@ -8,7 +8,7 @@ import {
   PermissionFlagsBits,
   type APIEmbed,
 } from 'discord.js';
-import { COLORS } from '../lib/Constants';
+import { COLORS, SERVER_ONLY } from '../lib/Constants';
 import type { BanExportOptions } from '../lib/typeDefs';
 
 @ApplyOptions<Command.Options>({
@@ -46,7 +46,7 @@ export default class UserCommand extends Command {
 
     if (!interaction.guild || !interaction.inGuild() || !interaction.inCachedGuild()) {
       return interaction.reply({
-        content: 'Please use this command inside server',
+        content: SERVER_ONLY,
         ephemeral: true,
       });
     }

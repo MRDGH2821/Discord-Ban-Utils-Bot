@@ -5,8 +5,7 @@ import {
   ApplicationCommandType,
   PermissionFlagsBits,
 } from 'discord.js';
-import { COLORS } from '../lib/Constants';
-import { debugErrorEmbed, debugErrorFile } from '../lib/utils';
+import { COLORS, NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
 
 @ApplyOptions<Command.Options>({
   name: 'ban',
@@ -78,7 +77,14 @@ export default class UserCommand extends Command {
 
     if (!interaction.inGuild() || !interaction.guild) {
       return interaction.reply({
-        content: 'This command can only be used in a guild.',
+        content: SERVER_ONLY,
+        ephemeral: true,
+      });
+    }
+
+    if (!interaction.memberPermissions.has(PermissionFlagsBits.BanMembers)) {
+      return interaction.reply({
+        content: NOT_PERMITTED,
         ephemeral: true,
       });
     }

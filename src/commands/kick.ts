@@ -2,8 +2,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { isGuildMember } from '@sapphire/discord.js-utilities';
 import { Command } from '@sapphire/framework';
 import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
-import { COLORS } from '../lib/Constants';
-import { debugErrorEmbed, debugErrorFile } from '../lib/utils';
+import { COLORS, NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
 
 @ApplyOptions<Command.Options>({
   name: 'kick',
@@ -43,7 +42,7 @@ export default class UserCommand extends Command {
 
     if (!interaction.inGuild() || !interaction.guild) {
       return interaction.reply({
-        content: 'This command can only be used in a server',
+        content: SERVER_ONLY,
         ephemeral: true,
       });
     }
@@ -51,6 +50,20 @@ export default class UserCommand extends Command {
     if (!isGuildMember(convict)) {
       return interaction.reply({
         content: `${convict} is not in this server.`,
+        ephemeral: true,
+      });
+    }
+
+    if (!interaction.memberPermissions.has(PermissionFlagsBits.KickMembers)) {
+      return interaction.reply({
+        content: NOT_PERMITTED,
+        ephemeral: true,
+      });
+    }
+
+    if (!convict.kickable) {
+      return interaction.reply({
+        content: `Cannot kick ${convict}`,
         ephemeral: true,
       });
     }

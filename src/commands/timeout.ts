@@ -2,6 +2,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { isGuildMember } from '@sapphire/discord.js-utilities';
 import { Command } from '@sapphire/framework';
 import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
+import { NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
 
 @ApplyOptions<Command.Options>({
   name: 'timeout',
@@ -47,7 +48,7 @@ export default class UserCommand extends Command {
 
     if (!interaction.inGuild() || !interaction.guild) {
       return interaction.reply({
-        content: 'This command can only be used in a server',
+        content: SERVER_ONLY,
         ephemeral: true,
       });
     }
@@ -55,6 +56,20 @@ export default class UserCommand extends Command {
     if (!isGuildMember(convict)) {
       return interaction.reply({
         content: `${convict} is not in this server.`,
+        ephemeral: true,
+      });
+    }
+
+    if (!interaction.memberPermissions.has(PermissionFlagsBits.ModerateMembers)) {
+      return interaction.reply({
+        content: NOT_PERMITTED,
+        ephemeral: true,
+      });
+    }
+
+    if (!convict.moderatable) {
+      return interaction.reply({
+        content: `Cannot timeout ${convict}`,
         ephemeral: true,
       });
     }
