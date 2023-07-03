@@ -111,52 +111,6 @@ export default class UserCommand extends Command {
               timestamp: new Date().toISOString(),
             },
           ],
-        }))
-      .catch(async (error) => {
-        const canBan = interaction.memberPermissions?.has(PermissionFlagsBits.BanMembers) || false;
-
-        const isBannable = (await interaction.guild?.members
-          .fetch({
-            user: convict,
-          })
-          .then((convictMember) => convictMember.bannable)) ?? true;
-
-        return interaction.reply({
-          embeds: [
-            debugErrorEmbed({
-              title: '**Cannot Ban...**',
-              description: `User ${convict} cannot be banned :grimacing:\n\nIf this error is coming even after passing all checks, then please report the Error Dump section to developer.`,
-              checks: [
-                {
-                  question: 'Can you ban?',
-                  result: canBan,
-                },
-                {
-                  question: 'Is User bannable by bot?',
-                  result: isBannable,
-                },
-              ],
-              inputs: [
-                {
-                  name: 'User',
-                  value: `${convict} \`${convict.username}\``,
-                },
-
-                {
-                  name: 'Reason',
-                  value: reason,
-                },
-                {
-                  name: 'Number of msgs (in days) to be deleted',
-                  value: `${deleteMsgDays || 0}`,
-                },
-              ],
-              error,
-              solution: `Make sure you have ban permissions.\nAlso make sure that the bot role is above ${convict}'s highest role for this command to work.`,
-            }),
-          ],
-          files: [debugErrorFile(error)],
-        });
-      });
+        }));
   }
 }
