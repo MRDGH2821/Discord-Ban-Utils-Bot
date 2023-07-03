@@ -54,7 +54,7 @@ export default class UserCommand extends Command {
 
     if (!isGuildMember(convict)) {
       return interaction.reply({
-        content: 'Cannot kick because they are not in the server',
+        content: `${convict} is not in this server.`,
         ephemeral: true,
       });
     }
