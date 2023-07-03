@@ -21,7 +21,7 @@ interface SettingsOpt extends APISelectMenuOption {
 }
 @ApplyOptions<Subcommand.Options>({
   name: 'settings',
-  description: 'A basic command',
+  description: 'Configure bot settings',
   subcommands: [
     {
       name: 'set',
@@ -29,6 +29,7 @@ interface SettingsOpt extends APISelectMenuOption {
       chatInputRun: 'subChatInputRun',
     },
   ],
+  preconditions: ['GuildOnly'],
   requiredUserPermissions: PermissionFlagsBits.ManageGuild,
 })
 export default class UserCommand extends Subcommand {
