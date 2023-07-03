@@ -10,3 +10,7 @@ export enum COLORS {
 export const EMPTY_STRING = '\u200b';
 
 export const WEBHOOK_ICON = 'https://i.imgur.com/2dmfOEw.png';
+
+export const SERVER_ONLY = 'This command can be used only inside server.';
+
+export const NOT_PERMITTED = 'You do not have permissions to use this command.';
