@@ -5,7 +5,6 @@ import {
   ApplicationCommandType,
   ButtonStyle,
   ComponentType,
-  MessageFlags,
   PermissionFlagsBits,
   type APIEmbed,
 } from 'discord.js';
@@ -48,7 +47,7 @@ export default class UserCommand extends Command {
     if (!interaction.guild || !interaction.inGuild() || !interaction.inCachedGuild()) {
       return interaction.reply({
         content: 'Please use this command inside server',
-        flags: MessageFlags.Ephemeral,
+        ephemeral: true,
       });
     }
 

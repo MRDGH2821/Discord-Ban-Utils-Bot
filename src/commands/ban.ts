@@ -3,7 +3,6 @@ import { Command } from '@sapphire/framework';
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
-  MessageFlags,
   PermissionFlagsBits,
 } from 'discord.js';
 import { COLORS } from '../lib/Constants';
@@ -80,7 +79,7 @@ export default class UserCommand extends Command {
     if (!interaction.inGuild() || !interaction.guild) {
       return interaction.reply({
         content: 'This command can only be used in a guild.',
-        flags: MessageFlags.Ephemeral,
+        ephemeral: true,
       });
     }
 
