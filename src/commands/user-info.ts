@@ -15,7 +15,7 @@ export default class UserCommand extends Command {
       options: [
         {
           name: 'user',
-          description: 'Put user ID or SElect a user to see their info',
+          description: 'Put user ID or Select a user to see their info',
           type: ApplicationCommandOptionType.User,
           required: true,
         },
