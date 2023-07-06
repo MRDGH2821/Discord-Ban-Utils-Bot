@@ -1,6 +1,8 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
-import { ApplicationCommandOptionType, time, type APIEmbed } from 'discord.js';
+import {
+  ApplicationCommandOptionType, PermissionFlagsBits, time, type APIEmbed,
+} from 'discord.js';
 import { COLORS } from '../lib/Constants';
 
 @ApplyOptions<Command.Options>({
@@ -49,10 +51,37 @@ export default class UserCommand extends Command {
         value: `${!user.bot}`,
       });
     }
-    const member = await interaction.guild?.members.fetch(user);
 
-    if (member) {
-      const botModStats = `Can Ban: ${member.bannable}\nCan Kick: ${member.kickable}\nCan Moderate (timeout, etc.): ${member.moderatable}\nIs above: ${member.manageable}`;
+    if (!interaction.inGuild() || !interaction.guild) {
+      return interaction.reply({ embeds: [embed] });
     }
+
+    const member = await interaction.guild.members.fetch(user);
+    const mod = await interaction.guild.members.fetch(interaction.member.user.id);
+
+    if (member && mod) {
+      const botModStats = `Can Ban: ${member.bannable}\nCan Kick: ${member.kickable}\nCan Moderate (timeout, etc.): ${member.moderatable}\nIs above: ${member.manageable}`;
+
+      embed.fields?.push({
+        name: '**This bot ...**',
+        value: botModStats,
+      });
+
+      const userModStats = `Can Ban: ${mod.permissions.has(
+        PermissionFlagsBits.BanMembers,
+      )}\nCan Kick: ${mod.permissions.has(
+        PermissionFlagsBits.KickMembers,
+      )}\nCan Moderate (timeout, etc.): ${mod.permissions.has(
+        PermissionFlagsBits.ModerateMembers,
+      )}\nAre above: ${mod.roles.highest.comparePositionTo(member.roles.highest) > 0}`;
+
+      embed.fields?.push({
+        name: '**You ...**',
+        value: userModStats,
+      });
+      return interaction.reply({ embeds: [embed] });
+    }
+
+    return interaction.reply({ embeds: [embed] });
   }
 }
