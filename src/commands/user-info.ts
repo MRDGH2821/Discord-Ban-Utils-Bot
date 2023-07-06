@@ -49,5 +49,10 @@ export default class UserCommand extends Command {
         value: `${!user.bot}`,
       });
     }
+    const member = await interaction.guild?.members.fetch(user);
+
+    if (member) {
+      const botModStats = `Can Ban: ${member.bannable}\nCan Kick: ${member.kickable}\nCan Moderate (timeout, etc.): ${member.moderatable}\nIs above: ${member.manageable}`;
+    }
   }
 }
