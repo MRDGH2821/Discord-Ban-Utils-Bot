@@ -9,13 +9,14 @@ import type {
   BanEntity, BanEntityWithReason, BanExportOptions, BanType,
 } from '../lib/typeDefs';
 import { debugErrorEmbed, fetchAllBans, truncateString } from '../lib/utils';
+import { BUEvents } from '../lib/EventTypes';
 
 @ApplyOptions<Listener.Options>({
-  name: 'Export Ban List',
-  event: 'exportBanList',
+  name: 'Ban List Export Log',
+  event: BUEvents.BanListExport,
 })
-export default class UserEvent extends Listener {
-  // eslint-disable-next-line class-methods-use-this
+export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
+// eslint-disable-next-line class-methods-use-this
   private async banListLink<T>(array: Array<T>, title: string) {
     return createPaste({
       content: JSON.stringify(array),
