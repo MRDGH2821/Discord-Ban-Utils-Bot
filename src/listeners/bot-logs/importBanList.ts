@@ -4,9 +4,9 @@ import { retry, sleepSync } from '@sapphire/utilities';
 import { ButtonStyle, ComponentType } from 'discord.js';
 import { createPaste } from 'dpaste-ts';
 import { sequentialPromises } from 'yaspr';
-import { COLORS } from '../lib/Constants';
-import type { BanEntityWithReason, BanImportOptions } from '../lib/typeDefs';
-import { fetchAllBans, truncateString } from '../lib/utils';
+import { COLORS } from '../../lib/Constants';
+import type { BanEntityWithReason, BanImportOptions } from '../../lib/typeDefs';
+import { fetchAllBans, truncateString } from '../../lib/utils';
 
 @ApplyOptions<Listener.Options>({
   name: 'Import Ban List',

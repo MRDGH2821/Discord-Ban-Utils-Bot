@@ -1,8 +1,8 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Events, Listener } from '@sapphire/framework';
 import { AuditLogEvent, GuildBan, type APIEmbed } from 'discord.js';
-import { COLORS } from '../lib/Constants';
-import Database from '../lib/Database';
+import { COLORS } from '../../lib/Constants';
+import Database from '../../lib/Database';
 
 @ApplyOptions<Listener.Options>({
   name: 'Audit Ban Log',
