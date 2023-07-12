@@ -8,10 +8,12 @@ import {
 import { s } from '@sapphire/shapeshift';
 import { cyan } from 'colorette';
 import type {
-  APIEmbed, APIUser, Guild, GuildMember, User,
+  APIEmbed, APIUser, ClientEvents, Guild, GuildMember, User,
 } from 'discord.js';
 import { COLORS } from './Constants';
 import Database from './Database';
+import type { BUEventParams } from './EventTypes';
+import { BUEvents } from './EventTypes';
 import type { SendLogOptions, SettingsOptions, SettingsParameter } from './typeDefs';
 
 function getShardInfo(id: number) {
@@ -196,4 +198,11 @@ export async function sendLog({
 
 export function jumpLink(user: GuildMember | GuildMember['user']) {
   return `https://discord.com/users/${user.id}`;
+}
+
+export function emitBotEvent<E extends keyof ClientEvents>(
+  event: keyof typeof BUEvents,
+  ...args: E extends keyof BUEventParams ? BUEventParams[E] : unknown[]
+) {
+  container.client.emit(event, args);
 }
