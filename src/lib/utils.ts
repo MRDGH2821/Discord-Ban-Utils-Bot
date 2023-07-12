@@ -8,7 +8,7 @@ import {
 import { s } from '@sapphire/shapeshift';
 import { cyan } from 'colorette';
 import type {
-  APIEmbed, APIUser, Guild, User,
+  APIEmbed, APIUser, Guild, GuildMember, User,
 } from 'discord.js';
 import { COLORS } from './Constants';
 import Database from './Database';
@@ -192,4 +192,8 @@ export async function sendLog({
       },
     ],
   });
+}
+
+export function jumpLink(user: GuildMember | GuildMember['user']) {
+  return `https://discord.com/users/${user.id}`;
 }
