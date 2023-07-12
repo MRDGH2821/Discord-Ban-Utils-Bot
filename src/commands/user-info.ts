@@ -59,29 +59,25 @@ export default class UserCommand extends Command {
     const member = await interaction.guild.members.fetch(user);
     const mod = await interaction.guild.members.fetch(interaction.member.user.id);
 
-    if (member && mod) {
-      const botModStats = `Can Ban: ${member.bannable}\nCan Kick: ${member.kickable}\nCan Moderate (timeout, etc.): ${member.moderatable}\nIs above: ${member.manageable}`;
+    const botModStats = `Can Ban: \`${member.bannable}\`\nCan Kick: \`${member.kickable}\`\nCan Moderate (timeout, etc.): \`${member.moderatable}\`\nIs above: \`${member.manageable}\``;
 
-      embed.fields?.push({
-        name: '**This bot ...**',
-        value: botModStats,
-      });
+    embed.fields?.push({
+      name: '**This bot ...**',
+      value: botModStats,
+    });
 
-      const userModStats = `Can Ban: ${mod.permissions.has(
-        PermissionFlagsBits.BanMembers,
-      )}\nCan Kick: ${mod.permissions.has(
-        PermissionFlagsBits.KickMembers,
-      )}\nCan Moderate (timeout, etc.): ${mod.permissions.has(
-        PermissionFlagsBits.ModerateMembers,
-      )}\nAre above: ${mod.roles.highest.comparePositionTo(member.roles.highest) > 0}`;
+    const userModStats = `Can Ban: \`${mod.permissions.has(
+      PermissionFlagsBits.BanMembers,
+    )}\`\nCan Kick: \`${mod.permissions.has(
+      PermissionFlagsBits.KickMembers,
+    )}\`\nCan Moderate (timeout, etc.): \`${mod.permissions.has(
+      PermissionFlagsBits.ModerateMembers,
+    )}\`\nAre above: \`${mod.roles.highest.comparePositionTo(member.roles.highest) > 0}\``;
 
-      embed.fields?.push({
-        name: '**You ...**',
-        value: userModStats,
-      });
-      return interaction.reply({ embeds: [embed] });
-    }
-
+    embed.fields?.push({
+      name: '**You ...**',
+      value: userModStats,
+    });
     return interaction.reply({ embeds: [embed] });
   }
 }
