@@ -1,9 +1,15 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
 import {
-  ApplicationCommandOptionType, PermissionFlagsBits, time, type APIEmbed,
+  ApplicationCommandOptionType,
+  ComponentType,
+  OAuth2Scopes,
+  PermissionFlagsBits,
+  time,
+  type APIEmbed,
 } from 'discord.js';
 import { COLORS } from '../lib/Constants';
+import { jumpLink } from '../lib/utils';
 
 @ApplyOptions<Command.Options>({
   name: 'user-info',
@@ -33,7 +39,12 @@ export default class UserCommand extends Command {
       thumbnail: {
         url: user.displayAvatarURL(),
       },
+      url: jumpLink(user),
       fields: [
+        {
+          name: 'Username',
+          value: user.bot ? user.tag : user.username,
+        },
         {
           name: 'User ID',
           value: user.id,
