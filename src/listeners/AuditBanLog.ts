@@ -5,7 +5,7 @@ import { COLORS } from '../lib/Constants';
 import Database from '../lib/Database';
 
 @ApplyOptions<Listener.Options>({
-  name: 'New Guild Ban',
+  name: 'Audit Ban Log',
   event: Events.GuildBanAdd,
 })
 export default class UserEvent extends Listener<typeof Events.GuildBanAdd> {
