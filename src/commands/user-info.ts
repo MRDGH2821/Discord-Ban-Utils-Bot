@@ -45,15 +45,46 @@ export default class UserCommand extends Command {
       ],
       timestamp: new Date().toISOString(),
     };
-    if (interaction.channel?.isDMBased()) {
-      embed.fields?.push({
-        name: '**Can this user invite the bot?**',
-        value: `${!user.bot}`,
-      });
-    }
 
     if (!interaction.inGuild() || !interaction.guild) {
-      return interaction.reply({ embeds: [embed] });
+      const iRes = await interaction.reply({ embeds: [embed] });
+      if (!user.bot) {
+        return iRes.edit({
+          components: [
+            {
+              type: ComponentType.ActionRow,
+              components: [
+                {
+                  type: ComponentType.Button,
+                  label: 'Invite the bot in your Server!',
+                  style: 5,
+                  url: this.container.client.generateInvite({
+                    scopes: [
+                      OAuth2Scopes.Bot,
+                      OAuth2Scopes.ApplicationsCommands,
+                      OAuth2Scopes.Guilds,
+                    ],
+                    permissions: [
+                      PermissionFlagsBits.AttachFiles,
+                      PermissionFlagsBits.BanMembers,
+                      PermissionFlagsBits.EmbedLinks,
+                      PermissionFlagsBits.KickMembers,
+                      PermissionFlagsBits.ManageWebhooks,
+                      PermissionFlagsBits.ModerateMembers,
+                      PermissionFlagsBits.SendMessages,
+                      PermissionFlagsBits.SendMessagesInThreads,
+                      PermissionFlagsBits.UseExternalEmojis,
+                      PermissionFlagsBits.ViewAuditLog,
+                      PermissionFlagsBits.ViewChannel,
+                    ],
+                  }),
+                },
+              ],
+            },
+          ],
+        });
+      }
+      return iRes;
     }
 
     const member = await interaction.guild.members.fetch(user);
