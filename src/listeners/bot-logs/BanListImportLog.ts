@@ -5,12 +5,13 @@ import { ButtonStyle, ComponentType } from 'discord.js';
 import { createPaste } from 'dpaste-ts';
 import { sequentialPromises } from 'yaspr';
 import { COLORS } from '../../lib/Constants';
+import { BUEvents } from '../../lib/EventTypes';
 import type { BanEntityWithReason, BanImportOptions } from '../../lib/typeDefs';
 import { fetchAllBans, truncateString } from '../../lib/utils';
 
 @ApplyOptions<Listener.Options>({
-  name: 'Import Ban List',
-  event: 'importBanList',
+  name: 'Ban List Import Log',
+  event: BUEvents.BanListImport,
 })
 export default class UserEvent extends Listener {
   public override async run({
