@@ -38,6 +38,8 @@ export type CoreSettingsOptions = {
   guildId: string;
 };
 
+export type AllSettingsOptions = SettingsOptions & CoreSettingsOptions;
+
 export type SettingsParameter = keyof SettingsOptions;
 
 export type CoreSettingsParameter = keyof CoreSettingsOptions;
