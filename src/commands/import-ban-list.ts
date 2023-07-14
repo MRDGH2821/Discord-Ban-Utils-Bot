@@ -6,6 +6,7 @@ import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
 import { getRawPaste } from 'dpaste-ts';
 import { COLORS, NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
 import type { BanEntity, BanEntityWithReason, BanImportOptions } from '../lib/typeDefs';
+import { emitBotEvent } from '../lib/utils';
 
 @ApplyOptions<Command.Options>({
   name: 'import-ban-list',
@@ -117,7 +118,8 @@ export default class UserCommand extends Command {
       sourceMessage: msg,
       list,
     };
-    interaction.client.emit('importBanList', importOptions);
+    emitBotEvent('BanListImport', importOptions);
+    // interaction.client.emit('importBanList', importOptions);
     return msg;
   }
 }
