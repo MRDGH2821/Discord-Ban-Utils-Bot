@@ -2,9 +2,9 @@ import { s } from '@sapphire/shapeshift';
 import { Collection } from 'discord.js';
 import db from './Firestore';
 import SettingsData from './SettingsData';
-import type { CoreSettingsOptions, SettingsOptions } from './typeDefs';
+import type { AllSettingsOptions, CoreSettingsOptions } from './typeDefs';
 
-const settingsValidator = s.object<SettingsOptions & CoreSettingsOptions>({
+const settingsValidator = s.object<AllSettingsOptions>({
   sendBanLog: s.boolean.optional,
   sendUnbanLog: s.boolean.optional,
   sendExitLog: s.boolean.optional,
@@ -21,26 +21,26 @@ const settingsValidator = s.object<SettingsOptions & CoreSettingsOptions>({
   guildId: s.string,
 });
 
+const dbSettingsRef = db.collection('settings').withConverter<AllSettingsOptions>({
+  toFirestore: (settings: SettingsData | AllSettingsOptions) => ({ ...settings }),
+  fromFirestore: (snapshot) => settingsValidator.parse(snapshot.data()),
+});
+
 export default class Database {
   static #cache = new Collection<string, SettingsData>();
 
   static async #fetchDB() {
-    await db
-      .collection('settings')
-      .get()
-      .then((snapshot) => {
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          const validatedData = settingsValidator.parse(data);
-          const settings = new SettingsData(validatedData);
-          this.#cache.set(settings.guildId, settings);
-        });
+    await dbSettingsRef.get().then((snapshot) => {
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const settings = new SettingsData(data);
+        this.#cache.set(settings.guildId, settings);
       });
+    });
   }
 
   static #fetchData(guildId: string) {
-    return db
-      .collection('settings')
+    return dbSettingsRef
       .doc(guildId)
       .get()
       .then((doc) => {
@@ -64,8 +64,7 @@ export default class Database {
     const settings = new SettingsData(validatedData);
     this.#cache.set(settings.guildId, settings);
 
-    return db
-      .collection('settings')
+    return dbSettingsRef
       .doc(settings.guildId)
       .set(validatedData)
       .then(() => settings);
