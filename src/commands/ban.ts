@@ -6,6 +6,7 @@ import {
   PermissionFlagsBits,
 } from 'discord.js';
 import { COLORS, NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
+import { emitBotEvent } from '../lib/utils';
 
 @ApplyOptions<Command.Options>({
   name: 'ban',
@@ -94,8 +95,9 @@ export default class UserCommand extends Command {
         deleteMessageSeconds: deleteMsgDays,
         reason,
       })
-      .then(() =>
-        interaction.reply({
+      .then(() => {
+        emitBotEvent('BotGuildBanAdd', { convict, executor: interaction.user, reason });
+        return interaction.reply({
           embeds: [
             {
               title: '**Ban Hammer Dropped!**',
@@ -117,6 +119,7 @@ export default class UserCommand extends Command {
               timestamp: new Date().toISOString(),
             },
           ],
-        }));
+        });
+      });
   }
 }
