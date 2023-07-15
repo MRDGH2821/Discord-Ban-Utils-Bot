@@ -106,7 +106,7 @@ export default class UserCommand extends Command {
       inline: true,
     });
 
-    const { joinedAt } = member;
+    const { joinedAt, communicationDisabledUntil } = member;
     if (joinedAt) {
       embed.fields?.push({
         name: '**Joined on**',
@@ -157,6 +157,14 @@ export default class UserCommand extends Command {
           .splice(0, 5)
           .join(' '),
       });
+
+      if (communicationDisabledUntil) {
+        embed.fields?.push({
+          name: '**In Timeout until**',
+          value: `${time(communicationDisabledUntil)} (${time(communicationDisabledUntil, 'R')})`,
+          inline: true,
+        });
+      }
     }
     return interaction.reply({
       embeds: [embed],
