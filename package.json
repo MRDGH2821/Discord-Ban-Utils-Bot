@@ -52,6 +52,7 @@
     "colorette": "^2.0.20",
     "discord.js": "^14.11.0",
     "dpaste-ts": "^2.0.0",
+    "enhanced-ms": "^2.3.0",
     "firebase-admin": "^11.10.1",
     "tslib": "^2.6.0",
     "yaspr": "^1.0.2"
