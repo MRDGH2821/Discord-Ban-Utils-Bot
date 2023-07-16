@@ -18,7 +18,7 @@ const client = new SapphireClient({
     GatewayIntentBits.GuildWebhooks,
   ],
   loadMessageCommandListeners: true,
-  partials: [Partials.GuildMember, Partials.User],
+  partials: [Partials.GuildMember, Partials.User, Partials.User],
 });
 client.stores.registerPath(__dirname);
 const main = async () => {
