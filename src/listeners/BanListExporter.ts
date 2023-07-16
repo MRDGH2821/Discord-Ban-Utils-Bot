@@ -1,15 +1,24 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Listener } from '@sapphire/framework';
 import { chunk } from '@sapphire/utilities';
-import type { APIEmbed, Collection, GuildBan } from 'discord.js';
+import {
+  type APIEmbed,
+  type Collection,
+  type Guild,
+  type GuildBan,
+  type MessagePayloadOption,
+} from 'discord.js';
 import { createPaste } from 'dpaste-ts';
 import { sequentialPromises } from 'yaspr';
 import { COLORS } from '../lib/Constants';
+import Database from '../lib/Database';
 import { BUEvents } from '../lib/EventTypes';
 import type {
   BanEntity, BanEntityWithReason, BanExportOptions, BanType,
 } from '../lib/typeDefs';
-import { debugErrorEmbed, fetchAllBans, truncateString } from '../lib/utils';
+import {
+  debugErrorEmbed, fetchAllBans, getWebhook, truncateString,
+} from '../lib/utils';
 
 @ApplyOptions<Listener.Options>({
   name: 'Ban List Exporter',
@@ -87,43 +96,66 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
           icon_url: user.displayAvatarURL(),
         },
       };
+      const resultFile = {
+        attachment: Buffer.from(links.join('\n')),
+        name: `Ban List of ${guild.name}.txt`,
+        description: 'Ban list links',
+      };
+
+      this.sendLog(guild.id, resultEmbed, [resultFile]);
 
       return await message.reply({
         content: `${user}`,
         embeds: [resultEmbed],
-        files: [
-          {
-            attachment: Buffer.from(links.join('\n')),
-            name: `Ban List of ${guild.name}.txt`,
-            description: 'Ban list links',
-          },
-        ],
+        files: [resultFile],
       });
     } catch (err) {
       this.container.logger.error(err);
+      const errEmbed = debugErrorEmbed({
+        title: 'Error while exporting ban list',
+        description: 'An error occurred while exporting ban list',
+        error: err,
+        checks: [
+          {
+            question: 'None',
+            result: true,
+          },
+        ],
+        inputs: [
+          {
+            name: 'Include Reason',
+            value: `${includeReason}`,
+          },
+        ],
+        solution: 'Please wait for sometime before trying again.',
+      });
+      this.sendLog(guild.id, errEmbed);
       return message.reply({
         content: `${user}`,
-        embeds: [
-          debugErrorEmbed({
-            title: 'Error while exporting ban list',
-            description: 'An error occurred while exporting ban list',
-            error: err,
-            checks: [
-              {
-                question: 'None',
-                result: true,
-              },
-            ],
-            inputs: [
-              {
-                name: 'Include Reason',
-                value: `${includeReason}`,
-              },
-            ],
-            solution: 'Please wait for sometime before trying again.',
-          }),
-        ],
+        embeds: [errEmbed],
       });
     }
+  }
+
+  public async sendLog(
+    guildId: Guild['id'],
+    embed: APIEmbed,
+    files?: MessagePayloadOption['files'],
+  ) {
+    const settings = await Database.getSettings(guildId);
+    if (!settings || !settings?.sendBanExportLog) {
+      return;
+    }
+
+    const webhook = await getWebhook(guildId, settings.webhookId);
+
+    if (!webhook) {
+      return;
+    }
+
+    await webhook.send({
+      embeds: [embed],
+      files,
+    });
   }
 }

@@ -1,10 +1,17 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Listener } from '@sapphire/framework';
 import { retry, sleepSync } from '@sapphire/utilities';
-import { ButtonStyle, ComponentType } from 'discord.js';
+import {
+  ButtonStyle,
+  ComponentType,
+  Guild,
+  type APIEmbed,
+  type MessagePayloadOption,
+} from 'discord.js';
 import { createPaste } from 'dpaste-ts';
 import { sequentialPromises } from 'yaspr';
 import { COLORS } from '../lib/Constants';
+import Database from '../lib/Database';
 import { BUEvents } from '../lib/EventTypes';
 import type { BanEntityWithReason, BanImportOptions } from '../lib/typeDefs';
 import { fetchAllBans, truncateString } from '../lib/utils';
@@ -71,37 +78,37 @@ export default class UserEvent extends Listener {
         2,
       ),
     );
-    return message.reply({
-      content: `${user}`,
-      embeds: [
+    const operationEmbed = {
+      title: 'Ban list imported!',
+      description: 'Ban statistics:',
+      color: COLORS.hammerHandle,
+      fields: [
         {
-          title: 'Ban list imported!',
-          description: 'Ban statistics:',
-          color: COLORS.hammerHandle,
-          fields: [
-            {
-              name: 'Successful bans',
-              value: `${successBans.size}`,
-            },
-            {
-              name: 'Failed bans',
-              value: `${failedBans.size}`,
-            },
-            {
-              name: 'Unique Bans',
-              value: `${uniqueList.length}`,
-            },
-            {
-              name: 'Total bans',
-              value: `${list.length}`,
-            },
-          ],
-          footer: {
-            text: `Requested by ${user.username}`,
-            icon_url: user.displayAvatarURL(),
-          },
+          name: 'Successful bans',
+          value: `${successBans.size}`,
+        },
+        {
+          name: 'Failed bans',
+          value: `${failedBans.size}`,
+        },
+        {
+          name: 'Unique Bans',
+          value: `${uniqueList.length}`,
+        },
+        {
+          name: 'Total bans',
+          value: `${list.length}`,
         },
       ],
+      footer: {
+        text: `Requested by ${user.username}`,
+        icon_url: user.displayAvatarURL(),
+      },
+    };
+    this.sendLog(guild.id, operationEmbed);
+    return message.reply({
+      content: `${user}`,
+      embeds: [operationEmbed],
       components:
         failedBans.size > 0
           ? [
@@ -121,6 +128,23 @@ export default class UserEvent extends Listener {
             },
           ]
           : undefined,
+    });
+  }
+
+  public async sendLog(
+    guildId: Guild['id'],
+    embed: APIEmbed,
+    components?: MessagePayloadOption['components'],
+  ) {
+    const settings = await Database.getSettings(guildId);
+    if (!settings || !settings.sendBanImportLog) return;
+
+    const webhook = await this.container.client.fetchWebhook(settings.webhookId);
+    if (!webhook) return;
+
+    await webhook.send({
+      embeds: [embed],
+      components,
     });
   }
 }
