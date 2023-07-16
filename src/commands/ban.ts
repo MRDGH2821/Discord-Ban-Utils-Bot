@@ -90,13 +90,15 @@ export default class UserCommand extends Command {
       });
     }
 
+    const mod = await interaction.guild.members.fetch(interaction.user.id);
+
     return interaction.guild.members
       .ban(convict, {
         deleteMessageSeconds: deleteMsgDays,
         reason,
       })
       .then(() => {
-        emitBotEvent('BotGuildBanAdd', { convict, executor: interaction.user, reason });
+        emitBotEvent('BotGuildBanAdd', { convict, executor: mod, reason });
         return interaction.reply({
           embeds: [
             {

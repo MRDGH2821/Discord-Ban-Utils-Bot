@@ -1,9 +1,9 @@
-import type { User } from 'discord.js';
+import type { GuildMember, User } from 'discord.js';
 import type { BanExportOptions, BanImportOptions } from './typeDefs';
 
 export type BotGuildBanAddOptions = {
   convict: User;
-  executor: User;
+  executor: GuildMember;
   reason: string;
 };
 
