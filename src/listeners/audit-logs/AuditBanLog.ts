@@ -3,6 +3,7 @@ import { Events, Listener } from '@sapphire/framework';
 import { AuditLogEvent, GuildBan, type APIEmbed } from 'discord.js';
 import { COLORS } from '../../lib/Constants';
 import Database from '../../lib/Database';
+import { getWebhook } from '../../lib/utils';
 
 @ApplyOptions<Listener.Options>({
   name: 'Audit Ban Log',
@@ -10,6 +11,11 @@ import Database from '../../lib/Database';
 })
 export default class UserEvent extends Listener<typeof Events.GuildBanAdd> {
   public override async run(ban: GuildBan) {
+    const settings = await Database.getSettings(ban.guild.id);
+    if (!settings || !settings?.sendBanLog) {
+      return;
+    }
+
     const banLogs = await ban.guild.fetchAuditLogs({
       type: AuditLogEvent.MemberBanAdd,
       limit: 1,
@@ -42,16 +48,7 @@ export default class UserEvent extends Listener<typeof Events.GuildBanAdd> {
       });
     }
 
-    const settings = await Database.getSettings(ban.guild.id);
-    if (!settings || !settings?.sendBanLog) {
-      return;
-    }
-
-    const webhooks = await ban.guild.fetchWebhooks();
-
-    const webhook = webhooks.find(
-      (w) => w.id === settings.webhookId || w.owner?.id === this.container.client.user?.id,
-    );
+    const webhook = await getWebhook(ban.guild.id, settings.webhookId);
     if (!webhook) {
       return;
     }
