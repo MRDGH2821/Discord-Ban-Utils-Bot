@@ -8,7 +8,7 @@ import {
 import { s } from '@sapphire/shapeshift';
 import { cyan } from 'colorette';
 import type {
-  APIEmbed, APIUser, Guild, GuildMember, User,
+  APIEmbed, APIUser, Guild, GuildMember, User, Webhook,
 } from 'discord.js';
 import { COLORS } from './Constants';
 import Database from './Database';
@@ -204,4 +204,12 @@ export function emitBotEvent<E extends keyof BUEventParams>(
   ...args: BUEventParams[E]
 ) {
   container.client.emit(event, ...args);
+}
+
+export function getWebhook(guildId: Guild['id'], webhookId?: Webhook['id']) {
+  return container.client.guilds
+    .fetch(guildId)
+    .then((guild) => guild.fetchWebhooks())
+    .then((hooks) =>
+      hooks.find((w) => w.id === webhookId || w.owner?.id === container.client.user?.id));
 }
