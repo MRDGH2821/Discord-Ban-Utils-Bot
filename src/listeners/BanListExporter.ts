@@ -4,15 +4,15 @@ import { chunk } from '@sapphire/utilities';
 import type { APIEmbed, Collection, GuildBan } from 'discord.js';
 import { createPaste } from 'dpaste-ts';
 import { sequentialPromises } from 'yaspr';
-import { COLORS } from '../../lib/Constants';
-import { BUEvents } from '../../lib/EventTypes';
+import { COLORS } from '../lib/Constants';
+import { BUEvents } from '../lib/EventTypes';
 import type {
   BanEntity, BanEntityWithReason, BanExportOptions, BanType,
-} from '../../lib/typeDefs';
-import { debugErrorEmbed, fetchAllBans, truncateString } from '../../lib/utils';
+} from '../lib/typeDefs';
+import { debugErrorEmbed, fetchAllBans, truncateString } from '../lib/utils';
 
 @ApplyOptions<Listener.Options>({
-  name: 'Ban List Export Log',
+  name: 'Ban List Exporter',
   event: BUEvents.BanListExport,
 })
 export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
