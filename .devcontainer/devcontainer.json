@@ -2,6 +2,7 @@
   "name": "Node.js & TypeScript",
   "image": "mcr.microsoft.com/devcontainers/typescript-node",
   "onCreateCommand": "bash .devcontainer/setup.sh",
+  "postCreateCommand": "sudo npm i",
   "features": {
     "ghcr.io/devcontainers/features/desktop-lite:1": {},
     "ghcr.io/dhoeric/features/hadolint:1": {}
