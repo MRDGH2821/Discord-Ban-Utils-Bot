@@ -14,7 +14,7 @@ import { emitBotEvent } from '../lib/utils';
 
 @ApplyOptions<Command.Options>({
   name: 'export-ban-list',
-  description: 'A basic slash command',
+  description: 'Exports ban list as link(s)',
   requiredClientPermissions: [
     PermissionFlagsBits.ViewAuditLog,
     PermissionFlagsBits.BanMembers,
