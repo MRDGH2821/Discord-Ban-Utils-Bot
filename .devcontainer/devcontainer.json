@@ -21,6 +21,7 @@
         "EditorConfig.EditorConfig",
         "esbenp.prettier-vscode",
         "exiasr.hadolint",
+        "foxundermoon.shell-format",
         "MichaelCurrin.auto-commit-msg",
         "p42ai.refactor",
         "Phu1237.vs-browser",
