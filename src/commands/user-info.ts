@@ -39,6 +39,11 @@ export default class UserCommand extends Command {
       thumbnail: {
         url: user.displayAvatarURL(),
       },
+      author: {
+        name: user.username,
+        icon_url: user.displayAvatarURL(),
+        url: jumpLink(user),
+      },
       url: jumpLink(user),
       fields: [
         {
