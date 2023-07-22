@@ -29,6 +29,5 @@
       ]
     }
   },
-  "forwardPorts": [5901, 6080],
-  "remoteUser": "root"
+  "forwardPorts": [5901, 6080]
 }
