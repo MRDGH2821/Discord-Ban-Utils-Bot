@@ -26,7 +26,8 @@
         "redhat.vscode-yaml",
         "spmeesseman.vscode-taskexplorer",
         "streetsidesoftware.code-spell-checker",
-        "usernamehw.errorlens"
+        "usernamehw.errorlens",
+        "wdhongtw.gpg-indicator"
       ]
     }
   },
