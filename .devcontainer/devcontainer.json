@@ -39,9 +39,12 @@
         "spmeesseman.vscode-taskexplorer",
         "streetsidesoftware.code-spell-checker",
         "usernamehw.errorlens",
-        "wdhongtw.gpg-indicator"
+        "wdhongtw.gpg-indicator",
+        "idered.npm"
       ]
     }
   },
-  "forwardPorts": [5901, 6080]
+  "forwardPorts": [5901, 6080],
+  "containerUser": "root",
+  "remoteUser": "root"
 }
