@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 echo "Installing Firefox ESR";
 sudo apt-get update;
@@ -6,4 +6,4 @@ export DEBIAN_FRONTEND=noninteractive;
 sudo apt-get install -y firefox-esr;
 
 echo "Installing Project Dependencies";
-npm install;
+sudo npm install;
