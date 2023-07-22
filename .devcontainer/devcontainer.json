@@ -1,7 +1,19 @@
 {
   "name": "Node.js & TypeScript",
   "image": "mcr.microsoft.com/devcontainers/typescript-node",
-  "postCreateCommand": "sudo npm i",
+  "initializeCommand": {
+    // "test": "echo otrust.txt",
+    "gpg.exportPublicKeys": "gpg -a --export --output .devcontainer/gpg/mypubkeys.asc --yes",
+    "gpg.exportPrivateKeys": "gpg -a --pinentry-mode loopback --passphrase-file=.devcontainer/gpg/gpgp.txt --export-secret-keys --output .devcontainer/gpg/myprivatekeys.asc --yes",
+    "gpg.exportTrustDB": "gpg --export-ownertrust > .devcontainer/gpg/otrust.txt"
+  },
+  "onCreateCommand": "sudo npm i",
+  "postCreateCommand": {
+    // "npm": "sudo npm i",
+    "gpg.importPublic": "sudo gpg --import .devcontainer/gpg/mypubkeys.asc",
+    "gpg.importPri": "sudo gpg -v --pinentry-mode loopback --passphrase-file=.devcontainer/gpg/gpgp.txt --import .devcontainer/gpg/myprivatekeys.asc",
+    "gpg.importOt": "sudo gpg --import-ownertrust .devcontainer/gpg/otrust.txt"
+  },
   "features": {
     "ghcr.io/devcontainers/features/desktop-lite:1": {},
     "ghcr.io/dhoeric/features/hadolint:1": {},
