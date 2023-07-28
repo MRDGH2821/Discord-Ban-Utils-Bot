@@ -2,8 +2,8 @@
 # Linux and macOS-specific commands for initialization
 
 # Check if the script is running on GitHub Codespaces
-if [[ ! -z "${CODESPACES}" ]]; then
-  echo "Running in GitHub Codespaces.\nNo need to export any keys."
+if [[ -n "${CODESPACES}" ]]; then
+  printf "Running in GitHub Codespaces.\nNo need to export any keys."
   # Add your specific commands for GitHub Codespaces here, if needed
 else
   echo "Running on Linux or macOS host"
@@ -12,12 +12,12 @@ else
   fileContent=$(cat .devcontainer/gpg/gpg-key-id.txt)
 
   echo "Exporting Public Keys"
-  gpg -a --export --output .devcontainer/gpg/public-keys.asc --yes
+  gpg -a --output .devcontainer/gpg/public-keys.asc --yes --export "$fileContent"
 
   echo "Exporting Private Key"
-  gpg -a --passphrase-file=.devcontainer/gpg/gpg-key-password.txt --export-secret-keys $fileContent --output .devcontainer/gpg/private-keys.asc --yes
+  gpg -a --passphrase-file=.devcontainer/gpg/gpg-key-password.txt --output .devcontainer/gpg/private-keys.asc --yes --export-secret-keys "$fileContent"
 
   echo "Exporting Trust DB"
-  gpg -a --export-ownertrust --output .devcontainer/gpg/owner-trust-db.txt >.devcontainer/gpg/owner-trust-db.txt
+  gpg -a --export-ownertrust >.devcontainer/gpg/owner-trust-db.txt
 
 fi

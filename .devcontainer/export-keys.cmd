@@ -7,10 +7,10 @@ echo Using Key ID %fileContent%
 
 
 echo Exporting Public Keys
-gpg -a --export --output .devcontainer/gpg/public-keys.asc --yes
+gpg -a --output .devcontainer/gpg/public-keys.asc --yes --export %fileContent%
 
 echo Exporting Private Key
-gpg -a --pinentry-mode loopback --passphrase-file=.devcontainer/gpg/gpg-key-password.txt --export-secret-keys %fileContent% > .devcontainer/gpg/private-keys.asc 
+gpg -a --pinentry-mode loopback --passphrase-file=.devcontainer/gpg/gpg-key-password.txt --output .devcontainer/gpg/private-keys.asc --export-secret-keys %fileContent%
 
 echo Exporting Trust DB
-gpg -a --export-ownertrust --output .devcontainer/gpg/owner-trust-db.txt > .devcontainer/gpg/owner-trust-db.txt
+gpg -a --export-ownertrust >.devcontainer/gpg/owner-trust-db.txt
