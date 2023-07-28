@@ -13,6 +13,7 @@
     "gpg.importTrustDB": "sudo gpg --import-ownertrust .devcontainer/gpg/owner-trust-db.txt"
   },
   "features": {
+    "ghcr.io/devcontainers-contrib/features/shfmt:1.0.0": {},
     "ghcr.io/devcontainers/features/desktop-lite:1": {},
     "ghcr.io/dhoeric/features/hadolint:1": {},
     "ghcr.io/devcontainers-contrib/features/apt-get-packages:1": {
@@ -45,6 +46,9 @@
         "usernamehw.errorlens",
         "wdhongtw.gpg-indicator"
       ],
+      "settings": {
+        "shellformat.path": "/usr/local/bin/shfmt"
+      }
     }
   },
   "forwardPorts": [5901, 6080],
