@@ -1,17 +1,9 @@
 {
   "name": "Node.js & TypeScript",
   "image": "mcr.microsoft.com/devcontainers/typescript-node",
-  "initializeCommand": {
-    "gpg.exportPublicKeys": "gpg -a --export --output .devcontainer/gpg/public-keys.asc --yes",
-    "gpg.exportPrivateKeys": "gpg -a --pinentry-mode loopback --passphrase-file=.devcontainer/gpg/gpg-password.txt --export-secret-keys --output .devcontainer/gpg/private-keys.asc --yes",
-    "gpg.exportTrustDB": "gpg -a --export-ownertrust --output .devcontainer/gpg/owner-trust-db.txt > .devcontainer/gpg/owner-trust-db.txt"
-  },
+  "initializeCommand": [".devcontainer/export-keys"],
   "onCreateCommand": "sudo npm i",
-  "postCreateCommand": {
-    "gpg.importPublicKeys": "sudo gpg --import .devcontainer/gpg/public-keys.asc",
-    "gpg.importPrivateKeys": "sudo gpg -v --pinentry-mode loopback --passphrase-file=.devcontainer/gpg/gpg-password.txt --import .devcontainer/gpg/private-keys.asc",
-    "gpg.importTrustDB": "sudo gpg --import-ownertrust .devcontainer/gpg/owner-trust-db.txt"
-  },
+  "postCreateCommand": "sudo bash .devcontainer/import-keys.sh",
   "features": {
     "ghcr.io/devcontainers-contrib/features/shfmt:1.0.0": {},
     "ghcr.io/devcontainers/features/desktop-lite:1": {},
