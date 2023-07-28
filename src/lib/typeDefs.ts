@@ -18,6 +18,7 @@ export type BanImportOptions = {
   list: NonNullable<BanEntityWithReason>[];
 };
 
+/* jscpd:ignore-start */
 export type SettingsOptions = {
   sendBanLog?: boolean;
   sendUnbanLog?: boolean;
@@ -37,6 +38,7 @@ export type CoreSettingsOptions = {
   webhookId: string;
   guildId: string;
 };
+/* jscpd:ignore-end */
 
 export type AllSettingsOptions = SettingsOptions & CoreSettingsOptions;
 
