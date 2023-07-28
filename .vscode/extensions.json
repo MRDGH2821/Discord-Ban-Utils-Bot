@@ -8,14 +8,19 @@
     "eamodio.gitlens",
     "editorconfig.editorconfig",
     "esbenp.prettier-vscode",
+    "evondev.indent-rainbow-palettes",
     "exiasr.hadolint",
     "foxundermoon.shell-format",
+    "idered.npm",
     "michaelcurrin.auto-commit-msg",
+    "ms-azuretools.vscode-docker",
+    "oderwat.indent-rainbow",
     "p42ai.refactor",
     "redhat.vscode-yaml",
     "spmeesseman.vscode-taskexplorer",
     "streetsidesoftware.code-spell-checker",
     "tal7aouy.indent-colorizer",
-    "usernamehw.errorlens"
+    "usernamehw.errorlens",
+    "wdhongtw.gpg-indicator"
   ]
 }

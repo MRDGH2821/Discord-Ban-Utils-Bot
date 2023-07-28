@@ -30,18 +30,21 @@
         "eamodio.gitlens",
         "EditorConfig.EditorConfig",
         "esbenp.prettier-vscode",
+        "evondev.indent-rainbow-palettes",
         "exiasr.hadolint",
         "foxundermoon.shell-format",
+        "idered.npm",
         "MichaelCurrin.auto-commit-msg",
+        "ms-azuretools.vscode-docker",
+        "oderwat.indent-rainbow",
         "p42ai.refactor",
         "Phu1237.vs-browser",
         "redhat.vscode-yaml",
         "spmeesseman.vscode-taskexplorer",
         "streetsidesoftware.code-spell-checker",
         "usernamehw.errorlens",
-        "wdhongtw.gpg-indicator",
-        "idered.npm"
-      ]
+        "wdhongtw.gpg-indicator"
+      ],
     }
   },
   "forwardPorts": [5901, 6080],
