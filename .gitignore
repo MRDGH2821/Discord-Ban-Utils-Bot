@@ -48,3 +48,4 @@ old/*
 firebase-service-acc/*.json
 .devcontainer/gpg/*
 !.devcontainer/gpg/README.md
+megalinter-reports/
