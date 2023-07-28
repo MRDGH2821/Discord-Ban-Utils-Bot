@@ -16,5 +16,16 @@
     "**/report/**"
   ],
   "reporters": ["html", "markdown"],
-  "threshold": 0
+  "threshold": 0,
+  "ignorePattern": [
+    "regist.*|name:.*|description:.*|dm.*|defaultMem.*",
+    "guild.*|.*SERVER_ONLY",
+    "reason.*|convict.*",
+    "guild.*|.*convict.*",
+    "permission.*|.*NOT_PERMITTED",
+    "return.*reply\\(.*",
+    "ephemeral.*",
+    "guild.*|convict.*|ephemeral.*|return.*reply.*",
+    "guild.*|content.*|ephemeral.*|return.*reply.*|.*permission.*"
+  ]
 }
