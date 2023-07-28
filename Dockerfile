@@ -20,7 +20,7 @@ COPY package*.json ./
 
 COPY --from=builder /app/build ./dist
 
-RUN npm ci --omit=dev && useradd bu-bot 
+RUN npm ci --omit=dev && useradd bu-bot
 
 USER bu-bot
 
