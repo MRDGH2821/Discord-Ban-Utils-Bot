@@ -38,7 +38,8 @@
     "sapphire": "sapphire",
     "start": "node dist/index.js",
     "watch": "tsc -w",
-    "watch:start": "tsc-watch --onSuccess \"npm run dev:start\""
+    "watch:start": "tsc-watch --onSuccess \"npm run dev:start\"",
+    "mega-lint": "npx mega-linter-runner --flavor javascript"
   },
   "dependencies": {
     "@sapphire/decorators": "^6.0.2",
@@ -60,7 +61,7 @@
   "devDependencies": {
     "@sapphire/cli": "^1.6.1",
     "@sapphire/ts-config": "^4.0.1",
-    "@types/node": "^20.3.1",
+    "@types/node": "^20.4.5",
     "@types/ws": "^8.5.5",
     "@typescript-eslint/eslint-plugin": "^6.2.0",
     "@typescript-eslint/parser": "^6.2.0",
