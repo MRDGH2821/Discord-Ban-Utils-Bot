@@ -1,8 +1,8 @@
 #!/usr/bin/bash
 
 # Check if the script is running on GitHub Codespaces
-if [[ ! -z "${CODESPACES}" ]]; then
-  echo "Running in GitHub Codespaces.\nNo need to import any keys."
+if [[ -n "${CODESPACES}" ]]; then
+  printf "Running in GitHub Codespaces.\nNo need to import any keys."
 else
   # Check if .devcontainer/gpg folder has required files
   if [ -f ".devcontainer/gpg/public-keys.asc" ]; then
