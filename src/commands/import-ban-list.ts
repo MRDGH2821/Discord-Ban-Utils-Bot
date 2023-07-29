@@ -60,7 +60,10 @@ export default class UserCommand extends Command {
     const data = await getRawPaste(link);
     const defaultReason = `Imported by ${interaction.user.username} on ${new Date().toUTCString()}`;
 
-    const transformer = (value: string) => ({ id: value, reason: defaultReason });
+    const transformer = (value: string) => ({
+      id: value,
+      reason: defaultReason,
+    });
     const BanEntitiesSchema = s
       .array<BanEntity>(s.string.lengthGreaterThan(1))
       .transform<BanEntityWithReason[]>((values) => values.map((v) => transformer(v)));

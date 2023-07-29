@@ -22,7 +22,9 @@ const settingsValidator = s.object<AllSettingsOptions>({
 });
 
 const dbSettingsRef = db.collection('settings').withConverter<AllSettingsOptions>({
-  toFirestore: (settings: SettingsData | AllSettingsOptions) => ({ ...settings }),
+  toFirestore: (settings: SettingsData | AllSettingsOptions) => ({
+    ...settings,
+  }),
   fromFirestore: (snapshot) => settingsValidator.parse(snapshot.data()),
 });
 

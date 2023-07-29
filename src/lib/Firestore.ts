@@ -1,7 +1,7 @@
-import { initializeApp } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
 import fs from 'fs';
 import * as path from 'path';
+import { initializeApp } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
 import './EnvConfig';
 
 const basePath = path.resolve(process.cwd(), 'firebase-service-acc');
