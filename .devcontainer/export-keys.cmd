@@ -1,5 +1,5 @@
 @echo off
-echo "Running on Windows host"
+echo Running on Windows host
 
 set "fileContent="
 for /f "usebackq delims=" %%i in (".devcontainer/gpg/gpg-key-id.txt") do set "fileContent=%%i"
