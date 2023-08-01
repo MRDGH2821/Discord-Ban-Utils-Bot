@@ -219,3 +219,14 @@ export function getWebhook(guildId: Guild['id'], webhookId?: Webhook['id']) {
         hooks.find((w) => w.id === webhookId || w.owner?.id === container.client.user?.id))
   );
 }
+
+export function banEntitySchemaBuilder(banReason: string) {
+  const transformer = (value: string) => ({
+    id: value,
+    reason: banReason,
+  });
+  return s
+    .array<BanEntity>(s.string.lengthGreaterThan(1))
+    .transform<BanEntityWithReason[]>((values) => values.map((v) => transformer(v)));
+}
+
