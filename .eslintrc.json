@@ -4,7 +4,7 @@
   "parserOptions": {
     "project": ["./tsconfig.json"]
   },
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "unused-imports"],
   "rules": {
     "class-methods-use-this": [
       "error",
@@ -13,6 +13,7 @@
       }
     ],
     "implicit-arrow-linebreak": "off",
-    "no-console": "off"
+    "no-console": "off",
+    "unused-imports/no-unused-imports": "error"
   }
 }
