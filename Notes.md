@@ -17,8 +17,8 @@
 | help            |              |
 | import ban list | ✅           |
 | kick            | ✅           |
-| mass ban        |              |
-| mass unban      |              |
+| mass ban        | ✅           |
+| mass unban      | ✅           |
 | ping            | ✅           |
 | settings        | ✅           |
 | timeout         | ✅           |
@@ -38,16 +38,17 @@
 
 ### Bot Logs
 
-| Log name        | Implemented? |
-| --------------- | ------------ |
-| Ban             | ✅           |
-| Unban           |              |
-| kick            |              |
-| timeout         |              |
-| un timeout      |              |
-| ban list export | ✅           |
-| ban list import | ✅           |
-| settings change |              |
-| ban copy        |              |
-| mass ban        |              |
-| mass unban      |              |
+| Log name          | Implemented? |
+| ----------------- | ------------ |
+| Ban               | ✅           |
+| Unban             |              |
+| kick              |              |
+| timeout           |              |
+| un timeout        |              |
+| ban list export   | ✅           |
+| ban list import   | ✅           |
+| unban list import |              |
+| settings change   |              |
+| ban copy          |              |
+| mass ban          | ✅           |
+| mass unban        | ✅           |
