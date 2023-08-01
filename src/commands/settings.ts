@@ -180,7 +180,7 @@ export default class UserCommand extends Subcommand {
         return parsedSettings;
       })
       .then(async (settings) => {
-        const webhook = await this.getWebhook(channel);
+        const webhook = await this.getOrCreateWebhook(channel);
         const data = await Database.newServerSetting({
           guildId: channel.guildId,
           webhookId: webhook.id,
@@ -194,7 +194,7 @@ export default class UserCommand extends Subcommand {
         }));
   }
 
-  public async getWebhook(channel: TextChannel, cleanUp = true) {
+  public async getOrCreateWebhook(channel: TextChannel, cleanUp = true) {
     const webhooks = await channel.guild.fetchWebhooks();
     const myWebhooks = webhooks
       .filter((w) => w.owner?.id === this.container.client.user?.id)
