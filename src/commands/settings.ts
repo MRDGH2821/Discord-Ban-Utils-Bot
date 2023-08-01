@@ -11,10 +11,10 @@ import {
   type APIEmbed,
   type APISelectMenuOption,
 } from 'discord.js';
-import { COLORS, WEBHOOK_ICON } from '../lib/Constants';
+import { COLORS, SERVER_ONLY, WEBHOOK_ICON } from '../lib/Constants';
 import Database from '../lib/Database';
 import type { SettingsParameter } from '../lib/typeDefs';
-import { selectedSettingsValidator } from '../lib/utils';
+import { getWebhook, selectedSettingsValidator } from '../lib/utils';
 
 interface SettingsOpt extends APISelectMenuOption {
   value: SettingsParameter;
@@ -27,6 +27,42 @@ interface SettingsOpt extends APISelectMenuOption {
       name: 'set',
       type: 'method',
       chatInputRun: 'subChatInputRun',
+    },
+    {
+      name: 'view',
+      type: 'method',
+      async chatInputRun(interaction) {
+        if (!interaction.inGuild() || !interaction.guild) {
+          return interaction.reply({
+            content: SERVER_ONLY,
+            ephemeral: true,
+          });
+        }
+
+        const force = interaction.options.getBoolean('force') || false;
+
+        const settings = await Database.getSettings(interaction.guildId, force);
+        if (!settings) {
+          const text = force
+            ? 'Even refreshing settings cache forcefully'
+            : '(If this is a mistake, then please use force option)';
+          return interaction.reply({
+            content: `No settings configured.\n${text}`,
+            ephemeral: true,
+          });
+        }
+        const webhook = await getWebhook(interaction.guildId, settings.webhookId);
+
+        return interaction.reply({
+          embeds: [
+            {
+              title: 'Settings',
+              description: `${codeBlock('m', `${settings}`)}\nChannel: ${webhook?.channel}`,
+              color: COLORS.whiteGray,
+            },
+          ],
+        });
+      },
     },
   ],
   preconditions: ['GuildOnly'],
@@ -54,6 +90,18 @@ export default class UserCommand extends Subcommand {
               channel_types: [ChannelType.GuildText],
               channelTypes: [ChannelType.GuildText],
               required: true,
+            },
+          ],
+        },
+        {
+          name: 'view',
+          description: 'View settings',
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: 'force',
+              description: 'Force refresh settings, if you believe you have set settings',
+              type: ApplicationCommandOptionType.Boolean,
             },
           ],
         },
@@ -169,8 +217,8 @@ export default class UserCommand extends Subcommand {
               title: '**New settings applied!**',
               color: COLORS.invisible,
               description: `These are the new settings you have applied.\nLogging Channel: ${channel}\n\n${codeBlock(
-                'json',
-                JSON.stringify(parsedSettings, null, 2),
+                'm',
+                `${parsedSettings}`,
               )}`,
             },
           ],
