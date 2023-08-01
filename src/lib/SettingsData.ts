@@ -1,7 +1,24 @@
 import db from './Firestore';
-import type { CoreSettingsOptions, SettingsOptions, SettingsParameter } from './typeDefs';
+import type { AllSettingsOptions, SettingsOptions, SettingsParameter } from './typeDefs';
 
-export default class SettingsData implements SettingsOptions, CoreSettingsOptions {
+const translation: { [x in keyof Required<AllSettingsOptions>]: string } = {
+  sendBanLog: 'Send Ban Log',
+  sendBanCopyLog: 'Send Ban Copy Log',
+  sendBanExportLog: 'Send Ban Export Log',
+  sendBanImportLog: 'Send Ban Import Log',
+  sendExitLog: 'Send Member Exit Log',
+  sendJoinLog: 'Send Member Join Log',
+  sendKickLog: 'Send Kicked Member Log',
+  sendMassBanLog: 'Send Mass Ban Log',
+  sendMassUnbanLog: 'Send Mass Unban Log',
+  sendTimeoutLog: 'Send Timeout Log',
+  sendUnbanLog: 'Send Unban Log',
+  sendUnTimeoutLog: 'Send Un-Timeout Log',
+  webhookId: 'Webhook ID',
+  guildId: 'Server ID',
+};
+
+export default class SettingsData implements AllSettingsOptions {
   sendBanLog?: boolean;
 
   sendUnbanLog?: boolean;
@@ -30,7 +47,7 @@ export default class SettingsData implements SettingsOptions, CoreSettingsOption
 
   guildId: string;
 
-  constructor(options: SettingsOptions & CoreSettingsOptions) {
+  constructor(options: AllSettingsOptions) {
     this.webhookId = options.webhookId;
     this.guildId = options.guildId;
     this.sendBanLog = options.sendBanLog;
@@ -80,8 +97,8 @@ export default class SettingsData implements SettingsOptions, CoreSettingsOption
   }
 
   toString() {
-    return Object.entries(this)
-      .map(([key, value]) => `${key}: ${value}`)
-      .join('\n');
+    const keys = Object.keys(this) as (keyof AllSettingsOptions)[];
+    const settings = keys.map((key) => `${translation[key]}: ${this[key]}`);
+    return settings.join('\n');
   }
 }
