@@ -210,9 +210,12 @@ export function emitBotEvent<E extends keyof BUEventParams>(
 }
 
 export function getWebhook(guildId: Guild['id'], webhookId?: Webhook['id']) {
-  return container.client.guilds
-    .fetch(guildId)
-    .then((guild) => guild.fetchWebhooks())
-    .then((hooks) =>
-      hooks.find((w) => w.id === webhookId || w.owner?.id === container.client.user?.id));
+  return (
+    container.client.guilds
+      .fetch(guildId)
+      .then((guild) => guild.fetchWebhooks())
+      // eslint-disable-next-line max-len
+      .then((hooks) =>
+        hooks.find((w) => w.id === webhookId || w.owner?.id === container.client.user?.id))
+  );
 }
