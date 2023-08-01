@@ -75,20 +75,7 @@ export default class SettingsData implements SettingsOptions, CoreSettingsOption
 
   toJSON() {
     return {
-      sendBanLog: this.sendBanLog || false,
-      sendUnbanLog: this.sendUnbanLog || false,
-      sendExitLog: this.sendExitLog || false,
-      sendJoinLog: this.sendJoinLog || false,
-      sendKickLog: this.sendKickLog || false,
-      sendTimeoutLog: this.sendTimeoutLog || false,
-      sendUnTimeoutLog: this.sendUnTimeoutLog || false,
-      sendBanImportLog: this.sendBanImportLog || false,
-      sendBanExportLog: this.sendBanExportLog || false,
-      sendBanCopyLog: this.sendBanCopyLog || false,
-      sendMassBanLog: this.sendMassBanLog || false,
-      sendMassUnbanLog: this.sendMassUnbanLog || false,
-      guildId: this.guildId,
-      webhookId: this.webhookId,
+      ...this,
     };
   }
 
