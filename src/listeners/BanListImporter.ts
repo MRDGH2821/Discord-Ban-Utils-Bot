@@ -1,6 +1,6 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Listener } from '@sapphire/framework';
-import { retry, sleepSync } from '@sapphire/utilities';
+import { retry, sleepSync, toTitleCase } from '@sapphire/utilities';
 import {
   ButtonStyle,
   ComponentType,
@@ -13,12 +13,12 @@ import { sequentialPromises } from 'yaspr';
 import { COLORS } from '../lib/Constants';
 import Database from '../lib/Database';
 import { BUEvents } from '../lib/EventTypes';
-import type { BanEntityWithReason, BanImportOptions } from '../lib/typeDefs';
+import type { BanEntityWithReason, ListImportOptions } from '../lib/typeDefs';
 import { fetchAllBans, truncateString } from '../lib/utils';
 
 @ApplyOptions<Listener.Options>({
-  name: 'Ban List Importer',
-  event: BUEvents.BanListImport,
+  name: 'List Importer',
+  event: BUEvents.ListImport,
 })
 export default class UserEvent extends Listener {
   public override async run({
@@ -26,35 +26,43 @@ export default class UserEvent extends Listener {
     destinationGuild: guild,
     requesterUser: user,
     sourceMessage: message,
-  }: BanImportOptions) {
+    mode,
+  }: ListImportOptions) {
     // this.container.logger.debug(JSON.stringify(list));
+    const titleMode = toTitleCase(mode);
 
-    this.container.logger.debug('Starting bans in:', guild.name);
+    this.container.logger.debug(`Starting ${mode}s in:`, guild.name);
 
     if (list.length === 0) {
       return message.reply({
-        content: 'No bans found in the list',
+        content: `No ${mode}s found in the list`,
       });
     }
 
-    const successBans = new Set<BanEntityWithReason>();
-    const failedBans = new Set<BanEntityWithReason>();
+    const successList = new Set<BanEntityWithReason>();
+    const failedList = new Set<BanEntityWithReason>();
     const bansInGuild = new Set((await fetchAllBans(guild)).keys());
 
     // this.container.logger.debug(bansInGuild.size);
-    const uniqueList = list.filter((ban) => !bansInGuild.has(ban.id));
+    const uniqueList = mode === 'ban' ? list.filter((ban) => !bansInGuild.has(ban.id)) : list;
+
+    const banFn = (id: string, reason: string) => guild.members.ban(id, { reason });
+    const unBanFn = (id: string, reason: string) => guild.members.unban(id, reason);
+
+    const actionFn = mode === 'ban' ? banFn : unBanFn;
+
     const performBan = async (ban: BanEntityWithReason) =>
       retry(
         async () =>
-          guild.members
-            .ban(ban.id, {
-              reason: ban.reason || `Imported by ${user.username} on ${new Date().toUTCString()}`,
-            })
+          actionFn(
+            ban.id,
+            ban.reason || `Imported by ${user.username} on ${new Date().toUTCString()}`,
+          )
             .then(() => {
-              successBans.add(ban);
+              successList.add(ban);
             })
             .catch(() => {
-              failedBans.add(ban);
+              failedList.add(ban);
               return sleepSync(1000);
             }),
         3,
@@ -62,41 +70,42 @@ export default class UserEvent extends Listener {
 
     await sequentialPromises(uniqueList, performBan).catch(async (err) =>
       message.reply({
-        content: `${user}\nAn error occurred while importing ban list: ${err.message}`,
+        content: `${user}\nAn error occurred while importing ${mode} list: ${err.message}`,
       }));
     this.container.logger.debug(
-      'Ban stats:\n',
+      `${titleMode} stats:\n`,
       JSON.stringify(
         {
           Server: guild.name,
-          Success: successBans.size,
-          Failed: failedBans.size,
+          Success: successList.size,
+          Failed: failedList.size,
           Unique: uniqueList.length,
           Total: list.length,
+          Mode: mode,
         },
         null,
         2,
       ),
     );
     const operationEmbed = {
-      title: 'Ban list imported!',
-      description: 'Ban statistics:',
+      title: `${titleMode} list imported!`,
+      description: `${titleMode} statistics:`,
       color: COLORS.hammerHandle,
       fields: [
         {
-          name: 'Successful bans',
-          value: `${successBans.size}`,
+          name: `Successful ${mode}s`,
+          value: `${successList.size}`,
         },
         {
-          name: 'Failed bans',
-          value: `${failedBans.size}`,
+          name: `Failed ${mode}s`,
+          value: `${failedList.size}`,
         },
         {
-          name: 'Unique Bans',
+          name: `Unique ${mode}s`,
           value: `${uniqueList.length}`,
         },
         {
-          name: 'Total bans',
+          name: `Total ${mode}`,
           value: `${list.length}`,
         },
       ],
@@ -110,18 +119,18 @@ export default class UserEvent extends Listener {
       content: `${user}`,
       embeds: [operationEmbed],
       components:
-        failedBans.size > 0
+        failedList.size > 0
           ? [
             {
               type: ComponentType.ActionRow,
               components: [
                 {
                   type: ComponentType.Button,
-                  label: 'Unsuccessful ban list link',
+                  label: `Unsuccessful ${mode} list link`,
                   style: ButtonStyle.Link,
                   url: await createPaste({
-                    content: JSON.stringify(Array.from(failedBans), null, 2),
-                    title: `[FAILED] ${truncateString(guild.name, 10)} Ban List`,
+                    content: JSON.stringify(Array.from(failedList), null, 2),
+                    title: `[FAILED] ${truncateString(guild.name, 10)} ${titleMode} List`,
                   }),
                 },
               ],
@@ -137,7 +146,7 @@ export default class UserEvent extends Listener {
     components?: MessagePayloadOption['components'],
   ) {
     const settings = await Database.getSettings(guildId);
-    if (!settings || !settings.sendBanImportLog) return;
+    if (!settings || !settings.sendImportLog) return;
 
     const webhook = await this.container.client.fetchWebhook(settings.webhookId);
     if (!webhook) return;

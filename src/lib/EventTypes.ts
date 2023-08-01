@@ -1,5 +1,5 @@
 import type { GuildMember, User } from 'discord.js';
-import type { BanExportOptions, BanImportOptions } from './typeDefs';
+import type { BanExportOptions, ListImportOptions } from './typeDefs';
 
 export type BotGuildBanAddOptions = {
   convict: User;
@@ -9,12 +9,12 @@ export type BotGuildBanAddOptions = {
 
 export const BUEvents = {
   BanListExport: 'banListExport' as const,
-  BanListImport: 'banListImport' as const,
+  ListImport: 'listImport' as const,
   BotGuildBanAdd: 'botGuildBanAdd' as const,
 } as const;
 
 export interface BUEventParams {
   [BUEvents.BanListExport]: [payload: BanExportOptions];
-  [BUEvents.BanListImport]: [payload: BanImportOptions];
+  [BUEvents.ListImport]: [payload: ListImportOptions];
   [BUEvents.BotGuildBanAdd]: [payload: BotGuildBanAddOptions];
 }

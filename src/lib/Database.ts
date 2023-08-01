@@ -12,11 +12,9 @@ const settingsValidator = s.object<AllSettingsOptions>({
   sendKickLog: s.boolean.optional,
   sendTimeoutLog: s.boolean.optional,
   sendUnTimeoutLog: s.boolean.optional,
-  sendBanImportLog: s.boolean.optional,
+  sendImportLog: s.boolean.optional,
   sendBanExportLog: s.boolean.optional,
   sendBanCopyLog: s.boolean.optional,
-  sendMassBanLog: s.boolean.optional,
-  sendMassUnbanLog: s.boolean.optional,
   webhookId: s.string,
   guildId: s.string,
 });

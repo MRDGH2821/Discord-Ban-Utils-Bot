@@ -11,11 +11,12 @@ export type BanExportOptions = {
   sourceMessage: Message;
 };
 
-export type BanImportOptions = {
+export type ListImportOptions = {
   destinationGuild: Guild;
   requesterUser: User;
   sourceMessage: Message;
   list: NonNullable<BanEntityWithReason>[];
+  mode: 'ban' | 'unban';
 };
 
 /* jscpd:ignore-start */
@@ -27,11 +28,9 @@ export type SettingsOptions = {
   sendKickLog?: boolean;
   sendTimeoutLog?: boolean;
   sendUnTimeoutLog?: boolean;
-  sendBanImportLog?: boolean;
+  sendImportLog?: boolean;
   sendBanExportLog?: boolean;
   sendBanCopyLog?: boolean;
-  sendMassBanLog?: boolean;
-  sendMassUnbanLog?: boolean;
 };
 
 export type CoreSettingsOptions = {

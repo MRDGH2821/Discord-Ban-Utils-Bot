@@ -4,13 +4,11 @@ import type { AllSettingsOptions, SettingsOptions, SettingsParameter } from './t
 const translation: { [x in keyof Required<AllSettingsOptions>]: string } = {
   sendBanLog: 'Send Ban Log',
   sendBanCopyLog: 'Send Ban Copy Log',
-  sendBanExportLog: 'Send Ban Export Log',
-  sendBanImportLog: 'Send Ban Import Log',
+  sendBanExportLog: 'Send Ban list Export Log',
+  sendImportLog: 'Send Un/Ban list Import Log',
   sendExitLog: 'Send Member Exit Log',
   sendJoinLog: 'Send Member Join Log',
   sendKickLog: 'Send Kicked Member Log',
-  sendMassBanLog: 'Send Mass Ban Log',
-  sendMassUnbanLog: 'Send Mass Unban Log',
   sendTimeoutLog: 'Send Timeout Log',
   sendUnbanLog: 'Send Unban Log',
   sendUnTimeoutLog: 'Send Un-Timeout Log',
@@ -33,7 +31,7 @@ export default class SettingsData implements AllSettingsOptions {
 
   sendUnTimeoutLog?: boolean;
 
-  sendBanImportLog?: boolean;
+  sendImportLog?: boolean;
 
   sendBanExportLog?: boolean;
 
@@ -57,11 +55,9 @@ export default class SettingsData implements AllSettingsOptions {
     this.sendKickLog = options.sendKickLog;
     this.sendTimeoutLog = options.sendTimeoutLog;
     this.sendUnTimeoutLog = options.sendUnTimeoutLog;
-    this.sendBanImportLog = options.sendBanImportLog;
+    this.sendImportLog = options.sendImportLog;
     this.sendBanExportLog = options.sendBanExportLog;
     this.sendBanCopyLog = options.sendBanCopyLog;
-    this.sendMassBanLog = options.sendMassBanLog;
-    this.sendMassUnbanLog = options.sendMassUnbanLog;
   }
 
   modifySettings(settings: SettingsParameter[] | SettingsOptions) {

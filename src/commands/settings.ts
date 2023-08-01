@@ -156,9 +156,9 @@ export default class UserCommand extends Subcommand {
         description: 'Send a log when A user is un-timed out',
       },
       {
-        label: 'Ban Import Log',
-        value: 'sendBanImportLog',
-        description: 'Send a log when a ban list is imported',
+        label: 'Un/Ban Import Log',
+        value: 'sendImportLog',
+        description: 'Send a log when a un/ban list is imported',
       },
       {
         label: 'Ban Export Log',
@@ -169,16 +169,6 @@ export default class UserCommand extends Subcommand {
         label: 'Ban Copy Log',
         value: 'sendBanCopyLog',
         description: 'Send a log when bans are copied from another server (Incoming bans)',
-      },
-      {
-        label: 'Mass Ban Log',
-        value: 'sendMassBanLog',
-        description: 'Send a log when a mass ban is performed',
-      },
-      {
-        label: 'Mass Unban Log',
-        value: 'sendMassUnbanLog',
-        description: 'Send a log when a mass unban is performed',
       },
     ];
 

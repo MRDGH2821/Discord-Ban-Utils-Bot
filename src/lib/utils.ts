@@ -1,3 +1,4 @@
+import type { AnyInteractableInteraction } from '@sapphire/discord.js-utilities';
 import {
   container,
   type ChatInputCommandSuccessPayload,
@@ -13,7 +14,14 @@ import type {
 import { COLORS } from './Constants';
 import Database from './Database';
 import { BUEvents, type BUEventParams } from './EventTypes';
-import type { SendLogOptions, SettingsOptions, SettingsParameter } from './typeDefs';
+import type {
+  BanEntity,
+  BanEntityWithReason,
+  ListImportOptions,
+  SendLogOptions,
+  SettingsOptions,
+  SettingsParameter,
+} from './typeDefs';
 
 function getShardInfo(id: number) {
   return `[${cyan(id.toString())}]`;
@@ -161,11 +169,9 @@ export const selectedSettingsValidator = s
       'sendKickLog',
       'sendTimeoutLog',
       'sendUnTimeoutLog',
-      'sendBanImportLog',
+      'sendImportLog',
       'sendBanExportLog',
       'sendBanCopyLog',
-      'sendMassBanLog',
-      'sendMassUnbanLog',
     ),
   )
   .transform((values) =>
@@ -230,3 +236,39 @@ export function banEntitySchemaBuilder(banReason: string) {
     .transform<BanEntityWithReason[]>((values) => values.map((v) => transformer(v)));
 }
 
+export async function importList(
+  interaction: AnyInteractableInteraction,
+  list: BanEntityWithReason[],
+  guild: Guild,
+  mode: ListImportOptions['mode'],
+) {
+  const msg = await interaction.editReply({
+    embeds: [
+      {
+        title: `Importing ${mode} list`,
+        description: `Found ${list.length} ${mode}s.\n\nYou will be notified here when the import is complete.`,
+        color: COLORS.whiteGray,
+      },
+    ],
+  });
+  container.logger.debug(
+    'Found',
+    list.length,
+    `${mode}s to import in guild`,
+    guild.name,
+    '(',
+    guild.id,
+    ')',
+  );
+
+  const importOptions: ListImportOptions = {
+    destinationGuild: guild,
+    requesterUser: interaction.user,
+    sourceMessage: msg,
+    list,
+    mode,
+  };
+  emitBotEvent('ListImport', importOptions);
+  // interaction.client.emit('importBanList', importOptions);
+  return msg;
+}

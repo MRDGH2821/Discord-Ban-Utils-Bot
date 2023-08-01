@@ -4,9 +4,9 @@ import { s } from '@sapphire/shapeshift';
 import { Time } from '@sapphire/time-utilities';
 import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
 import { getRawPaste } from 'dpaste-ts';
-import { COLORS, NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
-import type { BanEntity, BanEntityWithReason, BanImportOptions } from '../lib/typeDefs';
-import { emitBotEvent } from '../lib/utils';
+import { NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
+import type { BanEntityWithReason } from '../lib/typeDefs';
+import { banEntitySchemaBuilder, importList } from '../lib/utils';
 
 @ApplyOptions<Command.Options>({
   name: 'import-ban-list',
@@ -71,51 +71,16 @@ export default class UserCommand extends Command {
     try {
       const parsedData = JSON.parse(data);
       const validatedData = BanEntitiesWithReasonSchema.parse(parsedData);
-      return await this.importBans(interaction, validatedData, interaction.guild);
+      return await importList(interaction, validatedData, interaction.guild, 'ban');
     } catch (e) {
       try {
         const validatedData = BanEntitiesSchema.parse(data);
-        return this.importBans(interaction, validatedData, interaction.guild);
+        return importList(interaction, validatedData, interaction.guild, 'ban');
       } catch {
         return interaction.editReply({
           content: 'Invalid data',
         });
       }
     }
-  }
-
-  public async importBans(
-    interaction: Command.ChatInputCommandInteraction,
-    list: BanEntityWithReason[],
-    guild: NonNullable<Command.ChatInputCommandInteraction['guild']>,
-  ) {
-    const msg = await interaction.editReply({
-      embeds: [
-        {
-          title: 'Importing ban list',
-          description: `Found ${list.length} bans.\n\nYou will be notified here when the import is complete.`,
-          color: COLORS.whiteGray,
-        },
-      ],
-    });
-    this.container.logger.debug(
-      'Found',
-      list.length,
-      'bans to import in guild',
-      guild.name,
-      '(',
-      guild.id,
-      ')',
-    );
-
-    const importOptions: BanImportOptions = {
-      destinationGuild: guild,
-      requesterUser: interaction.user,
-      sourceMessage: msg,
-      list,
-    };
-    emitBotEvent('BanListImport', importOptions);
-    // interaction.client.emit('importBanList', importOptions);
-    return msg;
   }
 }
