@@ -1,30 +1,7 @@
-import { s } from '@sapphire/shapeshift';
 import { Collection } from 'discord.js';
-import db from './Firestore';
+import { dbSettingsRef, settingsValidator } from './DBUtils';
 import SettingsData from './SettingsData';
 import type { AllSettingsOptions, CoreSettingsOptions } from './typeDefs';
-
-const settingsValidator = s.object<AllSettingsOptions>({
-  sendBanLog: s.boolean.optional,
-  sendUnbanLog: s.boolean.optional,
-  sendExitLog: s.boolean.optional,
-  sendJoinLog: s.boolean.optional,
-  sendKickLog: s.boolean.optional,
-  sendTimeoutLog: s.boolean.optional,
-  sendUnTimeoutLog: s.boolean.optional,
-  sendImportLog: s.boolean.optional,
-  sendBanExportLog: s.boolean.optional,
-  sendBanCopyLog: s.boolean.optional,
-  webhookId: s.string,
-  guildId: s.string,
-});
-
-const dbSettingsRef = db.collection('settings').withConverter<AllSettingsOptions>({
-  toFirestore: (settings: SettingsData | AllSettingsOptions) => ({
-    ...settings,
-  }),
-  fromFirestore: (snapshot) => settingsValidator.parse(snapshot.data()),
-});
 
 export default class Database {
   static #cache = new Collection<string, SettingsData>();

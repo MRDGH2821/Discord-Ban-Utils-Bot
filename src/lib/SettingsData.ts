@@ -1,4 +1,4 @@
-import db from './Firestore';
+import { dbSettingsRef } from './DBUtils';
 import type { AllSettingsOptions, SettingsOptions, SettingsParameter } from './typeDefs';
 
 const translation: { [x in keyof Required<AllSettingsOptions>]: string } = {
@@ -73,15 +73,14 @@ export default class SettingsData implements AllSettingsOptions {
       Object.assign(this, settings);
     }
 
-    return db.collection('settings').doc(this.guildId).set(newSettings, { merge: true });
+    return dbSettingsRef.doc(this.guildId).set(newSettings, { merge: true });
   }
 
   modifySetting(setting: SettingsParameter, value: boolean) {
     const newSettings = { [setting]: value };
     Object.assign(this, newSettings);
 
-    return db
-      .collection('settings')
+    return dbSettingsRef
       .doc(this.guildId)
       .set(newSettings, { merge: true, mergeFields: [setting] });
   }
