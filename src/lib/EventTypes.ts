@@ -1,3 +1,4 @@
+import { container } from '@sapphire/framework';
 import type { GuildMember, User } from 'discord.js';
 import type { BanExportOptions, ListImportOptions } from './typeDefs';
 
@@ -17,4 +18,11 @@ export interface BUEventParams {
   [BUEvents.BanListExport]: [payload: BanExportOptions];
   [BUEvents.ListImport]: [payload: ListImportOptions];
   [BUEvents.BotGuildBanAdd]: [payload: BotGuildBanAddOptions];
+}
+
+export function emitBotEvent<E extends keyof BUEventParams>(
+  event: keyof typeof BUEvents,
+  ...args: BUEventParams[E]
+) {
+  container.client.emit(event, ...args);
 }

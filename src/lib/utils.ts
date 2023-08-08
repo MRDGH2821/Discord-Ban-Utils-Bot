@@ -13,7 +13,7 @@ import type {
 } from 'discord.js';
 import { COLORS } from './Constants';
 import Database from './Database';
-import { BUEvents, type BUEventParams } from './EventTypes';
+import { emitBotEvent } from './EventTypes';
 import type {
   BanEntity,
   BanEntityWithReason,
@@ -208,13 +208,6 @@ export function jumpLink(user: GuildMember | GuildMember['user']) {
   return `https://discord.com/users/${user.id}`;
 }
 
-export function emitBotEvent<E extends keyof BUEventParams>(
-  event: keyof typeof BUEvents,
-  ...args: BUEventParams[E]
-) {
-  container.client.emit(event, ...args);
-}
-
 export function getWebhook(guildId: Guild['id'], webhookId?: Webhook['id']) {
   return (
     container.client.guilds
@@ -272,3 +265,4 @@ export async function importList(
   // interaction.client.emit('importBanList', importOptions);
   return msg;
 }
+export { emitBotEvent };
