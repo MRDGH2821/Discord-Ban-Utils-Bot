@@ -4,6 +4,20 @@ import SettingsData from './SettingsData';
 import type { AllSettingsOptions, CoreSettingsOptions } from './typeDefs';
 
 export default class Database {
+  static {
+    dbSettingsRef.onSnapshot((snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === 'removed') {
+          console.log('Removed setting: ', change.doc.data());
+          this.#removeSettingFromCache(change.doc.data().guildId);
+        } else {
+          console.log('Updated setting: ', change.doc.data());
+          this.#updateSettingInCache(change.doc.data());
+        }
+      });
+    });
+  }
+
   static #cache = new Collection<string, SettingsData>();
 
   static async #fetchDB() {
@@ -45,5 +59,15 @@ export default class Database {
       .doc(settings.guildId)
       .set(validatedData)
       .then(() => settings);
+  }
+
+  static #updateSettingInCache(settings: AllSettingsOptions) {
+    const validatedData = settingsValidator.parse(settings);
+    const newSettings = new SettingsData(validatedData);
+    this.#cache.set(newSettings.guildId, newSettings);
+  }
+
+  static #removeSettingFromCache(guildId: string) {
+    this.#cache.delete(guildId);
   }
 }
