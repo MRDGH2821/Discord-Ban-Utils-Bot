@@ -1,33 +1,79 @@
 import fs from 'fs';
 import * as path from 'path';
-import { initializeApp } from 'firebase-admin/app';
+import { applicationDefault, cert, initializeApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
+import { botLogger as logger } from '../bot-logger';
 import './EnvConfig';
 
-const basePath = path.resolve(process.cwd(), 'firebase-service-acc');
-if (process.env.NODE_ENV !== 'development') {
-  process.env.FIRESTORE_EMULATOR_HOST = '';
-  const configs = fs.readdirSync(basePath).filter((file) => file.endsWith('.json'));
-
-  console.debug(configs);
-  configs.sort();
-
-  const validConfigs = configs.filter((config) => {
-    const configPath = path.resolve(basePath, config);
-    // console.log(configPath);
-    const configContents = JSON.parse(fs.readFileSync(configPath).toString());
-    // console.log(configContents);
-
-    if (configContents.type === 'service_account') {
-      return true;
-    }
-    return false;
-  });
-  const certPath = path.resolve(basePath, validConfigs[0]);
-  // console.log(certPath);
-  process.env.GOOGLE_APPLICATION_CREDENTIALS = certPath;
+export function decodeBase64(base64String: string) {
+  return Buffer.from(base64String, 'base64').toString();
 }
-initializeApp();
+
+const baseDir = path.resolve(process.cwd(), 'firebase-service-acc');
+function searchCredFilePath(dir = baseDir): string | undefined {
+  const files = fs.readdirSync(dir);
+  const credFile = files.find((file) => file.endsWith('.json'));
+  if (credFile) {
+    try {
+      const credPath = path.resolve(dir, credFile);
+      cert(credPath);
+      logger.info('Using firebase service account credentials from:', credPath);
+      return credPath;
+    } catch (e) {
+      logger.error(e);
+      logger.warn('Invalid firebase service account credentials file:', credFile);
+      return undefined;
+    }
+  } else {
+    logger.warn('No firebase service account credentials file found in:', dir);
+  }
+  return undefined;
+}
+if (process.env.NODE_ENV === 'development') {
+  logger.info('Searching for Firebase credentials file in:', baseDir);
+  searchCredFilePath();
+} else {
+  process.env.FIRESTORE_EMULATOR_HOST = '';
+  process.env.GOOGLE_APPLICATION_CREDENTIALS = searchCredFilePath();
+}
+
+function searchCredEnv() {
+  if (
+    !process.env.FIREBASE_CLIENT_EMAIL
+    || !process.env.FIREBASE_PRIVATE_KEY
+    || !process.env.FIREBASE_PROJECT_ID
+  ) {
+    logger.warn('Firebase credentials not found in 3 environment variables.');
+    return undefined;
+  }
+  logger.info('Using firebase service account credentials from 3 environment variables.');
+  return cert({
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+  });
+}
+
+function searchBase64CredEnv() {
+  if (!process.env.FIREBASE_SERVICE_ACCOUNT_BASE64) {
+    logger.warn('Firebase credentials not found in base64 environment variable.');
+    return undefined;
+  }
+  logger.info('Using firebase service account credentials from base64 environment variable.');
+  const decoded = decodeBase64(process.env.FIREBASE_SERVICE_ACCOUNT_BASE64);
+  const cred = JSON.parse(decoded);
+  return cert(cred);
+}
+
+const finalCred = searchBase64CredEnv() || searchCredEnv() || applicationDefault();
+
+if (!finalCred) {
+  throw new Error("Can't find firebase service account credentials.");
+}
+
+initializeApp({
+  credential: finalCred,
+});
 const db = getFirestore();
 db.settings({ ignoreUndefinedProperties: true });
 
