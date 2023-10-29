@@ -30,7 +30,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "npm run build && npm run dev:start",
-    "dev:start": "node -r dotenv/config dist/index.js",
+    "dev:start": "node --env-file .env dist/index.js",
     "docker:app": "docker compose up -d --build app",
     "format": "prettier --write .",
     "format-lint": "npm run format && npm run lint",
@@ -95,6 +95,8 @@
     "prettier-plugin-organize-imports": "^3.2.3",
     "prettier-plugin-packagejson": "^2.4.5",
     "tsc-watch": "^6.0.4",
-    "typescript": "^5.1.6"
-  }
+  "engines": {
+    "node": ">=20.6.0"
+  },
+  "engineStrict": true
 }
