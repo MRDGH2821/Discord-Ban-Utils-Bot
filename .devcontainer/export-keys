@@ -21,3 +21,5 @@ else
   gpg -a --export-ownertrust >.devcontainer/gpg/owner-trust-db.txt
 
 fi
+
+exit 0

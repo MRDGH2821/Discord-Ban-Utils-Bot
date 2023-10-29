@@ -14,3 +14,5 @@ gpg -a --pinentry-mode loopback --passphrase-file=.devcontainer/gpg/gpg-key-pass
 
 echo Exporting Trust DB
 gpg -a --export-ownertrust >.devcontainer/gpg/owner-trust-db.txt
+
+exit 0
