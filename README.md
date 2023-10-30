@@ -35,7 +35,7 @@ For more info check [here](./firebase-service-acc/README.md)
 DISCORD_TOKEN = insert bot token
 ```
 
-You can also copy [`.env.sample`](./.env.sample) file and rename it to `.env`.
+You can also copy [`sample.env`](./sample.env) file and rename it to `.env`.
 
 - Install dependencies by using `npm install`.
 - Use `npm start` to run the bot code.
@@ -48,23 +48,8 @@ Or Use Docker to start:
 docker compose up -d --build app
 ```
 
-## How to update self-hosted version?/How to reset the Bot code?
-
-Use the following command:
-
-```bash
-git reset --hard
-git pull
-```
-
 ## License
 
 [MIT](./LICENCE.md)
 
 Feel free to make your own improved version of the bot!
-
-## Note from developer
-
-~~I still think that this bot is far from crash proof. I have done enough testing, but still some edge cases might be left out.~~
-Bot has become nearly crash proof. And will also show what the error was.
-Still I have configured my bot to restart on crash (using docker), it would be nice if you report the issue ASAP to me.
