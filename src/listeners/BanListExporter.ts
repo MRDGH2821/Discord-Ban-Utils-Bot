@@ -150,6 +150,7 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
     const webhook = await getWebhook(guildId, settings.webhookId);
 
     if (!webhook) {
+      this.container.logger.debug('No webhook found in guild', guildId);
       return;
     }
 
