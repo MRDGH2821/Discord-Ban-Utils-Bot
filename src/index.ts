@@ -1,12 +1,15 @@
 import { LogLevel, SapphireClient } from '@sapphire/framework';
 import { GatewayIntentBits, Partials } from 'discord.js';
 import './lib/setup';
+import { botLogger } from './bot-logger';
 
 const client = new SapphireClient({
   defaultPrefix: '!',
   caseInsensitiveCommands: true,
   logger: {
+    instance: botLogger,
     level: LogLevel.Debug,
+    depth: 2,
   },
   intents: [
     GatewayIntentBits.AutoModerationConfiguration,
