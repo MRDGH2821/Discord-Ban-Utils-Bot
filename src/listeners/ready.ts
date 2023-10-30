@@ -15,6 +15,7 @@ export default class UserEvent extends Listener {
     this.printStoreDebugInformation();
   }
 
+  // eslint-disable-next-line class-methods-use-this
   private printBanner() {
     const success = green('+');
 
