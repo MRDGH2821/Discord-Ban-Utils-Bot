@@ -6,6 +6,12 @@
   },
   "plugins": ["@typescript-eslint", "unused-imports"],
   "rules": {
+    "class-methods-use-this": [
+      "error",
+      {
+        "exceptMethods": ["run", "chatInputRun", "autocompleteRun"]
+      }
+    ],
     "implicit-arrow-linebreak": "off",
     "unused-imports/no-unused-imports": "error"
   }
