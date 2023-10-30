@@ -32,7 +32,7 @@
 | Ban                        | ✅           |
 | Unban                      | ✅           |
 | member exit                | ✅           |
-| member join                |              |
+| member join                | ✅           |
 | timeout (member update)    |              |
 | un timeout (member update) |              |
 

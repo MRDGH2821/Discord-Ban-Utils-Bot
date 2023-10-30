@@ -5,6 +5,7 @@ export enum COLORS {
   wrenchHandle = 0x84929f,
   invisible = 0x2f3036,
   freeze = 0x65919d,
+  warning = 0xffff00,
 }
 
 export const EMPTY_STRING = '\u200b';
