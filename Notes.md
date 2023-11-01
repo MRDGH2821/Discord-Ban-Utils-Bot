@@ -42,8 +42,8 @@ The following steps are for logs:
 | Unban                      | ✅           |
 | member exit                | ✅           |
 | member join                | ✅           |
-| timeout (member update)    |              |
-| un timeout (member update) |              |
+| timeout (member update)    | ✅           |
+| un timeout (member update) | ✅           |
 
 ### Bot Logs
 
