@@ -1,3 +1,4 @@
+import { container } from '@sapphire/framework';
 import { Collection } from 'discord.js';
 import { dbSettingsRef, settingsValidator } from './DBUtils';
 import SettingsData from './SettingsData';
@@ -8,10 +9,10 @@ export default class Database {
     dbSettingsRef.onSnapshot((snapshot) => {
       snapshot.docChanges().forEach((change) => {
         if (change.type === 'removed') {
-          console.log('Removed setting: ', change.doc.data());
+          container.logger.info('Removed setting: ', change.doc.data());
           this.#removeSettingFromCache(change.doc.data().guildId);
         } else {
-          console.log('Updated setting: ', change.doc.data());
+          container.logger.info('Updated setting: ', change.doc.data());
           this.#updateSettingInCache(change.doc.data());
         }
       });

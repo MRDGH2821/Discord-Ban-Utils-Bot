@@ -40,7 +40,7 @@ export default class UserCommand extends Command {
     const { options } = interaction;
     const dbTest = options.getString('db-test', true);
 
-    console.log(dbTest);
+    this.container.logger.debug(dbTest);
 
     return interaction.reply({
       content: `dbTest: ${dbTest}`,
