@@ -13,15 +13,12 @@ export default class UserEvent extends Listener<typeof Events.GuildBanRemove> {
     const auditData = await getAuditLogData(AuditLogEvent.MemberBanRemove, unban.guild.id);
 
     if (!auditData) return;
-    if (!auditData.settings.sendBanLog) return;
+    if (!auditData.settings.sendUnbanLog) return;
     if (!auditData.isDoneByCmd) return;
     if (!auditData.webhook) return;
 
-    const { webhook } = auditData;
+    const { webhook, executor } = auditData;
 
-    const firstUnBanLog = auditData.auditLog;
-
-    const { executor } = auditData;
     const reason = unban?.reason || auditData?.reason || 'No reason provided';
 
     const unBanEmbed: APIEmbed = {
@@ -31,7 +28,7 @@ export default class UserEvent extends Listener<typeof Events.GuildBanRemove> {
       timestamp: new Date().toISOString(),
     };
 
-    if (firstUnBanLog) {
+    if (executor) {
       unBanEmbed.fields?.push({
         name: '**Justice UnBan Hammer Wielder**',
         value: `${executor?.username} ${executor}`,

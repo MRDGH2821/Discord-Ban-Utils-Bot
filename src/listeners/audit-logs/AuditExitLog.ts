@@ -13,7 +13,7 @@ export default class UserEvent extends Listener<typeof Events.GuildMemberRemove>
     const auditData = await getAuditLogData(AuditLogEvent.MemberKick, member.guild.id);
 
     if (!auditData) return;
-    if (!auditData.settings.sendBanLog) return;
+    if (!auditData.settings.sendExitLog) return;
     if (!auditData.isDoneByCmd) return;
     if (!auditData.webhook) return;
 

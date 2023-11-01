@@ -17,11 +17,8 @@ export default class UserEvent extends Listener<typeof Events.GuildBanAdd> {
     if (!auditData.isDoneByCmd) return;
     if (!auditData.webhook) return;
 
-    const { webhook } = auditData;
+    const { webhook, executor } = auditData;
 
-    const firstBanLog = auditData.auditLog;
-
-    const { executor } = auditData;
     const reason = ban?.reason || auditData?.reason || 'No reason provided';
 
     const banEmbed: APIEmbed = {
@@ -31,7 +28,7 @@ export default class UserEvent extends Listener<typeof Events.GuildBanAdd> {
       timestamp: new Date().toISOString(),
     };
 
-    if (firstBanLog) {
+    if (executor) {
       banEmbed.fields?.push({
         name: '**Justice Ban Hammer Wielder**',
         value: `${executor?.username} ${executor}`,
