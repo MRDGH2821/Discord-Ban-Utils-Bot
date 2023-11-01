@@ -9,7 +9,13 @@ import {
 import { s } from '@sapphire/shapeshift';
 import { cyan } from 'colorette';
 import type {
-  APIEmbed, APIUser, Guild, GuildMember, User, Webhook,
+  APIEmbed,
+  APIUser,
+  AuditLogEvent,
+  Guild,
+  GuildMember,
+  User,
+  Webhook,
 } from 'discord.js';
 import { COLORS } from './Constants';
 import Database from './Database';
@@ -266,3 +272,34 @@ export async function importList(
   return msg;
 }
 export { emitBotEvent };
+
+export async function getAuditLogData(auditType: AuditLogEvent, guildId: Guild['id']) {
+  const guild = await container.client.guilds.fetch(guildId);
+
+  const settings = await Database.getSettings(guild.id);
+  if (!settings) return undefined;
+
+  const webhook = await getWebhook(guild.id, settings?.webhookId);
+  if (!webhook) return undefined;
+
+  const logs = await guild.fetchAuditLogs({
+    limit: 1,
+    type: auditType,
+  });
+
+  const latestLog = logs.entries.first();
+  const executor = latestLog?.executor;
+  const target = latestLog?.target;
+  const reason = latestLog?.reason;
+  const isDoneByCmd = executor?.id === container.client.user?.id;
+
+  return {
+    settings,
+    webhook,
+    executor,
+    target,
+    reason,
+    isDoneByCmd,
+    auditLog: latestLog,
+  };
+}

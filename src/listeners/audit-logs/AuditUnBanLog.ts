@@ -2,8 +2,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { Events, Listener } from '@sapphire/framework';
 import { AuditLogEvent, GuildBan, type APIEmbed } from 'discord.js';
 import { COLORS } from '../../lib/Constants';
-import Database from '../../lib/Database';
-import { getWebhook } from '../../lib/utils';
+import { getAuditLogData } from '../../lib/utils';
 
 @ApplyOptions<Listener.Options>({
   name: 'Audit UnBan Log',
@@ -11,23 +10,19 @@ import { getWebhook } from '../../lib/utils';
 })
 export default class UserEvent extends Listener<typeof Events.GuildBanRemove> {
   public override async run(unban: GuildBan) {
-    const settings = await Database.getSettings(unban.guild.id);
-    if (!settings || !settings?.sendUnbanLog) {
-      return;
-    }
+    const auditData = await getAuditLogData(AuditLogEvent.MemberBanRemove, unban.guild.id);
 
-    const unbanLogs = await unban.guild.fetchAuditLogs({
-      type: AuditLogEvent.MemberBanRemove,
-      limit: 1,
-    });
+    if (!auditData) return;
+    if (!auditData.settings.sendBanLog) return;
+    if (!auditData.isDoneByCmd) return;
+    if (!auditData.webhook) return;
 
-    const firstUnBanLog = unbanLogs.entries.first();
+    const { webhook } = auditData;
 
-    const executor = firstUnBanLog?.executor;
-    const reason = unban?.reason || firstUnBanLog?.reason || 'No reason provided';
+    const firstUnBanLog = auditData.auditLog;
 
-    const isUnBannedViaCmd = executor?.id === this.container.client.user?.id;
-    if (isUnBannedViaCmd) return;
+    const { executor } = auditData;
+    const reason = unban?.reason || auditData?.reason || 'No reason provided';
 
     const unBanEmbed: APIEmbed = {
       title: '**Audit UnBan Log**',
@@ -46,11 +41,6 @@ export default class UserEvent extends Listener<typeof Events.GuildBanRemove> {
         name: '**Justice UnBan Hammer Wielder**',
         value: 'Cannot be determined (even from Audit Log)',
       });
-    }
-
-    const webhook = await getWebhook(unban.guild.id, settings.webhookId);
-    if (!webhook) {
-      return;
     }
 
     await webhook.send({

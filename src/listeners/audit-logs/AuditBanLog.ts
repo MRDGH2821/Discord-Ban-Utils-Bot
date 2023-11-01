@@ -2,8 +2,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { Events, Listener } from '@sapphire/framework';
 import { AuditLogEvent, GuildBan, type APIEmbed } from 'discord.js';
 import { COLORS } from '../../lib/Constants';
-import Database from '../../lib/Database';
-import { getWebhook } from '../../lib/utils';
+import { getAuditLogData } from '../../lib/utils';
 
 @ApplyOptions<Listener.Options>({
   name: 'Audit Ban Log',
@@ -11,23 +10,19 @@ import { getWebhook } from '../../lib/utils';
 })
 export default class UserEvent extends Listener<typeof Events.GuildBanAdd> {
   public override async run(ban: GuildBan) {
-    const settings = await Database.getSettings(ban.guild.id);
-    if (!settings || !settings?.sendBanLog) {
-      return;
-    }
+    const auditData = await getAuditLogData(AuditLogEvent.MemberBanAdd, ban.guild.id);
 
-    const banLogs = await ban.guild.fetchAuditLogs({
-      type: AuditLogEvent.MemberBanAdd,
-      limit: 1,
-    });
+    if (!auditData) return;
+    if (!auditData.settings.sendBanLog) return;
+    if (!auditData.isDoneByCmd) return;
+    if (!auditData.webhook) return;
 
-    const firstBanLog = banLogs.entries.first();
+    const { webhook } = auditData;
 
-    const executor = firstBanLog?.executor;
-    const reason = ban?.reason || firstBanLog?.reason || 'No reason provided';
+    const firstBanLog = auditData.auditLog;
 
-    const isBannedViaCmd = executor?.id === this.container.client.user?.id;
-    if (isBannedViaCmd) return;
+    const { executor } = auditData;
+    const reason = ban?.reason || auditData?.reason || 'No reason provided';
 
     const banEmbed: APIEmbed = {
       title: '**Audit Ban Log**',
@@ -46,11 +41,6 @@ export default class UserEvent extends Listener<typeof Events.GuildBanAdd> {
         name: '**Justice Ban Hammer Wielder**',
         value: 'Cannot be determined (even from Audit Log)',
       });
-    }
-
-    const webhook = await getWebhook(ban.guild.id, settings.webhookId);
-    if (!webhook) {
-      return;
     }
 
     await webhook.send({

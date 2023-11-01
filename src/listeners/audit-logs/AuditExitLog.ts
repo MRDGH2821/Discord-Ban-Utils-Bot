@@ -2,8 +2,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { Events, Listener } from '@sapphire/framework';
 import { AuditLogEvent, GuildMember, type APIEmbed } from 'discord.js';
 import { COLORS } from '../../lib/Constants';
-import Database from '../../lib/Database';
-import { getWebhook } from '../../lib/utils';
+import { getAuditLogData } from '../../lib/utils';
 
 @ApplyOptions<Listener.Options>({
   name: 'Audit Exit Log',
@@ -11,34 +10,27 @@ import { getWebhook } from '../../lib/utils';
 })
 export default class UserEvent extends Listener<typeof Events.GuildMemberRemove> {
   public override async run(member: GuildMember) {
-    const settings = await Database.getSettings(member.guild.id);
-    if (!settings || !settings?.sendExitLog) {
-      return;
-    }
+    const auditData = await getAuditLogData(AuditLogEvent.MemberKick, member.guild.id);
 
-    const exitLogs = await member.guild.fetchAuditLogs({
-      type: AuditLogEvent.MemberKick,
-      limit: 1,
-    });
+    if (!auditData) return;
+    if (!auditData.settings.sendBanLog) return;
+    if (!auditData.isDoneByCmd) return;
+    if (!auditData.webhook) return;
 
-    const firstExitLog = exitLogs.entries.first();
+    const { webhook } = auditData;
 
-    const executor = firstExitLog?.executor;
+    const firstExitLog = auditData.auditLog;
 
-    const isKickedViaCmd = executor?.id === this.container.client.user?.id;
-    if (isKickedViaCmd) return;
+    const reason = firstExitLog?.reason;
 
     const exitEmbed: APIEmbed = {
       title: '**Audit Exit Log**',
       color: COLORS.wrenchHandle,
-      description: `\`${member.user.username}\` ${member.user} exitted this server\nID: \`${member.user.id}\`\n`,
+      description: `\`${member.user.username}\` ${member.user} exitted this server\nID: \`${
+        member.user.id
+      }\`\n${reason ? `\nReason: ${reason}` : ''}`,
       timestamp: new Date().toISOString(),
     };
-
-    const webhook = await getWebhook(member.guild.id, settings.webhookId);
-    if (!webhook) {
-      return;
-    }
 
     await webhook.send({
       embeds: [exitEmbed],
