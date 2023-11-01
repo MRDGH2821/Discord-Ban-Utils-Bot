@@ -6,6 +6,15 @@
 4. Convict should be moderatable
 5. Take action
 
+The following steps are for logs:
+
+1. Check if done by command or not
+2. Check settings exist or not
+3. Check webhook exists or not
+4. Find audit log
+5. Find reason
+6. Send log
+
 ## Implementation status
 
 ### Commands
