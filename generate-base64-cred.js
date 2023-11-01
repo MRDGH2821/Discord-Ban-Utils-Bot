@@ -18,4 +18,5 @@ fs.writeFileSync(
   `FIREBASE_SERVICE_ACCOUNT_BASE64=${encoded}`,
 );
 
+// eslint-disable-next-line no-console
 console.log('Saved to ./firebase-service-acc/firebase-admin-cred-base64.txt');
