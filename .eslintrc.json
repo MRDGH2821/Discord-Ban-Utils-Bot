@@ -9,7 +9,7 @@
     "class-methods-use-this": [
       "error",
       {
-        "exceptMethods": ["run", "chatInputRun", "autocompleteRun"]
+        "exceptMethods": ["run", "chatInputRun", "autocompleteRun", "sendLog"]
       }
     ],
     "implicit-arrow-linebreak": "off",

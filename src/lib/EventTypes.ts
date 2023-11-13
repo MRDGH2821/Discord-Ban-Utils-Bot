@@ -21,6 +21,7 @@ export const BUEvents = {
   BotGuildBanAdd: 'botGuildBanAdd' as const,
   BotGuildBanRemove: 'botGuildBanRemove' as const,
   BotGuildMemberKick: 'botGuildMemberKick' as const,
+  BotTimeout: 'botTimeout' as const,
 } as const;
 
 export interface BUEventParams {
@@ -29,6 +30,7 @@ export interface BUEventParams {
   [BUEvents.BotGuildBanAdd]: [payload: BotGuildBanAddOptions];
   [BUEvents.BotGuildBanRemove]: [payload: BotGuildBanRemoveOptions];
   [BUEvents.BotGuildMemberKick]: [payload: BotGuildMemberKickOptions];
+  [BUEvents.BotTimeout]: [payload: BotTimeoutOptions];
 }
 
 export function emitBotEvent<E extends keyof BUEventParams>(

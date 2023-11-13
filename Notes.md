@@ -46,8 +46,8 @@ The following steps are for logs:
 - [X] Ban
 - [X] Unban
 - [X] Kick
-- [ ] Timeout
-- [ ] Un Timeout
+- [X] Timeout
+- [X] Un Timeout
 - [X] Ban List Export
 - [X] Ban List Import
 - [ ] Unban List Import
