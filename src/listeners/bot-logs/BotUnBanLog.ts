@@ -1,19 +1,19 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Listener } from '@sapphire/framework';
-import type { APIEmbed } from 'discord.js';
+import { APIEmbed } from 'discord.js';
 import { COLORS } from '../../lib/Constants';
 import Database from '../../lib/Database';
-import { BUEvents, type BotGuildBanAddOptions } from '../../lib/EventTypes';
+import { BotGuildBanRemoveOptions, BUEvents } from '../../lib/EventTypes';
 import { getWebhook } from '../../lib/utils';
 
 @ApplyOptions<Listener.Options>({
-  name: 'Bot Guild Ban Add',
-  event: BUEvents.BotGuildBanAdd,
+  name: 'Bot UnBan Log',
+  event: BUEvents.BotGuildBanRemove,
 })
-export default class UserEvent extends Listener<typeof BUEvents.BotGuildBanAdd> {
-  public override async run({ convict, executor, reason }: BotGuildBanAddOptions) {
+export default class UserEvent extends Listener {
+  public override async run({ convict, executor, reason }: BotGuildBanRemoveOptions) {
     const settings = await Database.getSettings(executor.guild.id);
-    if (!settings || !settings?.sendBanLog) {
+    if (!settings || !settings?.sendUnbanLog) {
       return;
     }
 
@@ -22,22 +22,22 @@ export default class UserEvent extends Listener<typeof BUEvents.BotGuildBanAdd> 
       return;
     }
 
-    const banEmbed: APIEmbed = {
-      title: '**BU Ban Log**',
+    const unbanEmbed: APIEmbed = {
+      title: '**BU Unban Log**',
       color: COLORS.orangeHammerHandle,
-      description: `\`${convict.username}\` ${convict} got hit with the swift hammer of justice!\nID: \`${convict.id}\`\n\nReason: ${reason}`,
+      description: `\`${convict.username}\` ${convict} got unbanned!\nID: \`${convict.id}\`\n\nReason: ${reason}`,
       timestamp: new Date().toISOString(),
       fields: [
         {
-          name: '**Justice Ban Hammer Wielder**',
+          name: '**Justice UnBan Hammer Wielder**',
           value: `${executor.user.username} ${executor}`,
         },
       ],
     };
 
     await webhook.send({
-      embeds: [banEmbed],
-      username: 'BU Ban Log',
+      embeds: [unbanEmbed],
+      username: 'BU Unban Log',
     });
   }
 }
