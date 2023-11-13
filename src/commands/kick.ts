@@ -73,7 +73,7 @@ export default class UserCommand extends Command {
         embeds: [
           {
             title: '**Kicking Wrench Thrown!**',
-            color: COLORS.blueGrayWrenchHandle,
+            color: COLORS.blueGrayBoot,
             description: `\`${convict.user.username}\` ${convict} is kicked from this server.`,
             thumbnail: {
               url: convict.displayAvatarURL(),

@@ -1,10 +1,10 @@
 export enum COLORS {
+  blueGrayBoot = 0x84929f,
+  cadetBlueFreeze = 0x65919d,
+  charcoalInvisible = 0x2f3036,
+  lightGray = 0xd8d4d3,
   orangeHammerHandle = 0xe1870a,
   redError = 0xff0033,
-  lightGray = 0xd8d4d3,
-  blueGrayWrenchHandle = 0x84929f,
-  charcoalInvisible = 0x2f3036,
-  cadetBlueFreeze = 0x65919d,
   yellowWarning = 0xffff00,
 }
 
