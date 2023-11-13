@@ -2,7 +2,7 @@
 # Linux and macOS-specific commands for initialization
 
 # Check if the script is running on GitHub Codespaces
-if [[ -n "${CODESPACES}" ]] || [[ "$(uname)" == "Linux"]]; then
+if [[ -n "${CODESPACES}" ]] || [[ "$(uname)" == "Linux" ]]; then
   printf "Running in GitHub Codespaces.\nNo need to export any keys."
   # Add your specific commands for GitHub Codespaces here, if needed
   exit
