@@ -1,5 +1,6 @@
 {
   "recommendations": [
+    "bierner.markdown-checkbox",
     "christian-kohler.npm-intellisense",
     "christian-kohler.path-intellisense",
     "cschlosser.doxdocgen",
