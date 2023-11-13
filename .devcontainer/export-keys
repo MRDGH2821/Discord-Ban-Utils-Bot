@@ -5,11 +5,13 @@
 if [[ -n "${CODESPACES}" ]] || [[ "$(uname)" == "Linux"]]; then
   printf "Running in GitHub Codespaces.\nNo need to export any keys."
   # Add your specific commands for GitHub Codespaces here, if needed
+  exit
 else
-  echo "Running on Linux or macOS host"
+  echo "Running on macOS host"
   # Add your GPG export and import commands here for Linux and macOS
 
   fileContent=$(cat .devcontainer/gpg/gpg-key-id.txt)
+  echo "Using Key ID: $fileContent"
 
   echo "Exporting Public Keys"
   gpg -a --output .devcontainer/gpg/public-keys.asc --yes --export "$fileContent"
@@ -22,4 +24,4 @@ else
 
 fi
 
-exit 0
+exit

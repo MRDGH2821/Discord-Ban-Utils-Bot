@@ -3,7 +3,7 @@ echo Running on Windows host
 
 set "fileContent="
 for /f "usebackq delims=" %%i in (".devcontainer/gpg/gpg-key-id.txt") do set "fileContent=%%i"
-echo Using Key ID %fileContent%
+echo Using Key ID: %fileContent%
 
 
 echo Exporting Public Keys
