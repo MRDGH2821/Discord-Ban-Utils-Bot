@@ -16,6 +16,12 @@ export default class UserEvent extends Listener<typeof BUEvents.BotGuildBanAdd> 
     if (!settings || !settings?.sendBanLog) {
       return;
     }
+
+    const webhook = await getWebhook(executor.guild.id, settings.webhookId);
+    if (!webhook) {
+      return;
+    }
+
     const banEmbed: APIEmbed = {
       title: '**BU Ban Log**',
       color: COLORS.orangeHammerHandle,
@@ -28,12 +34,6 @@ export default class UserEvent extends Listener<typeof BUEvents.BotGuildBanAdd> 
         },
       ],
     };
-
-    const webhook = await getWebhook(executor.guild.id, settings.webhookId);
-
-    if (!webhook) {
-      return;
-    }
 
     await webhook.send({
       embeds: [banEmbed],
