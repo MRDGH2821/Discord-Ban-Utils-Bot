@@ -18,7 +18,7 @@ export default class UserEvent extends Listener<typeof BUEvents.BotGuildBanAdd> 
     }
     const banEmbed: APIEmbed = {
       title: '**BU Ban Log**',
-      color: COLORS.hammerHandle,
+      color: COLORS.orangeHammerHandle,
       description: `\`${convict.username}\` ${convict} got hit with the swift hammer of justice!\nID: \`${convict.id}\`\n\nReason: ${reason}`,
       timestamp: new Date().toISOString(),
       fields: [

@@ -210,7 +210,7 @@ export default class UserCommand extends Command {
             {
               title: `${target.user.username} is no longer timed out!`,
               description: `\`${target.user.username}\` ${target} is no longer timed out`,
-              color: COLORS.whiteGray,
+              color: COLORS.lightGray,
               thumbnail,
               fields,
               timestamp: new Date().toISOString(),
@@ -238,7 +238,7 @@ export default class UserCommand extends Command {
             }\` ${target} is timed out for ${durationSentence}\n**Reason:** ${
               reason || 'No reason provided'
             }`,
-            color: COLORS.freeze,
+            color: COLORS.cadetBlueFreeze,
             thumbnail,
             fields: fields.concat({
               name: '**Convict ID**',

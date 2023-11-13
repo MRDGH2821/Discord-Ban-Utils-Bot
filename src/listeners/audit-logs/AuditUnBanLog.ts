@@ -23,7 +23,7 @@ export default class UserEvent extends Listener<typeof Events.GuildBanRemove> {
 
     const unBanEmbed: APIEmbed = {
       title: '**Audit UnBan Log**',
-      color: COLORS.hammerHandle,
+      color: COLORS.orangeHammerHandle,
       description: `\`${unban.user.username}\` ${unban.user} is unbanned!\nID: \`${unban.user.id}\`\n\nReason: ${reason}`,
       timestamp: new Date().toISOString(),
     };

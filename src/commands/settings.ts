@@ -58,7 +58,7 @@ interface SettingsOpt extends APISelectMenuOption {
             {
               title: 'Settings',
               description: `${codeBlock('m', `${settings}`)}\nChannel: ${webhook?.channel}`,
-              color: COLORS.whiteGray,
+              color: COLORS.lightGray,
             },
           ],
         });
@@ -116,7 +116,7 @@ export default class UserCommand extends Subcommand {
     const settingsEmbed: APIEmbed = {
       title: '**Setting up**',
       description: `Selected Channel: ${channel}\n\nPlease select which notifications you would like to enable.`,
-      color: COLORS.invisible,
+      color: COLORS.charcoalInvisible,
     };
 
     const settingOptions: SettingsOpt[] = [
@@ -205,7 +205,7 @@ export default class UserCommand extends Subcommand {
           embeds: [
             {
               title: '**New settings applied!**',
-              color: COLORS.invisible,
+              color: COLORS.charcoalInvisible,
               description: `These are the new settings you have applied.\nLogging Channel: ${channel}\n\n${codeBlock(
                 'm',
                 `${parsedSettings}`,

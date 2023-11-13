@@ -28,7 +28,7 @@ export default class UserEvent extends Listener<typeof Events.GuildMemberAdd> {
 
     const ageEmbed: APIEmbed = {
       title: '**Audit Join Log**',
-      color: COLORS.warning,
+      color: COLORS.yellowWarning,
       description: `${member.user.tag} \`${
         member.user.username
       }\` joined the server. \nAccount Created: ${time(ageStamp, 'F')} (${time(ageStamp, 'R')})\n${

@@ -79,7 +79,7 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
         } bans.\nExcept the last one, which contains ${
           includeReason ? bans.size % 350 : bans.size % 1000
         } bans.`,
-        color: COLORS.whiteGray,
+        color: COLORS.lightGray,
         fields: [
           {
             name: '**Number of parts**',

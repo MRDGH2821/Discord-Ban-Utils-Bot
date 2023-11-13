@@ -25,7 +25,7 @@ export default class UserEvent extends Listener<typeof Events.GuildMemberRemove>
 
     const exitEmbed: APIEmbed = {
       title: '**Audit Exit Log**',
-      color: COLORS.wrenchHandle,
+      color: COLORS.blueGrayWrenchHandle,
       description: `\`${member.user.username}\` ${member.user} exitted this server\nID: \`${
         member.user.id
       }\`\n${reason ? `\nReason: ${reason}` : ''}`,

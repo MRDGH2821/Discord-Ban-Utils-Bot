@@ -76,7 +76,7 @@ export default class UserCommand extends Command {
         embeds: [
           {
             title: '**Member Unbanned!**',
-            color: COLORS.hammerHandle,
+            color: COLORS.orangeHammerHandle,
             description: `\`${user.username}\` ${user} is unbanned from this server.`,
             thumbnail: {
               url: user.displayAvatarURL(),

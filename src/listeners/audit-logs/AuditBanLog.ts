@@ -23,7 +23,7 @@ export default class UserEvent extends Listener<typeof Events.GuildBanAdd> {
 
     const banEmbed: APIEmbed = {
       title: '**Audit Ban Log**',
-      color: COLORS.hammerHandle,
+      color: COLORS.orangeHammerHandle,
       description: `\`${ban.user.username}\` ${ban.user} got hit with the swift hammer of justice!\nID: \`${ban.user.id}\`\n\nReason: ${reason}`,
       timestamp: new Date().toISOString(),
     };

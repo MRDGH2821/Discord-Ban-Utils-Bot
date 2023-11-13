@@ -35,7 +35,7 @@ export default class UserCommand extends Command {
     const user = interaction.options.getUser('user', true);
     const embed: APIEmbed = {
       title: '**User info**',
-      color: COLORS.whiteGray,
+      color: COLORS.lightGray,
       thumbnail: {
         url: user.displayAvatarURL(),
       },

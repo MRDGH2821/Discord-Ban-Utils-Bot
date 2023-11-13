@@ -90,7 +90,7 @@ export default class UserEvent extends Listener {
     const operationEmbed = {
       title: `${titleMode} list imported!`,
       description: `${titleMode} statistics:`,
-      color: COLORS.hammerHandle,
+      color: COLORS.orangeHammerHandle,
       fields: [
         {
           name: `Successful ${mode}s`,

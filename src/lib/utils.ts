@@ -120,7 +120,7 @@ export function debugErrorEmbed(options: DebugEmbedOptions): APIEmbed {
   return {
     title: options.title,
     description: options.description,
-    color: COLORS.error,
+    color: COLORS.redError,
     fields: [
       {
         name: '**Checks**',
@@ -204,7 +204,7 @@ export async function sendLog({
       {
         title,
         description,
-        color: COLORS.invisible,
+        color: COLORS.charcoalInvisible,
       },
     ],
   });
@@ -246,7 +246,7 @@ export async function importList(
       {
         title: `Importing ${mode} list`,
         description: `Found ${list.length} ${mode}s.\n\nYou will be notified here when the import is complete.`,
-        color: COLORS.whiteGray,
+        color: COLORS.lightGray,
       },
     ],
   });

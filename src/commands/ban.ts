@@ -103,7 +103,7 @@ export default class UserCommand extends Command {
           embeds: [
             {
               title: '**Ban Hammer Dropped!**',
-              color: COLORS.hammerHandle,
+              color: COLORS.orangeHammerHandle,
               description: `\`${convict.username}\` ${convict} is banned from this server.`,
               thumbnail: {
                 url: convict.displayAvatarURL(),

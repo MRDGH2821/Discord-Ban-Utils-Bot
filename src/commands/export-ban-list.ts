@@ -94,7 +94,7 @@ export default class UserCommand extends Command {
             if (btx.customId === 'export-ban-list-yes') {
               const statusEmbed: APIEmbed = {
                 title: '**Ban List export Scheduled**',
-                color: COLORS.whiteGray,
+                color: COLORS.lightGray,
                 description:
                   "Ban list export is scheduled. You will be notified in this channel when it's done.",
                 timestamp: new Date().toISOString(),
@@ -120,7 +120,7 @@ export default class UserCommand extends Command {
               embeds: [
                 {
                   title: '**Export Cancelled**',
-                  color: COLORS.whiteGray,
+                  color: COLORS.lightGray,
                 },
               ],
               components: [],
