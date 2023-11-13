@@ -44,8 +44,8 @@ The following steps are for logs:
 ### Bot Logs
 
 - [X] Ban
-- [ ] Unban
-- [ ] Kick
+- [X] Unban
+- [X] Kick
 - [ ] Timeout
 - [ ] Un Timeout
 - [X] Ban List Export
