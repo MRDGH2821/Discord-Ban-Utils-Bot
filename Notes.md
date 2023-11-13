@@ -19,45 +19,39 @@ The following steps are for logs:
 
 ### Commands
 
-| Name            | Implemented? |
-| --------------- | ------------ |
-| Ban             | ✅           |
-| export ban list | ✅           |
-| help            |              |
-| import ban list | ✅           |
-| kick            | ✅           |
-| mass ban        | ✅           |
-| mass unban      | ✅           |
-| ping            | ✅           |
-| settings        | ✅           |
-| timeout         | ✅           |
-| unban           | ✅           |
-| user info       | ✅           |
+- [X] Ban
+- [X] Export Ban List
+- [ ] Help
+- [X] Import Ban List
+- [X] Kick
+- [X] Mass Ban
+- [X] Mass Unban
+- [X] Ping
+- [X] Settings
+- [X] Timeout
+- [X] Unban
+- [X] User Info
 
 ### Audit Logs
 
-| Log name                   | Implemented? |
-| -------------------------- | ------------ |
-| Ban                        | ✅           |
-| Unban                      | ✅           |
-| member exit                | ✅           |
-| member join                | ✅           |
-| timeout (member update)    | ✅           |
-| un timeout (member update) | ✅           |
+- [X] Ban
+- [X] Unban
+- [X] Member Exit
+- [X] Member Join
+- [X] Timeout (Member Update)
+- [X] Un Timeout (Member Update)
 
 ### Bot Logs
 
-| Log name          | Implemented? |
-| ----------------- | ------------ |
-| Ban               | ✅           |
-| Unban             |              |
-| kick              |              |
-| timeout           |              |
-| un timeout        |              |
-| ban list export   | ✅           |
-| ban list import   | ✅           |
-| unban list import |              |
-| settings change   |              |
-| ban copy          |              |
-| mass ban          | ✅           |
-| mass unban        | ✅           |
+- [X] Ban
+- [ ] Unban
+- [ ] Kick
+- [ ] Timeout
+- [ ] Un Timeout
+- [X] Ban List Export
+- [X] Ban List Import
+- [ ] Unban List Import
+- [ ] Settings Change
+- [ ] Ban Copy
+- [X] Mass Ban
+- [X] Mass Unban
