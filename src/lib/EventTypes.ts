@@ -8,16 +8,20 @@ export type BotGuildBanAddOptions = {
   reason: string;
 };
 
+export type BotGuildBanRemoveOptions = BotGuildBanAddOptions;
+
 export const BUEvents = {
   BanListExport: 'banListExport' as const,
   ListImport: 'listImport' as const,
   BotGuildBanAdd: 'botGuildBanAdd' as const,
+  BotGuildBanRemove: 'botGuildBanRemove' as const,
 } as const;
 
 export interface BUEventParams {
   [BUEvents.BanListExport]: [payload: BanExportOptions];
   [BUEvents.ListImport]: [payload: ListImportOptions];
   [BUEvents.BotGuildBanAdd]: [payload: BotGuildBanAddOptions];
+  [BUEvents.BotGuildBanRemove]: [payload: BotGuildBanRemoveOptions];
 }
 
 export function emitBotEvent<E extends keyof BUEventParams>(
