@@ -2,6 +2,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
 import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
 import { COLORS, NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
+import { emitBotEvent } from '../lib/EventTypes';
 
 @ApplyOptions<Command.Options>({
   name: 'unban',
@@ -71,8 +72,11 @@ export default class UserCommand extends Command {
       });
     }
 
-    return interaction.guild.members.unban(user, reason).then(() =>
-      interaction.reply({
+    const executor = await interaction.guild.members.fetch(interaction.user.id);
+
+    return interaction.guild.members.unban(user, reason).then(() => {
+      emitBotEvent('botGuildBanRemove', { convict: user, executor, reason });
+      return interaction.reply({
         embeds: [
           {
             title: '**Member Unbanned!**',
@@ -94,6 +98,7 @@ export default class UserCommand extends Command {
             timestamp: new Date().toISOString(),
           },
         ],
-      }));
+      });
+    });
   }
 }

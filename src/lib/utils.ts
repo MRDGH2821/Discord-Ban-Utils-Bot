@@ -19,7 +19,7 @@ import type {
 } from 'discord.js';
 import { COLORS } from './Constants';
 import Database from './Database';
-import { emitBotEvent } from './EventTypes';
+import { emitBotEvent, ValueOf } from './EventTypes';
 import type {
   BanEntity,
   BanEntityWithReason,
@@ -267,11 +267,11 @@ export async function importList(
     list,
     mode,
   };
-  emitBotEvent('ListImport', importOptions);
+  emitBotEvent('listImport', importOptions);
   // interaction.client.emit('importBanList', importOptions);
   return msg;
 }
-export { emitBotEvent };
+export { emitBotEvent, ValueOf };
 
 export async function getAuditLogData(auditType: AuditLogEvent, guildId: Guild['id']) {
   const guild = await container.client.guilds.fetch(guildId);

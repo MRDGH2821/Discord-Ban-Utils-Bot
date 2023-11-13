@@ -3,6 +3,7 @@ import { isGuildMember } from '@sapphire/discord.js-utilities';
 import { Command } from '@sapphire/framework';
 import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
 import { COLORS, NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
+import { emitBotEvent } from '../lib/utils';
 
 @ApplyOptions<Command.Options>({
   name: 'kick',
@@ -67,9 +68,11 @@ export default class UserCommand extends Command {
         ephemeral: true,
       });
     }
+    const executor = await interaction.guild.members.fetch(interaction.user.id);
 
-    return convict.kick(reason).then(() =>
-      interaction.reply({
+    return convict.kick(reason).then(() => {
+      emitBotEvent('botGuildMemberKick', { convict, executor, reason });
+      return interaction.reply({
         embeds: [
           {
             title: '**Kicking Wrench Thrown!**',
@@ -91,6 +94,7 @@ export default class UserCommand extends Command {
             timestamp: new Date().toISOString(),
           },
         ],
-      }));
+      });
+    });
   }
 }

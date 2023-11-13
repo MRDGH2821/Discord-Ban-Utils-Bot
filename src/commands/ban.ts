@@ -90,7 +90,7 @@ export default class UserCommand extends Command {
       });
     }
 
-    const mod = await interaction.guild.members.fetch(interaction.user.id);
+    const executor = await interaction.guild.members.fetch(interaction.user.id);
 
     return interaction.guild.members
       .ban(convict, {
@@ -98,7 +98,7 @@ export default class UserCommand extends Command {
         reason,
       })
       .then(() => {
-        emitBotEvent('BotGuildBanAdd', { convict, executor: mod, reason });
+        emitBotEvent('botGuildBanAdd', { convict, executor, reason });
         return interaction.reply({
           embeds: [
             {

@@ -107,7 +107,7 @@ export default class UserCommand extends Command {
                 sourceMessage: btx.message,
               };
 
-              emitBotEvent('BanListExport', exportBanOptions);
+              emitBotEvent('banListExport', exportBanOptions);
 
               // interaction.client.emit('exportBanList', exportBanOptions);
 

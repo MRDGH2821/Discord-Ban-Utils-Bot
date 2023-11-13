@@ -25,7 +25,7 @@ export default class UserEvent extends Listener {
     const kickEmbed: APIEmbed = {
       title: '**BU Member Kick Log**',
       color: COLORS.blueGrayBoot,
-      description: `\`${convict.username}\` ${convict} is kicked with the swiftest boots!\nID: \`${convict.id}\`\n\nReason: ${reason}`,
+      description: `\`${convict.user.username}\` ${convict} is kicked with the swiftest boots!\nID: \`${convict.id}\`\n\nReason: ${reason}`,
       timestamp: new Date().toISOString(),
       fields: [
         {

@@ -5,6 +5,7 @@ import { Time } from '@sapphire/time-utilities';
 import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
 import ms from 'enhanced-ms';
 import { COLORS, NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
+import { emitBotEvent } from '../lib/utils';
 
 @ApplyOptions<Command.Options>({
   name: 'timeout',
@@ -163,7 +164,7 @@ export default class UserCommand extends Command {
   public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
     const convict = interaction.options.getMember('user');
     const duration = interaction.options.getInteger('duration', true);
-    const reason = interaction.options.getString('reason') || undefined;
+    const reason = interaction.options.getString('reason') || 'No reason provided';
 
     if (!interaction.inGuild() || !interaction.guild) {
       return interaction.reply({
@@ -196,7 +197,7 @@ export default class UserCommand extends Command {
     const fields = [
       {
         name: '**Reason**',
-        value: reason || 'No reason provided',
+        value: reason,
       },
     ];
     const thumbnail = {
@@ -228,16 +229,15 @@ export default class UserCommand extends Command {
       });
     }
 
-    return convict.timeout(duration, reason).then((target) =>
-      interaction.reply({
+    const executor = await interaction.guild.members.fetch(interaction.user.id);
+
+    return convict.timeout(duration, reason).then((target) => {
+      emitBotEvent('botTimeout', { convict, executor, reason });
+      return interaction.reply({
         embeds: [
           {
             title: `${target.user.username} is timed out!`,
-            description: `\`${
-              target.user.username
-            }\` ${target} is timed out for ${durationSentence}\n**Reason:** ${
-              reason || 'No reason provided'
-            }`,
+            description: `\`${target.user.username}\` ${target} is timed out for ${durationSentence}\n**Reason:** ${reason}`,
             color: COLORS.cadetBlueFreeze,
             thumbnail,
             fields: fields.concat({
@@ -247,6 +247,7 @@ export default class UserCommand extends Command {
             timestamp: new Date().toISOString(),
           },
         ],
-      }));
+      });
+    });
   }
 }
