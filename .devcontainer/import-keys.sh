@@ -3,6 +3,7 @@
 # Check if the script is running on GitHub Codespaces
 if [[ -n "${CODESPACES}" ]]; then
 	printf "Running in GitHub Codespaces.\nNo need to import any keys."
+  exit
 else
 	# Check if .devcontainer/gpg folder has required files
 	if [ -f ".devcontainer/gpg/public-keys.asc" ]; then
@@ -28,4 +29,4 @@ else
 
 fi
 
-exit 0
+exit
