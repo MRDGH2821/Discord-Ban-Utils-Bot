@@ -1,6 +1,8 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
 import {
+  APIActionRowComponent,
+  APIButtonComponent,
   ApplicationCommandOptionType,
   ComponentType,
   OAuth2Scopes,
@@ -65,7 +67,7 @@ export default class UserCommand extends Command {
       timestamp: new Date().toISOString(),
     };
 
-    const inviteButton = {
+    const inviteButton: APIButtonComponent = {
       type: ComponentType.Button,
       label: 'Invite the bot in your Server!',
       style: 5,
@@ -87,7 +89,7 @@ export default class UserCommand extends Command {
       }),
     };
 
-    const inviteButtonRow = {
+    const inviteButtonRow: APIActionRowComponent<APIButtonComponent> = {
       type: ComponentType.ActionRow,
       components: [inviteButton],
     };
