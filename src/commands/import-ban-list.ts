@@ -14,7 +14,9 @@ import { banEntitySchemaBuilder, importList } from '../lib/utils';
   requiredClientPermissions: [PermissionFlagsBits.BanMembers],
   requiredUserPermissions: [PermissionFlagsBits.BanMembers],
   preconditions: ['GuildOnly'],
-  detailedDescription: 'Imports ban list via link.\nSupported links - dpaste.com and pastebin.com',
+  detailedDescription: {
+    help: 'Imports ban list via link.\nSupported links - dpaste.com and pastebin.com',
+  },
   cooldownDelay: Time.Hour,
   cooldownLimit: 1,
   cooldownFilteredUsers: process.env.OWNER_ID ? [process.env.OWNER_ID] : undefined,

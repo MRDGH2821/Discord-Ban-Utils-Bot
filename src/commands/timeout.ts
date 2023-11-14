@@ -13,6 +13,9 @@ import { emitBotEvent } from '../lib/utils';
   preconditions: ['GuildOnly'],
   requiredClientPermissions: PermissionFlagsBits.ModerateMembers,
   requiredUserPermissions: PermissionFlagsBits.ModerateMembers,
+  detailedDescription: {
+    help: 'Timeout a user for a specific duration.\nCan un-timeout by using "Remove Timeout" option',
+  },
 })
 export default class UserCommand extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {

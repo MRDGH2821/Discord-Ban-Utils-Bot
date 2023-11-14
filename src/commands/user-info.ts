@@ -15,7 +15,10 @@ import { jumpLink } from '../lib/utils';
 
 @ApplyOptions<Command.Options>({
   name: 'user-info',
-  description: 'A basic slash command',
+  description: 'Info about user',
+  detailedDescription: {
+    help: 'Tells information about a user',
+  },
 })
 export default class UserCommand extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {

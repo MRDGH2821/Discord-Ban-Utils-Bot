@@ -21,6 +21,9 @@ import { emitBotEvent } from '../lib/utils';
     PermissionFlagsBits.EmbedLinks,
   ],
   preconditions: ['GuildOnly'],
+  detailedDescription: {
+    help: 'Exports all the bans of current server as a list of links.',
+  },
 })
 export default class UserCommand extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {

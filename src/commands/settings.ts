@@ -13,6 +13,7 @@ import {
 } from 'discord.js';
 import { COLORS, SERVER_ONLY, WEBHOOK_ICON } from '../lib/Constants';
 import Database from '../lib/Database';
+import { SettingsDescription } from '../lib/SettingsData';
 import type { SettingsParameter } from '../lib/typeDefs';
 import { getWebhook, selectedSettingsValidator } from '../lib/utils';
 
@@ -67,6 +68,12 @@ interface SettingsOpt extends APISelectMenuOption {
   ],
   preconditions: ['GuildOnly'],
   requiredUserPermissions: PermissionFlagsBits.ManageGuild,
+  detailedDescription: {
+    help: `Configure bot settings.\nAvailable settings:\n${codeBlock(
+      'json',
+      JSON.stringify(SettingsDescription, null, 2),
+    )}`,
+  },
 })
 export default class UserCommand extends Subcommand {
   registerApplicationCommands(registry: Subcommand.Registry) {

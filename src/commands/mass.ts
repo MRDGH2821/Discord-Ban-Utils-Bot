@@ -27,6 +27,9 @@ import { banEntitySchemaBuilder, debugErrorEmbed, importList } from '../lib/util
   preconditions: ['GuildOnly'],
   requiredUserPermissions: PermissionFlagsBits.BanMembers,
   requiredClientPermissions: PermissionFlagsBits.BanMembers,
+  detailedDescription: {
+    help: 'Perform mass ban or unban on a list of discord IDs',
+  },
 })
 export default class UserCommand extends Subcommand {
   registerApplicationCommands(registry: Subcommand.Registry) {

@@ -10,6 +10,9 @@ import { emitBotEvent } from '../lib/EventTypes';
   preconditions: ['GuildOnly'],
   requiredClientPermissions: PermissionFlagsBits.BanMembers,
   requiredUserPermissions: PermissionFlagsBits.BanMembers,
+  detailedDescription: {
+    help: 'Bans a user from current server.\nReason can be used from the list or you can input your custom reason',
+  },
 })
 export default class UserCommand extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {

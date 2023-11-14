@@ -1,7 +1,7 @@
 import { dbSettingsRef } from './DBUtils';
 import type { AllSettingsOptions, SettingsOptions, SettingsParameter } from './typeDefs';
 
-const translation: { [x in keyof Required<AllSettingsOptions>]: string } = {
+export const SettingsDescription: { [x in keyof Required<AllSettingsOptions>]: string } = {
   sendBanLog: 'Send Ban Log',
   sendBanCopyLog: 'Send Ban Copy Log',
   sendBanExportLog: 'Send Ban list Export Log',
@@ -93,7 +93,7 @@ export default class SettingsData implements AllSettingsOptions {
 
   toString() {
     const keys = Object.keys(this) as (keyof AllSettingsOptions)[];
-    const settings = keys.map((key) => `${translation[key]}: ${this[key]}`);
+    const settings = keys.map((key) => `${SettingsDescription[key]}: ${this[key]}`);
     return settings.join('\n');
   }
 }

@@ -11,6 +11,9 @@ import { emitBotEvent } from '../lib/utils';
   preconditions: ['GuildOnly'],
   requiredClientPermissions: PermissionFlagsBits.KickMembers,
   requiredUserPermissions: PermissionFlagsBits.KickMembers,
+  detailedDescription: {
+    help: 'Kicks a member out from current server.',
+  },
 })
 export default class UserCommand extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {

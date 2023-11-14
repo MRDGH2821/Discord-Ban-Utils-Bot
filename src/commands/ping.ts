@@ -3,7 +3,11 @@ import { Command } from '@sapphire/framework';
 import { ApplicationCommandType, Message } from 'discord.js';
 
 @ApplyOptions<Command.Options>({
+  name: 'ping',
   description: 'ping pong',
+  detailedDescription: {
+    help: "Check how fast the bot can respond to you.\nLower the number, the faster is the response.\n(Measures bot's network latency, not bot's ability to do things fast.",
+  },
 })
 export default class UserCommand extends Command {
   // Register Chat Input and Context Menu command
