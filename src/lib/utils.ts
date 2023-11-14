@@ -303,3 +303,9 @@ export async function getAuditLogData(auditType: AuditLogEvent, guildId: Guild['
     auditLog: latestLog,
   };
 }
+
+declare module '@sapphire/framework' {
+  export interface DetailedDescriptionCommand {
+    help: string;
+  }
+}

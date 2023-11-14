@@ -1,9 +1,7 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
-import {
-  APIEmbed,
-  ApplicationCommandOptionType,
-} from 'discord.js';
+import { APIEmbed, ApplicationCommandOptionType, PermissionsBitField } from 'discord.js';
+import { COLORS } from '../lib/Constants';
 
 @ApplyOptions<Command.Options>({
   name: 'help',
@@ -55,14 +53,24 @@ export default class UserCommand extends Command {
     const embed: APIEmbed = {
       title: command.name,
       description: command.description,
+      color: COLORS.charcoalInvisible,
       fields: [
         {
-          name: 'Required permissions',
-          value: command.options.requiredClientPermissions?.toString() ?? 'None',
+          name: 'Detailed description',
+          value: command.detailedDescription?.help ?? 'None',
+        },
+        {
+          name: 'Permissions required by bot',
+          value:
+            new PermissionsBitField(command.options.requiredClientPermissions)
+              .toArray()
+              .join(', ') ?? 'None',
         },
         {
           name: 'Required user permissions',
-          value: command.options.requiredUserPermissions?.toString() ?? 'None',
+          value:
+            new PermissionsBitField(command.options.requiredUserPermissions).toArray().join(', ')
+            ?? 'None',
         },
       ],
     };
