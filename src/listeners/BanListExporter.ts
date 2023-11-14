@@ -8,6 +8,7 @@ import {
   type GuildBan,
   type MessagePayloadOption,
 } from 'discord.js';
+// @ts-ignore
 import { createPaste } from 'dpaste-ts';
 import { sequentialPromises } from 'yaspr';
 import { COLORS } from '../lib/Constants';

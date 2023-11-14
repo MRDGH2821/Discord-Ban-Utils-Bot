@@ -3,6 +3,7 @@ import { Command } from '@sapphire/framework';
 import { s } from '@sapphire/shapeshift';
 import { Time } from '@sapphire/time-utilities';
 import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
+// @ts-ignore
 import { getRawPaste } from 'dpaste-ts';
 import { NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
 import type { BanEntityWithReason } from '../lib/typeDefs';
