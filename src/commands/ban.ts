@@ -1,5 +1,6 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
+import { Time } from '@sapphire/time-utilities';
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
@@ -14,6 +15,9 @@ import { emitBotEvent } from '../lib/utils';
   requiredClientPermissions: PermissionFlagsBits.BanMembers,
   requiredUserPermissions: PermissionFlagsBits.BanMembers,
   preconditions: ['GuildOnly'],
+  detailedDescription: {
+    help: 'Bans a user from current server.\nReason can be used from the list or you can input your custom reason',
+  },
 })
 export default class UserCommand extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {
@@ -40,11 +44,59 @@ export default class UserCommand extends Command {
         },
         {
           name: 'delete_messages',
-          description: 'The number of days to delete messages for',
+          description: 'How much message history to delete',
           type: ApplicationCommandOptionType.Integer,
           required: false,
-          maxValue: 7,
-          max_value: 7,
+          choices: [
+            {
+              name: "Don't delete messages (default)",
+              value: 0,
+            },
+            {
+              name: 'Previous hour',
+              value: Time.Hour,
+            },
+            {
+              name: 'Previous 3 hours',
+              value: 3 * Time.Hour,
+            },
+            {
+              name: 'Previous 6 hours',
+              value: 6 * Time.Hour,
+            },
+            {
+              name: 'Previous 12 hours',
+              value: 12 * Time.Hour,
+            },
+            {
+              name: 'Previous 24 hours',
+              value: Time.Day,
+            },
+            {
+              name: 'Previous 2 Days',
+              value: 2 * Time.Day,
+            },
+            {
+              name: 'Previous 3 Days',
+              value: 3 * Time.Day,
+            },
+            {
+              name: 'Previous 4 Days',
+              value: 4 * Time.Day,
+            },
+            {
+              name: 'Previous 5 Days',
+              value: 5 * Time.Day,
+            },
+            {
+              name: 'Previous 6 Days',
+              value: 6 * Time.Day,
+            },
+            {
+              name: 'Previous 7 Days',
+              value: Time.Week,
+            },
+          ],
         },
       ],
     });
@@ -74,7 +126,7 @@ export default class UserCommand extends Command {
   public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
     const convict = interaction.options.getUser('user', true);
     const reason = interaction.options.getString('reason', true);
-    const deleteMsgDays = interaction.options.getInteger('delete_messages') || undefined;
+    let deleteMsgDays = interaction.options.getInteger('delete_messages') || undefined;
 
     if (!interaction.inGuild() || !interaction.guild) {
       return interaction.reply({
@@ -88,6 +140,10 @@ export default class UserCommand extends Command {
         content: NOT_PERMITTED,
         ephemeral: true,
       });
+    }
+
+    if (deleteMsgDays) {
+      deleteMsgDays /= 1000;
     }
 
     const executor = await interaction.guild.members.fetch(interaction.user.id);
@@ -116,6 +172,10 @@ export default class UserCommand extends Command {
                 {
                   name: '**Convict ID**',
                   value: convict.id,
+                },
+                {
+                  name: '**Duration of Message History deleted**',
+                  value: deleteMsgDays ? `${deleteMsgDays} days` : 'Not deleted',
                 },
               ],
               timestamp: new Date().toISOString(),
