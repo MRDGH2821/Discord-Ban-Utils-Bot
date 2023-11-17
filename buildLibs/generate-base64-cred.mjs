@@ -19,4 +19,4 @@ fs.writeFileSync(
 );
 
 // eslint-disable-next-line no-console
-console.log('Saved to ./firebase-service-acc/firebase-admin-cred-base64.txt');
+console.info('Saved to ./firebase-service-acc/firebase-admin-cred-base64.txt');
