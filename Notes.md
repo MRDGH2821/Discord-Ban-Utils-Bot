@@ -19,39 +19,39 @@ The following steps are for logs:
 
 ### Commands
 
-- [X] Ban
-- [X] Export Ban List
+- [x] Ban
+- [x] Export Ban List
 - [ ] Help
-- [X] Import Ban List
-- [X] Kick
-- [X] Mass Ban
-- [X] Mass Unban
-- [X] Ping
-- [X] Settings
-- [X] Timeout
-- [X] Unban
-- [X] User Info
+- [x] Import Ban List
+- [x] Kick
+- [x] Mass Ban
+- [x] Mass Unban
+- [x] Ping
+- [x] Settings
+- [x] Timeout
+- [x] Unban
+- [x] User Info
 
 ### Audit Logs
 
-- [X] Ban
-- [X] Unban
-- [X] Member Exit
-- [X] Member Join
-- [X] Timeout (Member Update)
-- [X] Un Timeout (Member Update)
+- [x] Ban
+- [x] Unban
+- [x] Member Exit
+- [x] Member Join
+- [x] Timeout (Member Update)
+- [x] Un Timeout (Member Update)
 
 ### Bot Logs
 
-- [X] Ban
-- [X] Unban
-- [X] Kick
-- [X] Timeout
-- [X] Un Timeout
-- [X] Ban List Export
-- [X] Ban List Import
+- [x] Ban
+- [x] Unban
+- [x] Kick
+- [x] Timeout
+- [x] Un Timeout
+- [x] Ban List Export
+- [x] Ban List Import
 - [ ] Unban List Import
 - [ ] Settings Change
 - [ ] Ban Copy
-- [X] Mass Ban
-- [X] Mass Unban
+- [x] Mass Ban
+- [x] Mass Unban
