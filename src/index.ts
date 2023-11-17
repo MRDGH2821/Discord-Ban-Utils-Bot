@@ -28,7 +28,7 @@ const main = async () => {
   try {
     client.logger.info('Logging in');
     await client.login();
-    client.logger.info('Logged in');
+    client.logger.info(`Logged in as: ${client.user?.tag}`);
   } catch (error) {
     client.logger.fatal(error);
     client.destroy();
