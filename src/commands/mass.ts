@@ -32,7 +32,7 @@ import { banEntitySchemaBuilder, debugErrorEmbed, importList } from '../lib/util
   },
 })
 export default class UserCommand extends Subcommand {
-  registerApplicationCommands(registry: Subcommand.Registry) {
+  override registerApplicationCommands(registry: Subcommand.Registry) {
     registry.registerChatInputCommand({
       name: this.name,
       description: this.description,
@@ -94,7 +94,7 @@ export default class UserCommand extends Subcommand {
     return schema.run(idList);
   }
 
-  public async chatInputRun(interaction: Subcommand.ChatInputCommandInteraction) {
+  public override async chatInputRun(interaction: Subcommand.ChatInputCommandInteraction) {
     await interaction.deferReply();
     const ids = interaction.options.getString('ids', true);
     const reason = interaction.options.getString('reason', true);

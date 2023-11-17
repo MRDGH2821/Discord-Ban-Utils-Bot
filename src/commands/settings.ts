@@ -76,7 +76,7 @@ interface SettingsOpt extends APISelectMenuOption {
   },
 })
 export default class UserCommand extends Subcommand {
-  registerApplicationCommands(registry: Subcommand.Registry) {
+  override registerApplicationCommands(registry: Subcommand.Registry) {
     registry.registerChatInputCommand({
       name: this.name,
       description: this.description,
