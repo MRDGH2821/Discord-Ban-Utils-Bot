@@ -1,4 +1,4 @@
 {
-  "include": ["generate-base64-cred.js"],
+  "include": ["./buildLibs/*"],
   "exclude": ["node_modules", "dist"]
 }
