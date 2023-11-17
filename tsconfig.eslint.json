@@ -1,3 +1,4 @@
 {
-  "include": ["generate-base64-cred.js"]
+  "include": ["generate-base64-cred.js"],
+  "exclude": ["node_modules", "dist"]
 }

@@ -14,5 +14,6 @@
     ],
     "implicit-arrow-linebreak": "off",
     "unused-imports/no-unused-imports": "error"
-  }
+  },
+  "ignorePatterns": ["./dist/**"]
 }
