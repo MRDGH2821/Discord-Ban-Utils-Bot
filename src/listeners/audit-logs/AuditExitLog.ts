@@ -1,5 +1,5 @@
 import { ApplyOptions } from '@sapphire/decorators';
-import { Events, Listener } from '@sapphire/framework';
+import { container, Events, Listener } from '@sapphire/framework';
 import { AuditLogEvent, GuildMember, type APIEmbed } from 'discord.js';
 import { COLORS } from '../../lib/Constants';
 import { getAuditLogData } from '../../lib/utils';
@@ -38,3 +38,9 @@ export default class UserEvent extends Listener<typeof Events.GuildMemberRemove>
     });
   }
 }
+
+void container.stores.loadPiece({
+  name: UserEvent.name,
+  piece: UserEvent,
+  store: 'listeners',
+});

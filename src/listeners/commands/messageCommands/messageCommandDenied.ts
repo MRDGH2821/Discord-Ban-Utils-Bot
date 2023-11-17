@@ -1,10 +1,15 @@
+import { ApplyOptions } from '@sapphire/decorators';
 import {
+  container,
   Listener,
   type Events,
   type MessageCommandDeniedPayload,
   type UserError,
 } from '@sapphire/framework';
 
+@ApplyOptions<Listener.Options>({
+  name: 'Message Command Denied',
+})
 export default class UserEvent extends Listener<typeof Events.MessageCommandDenied> {
   public async run(
     { context, message: content }: UserError,
@@ -21,3 +26,9 @@ export default class UserEvent extends Listener<typeof Events.MessageCommandDeni
     });
   }
 }
+
+container.stores.loadPiece({
+  name: UserEvent.name,
+  piece: UserEvent,
+  store: 'listeners',
+});

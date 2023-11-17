@@ -1,8 +1,12 @@
+import { ApplyOptions } from '@sapphire/decorators';
 import type { MessageCommandSuccessPayload } from '@sapphire/framework';
-import { Listener, LogLevel } from '@sapphire/framework';
+import { container, Listener, LogLevel } from '@sapphire/framework';
 import type { Logger } from '@sapphire/plugin-logger';
 import { logSuccessCommand } from '../../../lib/utils';
 
+@ApplyOptions<Listener.Options>({
+  name: 'Message Command Success',
+})
 export default class UserEvent extends Listener {
   public run(payload: MessageCommandSuccessPayload) {
     logSuccessCommand(payload);
@@ -13,3 +17,9 @@ export default class UserEvent extends Listener {
     return super.onLoad();
   }
 }
+
+void container.stores.loadPiece({
+  name: UserEvent.name,
+  piece: UserEvent,
+  store: 'listeners',
+});

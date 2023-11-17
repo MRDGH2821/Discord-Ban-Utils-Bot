@@ -1,5 +1,5 @@
 import { ApplyOptions } from '@sapphire/decorators';
-import { Events, Listener } from '@sapphire/framework';
+import { container, Events, Listener } from '@sapphire/framework';
 import { Time } from '@sapphire/time-utilities';
 import { APIEmbed, GuildMember, time } from 'discord.js';
 import { COLORS } from '../../lib/Constants';
@@ -42,3 +42,9 @@ export default class UserEvent extends Listener<typeof Events.GuildMemberAdd> {
     });
   }
 }
+
+void container.stores.loadPiece({
+  name: UserEvent.name,
+  piece: UserEvent,
+  store: 'listeners',
+});

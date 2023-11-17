@@ -1,5 +1,5 @@
 import { ApplyOptions } from '@sapphire/decorators';
-import { Listener } from '@sapphire/framework';
+import { container, Listener } from '@sapphire/framework';
 import { retry, sleepSync, toTitleCase } from '@sapphire/utilities';
 import {
   ButtonStyle,
@@ -72,7 +72,8 @@ export default class UserEvent extends Listener {
     await sequentialPromises(uniqueList, performBan).catch(async (err) =>
       message.reply({
         content: `${user}\nAn error occurred while importing ${mode} list: ${err.message}`,
-      }));
+      }),
+    );
     this.container.logger.debug(
       `${titleMode} stats:\n`,
       JSON.stringify(
@@ -122,21 +123,21 @@ export default class UserEvent extends Listener {
       components:
         failedList.size > 0
           ? [
-            {
-              type: ComponentType.ActionRow,
-              components: [
-                {
-                  type: ComponentType.Button,
-                  label: `Unsuccessful ${mode} list link`,
-                  style: ButtonStyle.Link,
-                  url: await createPaste({
-                    content: JSON.stringify(Array.from(failedList), null, 2),
-                    title: `[FAILED] ${truncateString(guild.name, 10)} ${titleMode} List`,
-                  }),
-                },
-              ],
-            },
-          ]
+              {
+                type: ComponentType.ActionRow,
+                components: [
+                  {
+                    type: ComponentType.Button,
+                    label: `Unsuccessful ${mode} list link`,
+                    style: ButtonStyle.Link,
+                    url: await createPaste({
+                      content: JSON.stringify(Array.from(failedList), null, 2),
+                      title: `[FAILED] ${truncateString(guild.name, 10)} ${titleMode} List`,
+                    }),
+                  },
+                ],
+              },
+            ]
           : undefined,
     });
   }
@@ -158,3 +159,9 @@ export default class UserEvent extends Listener {
     });
   }
 }
+
+void container.stores.loadPiece({
+  name: UserEvent.name,
+  piece: UserEvent,
+  store: 'listeners',
+});

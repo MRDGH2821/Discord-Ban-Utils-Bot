@@ -1,7 +1,11 @@
 /* eslint-disable consistent-return */
+import { ApplyOptions } from '@sapphire/decorators';
 import type { ContextMenuCommandDeniedPayload, Events } from '@sapphire/framework';
-import { Listener, UserError } from '@sapphire/framework';
+import { container, Listener, UserError } from '@sapphire/framework';
 
+@ApplyOptions<Listener.Options>({
+  name: 'Context Menu Command Denied',
+})
 export default class UserEvent extends Listener<typeof Events.ContextMenuCommandDenied> {
   public async run(
     { context, message: content }: UserError,
@@ -25,3 +29,9 @@ export default class UserEvent extends Listener<typeof Events.ContextMenuCommand
     });
   }
 }
+
+container.stores.loadPiece({
+  name: UserEvent.name,
+  piece: UserEvent,
+  store: 'listeners',
+});

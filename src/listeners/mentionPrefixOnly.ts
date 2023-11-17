@@ -1,7 +1,11 @@
+import { ApplyOptions } from '@sapphire/decorators';
 import type { Events } from '@sapphire/framework';
-import { Listener } from '@sapphire/framework';
+import { container, Listener } from '@sapphire/framework';
 import type { Message } from 'discord.js';
 
+@ApplyOptions<Listener.Options>({
+  name: 'Mention Prefix Only',
+})
 export default class UserEvent extends Listener<typeof Events.MentionPrefixOnly> {
   public async run(message: Message) {
     const prefix = this.container.client.options.defaultPrefix;
@@ -12,3 +16,9 @@ export default class UserEvent extends Listener<typeof Events.MentionPrefixOnly>
     );
   }
 }
+
+container.stores.loadPiece({
+  name: UserEvent.name,
+  piece: UserEvent,
+  store: 'listeners',
+});

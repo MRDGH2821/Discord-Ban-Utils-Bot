@@ -1,5 +1,5 @@
 import { ApplyOptions } from '@sapphire/decorators';
-import { Listener } from '@sapphire/framework';
+import { container, Listener } from '@sapphire/framework';
 import type { APIEmbed } from 'discord.js';
 import { COLORS } from '../../lib/Constants';
 import Database from '../../lib/Database';
@@ -41,3 +41,9 @@ export default class UserEvent extends Listener<typeof BUEvents.BotGuildBanAdd> 
     });
   }
 }
+
+void container.stores.loadPiece({
+  name: UserEvent.name,
+  piece: UserEvent,
+  store: 'listeners',
+});

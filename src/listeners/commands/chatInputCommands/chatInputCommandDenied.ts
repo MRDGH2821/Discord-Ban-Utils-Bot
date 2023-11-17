@@ -1,7 +1,11 @@
 /* eslint-disable consistent-return */
+import { ApplyOptions } from '@sapphire/decorators';
 import type { ChatInputCommandDeniedPayload, Events } from '@sapphire/framework';
-import { Listener, UserError } from '@sapphire/framework';
+import { container, Listener, UserError } from '@sapphire/framework';
 
+@ApplyOptions<Listener.Options>({
+  name: 'Chat Input Command Denied',
+})
 export default class UserEvent extends Listener<typeof Events.ChatInputCommandDenied> {
   public async run(
     { context, message: content }: UserError,
@@ -25,3 +29,9 @@ export default class UserEvent extends Listener<typeof Events.ChatInputCommandDe
     });
   }
 }
+
+container.stores.loadPiece({
+  name: UserEvent.name,
+  piece: UserEvent,
+  store: 'listeners',
+});
