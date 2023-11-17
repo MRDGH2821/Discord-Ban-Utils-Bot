@@ -1,5 +1,5 @@
 import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
+import { Command, container } from '@sapphire/framework';
 import { APIEmbed, ApplicationCommandOptionType, PermissionsBitField } from 'discord.js';
 import { COLORS } from '../lib/Constants';
 
@@ -69,8 +69,8 @@ export default class UserCommand extends Command {
         {
           name: 'Required user permissions',
           value:
-            new PermissionsBitField(command.options.requiredUserPermissions).toArray().join(', ')
-            ?? 'None',
+            new PermissionsBitField(command.options.requiredUserPermissions).toArray().join(', ') ??
+            'None',
         },
       ],
     };
@@ -78,3 +78,9 @@ export default class UserCommand extends Command {
     return interaction.reply({ embeds: [embed] });
   }
 }
+
+void container.stores.loadPiece({
+  name: UserCommand.name,
+  piece: UserCommand,
+  store: 'commands',
+});

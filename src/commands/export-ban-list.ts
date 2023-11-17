@@ -1,16 +1,10 @@
 import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
-import {
-  ApplicationCommandOptionType,
-  ApplicationCommandType,
-  ButtonStyle,
-  ComponentType,
-  PermissionFlagsBits,
-  type APIEmbed,
-} from 'discord.js';
+import { Command, container } from '@sapphire/framework';
+import { ApplicationCommandOptionType, ApplicationCommandType, ButtonStyle, ComponentType, PermissionFlagsBits, type APIEmbed } from 'discord.js';
 import { COLORS, SERVER_ONLY } from '../lib/Constants';
 import type { BanExportOptions } from '../lib/typeDefs';
 import { emitBotEvent } from '../lib/utils';
+
 
 @ApplyOptions<Command.Options>({
   name: 'export-ban-list',
@@ -131,3 +125,9 @@ export default class UserCommand extends Command {
           }));
   }
 }
+
+void container.stores.loadPiece({
+  name: UserCommand.name,
+  piece: UserCommand,
+  store: 'commands',
+});

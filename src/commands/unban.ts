@@ -1,5 +1,5 @@
 import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
+import { Command, container } from '@sapphire/framework';
 import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
 import { COLORS, NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
 import { emitBotEvent } from '../lib/EventTypes';
@@ -105,3 +105,9 @@ export default class UserCommand extends Command {
     });
   }
 }
+
+void container.stores.loadPiece({
+  name: UserCommand.name,
+  piece: UserCommand,
+  store: 'commands',
+});

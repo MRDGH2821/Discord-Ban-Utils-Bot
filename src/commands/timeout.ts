@@ -1,6 +1,6 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { isGuildMember } from '@sapphire/discord.js-utilities';
-import { Command } from '@sapphire/framework';
+import { Command, container } from '@sapphire/framework';
 import { Time } from '@sapphire/time-utilities';
 import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
 import ms from 'enhanced-ms';
@@ -220,7 +220,8 @@ export default class UserCommand extends Command {
               timestamp: new Date().toISOString(),
             },
           ],
-        }));
+        }),
+      );
     }
 
     const durationSentence = ms(duration!, { includeMs: true });
@@ -254,3 +255,9 @@ export default class UserCommand extends Command {
     });
   }
 }
+
+void container.stores.loadPiece({
+  name: UserCommand.name,
+  piece: UserCommand,
+  store: 'commands',
+});

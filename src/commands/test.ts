@@ -1,5 +1,5 @@
 import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
+import { Command, container } from '@sapphire/framework';
 import { ApplicationCommandOptionType, MessageFlags, PermissionFlagsBits } from 'discord.js';
 
 @ApplyOptions<Command.Options>({
@@ -47,3 +47,9 @@ export default class UserCommand extends Command {
     });
   }
 }
+
+container.stores.loadPiece({
+  name: UserCommand.name,
+  piece: UserCommand,
+  store: 'commands',
+});

@@ -1,0 +1,12 @@
+import './ban';
+import './export-ban-list';
+import './help';
+import './import-ban-list';
+import './kick';
+import './mass';
+import './ping';
+import './settings';
+import './test';
+import './timeout';
+import './unban';
+import './user-info';

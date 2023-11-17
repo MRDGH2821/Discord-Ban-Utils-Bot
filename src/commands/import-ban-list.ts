@@ -1,5 +1,5 @@
 import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
+import { Command, container } from '@sapphire/framework';
 import { s } from '@sapphire/shapeshift';
 import { Time } from '@sapphire/time-utilities';
 import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
@@ -8,6 +8,7 @@ import { getRawPaste } from 'dpaste-ts';
 import { NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
 import type { BanEntityWithReason } from '../lib/typeDefs';
 import { banEntitySchemaBuilder, importList } from '../lib/utils';
+
 
 @ApplyOptions<Command.Options>({
   name: 'import-ban-list',
@@ -87,3 +88,10 @@ export default class UserCommand extends Command {
     }
   }
 }
+
+
+void container.stores.loadPiece({
+  name: UserCommand.name,
+  piece: UserCommand,
+  store: 'commands',
+});

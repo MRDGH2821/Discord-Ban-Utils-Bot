@@ -1,5 +1,6 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { SnowflakeRegex } from '@sapphire/discord.js-utilities';
+import { container } from '@sapphire/framework';
 import { Subcommand } from '@sapphire/plugin-subcommands';
 import { s } from '@sapphire/shapeshift';
 import {
@@ -158,3 +159,9 @@ export default class UserCommand extends Subcommand {
     await importList(interaction, parsedIds.value, interaction.guild, mode);
   }
 }
+
+void container.stores.loadPiece({
+  name: UserCommand.name,
+  piece: UserCommand,
+  store: 'commands',
+});

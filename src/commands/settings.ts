@@ -1,4 +1,5 @@
 import { ApplyOptions } from '@sapphire/decorators';
+import { container } from '@sapphire/framework';
 import { Subcommand } from '@sapphire/plugin-subcommands';
 import { codeBlock } from '@sapphire/utilities';
 import {
@@ -202,7 +203,8 @@ export default class UserCommand extends Subcommand {
           componentType: ComponentType.StringSelect,
           filter: (i) => i.user.id === interaction.user.id,
           dispose: true,
-        }))
+        }),
+      )
       .then(async (selectMenu) => {
         const parsedSettings = selectedSettingsValidator.parse(selectMenu.values);
 
@@ -236,7 +238,8 @@ export default class UserCommand extends Subcommand {
         interaction.followUp({
           content: 'Settings have been saved successfully!',
           ephemeral: true,
-        }));
+        }),
+      );
   }
 
   public async getOrCreateWebhook(channel: TextChannel, cleanUp = true) {
@@ -266,3 +269,9 @@ export default class UserCommand extends Subcommand {
     });
   }
 }
+
+void container.stores.loadPiece({
+  name: UserCommand.name,
+  piece: UserCommand,
+  store: 'commands',
+});

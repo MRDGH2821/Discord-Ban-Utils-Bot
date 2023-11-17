@@ -1,5 +1,5 @@
 import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
+import { Command, container } from '@sapphire/framework';
 import { Time } from '@sapphire/time-utilities';
 import {
   ApplicationCommandOptionType,
@@ -185,3 +185,9 @@ export default class UserCommand extends Command {
       });
   }
 }
+
+void container.stores.loadPiece({
+  name: UserCommand.name,
+  piece: UserCommand,
+  store: 'commands'
+})

@@ -23,7 +23,7 @@ const client = new SapphireClient({
   loadMessageCommandListeners: true,
   partials: [Partials.GuildMember, Partials.User, Partials.User],
 });
-client.stores.registerPath(__dirname);
+// client.stores.registerPath(__dirname);
 const main = async () => {
   try {
     client.logger.info('Logging in');

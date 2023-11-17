@@ -19,7 +19,7 @@ import type {
 } from 'discord.js';
 import { COLORS } from './Constants';
 import Database from './Database';
-import { emitBotEvent, ValueOf } from './EventTypes';
+import { emitBotEvent } from './EventTypes';
 import type {
   BanEntity,
   BanEntityWithReason,
@@ -62,13 +62,14 @@ export function getSuccessLoggerData(guild: Guild | null, user: User, command: C
 
 export function logSuccessCommand(
   payload:
-  | ContextMenuCommandSuccessPayload
-  | ChatInputCommandSuccessPayload
-  | MessageCommandSuccessPayload,
+    | ContextMenuCommandSuccessPayload
+    | ChatInputCommandSuccessPayload
+    | MessageCommandSuccessPayload,
 ): void {
-  const successLoggerData: ReturnType<typeof getSuccessLoggerData> = 'interaction' in payload
-    ? getSuccessLoggerData(payload.interaction.guild, payload.interaction.user, payload.command)
-    : getSuccessLoggerData(payload.message.guild, payload.message.author, payload.command);
+  const successLoggerData: ReturnType<typeof getSuccessLoggerData> =
+    'interaction' in payload
+      ? getSuccessLoggerData(payload.interaction.guild, payload.interaction.user, payload.command)
+      : getSuccessLoggerData(payload.message.guild, payload.message.author, payload.command);
 
   container.logger.debug(
     `${successLoggerData.shard} - ${successLoggerData.commandName} ${successLoggerData.author} ${successLoggerData.sentAt}`,
@@ -172,11 +173,10 @@ export const selectedSettingsValidator = s
     values.reduce<SettingsOptions>((acc, curr) => {
       acc[curr] = true;
       return acc;
-    }, {}));
+    }, {}),
+  );
 
-export async function sendLog({
-  guild, title, description, type,
-}: SendLogOptions) {
+export async function sendLog({ guild, title, description, type }: SendLogOptions) {
   const settings = await Database.getSettings(guild.id);
   if (!settings) return;
   if (!settings.webhookId) return;
@@ -209,7 +209,8 @@ export function getWebhook(guildId: Guild['id'], webhookId?: Webhook['id']) {
       .then((guild) => guild.fetchWebhooks())
       // eslint-disable-next-line max-len
       .then((hooks) =>
-        hooks.find((w) => w.id === webhookId || w.owner?.id === container.client.user?.id))
+        hooks.find((w) => w.id === webhookId || w.owner?.id === container.client.user?.id),
+      )
   );
 }
 
@@ -259,7 +260,7 @@ export async function importList(
   // interaction.client.emit('importBanList', importOptions);
   return msg;
 }
-export { emitBotEvent, ValueOf };
+export { emitBotEvent };
 
 export async function getAuditLogData(auditType: AuditLogEvent, guildId: Guild['id']) {
   const guild = await container.client.guilds.fetch(guildId);

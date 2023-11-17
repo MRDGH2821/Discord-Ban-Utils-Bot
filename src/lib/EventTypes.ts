@@ -2,7 +2,7 @@ import { container } from '@sapphire/framework';
 import type { GuildMember, User } from 'discord.js';
 import type { BanExportOptions, ListImportOptions } from './typeDefs';
 
-export type ValueOf<T> = T[keyof T];
+type ValueOf<T> = T[keyof T];
 
 export type BotGuildBanAddOptions = {
   convict: User;
