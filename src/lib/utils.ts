@@ -66,21 +66,9 @@ export function logSuccessCommand(
   | ChatInputCommandSuccessPayload
   | MessageCommandSuccessPayload,
 ): void {
-  let successLoggerData: ReturnType<typeof getSuccessLoggerData>;
-
-  if ('interaction' in payload) {
-    successLoggerData = getSuccessLoggerData(
-      payload.interaction.guild,
-      payload.interaction.user,
-      payload.command,
-    );
-  } else {
-    successLoggerData = getSuccessLoggerData(
-      payload.message.guild,
-      payload.message.author,
-      payload.command,
-    );
-  }
+  const successLoggerData: ReturnType<typeof getSuccessLoggerData> = 'interaction' in payload
+    ? getSuccessLoggerData(payload.interaction.guild, payload.interaction.user, payload.command)
+    : getSuccessLoggerData(payload.message.guild, payload.message.author, payload.command);
 
   container.logger.debug(
     `${successLoggerData.shard} - ${successLoggerData.commandName} ${successLoggerData.author} ${successLoggerData.sentAt}`,
