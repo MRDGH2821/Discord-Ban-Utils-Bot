@@ -1,4 +1,5 @@
 import { ApplyOptions } from '@sapphire/decorators';
+import { isGuildMember } from '@sapphire/discord.js-utilities';
 import { Command, container } from '@sapphire/framework';
 import { APIEmbed, ApplicationCommandOptionType, PermissionsBitField } from 'discord.js';
 import { COLORS } from '../lib/Constants';
@@ -43,12 +44,46 @@ export default class UserCommand extends Command {
     );
   }
 
+  public permissionsStatus(
+    requiredPermissions?: PermissionsBitField,
+    availablePermissions?: Readonly<PermissionsBitField>,
+  ) {
+    let text = '';
+
+    if (!requiredPermissions || requiredPermissions.toArray().length <= 0) return 'None';
+
+    if (availablePermissions && availablePermissions.toArray().length > 0) {
+      for (const permission of requiredPermissions) {
+        text += requiredPermissions.has(permission) ? `${permission} ✅\n` : `${permission} ❌\n`;
+      }
+    } else {
+      for (const permission of requiredPermissions) {
+        text += `${permission} ❌\n`;
+      }
+    }
+
+    return text;
+  }
+
   public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
     const cmdName = interaction.options.getString('command', true);
 
     const command = this.container.stores.get('commands').get(cmdName);
 
     if (!command) return interaction.reply({ content: 'Command not found', ephemeral: true });
+
+    const requiredBotPermissions = new PermissionsBitField(
+      command.options.requiredClientPermissions,
+    );
+    const requiredUserPermissions = new PermissionsBitField(
+      command.options.requiredUserPermissions,
+    );
+
+    const availablePermissionsToBot = (await interaction.guild?.members.fetchMe())?.permissions;
+
+    const availablePermissionsToUser = isGuildMember(interaction.member)
+      ? interaction.member.permissions
+      : undefined;
 
     const embed: APIEmbed = {
       title: command.name,
@@ -60,17 +95,12 @@ export default class UserCommand extends Command {
           value: command.detailedDescription?.help ?? 'None',
         },
         {
-          name: 'Permissions required by bot',
-          value:
-            new PermissionsBitField(command.options.requiredClientPermissions)
-              .toArray()
-              .join(', ') ?? 'None',
+          name: 'Permissions required by bot & status',
+          value: this.permissionsStatus(requiredBotPermissions, availablePermissionsToBot),
         },
         {
-          name: 'Required user permissions',
-          value:
-            new PermissionsBitField(command.options.requiredUserPermissions).toArray().join(', ') ??
-            'None',
+          name: 'Required user permissions & status',
+          value: this.permissionsStatus(requiredUserPermissions, availablePermissionsToUser),
         },
       ],
     };
