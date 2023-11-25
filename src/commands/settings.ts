@@ -117,7 +117,6 @@ export default class UserCommand extends Subcommand {
     });
   }
 
-  // eslint-disable-next-line class-methods-use-this
   public async subChatInputRun(interaction: Subcommand.ChatInputCommandInteraction) {
     const channel = interaction.options.getChannel<ChannelType.GuildText>('log_channel', true);
 
