@@ -2,7 +2,6 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { Listener } from '@sapphire/framework';
 import { codeBlock } from '@sapphire/utilities';
 import { APIEmbed, Colors } from 'discord.js';
-import { markdownTable } from 'markdown-table';
 import { BotSettingsUpdateOptions, BUEvents } from '../../lib/EventTypes';
 import { getWebhook } from '../../lib/utils';
 
@@ -26,7 +25,7 @@ export default class UserEvent extends Listener {
     if (!webhook) {
       return;
     }
-
+    const { markdownTable } = await import('markdown-table');
     const table = markdownTable([
       ['Setting name', 'Old', 'New'],
       ...entries(newSettings)
