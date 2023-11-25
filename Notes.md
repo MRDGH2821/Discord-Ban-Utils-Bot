@@ -21,7 +21,7 @@ The following steps are for logs:
 
 - [x] Ban
 - [x] Export Ban List
-- [ ] Help
+- [x] Help
 - [x] Import Ban List
 - [x] Kick
 - [x] Mass Ban
@@ -50,8 +50,8 @@ The following steps are for logs:
 - [x] Un Timeout
 - [x] Ban List Export
 - [x] Ban List Import
-- [ ] Unban List Import
-- [ ] Settings Change
+- [x] Unban List Import
+- [x] Settings Change
 - [ ] Ban Copy
 - [x] Mass Ban
 - [x] Mass Unban
