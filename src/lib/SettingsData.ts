@@ -9,6 +9,8 @@ export const SettingsDescription: { [x in keyof Required<AllSettingsOptions>]: s
   sendExitLog: 'Send Member Exit Log',
   sendJoinLog: 'Send Member Join Log',
   sendKickLog: 'Send Kicked Member Log',
+  sendMassBanLog: 'Send Mass Ban Log',
+  sendMassUnbanLog: 'Send Mass UnBan Log',
   sendTimeoutLog: 'Send Timeout Log',
   sendUnbanLog: 'Send Unban Log',
   sendUnTimeoutLog: 'Send Un-Timeout Log',

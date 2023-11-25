@@ -31,6 +31,8 @@ export type SettingsOptions = {
   sendImportLog?: boolean;
   sendBanExportLog?: boolean;
   sendBanCopyLog?: boolean;
+  sendMassBanLog?: boolean;
+  sendMassUnbanLog?: boolean;
 };
 
 export type CoreSettingsOptions = {

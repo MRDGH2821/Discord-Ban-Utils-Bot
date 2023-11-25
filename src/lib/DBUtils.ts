@@ -14,6 +14,8 @@ export const settingsValidator = s.object<AllSettingsOptions>({
   sendImportLog: s.boolean.optional,
   sendBanExportLog: s.boolean.optional,
   sendBanCopyLog: s.boolean.optional,
+  sendMassBanLog: s.boolean.optional,
+  sendMassUnbanLog: s.boolean.optional,
   webhookId: s.string,
   guildId: s.string,
 });
