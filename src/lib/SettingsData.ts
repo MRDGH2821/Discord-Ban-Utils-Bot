@@ -48,16 +48,7 @@ export default class SettingsData implements AllSettingsOptions {
   constructor(options: AllSettingsOptions) {
     this.webhookId = options.webhookId;
     this.guildId = options.guildId;
-    this.sendBanLog = options.sendBanLog;
-    this.sendUnbanLog = options.sendUnbanLog;
-    this.sendExitLog = options.sendExitLog;
-    this.sendJoinLog = options.sendJoinLog;
-    this.sendKickLog = options.sendKickLog;
-    this.sendTimeoutLog = options.sendTimeoutLog;
-    this.sendUnTimeoutLog = options.sendUnTimeoutLog;
-    this.sendImportLog = options.sendImportLog;
-    this.sendBanExportLog = options.sendBanExportLog;
-    this.sendBanCopyLog = options.sendBanCopyLog;
+    Object.assign(this, options);
   }
 
   modifySettings(settings: SettingsParameter[] | SettingsOptions) {
