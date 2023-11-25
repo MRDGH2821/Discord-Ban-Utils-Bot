@@ -40,6 +40,9 @@ interface SettingsOpt extends APISelectMenuOption {
             ephemeral: true,
           });
         }
+        await interaction.deferReply({
+          ephemeral: true,
+        });
 
         const force = interaction.options.getBoolean('force') || false;
 
@@ -48,14 +51,13 @@ interface SettingsOpt extends APISelectMenuOption {
           const text = force
             ? 'Even refreshing settings cache forcefully'
             : '(If this is a mistake, then please use force option)';
-          return interaction.reply({
+          return interaction.editReply({
             content: `No settings configured.\n${text}`,
-            ephemeral: true,
           });
         }
         const webhook = await getWebhook(interaction.guildId, settings.webhookId);
 
-        return interaction.reply({
+        return interaction.editReply({
           embeds: [
             {
               title: 'Settings',
