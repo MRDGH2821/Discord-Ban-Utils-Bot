@@ -217,7 +217,7 @@ export default class UserCommand extends Subcommand {
               color: COLORS.charcoalInvisible,
               description: `These are the new settings you have applied.\nLogging Channel: ${channel}\n\n${codeBlock(
                 'm',
-                `${parsedSettings}`,
+                JSON.stringify(parsedSettings, null, 2),
               )}`,
             },
           ],
