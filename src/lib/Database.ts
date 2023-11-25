@@ -9,10 +9,10 @@ export default class Database {
     dbSettingsRef.onSnapshot((snapshot) => {
       snapshot.docChanges().forEach((change) => {
         if (change.type === 'removed') {
-          container.logger.info('Removed setting: ', change.doc.data());
+          container.logger.debug('Removed setting: ', change.doc.data());
           this.#removeSettingFromCache(change.doc.data().guildId);
         } else {
-          container.logger.info('Updated setting: ', change.doc.data());
+          container.logger.debug('Updated setting: ', change.doc.data());
           this.#updateSettingInCache(change.doc.data());
         }
       });
