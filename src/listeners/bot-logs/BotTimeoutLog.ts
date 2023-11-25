@@ -1,6 +1,8 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { container, Listener } from '@sapphire/framework';
-import { APIEmbed, GuildMember, time, Webhook } from 'discord.js';
+import {
+  APIEmbed, GuildMember, time, Webhook,
+} from 'discord.js';
 import { COLORS } from '../../lib/Constants';
 import Database from '../../lib/Database';
 import { BotTimeoutOptions, BUEvents } from '../../lib/EventTypes';
@@ -61,7 +63,7 @@ export default class UserEvent extends Listener {
   }
 }
 
-void container.stores.loadPiece({
+container.stores.loadPiece({
   name: UserEvent.name,
   piece: UserEvent,
   store: 'listeners',

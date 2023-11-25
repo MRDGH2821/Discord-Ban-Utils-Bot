@@ -14,8 +14,12 @@ import { sequentialPromises } from 'yaspr';
 import { COLORS } from '../lib/Constants';
 import Database from '../lib/Database';
 import { BUEvents } from '../lib/EventTypes';
-import type { BanEntity, BanEntityWithReason, BanExportOptions, BanType } from '../lib/typeDefs';
-import { debugErrorEmbed, fetchAllBans, getWebhook, truncateString } from '../lib/utils';
+import type {
+  BanEntity, BanEntityWithReason, BanExportOptions, BanType,
+} from '../lib/typeDefs';
+import {
+  debugErrorEmbed, fetchAllBans, getWebhook, truncateString,
+} from '../lib/utils';
 
 @ApplyOptions<Listener.Options>({
   name: 'Ban List Exporter',
@@ -158,7 +162,7 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
   }
 }
 
-void container.stores.loadPiece({
+container.stores.loadPiece({
   name: UserEvent.name,
   piece: UserEvent,
   store: 'listeners',

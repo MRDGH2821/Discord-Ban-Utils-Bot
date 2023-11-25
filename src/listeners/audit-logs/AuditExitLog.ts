@@ -39,7 +39,7 @@ export default class UserEvent extends Listener<typeof Events.GuildMemberRemove>
   }
 }
 
-void container.stores.loadPiece({
+container.stores.loadPiece({
   name: UserEvent.name,
   piece: UserEvent,
   store: 'listeners',

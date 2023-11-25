@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 import { ApplyOptions } from '@sapphire/decorators';
 import { isGuildMember } from '@sapphire/discord.js-utilities';
 import { Command, container } from '@sapphire/framework';
@@ -44,6 +45,7 @@ export default class UserCommand extends Command {
     );
   }
 
+  // eslint-disable-next-line class-methods-use-this
   public permissionsStatus(
     requiredPermissions?: PermissionsBitField,
     availablePermissions?: Readonly<PermissionsBitField>,
@@ -109,7 +111,7 @@ export default class UserCommand extends Command {
   }
 }
 
-void container.stores.loadPiece({
+container.stores.loadPiece({
   name: UserCommand.name,
   piece: UserCommand,
   store: 'commands',

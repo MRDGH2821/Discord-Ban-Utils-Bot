@@ -1,6 +1,8 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { container, Events, Listener } from '@sapphire/framework';
-import { APIEmbed, AuditLogEvent, Colors, GuildMember, time } from 'discord.js';
+import {
+  APIEmbed, AuditLogEvent, Colors, GuildMember, time,
+} from 'discord.js';
 import { getAuditLogData } from '../../lib/utils';
 
 @ApplyOptions<Listener.Options>({
@@ -74,7 +76,7 @@ export default class UserEvent extends Listener {
   }
 }
 
-void container.stores.loadPiece({
+container.stores.loadPiece({
   name: UserEvent.name,
   piece: UserEvent,
   store: 'listeners',

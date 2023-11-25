@@ -9,7 +9,6 @@ import { NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
 import type { BanEntityWithReason } from '../lib/typeDefs';
 import { banEntitySchemaBuilder, importList } from '../lib/utils';
 
-
 @ApplyOptions<Command.Options>({
   name: 'import-ban-list',
   description: 'Imports ban list via link',
@@ -89,8 +88,7 @@ export default class UserCommand extends Command {
   }
 }
 
-
-void container.stores.loadPiece({
+container.stores.loadPiece({
   name: UserCommand.name,
   piece: UserCommand,
   store: 'commands',

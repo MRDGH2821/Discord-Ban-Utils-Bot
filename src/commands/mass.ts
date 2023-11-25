@@ -160,7 +160,7 @@ export default class UserCommand extends Subcommand {
   }
 }
 
-void container.stores.loadPiece({
+container.stores.loadPiece({
   name: UserCommand.name,
   piece: UserCommand,
   store: 'commands',

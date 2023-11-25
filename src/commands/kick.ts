@@ -41,9 +41,8 @@ export default class UserCommand extends Command {
 
   public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
     const convict = interaction.options.getMember('user');
-    const reason =
-      interaction.options.getString('reason') ||
-      `Kicked by ${interaction.user.username} on ${new Date().toString()} ||for no reason :joy:||`;
+    const reason = interaction.options.getString('reason')
+      || `Kicked by ${interaction.user.username} on ${new Date().toString()} ||for no reason :joy:||`;
 
     if (!interaction.inGuild() || !interaction.guild) {
       return interaction.reply({
@@ -103,7 +102,7 @@ export default class UserCommand extends Command {
   }
 }
 
-void container.stores.loadPiece({
+container.stores.loadPiece({
   name: UserCommand.name,
   piece: UserCommand,
   store: 'commands',

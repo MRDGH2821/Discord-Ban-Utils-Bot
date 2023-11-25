@@ -47,7 +47,7 @@ export default class UserEvent extends Listener<typeof Events.GuildBanRemove> {
   }
 }
 
-void container.stores.loadPiece({
+container.stores.loadPiece({
   name: UserEvent.name,
   piece: UserEvent,
   store: 'listeners',

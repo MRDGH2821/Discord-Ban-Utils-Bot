@@ -220,8 +220,7 @@ export default class UserCommand extends Command {
               timestamp: new Date().toISOString(),
             },
           ],
-        }),
-      );
+        }));
     }
 
     const durationSentence = ms(duration!, { includeMs: true });
@@ -256,7 +255,7 @@ export default class UserCommand extends Command {
   }
 }
 
-void container.stores.loadPiece({
+container.stores.loadPiece({
   name: UserCommand.name,
   piece: UserCommand,
   store: 'commands',

@@ -186,8 +186,8 @@ export default class UserCommand extends Command {
   }
 }
 
-void container.stores.loadPiece({
+container.stores.loadPiece({
   name: UserCommand.name,
   piece: UserCommand,
-  store: 'commands'
-})
+  store: 'commands',
+});
