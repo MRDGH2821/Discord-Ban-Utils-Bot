@@ -7,6 +7,7 @@ import './audit-logs/AuditTimeoutLog';
 import './audit-logs/AuditUnBanLog';
 import './bot-logs/BotBanLog';
 import './bot-logs/BotKickLog';
+import './bot-logs/BotSettingsUpdate';
 import './bot-logs/BotTimeoutLog';
 import './bot-logs/BotUnBanLog';
 import './commands/chatInputCommands/chatInputCommandDenied';
