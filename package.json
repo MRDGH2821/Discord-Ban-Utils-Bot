@@ -74,6 +74,7 @@
     "dpaste-ts": "^2.0.0",
     "enhanced-ms": "^2.3.0",
     "firebase-admin": "^11.11.0",
+    "markdown-table": "^3.0.3",
     "tslib": "^2.6.2",
     "yaspr": "^1.0.2"
   },

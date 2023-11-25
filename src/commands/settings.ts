@@ -16,7 +16,7 @@ import { COLORS, SERVER_ONLY, WEBHOOK_ICON } from '../lib/Constants';
 import Database from '../lib/Database';
 import { SettingsDescription } from '../lib/SettingsData';
 import type { SettingsParameter } from '../lib/typeDefs';
-import { getWebhook, selectedSettingsValidator } from '../lib/utils';
+import { emitBotEvent, getWebhook, selectedSettingsValidator } from '../lib/utils';
 
 interface SettingsOpt extends APISelectMenuOption {
   value: SettingsParameter;
@@ -188,7 +188,7 @@ export default class UserCommand extends Subcommand {
         label: 'Mass Unban Log',
         value: 'sendMassUnbanLog',
         description: 'Send a log when a mass unban is performed',
-      }
+      },
     ];
 
     return interaction
@@ -214,8 +214,7 @@ export default class UserCommand extends Subcommand {
           componentType: ComponentType.StringSelect,
           filter: (i) => i.user.id === interaction.user.id,
           dispose: true,
-        }),
-      )
+        }))
       .then(async (selectMenu) => {
         const parsedSettings = selectedSettingsValidator.parse(selectMenu.values);
 
@@ -239,18 +238,20 @@ export default class UserCommand extends Subcommand {
       })
       .then(async (settings) => {
         const webhook = await this.getOrCreateWebhook(channel);
-        const data = await Database.newServerSetting({
+        const oldSettings = await Database.getSettings(channel.guildId);
+        const newSettings = await Database.newServerSetting({
           guildId: channel.guildId,
           webhookId: webhook.id,
         });
-        return data.modifySettings(settings);
+        newSettings.modifySettings(settings);
+
+        return emitBotEvent('botSettingsUpdate', { oldSettings, newSettings });
       })
       .then(() =>
         interaction.followUp({
           content: 'Settings have been saved successfully!',
           ephemeral: true,
-        }),
-      );
+        }));
   }
 
   public async getOrCreateWebhook(channel: TextChannel, cleanUp = true) {
@@ -281,7 +282,7 @@ export default class UserCommand extends Subcommand {
   }
 }
 
-void container.stores.loadPiece({
+container.stores.loadPiece({
   name: UserCommand.name,
   piece: UserCommand,
   store: 'commands',

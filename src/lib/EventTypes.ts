@@ -1,8 +1,9 @@
 import { container } from '@sapphire/framework';
 import type { GuildMember, User } from 'discord.js';
-import type { BanExportOptions, ListImportOptions } from './typeDefs';
+import SettingsData from './SettingsData';
+import type { AllSettingsOptions, BanExportOptions, ListImportOptions } from './typeDefs';
 
-type ValueOf<T> = T[keyof T];
+export type ValueOf<T> = T[keyof T];
 
 export type BotGuildBanAddOptions = {
   convict: User;
@@ -14,6 +15,10 @@ export type BotGuildMemberKickOptions = Pick<BotGuildBanAddOptions, 'reason' | '
   convict: GuildMember;
 };
 export type BotTimeoutOptions = BotGuildMemberKickOptions;
+export type BotSettingsUpdateOptions = {
+  oldSettings?: AllSettingsOptions | SettingsData;
+  newSettings: AllSettingsOptions | SettingsData;
+};
 
 export const BUEvents = {
   BanListExport: 'banListExport' as const,
@@ -22,6 +27,7 @@ export const BUEvents = {
   BotGuildBanRemove: 'botGuildBanRemove' as const,
   BotGuildMemberKick: 'botGuildMemberKick' as const,
   BotTimeout: 'botTimeout' as const,
+  BotSettingsUpdate: 'botSettingsUpdate' as const,
 } as const;
 
 export interface BUEventParams {
@@ -31,6 +37,7 @@ export interface BUEventParams {
   [BUEvents.BotGuildBanRemove]: [payload: BotGuildBanRemoveOptions];
   [BUEvents.BotGuildMemberKick]: [payload: BotGuildMemberKickOptions];
   [BUEvents.BotTimeout]: [payload: BotTimeoutOptions];
+  [BUEvents.BotSettingsUpdate]: [payload: BotSettingsUpdateOptions];
 }
 
 export function emitBotEvent<E extends keyof BUEventParams>(
