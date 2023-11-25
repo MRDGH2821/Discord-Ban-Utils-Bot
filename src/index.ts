@@ -1,6 +1,6 @@
+import './lib/setup';
 import { LogLevel, SapphireClient } from '@sapphire/framework';
 import { GatewayIntentBits, Partials } from 'discord.js';
-import './lib/setup';
 import { botLogger } from './bot-logger';
 
 const client = new SapphireClient({
@@ -32,6 +32,7 @@ const main = async () => {
   } catch (error) {
     client.logger.fatal(error);
     client.destroy();
+    // eslint-disable-next-line unicorn/no-process-exit
     process.exit(1);
   }
 };

@@ -1,3 +1,4 @@
+// eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable consistent-return */
 import { ApplyOptions } from '@sapphire/decorators';
 import type { ContextMenuCommandDeniedPayload, Events } from '@sapphire/framework';
@@ -13,7 +14,7 @@ export default class UserEvent extends Listener<typeof Events.ContextMenuCommand
   ) {
     // `context: { silent: true }` should make UserError silent:
     // Use cases for this are for example permissions error when running the `eval` command.
-    if (Reflect.get(Object(context), 'silent')) return;
+    if (Reflect.get(new Object(context), 'silent')) return;
 
     if (interaction.deferred || interaction.replied) {
       return interaction.editReply({

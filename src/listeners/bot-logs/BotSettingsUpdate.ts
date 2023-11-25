@@ -15,7 +15,7 @@ function entries<T extends object>(obj: T): [keyof T, T[keyof T]][] {
 export default class UserEvent extends Listener {
   // eslint-disable-next-line class-methods-use-this
   public emojify(value?: boolean | string) {
-    const v = value!!;
+    const v = value!;
     return v ? '✅' : '❌';
   }
 

@@ -8,18 +8,14 @@ import {
   type GuildBan,
   type MessagePayloadOption,
 } from 'discord.js';
-// @ts-ignore
+// @ts-expect-error - No types for dpaste-ts
 import { createPaste } from 'dpaste-ts';
 import { sequentialPromises } from 'yaspr';
 import { COLORS } from '../lib/Constants';
 import Database from '../lib/Database';
 import { BUEvents } from '../lib/EventTypes';
-import type {
-  BanEntity, BanEntityWithReason, BanExportOptions, BanType,
-} from '../lib/typeDefs';
-import {
-  debugErrorEmbed, fetchAllBans, getWebhook, truncateString,
-} from '../lib/utils';
+import type { BanEntity, BanEntityWithReason, BanExportOptions, BanType } from '../lib/typeDefs';
+import { debugErrorEmbed, fetchAllBans, getWebhook, truncateString } from '../lib/utils';
 
 @ApplyOptions<Listener.Options>({
   name: 'Ban List Exporter',
@@ -110,12 +106,12 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
         embeds: [resultEmbed],
         files: [resultFile],
       });
-    } catch (err) {
-      this.container.logger.error(err);
+    } catch (error) {
+      this.container.logger.error(error);
       const errEmbed = debugErrorEmbed({
         title: 'Error while exporting ban list',
         description: 'An error occurred while exporting ban list',
-        error: err,
+        error,
         checks: [
           {
             question: 'None',

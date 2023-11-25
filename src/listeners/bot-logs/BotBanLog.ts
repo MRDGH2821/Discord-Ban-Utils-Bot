@@ -3,7 +3,7 @@ import { container, Listener } from '@sapphire/framework';
 import type { APIEmbed } from 'discord.js';
 import { COLORS } from '../../lib/Constants';
 import Database from '../../lib/Database';
-import { BUEvents, type BotGuildBanAddOptions } from '../../lib/EventTypes';
+import { type BotGuildBanAddOptions, BUEvents } from '../../lib/EventTypes';
 import { getWebhook } from '../../lib/utils';
 
 @ApplyOptions<Listener.Options>({

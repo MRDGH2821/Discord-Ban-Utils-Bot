@@ -1,9 +1,9 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import {
+  type ChatInputCommandSuccessPayload,
   container,
   Listener,
   LogLevel,
-  type ChatInputCommandSuccessPayload,
 } from '@sapphire/framework';
 import type { Logger } from '@sapphire/plugin-logger';
 import { logSuccessCommand } from '../../../lib/utils';
@@ -22,7 +22,7 @@ export default class UserEvent extends Listener {
   }
 }
 
-void container.stores.loadPiece({
+container.stores.loadPiece({
   name: UserEvent.name,
   piece: UserEvent,
   store: 'listeners',

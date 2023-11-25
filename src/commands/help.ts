@@ -1,3 +1,4 @@
+// eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable no-restricted-syntax */
 import { ApplyOptions } from '@sapphire/decorators';
 import { isGuildMember } from '@sapphire/discord.js-utilities';
@@ -81,7 +82,9 @@ export default class UserCommand extends Command {
       command.options.requiredUserPermissions,
     );
 
-    const availablePermissionsToBot = (await interaction.guild?.members.fetchMe())?.permissions;
+    const me = await interaction.guild?.members.fetchMe();
+
+    const availablePermissionsToBot = me?.permissions;
 
     const availablePermissionsToUser = isGuildMember(interaction.member)
       ? interaction.member.permissions

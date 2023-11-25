@@ -1,8 +1,8 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import {
   container,
-  Listener,
   type Events,
+  Listener,
   type MessageCommandDeniedPayload,
   type UserError,
 } from '@sapphire/framework';
@@ -17,7 +17,7 @@ export default class UserEvent extends Listener<typeof Events.MessageCommandDeni
   ) {
     // `context: { silent: true }` should make UserError silent:
     // Use cases for this are for example permissions error when running the `eval` command.
-    if (Reflect.get(Object(context), 'silent')) return;
+    if (Reflect.get(new Object(context), 'silent')) return;
 
     // eslint-disable-next-line consistent-return
     return message.reply({

@@ -3,14 +3,14 @@ import { container } from '@sapphire/framework';
 import { Subcommand } from '@sapphire/plugin-subcommands';
 import { codeBlock } from '@sapphire/utilities';
 import {
+  type APIEmbed,
+  type APISelectMenuOption,
   ApplicationCommandOptionType,
   ApplicationCommandType,
   ChannelType,
   ComponentType,
   PermissionFlagsBits,
   TextChannel,
-  type APIEmbed,
-  type APISelectMenuOption,
 } from 'discord.js';
 import { COLORS, SERVER_ONLY, WEBHOOK_ICON } from '../lib/Constants';
 import Database from '../lib/Database';
@@ -61,7 +61,7 @@ interface SettingsOpt extends APISelectMenuOption {
           embeds: [
             {
               title: 'Settings',
-              description: `${codeBlock('m', `${settings}`)}\nChannel: ${webhook?.channel}`,
+              description: `${codeBlock('m', settings.toString())}\nChannel: ${webhook?.channel}`,
               color: COLORS.lightGray,
             },
           ],
@@ -214,7 +214,8 @@ export default class UserCommand extends Subcommand {
           componentType: ComponentType.StringSelect,
           filter: (i) => i.user.id === interaction.user.id,
           dispose: true,
-        }))
+        }),
+      )
       .then(async (selectMenu) => {
         const parsedSettings = selectedSettingsValidator.parse(selectMenu.values);
 
@@ -251,7 +252,8 @@ export default class UserCommand extends Subcommand {
         interaction.followUp({
           content: 'Settings have been saved successfully!',
           ephemeral: true,
-        }));
+        }),
+      );
   }
 
   public async getOrCreateWebhook(channel: TextChannel, cleanUp = true) {

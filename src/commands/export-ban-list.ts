@@ -1,12 +1,12 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command, container } from '@sapphire/framework';
 import {
+  type APIEmbed,
   ApplicationCommandOptionType,
   ApplicationCommandType,
   ButtonStyle,
   ComponentType,
   PermissionFlagsBits,
-  type APIEmbed,
 } from 'discord.js';
 import { COLORS, SERVER_ONLY } from '../lib/Constants';
 import type { BanExportOptions } from '../lib/typeDefs';
@@ -85,50 +85,50 @@ export default class UserCommand extends Command {
         ],
       })
       .then((iRes) =>
-        iRes
-          .awaitMessageComponent({
-            filter(btx) {
-              return btx.user.id === interaction.user.id;
+        iRes.awaitMessageComponent({
+          filter(btx) {
+            return btx.user.id === interaction.user.id;
+          },
+          componentType: ComponentType.Button,
+          dispose: true,
+        }),
+      )
+      .then((btx) => {
+        if (btx.customId === 'export-ban-list-yes') {
+          const statusEmbed: APIEmbed = {
+            title: '**Ban List export Scheduled**',
+            color: COLORS.lightGray,
+            description:
+              "Ban list export is scheduled. You will be notified in this channel when it's done.",
+            timestamp: new Date().toISOString(),
+          };
+
+          const exportBanOptions: BanExportOptions = {
+            sourceGuild: btx.guild,
+            includeReason,
+            requesterUser: interaction.user,
+            sourceMessage: btx.message,
+          };
+
+          emitBotEvent('banListExport', exportBanOptions);
+
+          // interaction.client.emit('exportBanList', exportBanOptions);
+
+          return interaction.editReply({
+            embeds: [statusEmbed],
+            components: [],
+          });
+        }
+        return btx.editReply({
+          embeds: [
+            {
+              title: '**Export Cancelled**',
+              color: COLORS.lightGray,
             },
-            componentType: ComponentType.Button,
-            dispose: true,
-          })
-          .then((btx) => {
-            if (btx.customId === 'export-ban-list-yes') {
-              const statusEmbed: APIEmbed = {
-                title: '**Ban List export Scheduled**',
-                color: COLORS.lightGray,
-                description:
-                  "Ban list export is scheduled. You will be notified in this channel when it's done.",
-                timestamp: new Date().toISOString(),
-              };
-
-              const exportBanOptions: BanExportOptions = {
-                sourceGuild: btx.guild,
-                includeReason,
-                requesterUser: interaction.user,
-                sourceMessage: btx.message,
-              };
-
-              emitBotEvent('banListExport', exportBanOptions);
-
-              // interaction.client.emit('exportBanList', exportBanOptions);
-
-              return interaction.editReply({
-                embeds: [statusEmbed],
-                components: [],
-              });
-            }
-            return btx.editReply({
-              embeds: [
-                {
-                  title: '**Export Cancelled**',
-                  color: COLORS.lightGray,
-                },
-              ],
-              components: [],
-            });
-          }));
+          ],
+          components: [],
+        });
+      });
   }
 }
 

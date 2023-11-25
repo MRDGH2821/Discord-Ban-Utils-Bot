@@ -1,8 +1,9 @@
 {
-  "extends": ["airbnb-base", "airbnb-typescript/base"],
+  "extends": ["auto"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": ["./tsconfig.json", "./tsconfig.eslint.json"]
+    "project": ["./tsconfig.json", "./tsconfig.eslint.json"],
+    "extraFileExtensions": [".json"]
   },
   "plugins": ["@typescript-eslint", "unused-imports"],
   "rules": {
@@ -13,7 +14,18 @@
       }
     ],
     "implicit-arrow-linebreak": "off",
-    "unused-imports/no-unused-imports": "error"
+    "unused-imports/no-unused-imports": "error",
+    "@typescript-eslint/no-floating-promises": "off",
+    "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "no-new-object": "off",
+    "unicorn/consistent-destructuring": "off",
+    "simple-import-sort/imports": [
+      "error",
+      {
+        "groups": [["^\\u0000", "^node:", "^@?\\w", "^", "^\\."]]
+      }
+    ]
   },
   "ignorePatterns": ["./dist/**"]
 }

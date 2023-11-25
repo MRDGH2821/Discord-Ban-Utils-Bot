@@ -1,4 +1,10 @@
 {
-  "include": ["./buildLibs/*"],
+  "include": [
+    "./buildLibs/*",
+    "./tsconfig.json",
+    "./tsconfig.eslint.json",
+    "./package.json",
+    "./package-lock.json"
+  ],
   "exclude": ["node_modules", "dist"]
 }

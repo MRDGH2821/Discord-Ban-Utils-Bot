@@ -3,7 +3,7 @@ import { Command, container } from '@sapphire/framework';
 import { s } from '@sapphire/shapeshift';
 import { Time } from '@sapphire/time-utilities';
 import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
-// @ts-ignore
+// @ts-expect-error - No types for dpaste-ts
 import { getRawPaste } from 'dpaste-ts';
 import { NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
 import type { BanEntityWithReason } from '../lib/typeDefs';
@@ -60,7 +60,7 @@ export default class UserCommand extends Command {
     await interaction.deferReply();
     const link = interaction.options.getString('link', true);
 
-    const data = await getRawPaste(link);
+    const data = (await getRawPaste(link)) as string;
     const defaultReason = `Imported by ${interaction.user.username} on ${new Date().toUTCString()}`;
     const BanEntitiesSchema = banEntitySchemaBuilder(defaultReason);
 
@@ -72,10 +72,10 @@ export default class UserCommand extends Command {
     );
 
     try {
-      const parsedData = JSON.parse(data);
+      const parsedData = JSON.parse(data) as object;
       const validatedData = BanEntitiesWithReasonSchema.parse(parsedData);
       return await importList(interaction, validatedData, interaction.guild, 'ban');
-    } catch (e) {
+    } catch (error) {
       try {
         const validatedData = BanEntitiesSchema.parse(data);
         return importList(interaction, validatedData, interaction.guild, 'ban');

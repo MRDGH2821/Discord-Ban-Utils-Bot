@@ -70,13 +70,15 @@ export default class UserCommand extends Command {
 
     try {
       const time = ms(value);
-      if (!time) throw new Error('Invalid time');
+      const INVALID_TEXT = 'Invalid time';
+      if (!time) throw new Error(INVALID_TEXT);
 
       const timeSentence = ms(time, { includeMs: true });
-      if (!timeSentence) throw new Error('Invalid time');
+      if (!timeSentence) throw new Error(INVALID_TEXT);
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       if (time < Time.Minute || time > Time.Day * 27) {
-        throw new Error('Invalid time');
+        throw new Error(INVALID_TEXT);
       }
 
       choices.push({
@@ -220,10 +222,11 @@ export default class UserCommand extends Command {
               timestamp: new Date().toISOString(),
             },
           ],
-        }));
+        }),
+      );
     }
 
-    const durationSentence = ms(duration!, { includeMs: true });
+    const durationSentence = ms(duration, { includeMs: true });
 
     if (duration > Time.Day * 27) {
       return interaction.reply({
@@ -243,10 +246,13 @@ export default class UserCommand extends Command {
             description: `\`${target.user.username}\` ${target} is timed out for ${durationSentence}\n**Reason:** ${reason}`,
             color: COLORS.cadetBlueFreeze,
             thumbnail,
-            fields: fields.concat({
-              name: '**Convict ID**',
-              value: convict.id,
-            }),
+            fields: [
+              ...fields,
+              {
+                name: '**Convict ID**',
+                value: convict.id,
+              },
+            ],
             timestamp: new Date().toISOString(),
           },
         ],

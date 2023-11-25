@@ -1,6 +1,6 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { container, Events, Listener } from '@sapphire/framework';
-import { AuditLogEvent, GuildMember, type APIEmbed } from 'discord.js';
+import { type APIEmbed, AuditLogEvent, GuildMember } from 'discord.js';
 import { COLORS } from '../../lib/Constants';
 import { getAuditLogData } from '../../lib/utils';
 

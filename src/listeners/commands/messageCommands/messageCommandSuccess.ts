@@ -18,7 +18,7 @@ export default class UserEvent extends Listener {
   }
 }
 
-void container.stores.loadPiece({
+container.stores.loadPiece({
   name: UserEvent.name,
   piece: UserEvent,
   store: 'listeners',

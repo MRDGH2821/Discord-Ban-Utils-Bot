@@ -2,13 +2,13 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { container, Listener } from '@sapphire/framework';
 import { retry, sleepSync, toTitleCase } from '@sapphire/utilities';
 import {
+  type APIEmbed,
   ButtonStyle,
   ComponentType,
   Guild,
-  type APIEmbed,
   type MessagePayloadOption,
 } from 'discord.js';
-// @ts-ignore
+// @ts-expect-error - No types for dpaste-ts
 import { createPaste } from 'dpaste-ts';
 import { sequentialPromises } from 'yaspr';
 import { COLORS } from '../lib/Constants';
@@ -42,7 +42,8 @@ export default class UserEvent extends Listener {
 
     const successList = new Set<BanEntityWithReason>();
     const failedList = new Set<BanEntityWithReason>();
-    const bansInGuild = new Set((await fetchAllBans(guild)).keys());
+    const allBans = await fetchAllBans(guild);
+    const bansInGuild = new Set(allBans.keys());
 
     // this.container.logger.debug(bansInGuild.size);
     const uniqueList = mode === 'ban' ? list.filter((ban) => !bansInGuild.has(ban.id)) : list;
@@ -59,9 +60,7 @@ export default class UserEvent extends Listener {
             ban.id,
             ban.reason || `Imported by ${user.username} on ${new Date().toUTCString()}`,
           )
-            .then(() => {
-              successList.add(ban);
-            })
+            .then(() => successList.add(ban))
             .catch(() => {
               failedList.add(ban);
               return sleepSync(1000);
@@ -69,10 +68,11 @@ export default class UserEvent extends Listener {
         3,
       );
 
-    await sequentialPromises(uniqueList, performBan).catch(async (err) =>
+    await sequentialPromises(uniqueList, performBan).catch(async (error) =>
       message.reply({
-        content: `${user}\nAn error occurred while importing ${mode} list: ${err.message}`,
-      }));
+        content: `${user}\nAn error occurred while importing ${mode} list: ${error.message}`,
+      }),
+    );
     this.container.logger.debug(
       `${titleMode} stats:\n`,
       JSON.stringify(
@@ -122,21 +122,21 @@ export default class UserEvent extends Listener {
       components:
         failedList.size > 0
           ? [
-            {
-              type: ComponentType.ActionRow,
-              components: [
-                {
-                  type: ComponentType.Button,
-                  label: `Unsuccessful ${mode} list link`,
-                  style: ButtonStyle.Link,
-                  url: await createPaste({
-                    content: JSON.stringify(Array.from(failedList), null, 2),
-                    title: `[FAILED] ${truncateString(guild.name, 10)} ${titleMode} List`,
-                  }),
-                },
-              ],
-            },
-          ]
+              {
+                type: ComponentType.ActionRow,
+                components: [
+                  {
+                    type: ComponentType.Button,
+                    label: `Unsuccessful ${mode} list link`,
+                    style: ButtonStyle.Link,
+                    url: (await createPaste({
+                      content: JSON.stringify([...failedList], null, 2),
+                      title: `[FAILED] ${truncateString(guild.name, 10)} ${titleMode} List`,
+                    })) as string,
+                  },
+                ],
+              },
+            ]
           : undefined,
     });
   }

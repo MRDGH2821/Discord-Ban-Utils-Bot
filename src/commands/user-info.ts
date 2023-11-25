@@ -3,12 +3,12 @@ import { Command, container } from '@sapphire/framework';
 import {
   APIActionRowComponent,
   APIButtonComponent,
+  type APIEmbed,
   ApplicationCommandOptionType,
   ComponentType,
   OAuth2Scopes,
   PermissionFlagsBits,
   time,
-  type APIEmbed,
 } from 'discord.js';
 import { COLORS, EMPTY_STRING } from '../lib/Constants';
 import { jumpLink } from '../lib/utils';

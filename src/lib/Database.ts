@@ -22,13 +22,16 @@ export default class Database {
   static #cache = new Collection<string, SettingsData>();
 
   static async #fetchDB() {
-    await dbSettingsRef.get().then((snapshot) => {
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        const settings = new SettingsData(data);
-        this.#cache.set(settings.guildId, settings);
-      });
-    });
+    await dbSettingsRef
+      .get()
+      .then((snapshot) =>
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const settings = new SettingsData(data);
+          this.#cache.set(settings.guildId, settings);
+        }),
+      )
+      .catch((error) => container.logger.error(error));
   }
 
   static #fetchData(guildId: string) {
@@ -39,12 +42,12 @@ export default class Database {
         const data = doc.data();
         const validatedData = settingsValidator.parse(data);
         const settings = new SettingsData(validatedData);
-        this.#cache.set(settings.guildId, settings);
+        return this.#cache.set(settings.guildId, settings);
       });
   }
 
   static async getSettings(guildId: string, force = false) {
-    if (this.#cache.size < 1) await this.#fetchDB();
+    if (this.#cache.size === 0) await this.#fetchDB();
 
     if (force) await this.#fetchData(guildId);
 

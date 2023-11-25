@@ -7,7 +7,7 @@ module.exports = {
   endOfLine: 'lf',
   htmlWhitespaceSensitivity: 'css',
   importOrderParserPlugins: ['typescript', 'decorators'],
-  plugins: ['@ianvs/prettier-plugin-sort-imports', 'prettier-plugin-packagejson'],
+  plugins: ['prettier-plugin-packagejson'],
   printWidth: 100,
   proseWrap: 'preserve',
   quoteProps: 'as-needed',
