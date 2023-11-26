@@ -18,6 +18,10 @@ APPLY_FIXES: all
 # - COPYPASTE # Uncomment to disable checks of excessive copy-pastes
 # - SPELL # Uncomment to disable checks of spelling mistakes
 
+DISABLE_LINTERS:
+  - TYPESCRIPT_STANDARD
+  - JAVASCRIPT_STANDARD
+
 SHOW_ELAPSED_TIME: true
 
 FILEIO_REPORTER: false
