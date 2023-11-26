@@ -26,6 +26,7 @@
     "return.*reply\\(.*",
     "ephemeral.*",
     "guild.*|convict.*|ephemeral.*|return.*reply.*",
-    "guild.*|content.*|ephemeral.*|return.*reply.*|.*permission.*"
+    "guild.*|content.*|ephemeral.*|return.*reply.*|.*permission.*",
+    "container.*|name.*|piece.*|store.*"
   ]
 }

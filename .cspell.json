@@ -6,7 +6,8 @@
     "**/.pnpm-lock.json",
     ".vscode",
     "package-lock.json",
-    "megalinter-reports"
+    "megalinter-reports",
+    "bun.lockb"
   ],
   "useGitignore": true,
   "allowCompoundWords": true,
@@ -29,6 +30,7 @@
     "hadolint",
     "ianvs",
     "keyid",
+    "lockb",
     "Mihir",
     "mrdgh",
     "npmrc",
@@ -36,8 +38,10 @@
     "Rabade",
     "regist",
     "sapphirerc",
+    "scanjs",
     "shfmt",
     "shyim",
+    "sonarjs",
     "spmeesseman",
     "stefanzweifel",
     "tsbuildinfo",
