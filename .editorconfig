@@ -8,3 +8,13 @@ insert_final_newline = true
 charset = utf-8
 indent_style = space
 indent_size = 2
+
+[bun.lockb]
+charset = unset
+end_of_line = unset
+generated_code = true
+indent_size = unset
+indent_style = unset
+insert_final_newline = unset
+tab_width = unset
+trim_trailing_whitespace = unset
