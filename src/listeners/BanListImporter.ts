@@ -70,7 +70,7 @@ export default class UserEvent extends Listener {
 
     await sequentialPromises(uniqueList, performBan).catch(async (error) =>
       message.reply({
-        content: `${user}\nAn error occurred while importing ${mode} list: ${error.message}`,
+        content: `${user}\nAn error occurred while importing ${mode} list: \n${error}`,
       }),
     );
     this.container.logger.debug(
