@@ -8,7 +8,6 @@ import {
   Guild,
   type MessagePayloadOption,
 } from 'discord.js';
-// @ts-expect-error - No types for dpaste-ts
 import { createPaste } from 'dpaste-ts';
 import { sequentialPromises } from 'yaspr';
 import { COLORS } from '../lib/Constants';
@@ -129,10 +128,10 @@ export default class UserEvent extends Listener {
                     type: ComponentType.Button,
                     label: `Unsuccessful ${mode} list link`,
                     style: ButtonStyle.Link,
-                    url: (await createPaste({
+                    url: await createPaste({
                       content: JSON.stringify([...failedList], null, 2),
                       title: `[FAILED] ${truncateString(guild.name, 10)} ${titleMode} List`,
-                    })) as string,
+                    }),
                   },
                 ],
               },

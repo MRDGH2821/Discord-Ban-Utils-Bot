@@ -8,7 +8,6 @@ import {
   type GuildBan,
   type MessagePayloadOption,
 } from 'discord.js';
-// @ts-expect-error - No types for dpaste-ts
 import { createPaste } from 'dpaste-ts';
 import { sequentialPromises } from 'yaspr';
 import { COLORS } from '../lib/Constants';
