@@ -31,6 +31,7 @@ The following steps are for logs:
 - [x] Timeout
 - [x] Unban
 - [x] User Info
+- [ ] Exclusion List
 
 ### Audit Logs
 
