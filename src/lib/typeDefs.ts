@@ -20,30 +20,29 @@ export type ListImportOptions = {
 };
 
 /* jscpd:ignore-start */
-export type SettingsOptions = {
-  sendBanLog?: boolean;
-  sendUnbanLog?: boolean;
-  sendExitLog?: boolean;
-  sendJoinLog?: boolean;
-  sendKickLog?: boolean;
-  sendTimeoutLog?: boolean;
-  sendUnTimeoutLog?: boolean;
-  sendImportLog?: boolean;
-  sendBanExportLog?: boolean;
-  sendBanCopyLog?: boolean;
-  sendMassBanLog?: boolean;
-  sendMassUnbanLog?: boolean;
-};
+export type SettingsParameter =
+  | 'sendBanLog'
+  | 'sendUnbanLog'
+  | 'sendExitLog'
+  | 'sendJoinLog'
+  | 'sendKickLog'
+  | 'sendTimeoutLog'
+  | 'sendUnTimeoutLog'
+  | 'sendImportLog'
+  | 'sendBanExportLog'
+  | 'sendBanCopyLog'
+  | 'sendMassBanLog'
+  | 'sendMassUnbanLog';
+
+export type SettingsOptions = Partial<Record<SettingsParameter, boolean>>;
 
 export type CoreSettingsOptions = {
   webhookId: string;
-  guildId: string;
+  guildId: Guild['id'];
 };
 /* jscpd:ignore-end */
 
 export type AllSettingsOptions = SettingsOptions & CoreSettingsOptions;
-
-export type SettingsParameter = keyof SettingsOptions;
 
 export type CoreSettingsParameter = keyof CoreSettingsOptions;
 
