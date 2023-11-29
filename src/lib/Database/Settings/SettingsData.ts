@@ -1,5 +1,5 @@
-import { dbSettingsRef } from '../../DBUtils';
 import type { AllSettingsOptions, SettingsOptions, SettingsParameter } from '../../typeDefs';
+import { dbSettingsRef } from '../DBUtils';
 
 export const SettingsDescription: { [x in keyof Required<AllSettingsOptions>]: string } = {
   sendBanLog: 'Send Ban Log',
@@ -56,10 +56,10 @@ export default class SettingsData implements AllSettingsOptions {
   modifySettings(settings: SettingsParameter[] | SettingsOptions) {
     let newSettings: SettingsOptions;
     if (Array.isArray(settings)) {
-      newSettings = settings.reduce<SettingsOptions>((acc, curr) => {
-        acc[curr] = true;
-        return acc;
-      }, {});
+      newSettings = {};
+      settings.forEach((key) => {
+        newSettings[key] = true;
+      });
       Object.assign(this, newSettings);
     } else {
       newSettings = settings;

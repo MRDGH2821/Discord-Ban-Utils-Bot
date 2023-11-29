@@ -1,7 +1,7 @@
 import { s } from '@sapphire/shapeshift';
-import type SettingsData from './Database/Settings/SettingsData';
-import db from './Firestore';
-import type { AllSettingsOptions } from './typeDefs';
+import db from '../Firestore';
+import type { AllSettingsOptions } from '../typeDefs';
+import type SettingsData from './Settings/SettingsData';
 
 export const settingsValidator = s.object<AllSettingsOptions>({
   sendBanLog: s.boolean.optional,

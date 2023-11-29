@@ -1,7 +1,7 @@
 import { container } from '@sapphire/framework';
 import { Collection } from 'discord.js';
-import { dbSettingsRef, settingsValidator } from '../../DBUtils';
 import type { AllSettingsOptions, CoreSettingsOptions } from '../../typeDefs';
+import { dbSettingsRef, settingsValidator } from '../DBUtils';
 import SettingsData from './SettingsData';
 
 export default class SettingsCache {
