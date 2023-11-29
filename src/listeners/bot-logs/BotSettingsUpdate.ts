@@ -6,7 +6,7 @@ import { BotSettingsUpdateOptions, BUEvents } from '../../lib/EventTypes';
 import { getWebhook } from '../../lib/utils';
 
 function entries<T extends object>(obj: T): [keyof T, T[keyof T]][] {
-  return Object.entries(obj) as any;
+  return Object.entries(obj) as [keyof T, T[keyof T]][];
 }
 @ApplyOptions<Listener.Options>({
   event: BUEvents.BotSettingsUpdate,

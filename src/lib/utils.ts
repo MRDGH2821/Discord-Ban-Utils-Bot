@@ -93,7 +93,7 @@ export function truncateString(str: string, num: number): string {
 type DebugEmbedOptions = {
   title: string;
   description: string;
-  error: Error | unknown;
+  error: Error;
   checks: { question: string; result: boolean }[];
   solution: string;
   inputs: { name: string; value: string }[];
@@ -265,10 +265,10 @@ export async function getAuditLogData(auditType: AuditLogEvent, guildId: Guild['
   const guild = await container.client.guilds.fetch(guildId);
 
   const settings = await SettingsCache.getSettings(guild.id);
-  if (!settings) return;
+  if (!settings) return null;
 
   const webhook = await getWebhook(guild.id, settings?.webhookId);
-  if (!webhook) return;
+  if (!webhook) return null;
 
   const logs = await guild.fetchAuditLogs({
     limit: 1,
