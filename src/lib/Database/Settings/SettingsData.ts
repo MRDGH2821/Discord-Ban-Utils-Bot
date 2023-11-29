@@ -1,5 +1,5 @@
-import { dbSettingsRef } from './DBUtils';
-import type { AllSettingsOptions, SettingsOptions, SettingsParameter } from './typeDefs';
+import { dbSettingsRef } from '../../DBUtils';
+import type { AllSettingsOptions, SettingsOptions, SettingsParameter } from '../../typeDefs';
 
 export const SettingsDescription: { [x in keyof Required<AllSettingsOptions>]: string } = {
   sendBanLog: 'Send Ban Log',

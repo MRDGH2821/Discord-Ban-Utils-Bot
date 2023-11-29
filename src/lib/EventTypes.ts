@@ -1,6 +1,6 @@
 import { container } from '@sapphire/framework';
 import type { GuildMember, User } from 'discord.js';
-import SettingsData from './SettingsData';
+import SettingsData from './Database/Settings/SettingsData';
 import type { AllSettingsOptions, BanExportOptions, ListImportOptions } from './typeDefs';
 
 export type ValueOf<T> = T[keyof T];

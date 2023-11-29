@@ -18,7 +18,7 @@ import type {
   Webhook,
 } from 'discord.js';
 import { COLORS } from './Constants';
-import Database from './Database';
+import SettingsCache from './Database/Settings/SettingsCache';
 import { emitBotEvent } from './EventTypes';
 import type {
   BanEntity,
@@ -177,7 +177,7 @@ export const selectedSettingsValidator = s
   );
 
 export async function sendLog({ guild, title, description, type }: SendLogOptions) {
-  const settings = await Database.getSettings(guild.id);
+  const settings = await SettingsCache.getSettings(guild.id);
   if (!settings) return;
   if (!settings.webhookId) return;
   if (!settings[type]) return;
@@ -264,7 +264,7 @@ export async function importList(
 export async function getAuditLogData(auditType: AuditLogEvent, guildId: Guild['id']) {
   const guild = await container.client.guilds.fetch(guildId);
 
-  const settings = await Database.getSettings(guild.id);
+  const settings = await SettingsCache.getSettings(guild.id);
   if (!settings) return;
 
   const webhook = await getWebhook(guild.id, settings?.webhookId);

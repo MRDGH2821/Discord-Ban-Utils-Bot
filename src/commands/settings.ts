@@ -13,8 +13,8 @@ import {
   TextChannel,
 } from 'discord.js';
 import { COLORS, SERVER_ONLY, WEBHOOK_ICON } from '../lib/Constants';
-import Database from '../lib/Database';
-import { SettingsDescription } from '../lib/SettingsData';
+import SettingsCache from '../lib/Database/Settings/SettingsCache';
+import { SettingsDescription } from '../lib/Database/Settings/SettingsData';
 import type { SettingsParameter } from '../lib/typeDefs';
 import { emitBotEvent, getWebhook, selectedSettingsValidator } from '../lib/utils';
 
@@ -46,7 +46,7 @@ interface SettingsOpt extends APISelectMenuOption {
 
         const force = interaction.options.getBoolean('force') || false;
 
-        const settings = await Database.getSettings(interaction.guildId, force);
+        const settings = await SettingsCache.getSettings(interaction.guildId, force);
         if (!settings) {
           const text = force
             ? 'Even refreshing settings cache forcefully'
@@ -239,8 +239,8 @@ export default class UserCommand extends Subcommand {
       })
       .then(async (settings) => {
         const webhook = await this.getOrCreateWebhook(channel);
-        const oldSettings = await Database.getSettings(channel.guildId);
-        const newSettings = await Database.newServerSetting({
+        const oldSettings = await SettingsCache.getSettings(channel.guildId);
+        const newSettings = await SettingsCache.newServerSetting({
           guildId: channel.guildId,
           webhookId: webhook.id,
         });

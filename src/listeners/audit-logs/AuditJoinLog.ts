@@ -3,7 +3,7 @@ import { container, Events, Listener } from '@sapphire/framework';
 import { Time } from '@sapphire/time-utilities';
 import { APIEmbed, GuildMember, time } from 'discord.js';
 import { COLORS } from '../../lib/Constants';
-import Database from '../../lib/Database';
+import SettingsCache from '../../lib/Database/Settings/SettingsCache';
 import { getWebhook } from '../../lib/utils';
 
 @ApplyOptions<Listener.Options>({
@@ -12,7 +12,7 @@ import { getWebhook } from '../../lib/utils';
 })
 export default class UserEvent extends Listener<typeof Events.GuildMemberAdd> {
   public override async run(member: GuildMember) {
-    const settings = await Database.getSettings(member.guild.id);
+    const settings = await SettingsCache.getSettings(member.guild.id);
     if (!settings || !settings?.sendJoinLog) {
       return;
     }

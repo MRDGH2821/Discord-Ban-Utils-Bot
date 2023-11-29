@@ -1,10 +1,10 @@
 import { container } from '@sapphire/framework';
 import { Collection } from 'discord.js';
-import { dbSettingsRef, settingsValidator } from './DBUtils';
+import { dbSettingsRef, settingsValidator } from '../../DBUtils';
+import type { AllSettingsOptions, CoreSettingsOptions } from '../../typeDefs';
 import SettingsData from './SettingsData';
-import type { AllSettingsOptions, CoreSettingsOptions } from './typeDefs';
 
-export default class Database {
+export default class SettingsCache {
   static {
     dbSettingsRef.onSnapshot((snapshot) => {
       snapshot.docChanges().forEach((change) => {

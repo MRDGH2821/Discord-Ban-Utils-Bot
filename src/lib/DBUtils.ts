@@ -1,6 +1,6 @@
 import { s } from '@sapphire/shapeshift';
+import type SettingsData from './Database/Settings/SettingsData';
 import db from './Firestore';
-import type SettingsData from './SettingsData';
 import type { AllSettingsOptions } from './typeDefs';
 
 export const settingsValidator = s.object<AllSettingsOptions>({

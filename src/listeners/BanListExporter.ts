@@ -11,7 +11,7 @@ import {
 import { createPaste } from 'dpaste-ts';
 import { sequentialPromises } from 'yaspr';
 import { COLORS } from '../lib/Constants';
-import Database from '../lib/Database';
+import SettingsCache from '../lib/Database/Settings/SettingsCache';
 import { BUEvents } from '../lib/EventTypes';
 import type { BanEntity, BanEntityWithReason, BanExportOptions, BanType } from '../lib/typeDefs';
 import { debugErrorEmbed, fetchAllBans, getWebhook, truncateString } from '../lib/utils';
@@ -138,7 +138,7 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
     embed: APIEmbed,
     files?: MessagePayloadOption['files'],
   ) {
-    const settings = await Database.getSettings(guildId);
+    const settings = await SettingsCache.getSettings(guildId);
     if (!settings || !settings?.sendBanExportLog) {
       return;
     }
