@@ -169,12 +169,13 @@ export const selectedSettingsValidator = s
       'sendBanCopyLog',
     ),
   )
-  .transform((values) =>
-    values.reduce<SettingsOptions>((acc, curr) => {
-      acc[curr] = true;
-      return acc;
-    }, {}),
-  );
+  .transform((values) => {
+    const acc: SettingsOptions = {};
+    values.forEach((key) => {
+      acc[key] = true;
+    });
+    return acc;
+  });
 
 export async function sendLog({ guild, title, description, type }: SendLogOptions) {
   const settings = await SettingsCache.getSettings(guild.id);
