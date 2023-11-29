@@ -54,3 +54,11 @@ export type SendLogOptions = {
   description: string;
   type: SettingsParameter;
 };
+
+export type ExclusionsListParameter = 'importExclusions' | 'exportExclusions';
+
+export type ExclusionsListOptions = Partial<Record<ExclusionsListParameter, User['id'][]>>;
+
+export type CoreExclusionsListOptions = { guildId: string };
+
+export type AllExclusionsListOptions = ExclusionsListOptions & CoreExclusionsListOptions;

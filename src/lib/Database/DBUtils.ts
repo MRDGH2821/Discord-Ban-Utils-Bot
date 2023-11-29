@@ -1,6 +1,7 @@
 import { s } from '@sapphire/shapeshift';
 import db from '../Firestore';
-import type { AllSettingsOptions } from '../typeDefs';
+import type { AllExclusionsListOptions, AllSettingsOptions } from '../typeDefs';
+import type ExclusionsListData from './ExclusionsList/ExclusionsListData';
 import type SettingsData from './Settings/SettingsData';
 
 export const settingsValidator = s.object<AllSettingsOptions>({
@@ -26,3 +27,18 @@ export const dbSettingsRef = db.collection('settings').withConverter<AllSettings
   }),
   fromFirestore: (snapshot) => settingsValidator.parse(snapshot.data()),
 });
+
+export const exclusionsListValidator = s.object<AllExclusionsListOptions>({
+  importExclusions: s.array(s.string).optional,
+  exportExclusions: s.array(s.string).optional,
+  guildId: s.string,
+});
+
+export const dbExclusionsListRef = db
+  .collection('exclusionsList')
+  .withConverter<AllExclusionsListOptions>({
+    toFirestore: (exclusionsList: ExclusionsListData | AllExclusionsListOptions) => ({
+      ...exclusionsList,
+    }),
+    fromFirestore: (snapshot) => exclusionsListValidator.parse(snapshot.data()),
+  });
