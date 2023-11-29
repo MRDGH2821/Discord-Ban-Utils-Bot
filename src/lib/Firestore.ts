@@ -44,7 +44,7 @@ function searchCredEnv() {
     !process.env.FIREBASE_PROJECT_ID
   ) {
     logger.warn('Firebase credentials not found in 3 environment variables.');
-    return;
+    return null;
   }
   logger.info('Using firebase service account credentials from 3 environment variables.');
   return cert({
@@ -57,7 +57,7 @@ function searchCredEnv() {
 function searchBase64CredEnv() {
   if (!process.env.FIREBASE_SERVICE_ACCOUNT_BASE64) {
     logger.warn('Firebase credentials not found in base64 environment variable.');
-    return;
+    return null;
   }
   logger.info('Using firebase service account credentials from base64 environment variable.');
   const decoded = decodeBase64(process.env.FIREBASE_SERVICE_ACCOUNT_BASE64);
