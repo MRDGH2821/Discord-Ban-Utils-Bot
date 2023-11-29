@@ -21,14 +21,12 @@ export default class UserEvent extends Listener<typeof Events.GuildMemberRemove>
 
     const firstExitLog = auditData.auditLog;
 
-    const reason = firstExitLog?.reason;
+    const reason = firstExitLog?.reason || '';
 
     const exitEmbed: APIEmbed = {
       title: '**Audit Exit Log**',
       color: COLORS.blueGrayBoot,
-      description: `\`${member.user.username}\` ${member.user} exitted this server\nID: \`${
-        member.user.id
-      }\`\n${reason ? `\nReason: ${reason}` : ''}`,
+      description: `\`${member.user.username}\` ${member.user} exitted this server\nID: \`${member.user.id}\`\n${reason}`,
       timestamp: new Date().toISOString(),
     };
 
