@@ -178,7 +178,7 @@ export const selectedSettingsValidator = s
   });
 
 export async function sendLog({ guild, title, description, type }: SendLogOptions) {
-  const settings = await SettingsCache.getSettings(guild.id);
+  const settings = await SettingsCache.find(guild.id);
   if (!settings) return;
   if (!settings.webhookId) return;
   if (!settings[type]) return;
@@ -265,7 +265,7 @@ export async function importList(
 export async function getAuditLogData(auditType: AuditLogEvent, guildId: Guild['id']) {
   const guild = await container.client.guilds.fetch(guildId);
 
-  const settings = await SettingsCache.getSettings(guild.id);
+  const settings = await SettingsCache.find(guild.id);
   if (!settings) return null;
 
   const webhook = await getWebhook(guild.id, settings?.webhookId);

@@ -12,7 +12,7 @@ import { getWebhook } from '../../lib/utils';
 })
 export default class UserEvent extends Listener<typeof Events.GuildMemberAdd> {
   public override async run(member: GuildMember) {
-    const settings = await SettingsCache.getSettings(member.guild.id);
+    const settings = await SettingsCache.find(member.guild.id);
     if (!settings || !settings?.sendJoinLog) {
       return;
     }

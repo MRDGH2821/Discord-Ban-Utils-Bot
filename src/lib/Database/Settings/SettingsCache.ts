@@ -10,10 +10,10 @@ export default class SettingsCache {
       snapshot.docChanges().forEach((change) => {
         if (change.type === 'removed') {
           container.logger.debug('Removed setting: ', change.doc.data());
-          this.#removeSettingFromCache(change.doc.data().guildId);
+          this.#delete(change.doc.data().guildId);
         } else {
           container.logger.debug('Updated setting: ', change.doc.data());
-          this.#updateSettingInCache(change.doc.data());
+          this.#update(change.doc.data());
         }
       });
     });
@@ -21,7 +21,7 @@ export default class SettingsCache {
 
   static #cache = new Collection<string, SettingsData>();
 
-  static async #fetchDB() {
+  static async #fetchAll() {
     await dbSettingsRef
       .get()
       .then((snapshot) =>
@@ -34,7 +34,7 @@ export default class SettingsCache {
       .catch((error) => container.logger.error(error));
   }
 
-  static #fetchData(guildId: string) {
+  static #fetchOne(guildId: string) {
     return dbSettingsRef
       .doc(guildId)
       .get()
@@ -46,15 +46,15 @@ export default class SettingsCache {
       });
   }
 
-  static async getSettings(guildId: string, force = false) {
-    if (this.#cache.size === 0) await this.#fetchDB();
+  static async find(guildId: string, force = false) {
+    if (this.#cache.size === 0) await this.#fetchAll();
 
-    if (force) await this.#fetchData(guildId);
+    if (force) await this.#fetchOne(guildId);
 
     return this.#cache.get(guildId);
   }
 
-  static async newServerSetting(options: CoreSettingsOptions) {
+  static async createSetting(options: CoreSettingsOptions) {
     const validatedData = settingsValidator.parse(options);
     const settings = new SettingsData(validatedData);
     this.#cache.set(settings.guildId, settings);
@@ -65,13 +65,13 @@ export default class SettingsCache {
       .then(() => settings);
   }
 
-  static #updateSettingInCache(settings: AllSettingsOptions) {
+  static #update(settings: AllSettingsOptions) {
     const validatedData = settingsValidator.parse(settings);
     const newSettings = new SettingsData(validatedData);
     this.#cache.set(newSettings.guildId, newSettings);
   }
 
-  static #removeSettingFromCache(guildId: string) {
+  static #delete(guildId: string) {
     this.#cache.delete(guildId);
   }
 }

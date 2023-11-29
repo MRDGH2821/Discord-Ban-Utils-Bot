@@ -145,7 +145,7 @@ export default class UserEvent extends Listener {
     embed: APIEmbed,
     components?: MessagePayloadOption['components'],
   ) {
-    const settings = await SettingsCache.getSettings(guildId);
+    const settings = await SettingsCache.find(guildId);
     if (!settings || !settings.sendImportLog) return;
 
     const webhook = await this.container.client.fetchWebhook(settings.webhookId);

@@ -53,7 +53,7 @@ export default class SettingsData implements AllSettingsOptions {
     Object.assign(this, options);
   }
 
-  modifySettings(settings: SettingsParameter[] | SettingsOptions) {
+  updateAll(settings: SettingsParameter[] | SettingsOptions) {
     let newSettings: SettingsOptions;
     if (Array.isArray(settings)) {
       newSettings = {};
@@ -69,7 +69,7 @@ export default class SettingsData implements AllSettingsOptions {
     return dbSettingsRef.doc(this.guildId).set(newSettings, { merge: true });
   }
 
-  modifySetting(setting: SettingsParameter, value: boolean) {
+  updateOne(setting: SettingsParameter, value: boolean) {
     const newSettings = { [setting]: value };
     Object.assign(this, newSettings);
 

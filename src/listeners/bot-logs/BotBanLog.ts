@@ -12,7 +12,7 @@ import { getWebhook } from '../../lib/utils';
 })
 export default class UserEvent extends Listener<typeof BUEvents.BotGuildBanAdd> {
   public override async run({ convict, executor, reason }: BotGuildBanAddOptions) {
-    const settings = await SettingsCache.getSettings(executor.guild.id);
+    const settings = await SettingsCache.find(executor.guild.id);
     if (!settings || !settings?.sendBanLog) {
       return;
     }

@@ -46,7 +46,8 @@ interface SettingsOpt extends APISelectMenuOption {
 
         const force = interaction.options.getBoolean('force') || false;
 
-        const settings = await SettingsCache.getSettings(interaction.guildId, force);
+        // eslint-disable-next-line unicorn/no-array-method-this-argument
+        const settings = await SettingsCache.find(interaction.guildId, force);
         if (!settings) {
           const text = force
             ? 'Even refreshing settings cache forcefully'
@@ -239,12 +240,12 @@ export default class UserCommand extends Subcommand {
       })
       .then(async (settings) => {
         const webhook = await this.getOrCreateWebhook(channel);
-        const oldSettings = await SettingsCache.getSettings(channel.guildId);
-        const newSettings = await SettingsCache.newServerSetting({
+        const oldSettings = await SettingsCache.find(channel.guildId);
+        const newSettings = await SettingsCache.createSetting({
           guildId: channel.guildId,
           webhookId: webhook.id,
         });
-        newSettings.modifySettings(settings);
+        newSettings.updateAll(settings);
 
         return emitBotEvent('botSettingsUpdate', { oldSettings, newSettings });
       })
