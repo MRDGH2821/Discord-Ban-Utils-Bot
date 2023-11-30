@@ -10,6 +10,7 @@ import {
 } from 'discord.js';
 import { createPaste } from 'dpaste-ts';
 import { COLORS } from '../lib/Constants';
+import ExclusionListCache from '../lib/Database/ExclusionList/ExclusionListCache';
 import SettingsCache from '../lib/Database/Settings/SettingsCache';
 import { BUEvents } from '../lib/EventTypes';
 import type { BanEntity, BanEntityWithReason, BanExportOptions, BanType } from '../lib/typeDefs';
@@ -68,12 +69,14 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
     requesterUser: user,
     sourceMessage: message,
     includeReason,
+    ignoreExclusionList = false,
   }: BanExportOptions) {
     this.exportAndReply({
       sourceGuild: guild,
       includeReason,
       requesterUser: user,
       sourceMessage: message,
+      ignoreExclusionList,
     }).catch((error: Error) => {
       this.container.logger.error(error);
       const errEmbed = debugErrorEmbed({
@@ -102,18 +105,34 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
     });
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  public async filterList(guildId: string, ignoreExclusionList = false) {
+    const excData = await ExclusionListCache.find(guildId);
+    const list = [];
+    if (!ignoreExclusionList && excData && excData.exportExclusion) {
+      list.push(...excData.exportExclusion);
+    }
+    return list;
+  }
+
   public async exportAndReply({
     includeReason,
     sourceGuild: guild,
     requesterUser: user,
     sourceMessage: message,
+    ignoreExclusionList = false,
   }: BanExportOptions) {
     return new Promise((resolve, reject) => {
       fetchAllBans(guild)
-        .then(async (bans) => ({
-          links: await this.exportBanList(includeReason, bans, guild.name),
-          bans,
-        }))
+        .then(async (bans) => {
+          const list = await this.filterList(guild.id, ignoreExclusionList);
+          const filteredBans = bans.filter((ban) => list.includes(ban.user.id));
+
+          return {
+            links: await this.exportBanList(includeReason, filteredBans, guild.name),
+            bans: filteredBans,
+          };
+        })
         .then(({ links, bans }) => {
           const resultEmbed: APIEmbed = {
             title: '**Ban List Export Success!**',

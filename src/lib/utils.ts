@@ -231,12 +231,17 @@ export async function importList(
   list: BanEntityWithReason[],
   guild: Guild,
   mode: ListImportOptions['mode'],
+  ignoreExclusionList = mode !== 'ban',
 ) {
   const msg = await interaction.editReply({
     embeds: [
       {
         title: `Importing ${mode} list`,
-        description: `Found ${list.length} ${mode}s.\n\nYou will be notified here when the import is complete.`,
+        description: `Found ${
+          list.length
+        } ${mode}s.\n\nYou will be notified here when the import is complete.\nExclusion list is ${
+          ignoreExclusionList ? 'ignored' : 'applied'
+        }`,
         color: COLORS.lightGray,
       },
     ],
@@ -257,6 +262,7 @@ export async function importList(
     sourceMessage: msg,
     list,
     mode,
+    ignoreExclusionList,
   };
   emitBotEvent('listImport', importOptions);
   // interaction.client.emit('importBanList', importOptions);

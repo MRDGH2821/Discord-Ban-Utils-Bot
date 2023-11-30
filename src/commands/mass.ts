@@ -12,6 +12,7 @@ import { NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
 import type { ListImportOptions } from '../lib/typeDefs';
 import { banEntitySchemaBuilder, debugErrorEmbed, importList } from '../lib/utils';
 
+const IGNORE_EXCLUSION_TEXT = 'ignore-exclusion-list';
 @ApplyOptions<Subcommand.Options>({
   name: 'mass',
   description: 'Perform Mass ban or unban',
@@ -49,16 +50,22 @@ export default class UserCommand extends Subcommand {
           options: [
             {
               name: 'ids',
-              description: 'Discord IDs you want to mass ban',
+              description: `Discord IDs you want to mass ban`,
               type: ApplicationCommandOptionType.String,
               required: true,
             },
             {
               name: 'reason',
-              description: 'The reason for the ban',
+              description: `The reason for the ban`,
               type: ApplicationCommandOptionType.String,
               required: true,
               autocomplete: true,
+            },
+            {
+              name: IGNORE_EXCLUSION_TEXT,
+              description: `Ignore the exclusion list while importing ban list (default: false)`,
+              type: ApplicationCommandOptionType.Boolean,
+              required: false,
             },
           ],
         },
@@ -69,16 +76,22 @@ export default class UserCommand extends Subcommand {
           options: [
             {
               name: 'ids',
-              description: 'Discord IDs you want to mass unban',
+              description: `Discord IDs you want to mass unban`,
               type: ApplicationCommandOptionType.String,
               required: true,
             },
             {
               name: 'reason',
-              description: 'The reason for the unban',
+              description: `The reason for the unban`,
               type: ApplicationCommandOptionType.String,
               required: true,
               autocomplete: true,
+            },
+            {
+              name: IGNORE_EXCLUSION_TEXT,
+              description: `Ignore the exclusion list while importing unban list (default: true)`,
+              type: ApplicationCommandOptionType.Boolean,
+              required: false,
             },
           ],
         },
@@ -117,6 +130,15 @@ export default class UserCommand extends Subcommand {
       return;
     }
 
+    const schema = s.union(
+      s.literal<ListImportOptions['mode']>('ban'),
+      s.literal<ListImportOptions['mode']>('unban'),
+    );
+
+    const mode = schema.parse(invokerCmd);
+    const ignoreExclusionList =
+      interaction.options.getBoolean(IGNORE_EXCLUSION_TEXT) || mode !== 'ban';
+
     const parsedIds = this.parseIds(ids, reason);
 
     if (parsedIds.isErr() || !parsedIds.isOk()) {
@@ -140,6 +162,10 @@ export default class UserCommand extends Subcommand {
                 name: 'reason',
                 value: reason,
               },
+              {
+                name: IGNORE_EXCLUSION_TEXT,
+                value: `${ignoreExclusionList}`,
+              },
             ],
             solution: 'Please check your ban list once',
             title: '**An error occurred**',
@@ -149,14 +175,7 @@ export default class UserCommand extends Subcommand {
       return;
     }
 
-    const schema = s.union(
-      s.literal<ListImportOptions['mode']>('ban'),
-      s.literal<ListImportOptions['mode']>('unban'),
-    );
-
-    const mode = schema.parse(invokerCmd);
-
-    await importList(interaction, parsedIds.value, interaction.guild, mode);
+    await importList(interaction, parsedIds.value, interaction.guild, mode, ignoreExclusionList);
   }
 }
 

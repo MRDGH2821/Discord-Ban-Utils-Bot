@@ -19,6 +19,7 @@ export type BanExportOptions = {
   requesterUser: User;
   includeReason: boolean;
   sourceMessage: Message;
+  ignoreExclusionList: boolean;
 };
 
 export type ListImportOptions = {
@@ -27,6 +28,7 @@ export type ListImportOptions = {
   sourceMessage: Message;
   list: NonNullable<BanEntityWithReason>[];
   mode: 'ban' | 'unban';
+  ignoreExclusionList: boolean;
 };
 
 /* jscpd:ignore-start */

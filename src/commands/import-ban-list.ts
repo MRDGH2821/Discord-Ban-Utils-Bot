@@ -37,6 +37,18 @@ export default class UserCommand extends Command {
           type: ApplicationCommandOptionType.String,
           required: true,
         },
+        {
+          name: 'reason',
+          description: 'Reason for the ban list import. Used only if ban reason is missing.',
+          type: ApplicationCommandOptionType.String,
+          required: false,
+        },
+        {
+          name: 'ignore-exclusion-list',
+          description: 'Ignore the exclusion list while importing ban list (default: false)',
+          type: ApplicationCommandOptionType.Boolean,
+          required: false,
+        },
       ],
     });
   }
@@ -58,9 +70,12 @@ export default class UserCommand extends Command {
 
     await interaction.deferReply();
     const link = interaction.options.getString('link', true);
+    const ignoreExclusionList = interaction.options.getBoolean('ignore-exclusion-list') || false;
 
     const data = await getRawPaste(link);
-    const defaultReason = `Imported by ${interaction.user.username} on ${new Date().toUTCString()}`;
+    const defaultReason =
+      interaction.options.getString('reason') ||
+      `Imported by ${interaction.user.username} on ${new Date().toUTCString()}`;
     const BanEntitiesSchema = banEntitySchemaBuilder(defaultReason);
 
     const BanEntitiesWithReasonSchema = s.array<BanEntityWithReason>(
@@ -73,11 +88,23 @@ export default class UserCommand extends Command {
     try {
       const parsedData = JSON.parse(data) as object;
       const validatedData = BanEntitiesWithReasonSchema.parse(parsedData);
-      return await importList(interaction, validatedData, interaction.guild, 'ban');
+      return await importList(
+        interaction,
+        validatedData,
+        interaction.guild,
+        'ban',
+        ignoreExclusionList,
+      );
     } catch (error) {
       try {
         const validatedData = BanEntitiesSchema.parse(data);
-        return importList(interaction, validatedData, interaction.guild, 'ban');
+        return importList(
+          interaction,
+          validatedData,
+          interaction.guild,
+          'ban',
+          ignoreExclusionList,
+        );
       } catch {
         return interaction.editReply({
           content: 'Invalid data',

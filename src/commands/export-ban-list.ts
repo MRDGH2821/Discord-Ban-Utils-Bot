@@ -40,6 +40,12 @@ export default class UserCommand extends Command {
           type: ApplicationCommandOptionType.Boolean,
           required: false,
         },
+        {
+          name: 'ignore-exclusion-list',
+          description: 'Ignore the exclusion list (default: false)',
+          type: ApplicationCommandOptionType.Boolean,
+          required: false,
+        },
       ],
     });
   }
@@ -47,6 +53,7 @@ export default class UserCommand extends Command {
   public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
     const reasonFlag = interaction.options.getBoolean('include-reason');
     const includeReason = reasonFlag === null ? true : reasonFlag;
+    const ignoreExclusionList = interaction.options.getBoolean('ignore-exclusion-list') ?? false;
 
     if (!interaction.guild || !interaction.inGuild() || !interaction.inCachedGuild()) {
       return interaction.reply({
@@ -98,8 +105,9 @@ export default class UserCommand extends Command {
           const statusEmbed: APIEmbed = {
             title: '**Ban List export Scheduled**',
             color: COLORS.lightGray,
-            description:
-              "Ban list export is scheduled. You will be notified in this channel when it's done.",
+            description: `Ban list export is scheduled. You will be notified in this channel when it's done.\n\nExclusion list is ${
+              ignoreExclusionList ? 'ignored' : 'applied'
+            }`,
             timestamp: new Date().toISOString(),
           };
 
@@ -108,6 +116,7 @@ export default class UserCommand extends Command {
             includeReason,
             requesterUser: interaction.user,
             sourceMessage: btx.message,
+            ignoreExclusionList,
           };
 
           emitBotEvent('banListExport', exportBanOptions);

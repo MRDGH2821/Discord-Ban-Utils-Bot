@@ -10,6 +10,7 @@ import {
 } from 'discord.js';
 import { createPaste } from 'dpaste-ts';
 import { COLORS } from '../lib/Constants';
+import ExclusionListCache from '../lib/Database/ExclusionList/ExclusionListCache';
 import SettingsCache from '../lib/Database/Settings/SettingsCache';
 import { BUEvents } from '../lib/EventTypes';
 import type { BanEntityWithReason, ListImportOptions } from '../lib/typeDefs';
@@ -20,12 +21,23 @@ import { fetchAllBans, sequentialPromises, truncateString } from '../lib/utils';
   event: BUEvents.ListImport,
 })
 export default class UserEvent extends Listener {
+  // eslint-disable-next-line class-methods-use-this
+  public async filterList(guildId: string, ignoreExclusionList: boolean) {
+    const excData = await ExclusionListCache.find(guildId);
+    const list = [];
+    if (!ignoreExclusionList && excData && excData.exportExclusion) {
+      list.push(...excData.exportExclusion);
+    }
+    return list;
+  }
+
   public override async run({
     list,
     destinationGuild: guild,
     requesterUser: user,
     sourceMessage: message,
     mode,
+    ignoreExclusionList = mode !== 'ban',
   }: ListImportOptions) {
     // this.container.logger.debug(JSON.stringify(list));
     const titleMode = toTitleCase(mode);
@@ -42,9 +54,11 @@ export default class UserEvent extends Listener {
     const failedList = new Set<BanEntityWithReason>();
     const allBans = await fetchAllBans(guild);
     const bansInGuild = new Set(allBans.keys());
+    const eList = await this.filterList(guild.id, ignoreExclusionList);
 
     // this.container.logger.debug(bansInGuild.size);
     const uniqueList = mode === 'ban' ? list.filter((ban) => !bansInGuild.has(ban.id)) : list;
+    const filteredList = uniqueList.filter((ban) => !eList.includes(ban.id));
 
     const banFn = (id: string, reason: string) => guild.members.ban(id, { reason });
     const unBanFn = (id: string, reason: string) => guild.members.unban(id, reason);
@@ -66,7 +80,7 @@ export default class UserEvent extends Listener {
         3,
       );
 
-    await sequentialPromises(uniqueList, performBan).catch(async (error) =>
+    await sequentialPromises(filteredList, performBan).catch(async (error) =>
       message.reply({
         content: `${user}\nAn error occurred while importing ${mode} list: \n${error}`,
       }),
@@ -78,14 +92,28 @@ export default class UserEvent extends Listener {
           Server: guild.name,
           Success: successList.size,
           Failed: failedList.size,
-          Unique: uniqueList.length,
+          Unique: filteredList.length,
           Total: list.length,
           Mode: mode,
+          ExclusionList: ignoreExclusionList ? 'Ignored' : 'Applied',
         },
         null,
         2,
       ),
     );
+
+    let elVerdict = '';
+
+    if (mode === 'ban') {
+      elVerdict = ignoreExclusionList
+        ? 'Bot will **not** filter the list.\n Thus the excluded people will be banned.'
+        : 'Bot will filter the list.\n Thus the excluded people will **not** be banned.';
+    } else if (mode === 'unban') {
+      elVerdict = ignoreExclusionList
+        ? 'Bot will **not** filter the list.\n Thus the excluded people will be unbanned (if they were banned).'
+        : 'Bot will filter the list.\n Thus the excluded people will **not** be unbanned (if they were banned).';
+    }
+
     const operationEmbed = {
       title: `${titleMode} list imported!`,
       description: `${titleMode} statistics:`,
@@ -101,7 +129,11 @@ export default class UserEvent extends Listener {
         },
         {
           name: `Unique ${mode}s`,
-          value: `${uniqueList.length}`,
+          value: `${filteredList.length}`,
+        },
+        {
+          name: 'Exclusion List Status',
+          value: elVerdict,
         },
         {
           name: `Total ${mode}`,
