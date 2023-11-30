@@ -75,8 +75,7 @@
     "enhanced-ms": "^2.3.0",
     "firebase-admin": "^11.11.1",
     "markdown-table": "^3.0.3",
-    "tslib": "^2.6.2",
-    "yaspr": "^1.0.2"
+    "tslib": "^2.6.2"
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.1.1",

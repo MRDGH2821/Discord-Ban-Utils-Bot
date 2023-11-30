@@ -9,12 +9,11 @@ import {
   type MessagePayloadOption,
 } from 'discord.js';
 import { createPaste } from 'dpaste-ts';
-import { sequentialPromises } from 'yaspr';
 import { COLORS } from '../lib/Constants';
 import SettingsCache from '../lib/Database/Settings/SettingsCache';
 import { BUEvents } from '../lib/EventTypes';
 import type { BanEntityWithReason, ListImportOptions } from '../lib/typeDefs';
-import { fetchAllBans, truncateString } from '../lib/utils';
+import { fetchAllBans, sequentialPromises, truncateString } from '../lib/utils';
 
 @ApplyOptions<Listener.Options>({
   name: 'List Importer',

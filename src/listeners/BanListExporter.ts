@@ -9,12 +9,17 @@ import {
   type MessagePayloadOption,
 } from 'discord.js';
 import { createPaste } from 'dpaste-ts';
-import { sequentialPromises } from 'yaspr';
 import { COLORS } from '../lib/Constants';
 import SettingsCache from '../lib/Database/Settings/SettingsCache';
 import { BUEvents } from '../lib/EventTypes';
 import type { BanEntity, BanEntityWithReason, BanExportOptions, BanType } from '../lib/typeDefs';
-import { debugErrorEmbed, fetchAllBans, getWebhook, truncateString } from '../lib/utils';
+import {
+  debugErrorEmbed,
+  fetchAllBans,
+  getWebhook,
+  sequentialPromises,
+  truncateString,
+} from '../lib/utils';
 
 @ApplyOptions<Listener.Options>({
   name: 'Ban List Exporter',
@@ -34,7 +39,7 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
     includeReason: boolean,
     bans: Collection<string, GuildBan>,
     guildName: string,
-  ) {
+  ): Promise<string[]> {
     const banListWithReason = bans.map<BanEntityWithReason>((ban) => ({
       id: ban.user.id,
       reason: ban.reason,
