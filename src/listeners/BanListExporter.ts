@@ -69,48 +69,12 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
     sourceMessage: message,
     includeReason,
   }: BanExportOptions) {
-    const bans = await fetchAllBans(guild);
-
-    try {
-      const links = await this.exportBanList(includeReason, bans, guild.name);
-      const resultEmbed: APIEmbed = {
-        title: '**Ban List Export Success!**',
-        description: `Total Bans Found: ${bans.size}\n\nEach link contains ${
-          includeReason ? 350 : 1000
-        } bans.\nExcept the last one, which contains ${
-          includeReason ? bans.size % 350 : bans.size % 1000
-        } bans.`,
-        color: COLORS.lightGray,
-        fields: [
-          {
-            name: '**Number of parts**',
-            value: `${links.length}`,
-          },
-          {
-            name: '**Links**',
-            value: links.join('\n'),
-          },
-        ],
-        timestamp: new Date().toISOString(),
-        footer: {
-          text: `Requested by ${user.username}`,
-          icon_url: user.displayAvatarURL(),
-        },
-      };
-      const resultFile = {
-        attachment: Buffer.from(links.join('\n')),
-        name: `Ban List of ${guild.name}.txt`,
-        description: 'Ban list links',
-      };
-
-      this.sendLog(guild.id, resultEmbed, [resultFile]);
-
-      return await message.reply({
-        content: `${user}`,
-        embeds: [resultEmbed],
-        files: [resultFile],
-      });
-    } catch (error) {
+    this.exportAndReply({
+      sourceGuild: guild,
+      includeReason,
+      requesterUser: user,
+      sourceMessage: message,
+    }).catch((error: Error) => {
       this.container.logger.error(error);
       const errEmbed = debugErrorEmbed({
         title: 'Error while exporting ban list',
@@ -135,7 +99,61 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
         content: `${user}`,
         embeds: [errEmbed],
       });
-    }
+    });
+  }
+
+  public async exportAndReply({
+    includeReason,
+    sourceGuild: guild,
+    requesterUser: user,
+    sourceMessage: message,
+  }: BanExportOptions) {
+    return new Promise((resolve, reject) => {
+      fetchAllBans(guild)
+        .then(async (bans) => ({
+          links: await this.exportBanList(includeReason, bans, guild.name),
+          bans,
+        }))
+        .then(({ links, bans }) => {
+          const resultEmbed: APIEmbed = {
+            title: '**Ban List Export Success!**',
+            description: `Total Bans Found: ${bans.size}\n\nEach link contains ${
+              includeReason ? 350 : 1000
+            } bans.\nExcept the last one, which contains ${
+              includeReason ? bans.size % 350 : bans.size % 1000
+            } bans.`,
+            color: COLORS.lightGray,
+            fields: [
+              {
+                name: '**Number of parts**',
+                value: `${links.length}`,
+              },
+              {
+                name: '**Links**',
+                value: links.join('\n'),
+              },
+            ],
+            timestamp: new Date().toISOString(),
+            footer: {
+              text: `Requested by ${user.username}`,
+              icon_url: user.displayAvatarURL(),
+            },
+          };
+          const resultFile = {
+            attachment: Buffer.from(links.join('\n')),
+            name: `Ban List of ${guild.name}.txt`,
+            description: 'Ban list links',
+          };
+          this.sendLog(guild.id, resultEmbed, [resultFile]);
+          return message.reply({
+            content: `${user}`,
+            embeds: [resultEmbed],
+            files: [resultFile],
+          });
+        })
+        .then(resolve)
+        .catch(reject);
+    });
   }
 
   public async sendLog(
