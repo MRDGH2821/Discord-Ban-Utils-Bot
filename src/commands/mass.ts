@@ -134,7 +134,7 @@ export default class UserCommand extends Subcommand {
               },
             ],
             description: 'There was an error while parsing the list of IDs',
-            error: parsedIds.error,
+            error: parsedIds.error!,
             inputs: [
               {
                 name: 'reason',
