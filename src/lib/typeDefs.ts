@@ -64,10 +64,10 @@ export type SendLogOptions = {
   type: SettingsParameter;
 };
 
-export type ExclusionsListParameter = 'importExclusions' | 'exportExclusions';
+export type ExclusionListParameter = 'importExclusion' | 'exportExclusion';
 
-export type ExclusionsListOptions = Partial<Record<ExclusionsListParameter, User['id'][]>>;
+export type ExclusionListOptions = Partial<Record<ExclusionListParameter, User['id'][]>>;
 
-export type CoreExclusionsListOptions = DataType;
+export type CoreExclusionListOptions = DataType;
 
-export type AllExclusionsListOptions = ExclusionsListOptions & CoreExclusionsListOptions;
+export type AllExclusionListOptions = ExclusionListOptions & CoreExclusionListOptions;
