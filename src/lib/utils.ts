@@ -149,6 +149,7 @@ export async function fetchAllBans(guild: Guild) {
       limit: 1000,
       after: masterBanList.lastKey(),
     });
+    // eslint-disable-next-line unicorn/prefer-spread
     masterBanList = masterBanList.concat(newBanList);
   }
   return masterBanList;
@@ -300,3 +301,16 @@ declare module '@sapphire/framework' {
 }
 
 export { emitBotEvent, ValueOf } from './EventTypes';
+
+export async function sequentialPromises<S, T>(
+  params: S[],
+  func: (param: S) => Promise<T>,
+): Promise<T[]> {
+  const results: T[] = [];
+  // eslint-disable-next-line unicorn/no-array-reduce
+  await params.reduce(async (prev, param) => {
+    await prev;
+    results.push(await func(param));
+  }, Promise.resolve());
+  return results;
+}
