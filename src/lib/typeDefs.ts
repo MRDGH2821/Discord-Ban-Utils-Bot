@@ -1,5 +1,15 @@
 import type { Guild, Message, User } from 'discord.js';
 
+export type DataType = { guildId: Guild['id'] };
+
+export abstract class DataClass<T extends DataType> {
+  constructor(options: T) {
+    Object.assign(this, options);
+  }
+  abstract toJSON(): DataType;
+  abstract toString(): string;
+}
+
 export type BanEntity = User['id'];
 export type BanEntityWithReason = { id: BanEntity; reason?: string | null };
 export type BanType = BanEntity | BanEntityWithReason;
@@ -38,8 +48,7 @@ export type SettingsOptions = Partial<Record<SettingsParameter, boolean>>;
 
 export type CoreSettingsOptions = {
   webhookId: string;
-  guildId: Guild['id'];
-};
+} & DataType;
 /* jscpd:ignore-end */
 
 export type AllSettingsOptions = SettingsOptions & CoreSettingsOptions;
@@ -59,6 +68,6 @@ export type ExclusionsListParameter = 'importExclusions' | 'exportExclusions';
 
 export type ExclusionsListOptions = Partial<Record<ExclusionsListParameter, User['id'][]>>;
 
-export type CoreExclusionsListOptions = { guildId: string };
+export type CoreExclusionsListOptions = DataType;
 
 export type AllExclusionsListOptions = ExclusionsListOptions & CoreExclusionsListOptions;

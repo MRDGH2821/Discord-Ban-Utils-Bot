@@ -1,4 +1,9 @@
-import type { AllSettingsOptions, SettingsOptions, SettingsParameter } from '../../typeDefs';
+import {
+  type AllSettingsOptions,
+  DataClass,
+  type SettingsOptions,
+  type SettingsParameter,
+} from '../../typeDefs';
 import { dbSettingsRef } from '../DBUtils';
 
 export const SettingsDescription: { [x in keyof Required<AllSettingsOptions>]: string } = {
@@ -18,7 +23,7 @@ export const SettingsDescription: { [x in keyof Required<AllSettingsOptions>]: s
   guildId: 'Server ID',
 };
 
-export default class SettingsData implements AllSettingsOptions {
+export default class SettingsData extends DataClass<AllSettingsOptions> {
   sendBanLog?: boolean;
 
   sendUnbanLog?: boolean;
@@ -48,6 +53,7 @@ export default class SettingsData implements AllSettingsOptions {
   guildId: string;
 
   constructor(options: AllSettingsOptions) {
+    super(options);
     this.webhookId = options.webhookId;
     this.guildId = options.guildId;
     Object.assign(this, options);

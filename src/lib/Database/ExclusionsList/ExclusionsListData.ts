@@ -1,9 +1,13 @@
 import type { User } from 'discord.js';
 import { FieldValue } from 'firebase-admin/firestore';
-import type { AllExclusionsListOptions, ExclusionsListParameter } from '../../typeDefs';
+import {
+  type AllExclusionsListOptions,
+  DataClass,
+  type ExclusionsListParameter,
+} from '../../typeDefs';
 import { dbExclusionsListRef } from '../DBUtils';
 
-export default class ExclusionsListData implements AllExclusionsListOptions {
+export default class ExclusionsListData extends DataClass<AllExclusionsListOptions> {
   importExclusions?: User['id'][];
 
   exportExclusions?: User['id'][];
@@ -11,6 +15,7 @@ export default class ExclusionsListData implements AllExclusionsListOptions {
   guildId: string;
 
   constructor(options: AllExclusionsListOptions) {
+    super(options);
     this.guildId = options.guildId;
     Object.assign(this, options);
   }
