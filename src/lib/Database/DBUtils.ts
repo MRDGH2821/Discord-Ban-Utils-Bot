@@ -35,7 +35,7 @@ export const ExclusionListValidator = s.object<AllExclusionListOptions>({
 });
 
 export const dbExclusionListRef = db
-  .collection('ExclusionList')
+  .collection('exclusion-list')
   .withConverter<AllExclusionListOptions>({
     toFirestore: (ExclusionList: ExclusionListData | AllExclusionListOptions) => ({
       ...ExclusionList,
