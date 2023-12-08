@@ -178,6 +178,7 @@ export const selectedSettingsValidator = s
       'sendBanExportLog',
       'sendBanCopyLog',
       'sendMassBanLog',
+      'sendMassUnbanLog',
     ),
   )
   .transform((values) => {
