@@ -8,10 +8,12 @@ http
     const uptime = process.uptime();
     res.setHeader('Content-Type', 'application/json');
     res.writeHead(200);
+    const date = new Date();
     const healthMessage = {
       message: 'BU-Bot is healthy',
       uptime,
-      timestamp: Date.now(),
+      timestamp: date.valueOf(),
+      time: date.toISOString(),
     };
     try {
       res.end(JSON.stringify(healthMessage));
