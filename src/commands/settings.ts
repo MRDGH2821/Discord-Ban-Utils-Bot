@@ -214,7 +214,6 @@ export default class UserCommand extends Subcommand {
         msg.awaitMessageComponent({
           componentType: ComponentType.StringSelect,
           filter: (i) => i.user.id === interaction.user.id,
-          dispose: true,
         }),
       )
       .then(async (selectMenu) => {
