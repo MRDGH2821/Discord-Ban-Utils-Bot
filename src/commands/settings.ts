@@ -16,7 +16,13 @@ import { COLORS, SERVER_ONLY, WEBHOOK_ICON } from '../lib/Constants';
 import SettingsCache from '../lib/Database/Settings/SettingsCache';
 import { SettingsDescription } from '../lib/Database/Settings/SettingsData';
 import type { SettingsParameter } from '../lib/typeDefs';
-import { emitBotEvent, getWebhook, selectedSettingsValidator } from '../lib/utils';
+import {
+  debugErrorEmbed,
+  debugErrorFile,
+  emitBotEvent,
+  getWebhook,
+  selectedSettingsValidator,
+} from '../lib/utils';
 
 interface SettingsOpt extends APISelectMenuOption {
   value: SettingsParameter;
@@ -253,7 +259,38 @@ export default class UserCommand extends Subcommand {
           content: 'Settings have been saved successfully!',
           ephemeral: true,
         }),
-      );
+      )
+      .catch((error: Error) => {
+        this.container.logger.error(error);
+        const errEmb = debugErrorEmbed({
+          checks: [
+            {
+              question: 'Can you manage guild',
+              result: interaction.memberPermissions?.has(PermissionFlagsBits.BanMembers) || false,
+            },
+            {
+              question: 'Inside server',
+              result: interaction.inGuild(),
+            },
+          ],
+          description: 'There was an error while setting up settings',
+          error,
+          inputs: [
+            {
+              name: 'channel',
+              value: `${channel}`,
+            },
+          ],
+          solution: 'Please retry after some time. Or contact the developer with error file.',
+          title: '**An error occurred**',
+        });
+        const errFile = debugErrorFile(error);
+        return interaction.editReply({
+          embeds: [errEmb],
+          files: [errFile],
+          components: [],
+        });
+      });
   }
 
   public async getOrCreateWebhook(channel: TextChannel, cleanUp = true) {
