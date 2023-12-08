@@ -1,6 +1,7 @@
 import '@sapphire/plugin-logger/register';
 import '../commands/_load';
 import '../listeners/_load';
+import '../healthInfo';
 import { ApplicationCommandRegistries, RegisterBehavior } from '@sapphire/framework';
 import * as colorette from 'colorette';
 
