@@ -7,16 +7,9 @@ import {
   type MessageCommandSuccessPayload,
 } from '@sapphire/framework';
 import { s } from '@sapphire/shapeshift';
+import { codeBlock } from '@sapphire/utilities';
 import { cyan } from 'colorette';
-import type {
-  APIEmbed,
-  APIUser,
-  AuditLogEvent,
-  Guild,
-  GuildMember,
-  User,
-  Webhook,
-} from 'discord.js';
+import { APIEmbed, APIUser, AuditLogEvent, Guild, GuildMember, User, Webhook } from 'discord.js';
 import { COLORS } from './Constants';
 import SettingsCache from './Database/Settings/SettingsCache';
 import { emitBotEvent } from './EventTypes';
@@ -106,37 +99,53 @@ type DebugEmbedOptions = {
  * @returns {APIEmbed} - the debug embed
  */
 export function debugErrorEmbed(options: DebugEmbedOptions): APIEmbed {
+  const errField = {
+    name: '**Error Message**',
+    value: `${options.error.message}\n\n${codeBlock(
+      'json',
+      JSON.stringify(options.error, null, 2),
+    )}`,
+  };
+  const fields = [
+    {
+      name: '**Checks**',
+      value: options.checks.map((check) => `${check.question}? **\`${check.result}\`**`).join('\n'),
+    },
+    {
+      name: '**Possible Solutions**',
+      value: options.solution,
+    },
+    {
+      name: '**Inputs**',
+      value: options.inputs.map((input) => `${input.name}: ${input.value}`).join('\n'),
+    },
+  ];
+
+  if (errField.value.length > 1024) {
+    const TIP = '_(For more details, check the error message file, if attached)_';
+    errField.value = `${TIP}\n${options.error.message}\n\n${codeBlock(
+      'json',
+      truncateString(
+        JSON.stringify(options.error, null, 2),
+        900 - TIP.length - options.error.message.length,
+      ),
+    )}`;
+  }
+  fields.push(errField);
   return {
     title: options.title,
     description: options.description,
     color: COLORS.redError,
-    fields: [
-      {
-        name: '**Checks**',
-        value: options.checks
-          .map((check) => `${check.question}? **\`${check.result}\`**`)
-          .join('\n'),
-      },
-      {
-        name: '**Possible Solutions**',
-        value: options.solution,
-      },
-      {
-        name: '**Inputs**',
-        value: options.inputs.map((input) => `${input.name}: ${input.value}`).join('\n'),
-      },
-      {
-        name: '**Error Message**',
-        value: `${options.error}\n\n${JSON.stringify(options.error, null, 2)}}`,
-      },
-    ],
+    fields,
   };
 }
 
 export function debugErrorFile(error: Error) {
   return {
     name: 'Error Dump.txt',
-    attachment: Buffer.from(`${error}\n-------------------\n\n${JSON.stringify(error, null, 2)}`),
+    attachment: Buffer.from(
+      `${error.message}\n-------------------\n\n${JSON.stringify(error, null, 2)}`,
+    ),
   };
 }
 
@@ -168,6 +177,7 @@ export const selectedSettingsValidator = s
       'sendImportLog',
       'sendBanExportLog',
       'sendBanCopyLog',
+      'sendMassBanLog',
     ),
   )
   .transform((values) => {
