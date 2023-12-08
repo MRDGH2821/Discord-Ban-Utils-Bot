@@ -104,23 +104,35 @@ export default class UserCommand extends Command {
 
   public override async autocompleteRun(interaction: Command.AutocompleteInteraction) {
     const val = interaction.options.getFocused();
+    const stdReason = `Banned by ${interaction.user.username} on ${new Date().toDateString()}`;
 
     const possibleReasons = [
-      `Banned by ${interaction.user.username} on ${new Date().toDateString()}`,
+      stdReason,
       'Spamming in chat',
       'Raiding the server',
       'Posted NSFW',
       'Harassing other users',
       'Advertising without permission',
       'Malicious Bot',
+      'Spam bot',
+      'Nitro Scam',
+      'Ping spam',
+      'Crypto scam',
+      'DM scam',
     ].filter((reason) => reason.toLowerCase().includes(val.toLowerCase()));
 
-    return interaction.respond(
-      possibleReasons.map((reason) => ({
-        name: reason,
-        value: reason,
-      })),
-    );
+    const mappedReasons = possibleReasons.map((reason) => ({
+      name: reason,
+      value: reason,
+    }));
+
+    if (val.length < 3) {
+      mappedReasons.push({
+        name: '(Or type your own)',
+        value: stdReason,
+      });
+    }
+    return interaction.respond(mappedReasons.slice(0, 24));
   }
 
   public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
