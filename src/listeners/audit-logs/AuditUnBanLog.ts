@@ -26,6 +26,7 @@ export default class UserEvent extends Listener<typeof Events.GuildBanRemove> {
       color: COLORS.orangeHammerHandle,
       description: `\`${unban.user.username}\` ${unban.user} is unbanned!\nID: \`${unban.user.id}\`\n\nReason: ${reason}`,
       timestamp: new Date().toISOString(),
+      fields: [],
     };
 
     if (executor) {

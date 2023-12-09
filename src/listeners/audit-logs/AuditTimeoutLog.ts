@@ -29,6 +29,7 @@ export default class UserEvent extends Listener {
       }`,
       timestamp: new Date().toISOString(),
       color: Colors.DarkGrey,
+      fields: [],
     };
 
     const unTimeoutEmbed: APIEmbed = {
@@ -36,6 +37,7 @@ export default class UserEvent extends Listener {
       description: `\`${newMember.user.username}\` ${newMember.user} is out of timeout!\nID: \`${newMember.user.id}\``,
       timestamp: new Date().toISOString(),
       color: Colors.LightGrey,
+      fields: [],
     };
 
     if (executor) {
