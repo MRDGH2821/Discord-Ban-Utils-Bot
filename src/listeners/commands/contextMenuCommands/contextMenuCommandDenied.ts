@@ -31,7 +31,7 @@ export default class UserEvent extends Listener<typeof Events.ContextMenuCommand
   }
 }
 
-container.stores.loadPiece({
+void container.stores.loadPiece({
   name: UserEvent.name,
   piece: UserEvent,
   store: 'listeners',

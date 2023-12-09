@@ -250,9 +250,9 @@ export default class UserCommand extends Subcommand {
           guildId: channel.guildId,
           webhookId: webhook.id,
         });
-        newSettings.updateAll(settings);
-
-        return emitBotEvent('botSettingsUpdate', { oldSettings, newSettings });
+        return newSettings
+          .updateAll(settings)
+          .then(() => emitBotEvent('botSettingsUpdate', { oldSettings, newSettings }));
       })
       .then(() =>
         interaction.followUp({
@@ -321,7 +321,7 @@ export default class UserCommand extends Subcommand {
   }
 }
 
-container.stores.loadPiece({
+void container.stores.loadPiece({
   name: UserCommand.name,
   piece: UserCommand,
   store: 'commands',

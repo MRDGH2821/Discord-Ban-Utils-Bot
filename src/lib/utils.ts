@@ -200,15 +200,17 @@ export async function sendLog({ guild, title, description, type }: SendLogOption
     .then((hooks) => hooks.find((h) => h.id === settings.webhookId));
   if (!hook) return;
 
-  hook.send({
-    embeds: [
-      {
-        title,
-        description,
-        color: COLORS.charcoalInvisible,
-      },
-    ],
-  });
+  hook
+    .send({
+      embeds: [
+        {
+          title,
+          description,
+          color: COLORS.charcoalInvisible,
+        },
+      ],
+    })
+    .catch((error) => container.logger.error(error));
 }
 
 export function jumpLink(user: GuildMember | GuildMember['user']) {

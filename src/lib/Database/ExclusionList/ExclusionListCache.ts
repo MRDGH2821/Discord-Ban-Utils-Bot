@@ -13,7 +13,7 @@ export default class ExclusionListCache {
           this.#delete(change.doc.data().guildId);
         } else {
           container.logger.debug('Updated Exclusion list: ', change.doc.data());
-          this.#update(change.doc.data());
+          void this.#update(change.doc.data());
         }
       });
     });

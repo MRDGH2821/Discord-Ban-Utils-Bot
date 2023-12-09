@@ -145,7 +145,7 @@ export default class UserEvent extends Listener {
         icon_url: user.displayAvatarURL(),
       },
     };
-    this.sendLog(guild.id, operationEmbed);
+    void this.sendLog(guild.id, operationEmbed);
     return message.reply({
       content: `${user}`,
       embeds: [operationEmbed],
@@ -189,7 +189,7 @@ export default class UserEvent extends Listener {
   }
 }
 
-container.stores.loadPiece({
+void container.stores.loadPiece({
   name: UserEvent.name,
   piece: UserEvent,
   store: 'listeners',

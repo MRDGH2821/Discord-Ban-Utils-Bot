@@ -43,6 +43,10 @@ export default class SettingsCache {
         const validatedData = settingsValidator.parse(data);
         const settings = new SettingsData(validatedData);
         return this.#cache.set(settings.guildId, settings);
+      })
+      .catch((error) => {
+        container.logger.error(error);
+        throw error;
       });
   }
 

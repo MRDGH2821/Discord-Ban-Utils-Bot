@@ -17,7 +17,7 @@ export default class UserEvent extends Listener<typeof Events.MentionPrefixOnly>
   }
 }
 
-container.stores.loadPiece({
+void container.stores.loadPiece({
   name: UserEvent.name,
   piece: UserEvent,
   store: 'listeners',

@@ -97,7 +97,7 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
         ],
         solution: 'Please wait for sometime before trying again.',
       });
-      this.sendLog(guild.id, errEmbed);
+      void this.sendLog(guild.id, errEmbed);
       return message.reply({
         content: `${user}`,
         embeds: [errEmbed],
@@ -163,7 +163,7 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
             name: `Ban List of ${guild.name}.txt`,
             description: 'Ban list links',
           };
-          this.sendLog(guild.id, resultEmbed, [resultFile]);
+          void this.sendLog(guild.id, resultEmbed, [resultFile]);
           return message.reply({
             content: `${user}`,
             embeds: [resultEmbed],
@@ -188,7 +188,6 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
     const webhook = await getWebhook(guildId, settings.webhookId);
 
     if (!webhook) {
-      this.container.logger.debug('No webhook found in guild', guildId);
       return;
     }
 
@@ -199,7 +198,7 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
   }
 }
 
-container.stores.loadPiece({
+void container.stores.loadPiece({
   name: UserEvent.name,
   piece: UserEvent,
   store: 'listeners',

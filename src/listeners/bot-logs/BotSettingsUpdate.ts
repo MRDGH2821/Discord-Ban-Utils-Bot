@@ -40,7 +40,7 @@ export default class UserEvent extends Listener {
       timestamp: new Date().toISOString(),
     };
 
-    webhook.send({
+    void webhook.send({
       embeds: [embed],
       username: 'BU Settings Update Log',
     });

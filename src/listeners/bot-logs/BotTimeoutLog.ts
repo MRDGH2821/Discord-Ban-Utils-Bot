@@ -32,15 +32,19 @@ export default class UserEvent extends Listener {
         'R',
       )})\n\nReason: ${reason}`;
 
-      this.sendLog(webhook, executor, description);
+      this.sendLog(webhook, executor, description).catch((error) =>
+        this.container.logger.error(error),
+      );
     } else {
       const description = `\`${convict.user.username}\` ${convict} is out of timeout!\nID: \`${convict.id}\`\n\nReason: ${reason}`;
 
-      this.sendLog(webhook, executor, description, 'Un');
+      this.sendLog(webhook, executor, description, 'Un').catch((error) =>
+        this.container.logger.error(error),
+      );
     }
   }
 
-  public async sendLog(webhook: Webhook, executor: GuildMember, description: string, un = '') {
+  public sendLog(webhook: Webhook, executor: GuildMember, description: string, un = '') {
     const timeoutEmbed: APIEmbed = {
       title: `**BU ${un}Timeout Log**`,
       color: COLORS.orangeHammerHandle,
@@ -54,14 +58,14 @@ export default class UserEvent extends Listener {
       ],
     };
 
-    await webhook.send({
+    return webhook.send({
       embeds: [timeoutEmbed],
       username: `**BU ${un}Timeout Log**`,
     });
   }
 }
 
-container.stores.loadPiece({
+void container.stores.loadPiece({
   name: UserEvent.name,
   piece: UserEvent,
   store: 'listeners',

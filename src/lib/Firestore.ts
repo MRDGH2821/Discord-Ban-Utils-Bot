@@ -1,7 +1,7 @@
 import './EnvConfig';
 import fs from 'node:fs';
 import * as path from 'node:path';
-import { applicationDefault, cert, initializeApp } from 'firebase-admin/app';
+import { applicationDefault, cert, initializeApp, ServiceAccount } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { botLogger as logger } from '../bot-logger';
 
@@ -61,7 +61,7 @@ function searchBase64CredEnv() {
   }
   logger.info('Using firebase service account credentials from base64 environment variable.');
   const decoded = decodeBase64(process.env.FIREBASE_SERVICE_ACCOUNT_BASE64);
-  const cred = JSON.parse(decoded);
+  const cred = JSON.parse(decoded) as ServiceAccount;
   return cert(cred);
 }
 

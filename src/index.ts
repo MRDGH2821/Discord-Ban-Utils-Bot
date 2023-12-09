@@ -31,10 +31,11 @@ const main = async () => {
     client.logger.info(`Logged in as: ${client.user?.tag}`);
   } catch (error) {
     client.logger.fatal(error);
-    client.destroy();
+    client.destroy().catch((error_) => botLogger.error(error_));
     // eslint-disable-next-line unicorn/no-process-exit
     process.exit(1);
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 main();
