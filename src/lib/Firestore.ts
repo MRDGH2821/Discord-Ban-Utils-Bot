@@ -10,12 +10,12 @@ export function decodeBase64(base64String: string) {
 }
 
 const baseDir = path.resolve(process.cwd(), 'firebase-service-acc');
-function searchCredFilePath(dir = baseDir): string | undefined {
-  const files = fs.readdirSync(dir);
+function searchCredFilePath(): string | undefined {
+  const files = fs.readdirSync(baseDir);
   const credFile = files.find((file) => file.endsWith('.json'));
   if (credFile) {
     try {
-      const credPath = path.resolve(dir, credFile);
+      const credPath = path.resolve(baseDir, credFile);
       cert(credPath);
       logger.info('Using firebase service account credentials from:', credPath);
       return credPath;
@@ -25,7 +25,7 @@ function searchCredFilePath(dir = baseDir): string | undefined {
       return undefined;
     }
   } else {
-    logger.warn('No firebase service account credentials file found in:', dir);
+    logger.warn('No firebase service account credentials file found in:', baseDir);
   }
   return undefined;
 }
