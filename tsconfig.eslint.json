@@ -1,5 +1,5 @@
 {
-  "include": ["./buildLibs/*", "package.json", "package-lock.json", "../*.json"],
+  "include": ["./buildLibs/*", "package.json", "package-lock.json"],
   "exclude": [
     "node_modules",
     "dist",
