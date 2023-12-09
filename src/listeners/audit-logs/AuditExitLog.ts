@@ -14,7 +14,7 @@ export default class UserEvent extends Listener<typeof Events.GuildMemberRemove>
 
     if (!auditData) return;
     if (!auditData.settings.sendExitLog) return;
-    if (!auditData.isDoneByCmd) return;
+    if (auditData.isDoneByCmd) return;
     if (!auditData.webhook) return;
 
     const { webhook } = auditData;

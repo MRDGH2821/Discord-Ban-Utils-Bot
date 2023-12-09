@@ -14,7 +14,7 @@ export default class UserEvent extends Listener<typeof Events.GuildBanAdd> {
 
     if (!auditData) return;
     if (!auditData.settings.sendBanLog) return;
-    if (!auditData.isDoneByCmd) return;
+    if (auditData.isDoneByCmd) return;
     if (!auditData.webhook) return;
 
     const { webhook, executor } = auditData;

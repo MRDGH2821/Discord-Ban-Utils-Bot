@@ -13,7 +13,7 @@ export default class UserEvent extends Listener {
 
     if (!auditData) return;
     if (!auditData.settings.sendTimeoutLog || !auditData.settings.sendUnTimeoutLog) return;
-    if (!auditData.isDoneByCmd) return;
+    if (auditData.isDoneByCmd) return;
     if (!auditData.webhook) return;
 
     const { webhook, executor } = auditData;
