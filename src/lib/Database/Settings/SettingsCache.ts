@@ -65,6 +65,13 @@ export default class SettingsCache {
       .then(() => settings);
   }
 
+  static async deleteSetting(guildId: string) {
+    return dbSettingsRef
+      .doc(guildId)
+      .delete()
+      .then(() => this.#delete(guildId));
+  }
+
   static #update(settings: AllSettingsOptions) {
     const validatedData = settingsValidator.parse(settings);
     const newSettings = new SettingsData(validatedData);

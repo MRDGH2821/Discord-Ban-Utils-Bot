@@ -1,5 +1,6 @@
 import './BanListExporter';
 import './BanListImporter';
+import './DeleteSettingsOnGuildExit';
 import './audit-logs/AuditBanLog';
 import './audit-logs/AuditExitLog';
 import './audit-logs/AuditJoinLog';
