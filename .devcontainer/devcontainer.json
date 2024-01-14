@@ -1,11 +1,7 @@
 {
   "name": "Ban Utils Dev Container",
   "image": "mcr.microsoft.com/devcontainers/typescript-node:20",
-  "initializeCommand": [".devcontainer/export-keys"],
-  "postCreateCommand": {
-    "install-modules": "npm i",
-    "import-keys": "sudo bash .devcontainer/import-keys.sh"
-  },
+  "postCreateCommand": "npm install",
   "features": {
     "ghcr.io/devcontainers/features/desktop-lite:1": {},
     "ghcr.io/dhoeric/features/hadolint:1": {},
