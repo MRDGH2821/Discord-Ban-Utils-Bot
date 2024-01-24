@@ -2,10 +2,8 @@ import type { Guild, Webhook } from 'discord.js';
 import { schema } from 'typesaurus';
 
 const SettingsDB = schema(($) => ({
-  servers: $.collection<Settings>(),
+  servers: $.collection<Setting, Setting['guildId']>(),
 }));
-
-type Settings = Record<Guild['id'], Setting>;
 
 interface Setting {
   guildId: Guild['id'];
