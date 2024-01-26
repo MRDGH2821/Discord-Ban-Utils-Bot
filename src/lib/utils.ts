@@ -156,7 +156,7 @@ export async function fetchAllBans(guild: Guild) {
     // eslint-disable-next-line no-await-in-loop
     const newBanList = await guild.bans.fetch({
       limit: 1000,
-      after: masterBanList.lastKey(),
+      after: masterBanList.lastKey()!,
     });
     // eslint-disable-next-line unicorn/prefer-spread
     masterBanList = masterBanList.concat(newBanList);

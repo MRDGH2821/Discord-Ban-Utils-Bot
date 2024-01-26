@@ -3,10 +3,11 @@ import { container, Listener } from '@sapphire/framework';
 import { chunk } from '@sapphire/utilities';
 import {
   type APIEmbed,
+  AttachmentBuilder,
   type Collection,
+  EmbedBuilder,
   type Guild,
   type GuildBan,
-  type MessagePayloadOption,
 } from 'discord.js';
 import { createPaste } from 'dpaste-ts';
 import { COLORS } from '../lib/Constants';
@@ -16,6 +17,7 @@ import { BUEvents } from '../lib/EventTypes';
 import type { BanEntity, BanEntityWithReason, BanExportOptions, BanType } from '../lib/typeDefs';
 import {
   debugErrorEmbed,
+  debugErrorFile,
   fetchAllBans,
   getWebhook,
   sequentialPromises,
@@ -97,7 +99,10 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
         ],
         solution: 'Please wait for sometime before trying again.',
       });
-      void this.sendLog(guild.id, errEmbed);
+      const errFile = debugErrorFile(error);
+      void this.sendLog(guild.id, errEmbed, [
+        new AttachmentBuilder(errFile.attachment, { name: errFile.name }),
+      ]);
       return message.reply({
         content: `${user}`,
         embeds: [errEmbed],
@@ -134,7 +139,7 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
           };
         })
         .then(({ links, bans }) => {
-          const resultEmbed: APIEmbed = {
+          const resultEmbed = EmbedBuilder.from({
             title: '**Ban List Export Success!**',
             description: `Total Bans Found: ${bans.size}\n\nEach link contains ${
               includeReason ? 350 : 1000
@@ -157,12 +162,11 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
               text: `Requested by ${user.username}`,
               icon_url: user.displayAvatarURL(),
             },
-          };
-          const resultFile = {
-            attachment: Buffer.from(links.join('\n')),
-            name: `Ban List of ${guild.name}.txt`,
-            description: 'Ban list links',
-          };
+          });
+          const resultFile = new AttachmentBuilder(Buffer.from(links.join('\n')))
+            .setFile(Buffer.from(links.join('\n')))
+            .setDescription('Ban list links')
+            .setName(`Ban List of ${guild.name}.txt`);
           void this.sendLog(guild.id, resultEmbed, [resultFile]);
           return message.reply({
             content: `${user}`,
@@ -177,8 +181,8 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
 
   public async sendLog(
     guildId: Guild['id'],
-    embed: APIEmbed,
-    files?: MessagePayloadOption['files'],
+    embed: APIEmbed | EmbedBuilder,
+    files: AttachmentBuilder[],
   ) {
     const settings = await SettingsCache.find(guildId);
     if (!settings || !settings?.sendBanExportLog) {

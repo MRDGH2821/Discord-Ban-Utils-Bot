@@ -1,10 +1,10 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command, container } from '@sapphire/framework';
 import {
-  APIActionRowComponent,
-  APIButtonComponent,
+  ActionRowBuilder,
   type APIEmbed,
   ApplicationCommandOptionType,
+  ButtonBuilder,
   ComponentType,
   OAuth2Scopes,
   PermissionFlagsBits,
@@ -70,7 +70,7 @@ export default class UserCommand extends Command {
       timestamp: new Date().toISOString(),
     };
 
-    const inviteButton: APIButtonComponent = {
+    const inviteButton = new ButtonBuilder({
       type: ComponentType.Button,
       label: 'Invite the bot in your Server!',
       style: 5,
@@ -90,12 +90,12 @@ export default class UserCommand extends Command {
           PermissionFlagsBits.ViewChannel,
         ],
       }),
-    };
+    });
 
-    const inviteButtonRow: APIActionRowComponent<APIButtonComponent> = {
+    const inviteButtonRow = new ActionRowBuilder<ButtonBuilder>({
       type: ComponentType.ActionRow,
       components: [inviteButton],
-    };
+    });
 
     if (!interaction.inGuild() || !interaction.guild) {
       const iRes = await interaction.reply({ embeds: [embed] });
@@ -176,9 +176,14 @@ export default class UserCommand extends Command {
         });
       }
     }
+    const component = new ActionRowBuilder<ButtonBuilder>();
+    if (isActuallyMod) {
+      component.addComponents(inviteButton);
+    }
+
     return interaction.reply({
       embeds: [embed],
-      components: isActuallyMod ? undefined : [inviteButtonRow],
+      components: [inviteButtonRow],
     });
   }
 }

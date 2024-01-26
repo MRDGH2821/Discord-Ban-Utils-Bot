@@ -2,9 +2,12 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { container, Listener } from '@sapphire/framework';
 import { retry, sleepSync, toTitleCase } from '@sapphire/utilities';
 import {
+  ActionRowBuilder,
   type APIEmbed,
+  ButtonBuilder,
   ButtonStyle,
   ComponentType,
+  EmbedBuilder,
   Guild,
   type MessagePayloadOption,
 } from 'discord.js';
@@ -114,7 +117,7 @@ export default class UserEvent extends Listener {
         : 'Bot will filter the list.\n Thus the excluded people will **not** be unbanned (if they were banned).';
     }
 
-    const operationEmbed = {
+    const operationEmbed = EmbedBuilder.from({
       title: `${titleMode} list imported!`,
       description: `${titleMode} statistics:`,
       color: COLORS.orangeHammerHandle,
@@ -144,37 +147,34 @@ export default class UserEvent extends Listener {
         text: `Requested by ${user.username}`,
         icon_url: user.displayAvatarURL(),
       },
-    };
+    });
     void this.sendLog(guild.id, operationEmbed);
+
+    const component = new ActionRowBuilder<ButtonBuilder>();
+    if (failedList.size > 0) {
+      component.addComponents(
+        new ButtonBuilder({
+          type: ComponentType.Button,
+          label: `Unsuccessful ${mode} list link`,
+          style: ButtonStyle.Link,
+          url: await createPaste({
+            content: JSON.stringify([...failedList], null, 2),
+            title: `[FAILED] ${truncateString(guild.name, 10)} ${titleMode} List`,
+          }),
+        }),
+      );
+    }
     return message.reply({
       content: `${user}`,
       embeds: [operationEmbed],
-      components:
-        failedList.size > 0
-          ? [
-              {
-                type: ComponentType.ActionRow,
-                components: [
-                  {
-                    type: ComponentType.Button,
-                    label: `Unsuccessful ${mode} list link`,
-                    style: ButtonStyle.Link,
-                    url: await createPaste({
-                      content: JSON.stringify([...failedList], null, 2),
-                      title: `[FAILED] ${truncateString(guild.name, 10)} ${titleMode} List`,
-                    }),
-                  },
-                ],
-              },
-            ]
-          : undefined,
+      components: [component],
     });
   }
 
   public async sendLog(
     guildId: Guild['id'],
-    embed: APIEmbed,
-    components?: MessagePayloadOption['components'],
+    embed: APIEmbed | EmbedBuilder,
+    components?: MessagePayloadOption['components'] | undefined,
   ) {
     const settings = await SettingsCache.find(guildId);
     if (!settings || !settings.sendImportLog) return;
@@ -184,7 +184,7 @@ export default class UserEvent extends Listener {
 
     await webhook.send({
       embeds: [embed],
-      components,
+      components: components!,
     });
   }
 }
