@@ -19,7 +19,6 @@ import { banEntitySchemaBuilder, importList } from '../lib/utils';
   },
   cooldownDelay: Time.Hour,
   cooldownLimit: 1,
-  cooldownFilteredUsers: process.env.OWNER_ID ? [process.env.OWNER_ID] : undefined,
 })
 export default class UserCommand extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {

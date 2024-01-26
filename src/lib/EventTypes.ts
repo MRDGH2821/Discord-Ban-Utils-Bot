@@ -16,7 +16,7 @@ export type BotGuildMemberKickOptions = Pick<BotGuildBanAddOptions, 'reason' | '
 };
 export type BotTimeoutOptions = BotGuildMemberKickOptions;
 export type BotSettingsUpdateOptions = {
-  oldSettings?: AllSettingsOptions | SettingsData;
+  oldSettings?: AllSettingsOptions | SettingsData | undefined;
   newSettings: AllSettingsOptions | SettingsData;
 };
 

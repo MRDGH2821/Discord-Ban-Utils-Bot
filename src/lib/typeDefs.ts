@@ -11,7 +11,7 @@ export abstract class DataClass<T extends DataType> {
 }
 
 export type BanEntity = User['id'];
-export type BanEntityWithReason = { id: BanEntity; reason?: string | null };
+export type BanEntityWithReason = { id: BanEntity; reason?: string | null | undefined };
 export type BanType = BanEntity | BanEntityWithReason;
 
 export type BanExportOptions = {

@@ -138,7 +138,7 @@ export default class UserCommand extends Command {
   public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
     const convict = interaction.options.getUser('user', true);
     const reason = interaction.options.getString('reason', true);
-    let deleteMsgDays = interaction.options.getInteger('delete_messages') || undefined;
+    let deleteMsgDays = interaction.options.getInteger('delete_messages') || 0;
 
     if (!interaction.inGuild() || !interaction.guild) {
       return interaction.reply({
