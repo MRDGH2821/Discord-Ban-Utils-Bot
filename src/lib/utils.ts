@@ -11,14 +11,13 @@ import { codeBlock } from '@sapphire/utilities';
 import { cyan } from 'colorette';
 import { APIEmbed, APIUser, AuditLogEvent, Guild, GuildMember, User, Webhook } from 'discord.js';
 import { COLORS } from './Constants';
-import SettingsCache from './Database/Settings/SettingsCache';
+import db, { DBSchema } from './Database';
 import { emitBotEvent } from './EventTypes';
 import type {
   BanEntity,
   BanEntityWithReason,
   ListImportOptions,
   SendLogOptions,
-  SettingsOptions,
   SettingsParameter,
 } from './typeDefs';
 
@@ -182,7 +181,7 @@ export const selectedSettingsValidator = s
     ),
   )
   .transform((values) => {
-    const acc: SettingsOptions = {};
+    const acc: Partial<DBSchema['servers']['Data']> = {};
     values.forEach((key) => {
       acc[key] = true;
     });
@@ -190,7 +189,7 @@ export const selectedSettingsValidator = s
   });
 
 export async function sendLog({ guild, title, description, type }: SendLogOptions) {
-  const settings = await SettingsCache.find(guild.id);
+  const settings = await db.servers.get(guild.id).then((v) => v?.data);
   if (!settings) return;
   if (!settings.webhookId) return;
   if (!settings[type]) return;
@@ -285,10 +284,10 @@ export async function importList(
 export async function getAuditLogData(auditType: AuditLogEvent, guildId: Guild['id']) {
   const guild = await container.client.guilds.fetch(guildId);
 
-  const settings = await SettingsCache.find(guild.id);
+  const settings = await db.servers.get(guild.id).then((v) => v?.data);
   if (!settings) return null;
 
-  const webhook = await getWebhook(guild.id, settings?.webhookId);
+  const webhook = await getWebhook(guild.id, settings.webhookId);
   if (!webhook) return null;
 
   const logs = await guild.fetchAuditLogs({
@@ -332,4 +331,27 @@ export async function sequentialPromises<S, T>(
     results.push(await func(param));
   }, Promise.resolve());
   return results;
+}
+
+export const SettingsDescription: { [x in keyof Required<DBSchema['servers']['Data']>]: string } = {
+  sendBanLog: 'Send Ban Log',
+  sendBanCopyLog: 'Send Ban Copy Log',
+  sendBanExportLog: 'Send Ban list Export Log',
+  sendImportLog: 'Send Un/Ban list Import Log',
+  sendExitLog: 'Send Member Exit Log',
+  sendJoinLog: 'Send Member Join Log',
+  sendKickLog: 'Send Kicked Member Log',
+  sendMassBanLog: 'Send Mass Ban Log',
+  sendMassUnbanLog: 'Send Mass UnBan Log',
+  sendTimeoutLog: 'Send Timeout Log',
+  sendUnbanLog: 'Send Unban Log',
+  sendUnTimeoutLog: 'Send Un-Timeout Log',
+  webhookId: 'Webhook ID',
+  guildId: 'Server ID',
+};
+
+export function settingFormatter(data: DBSchema['servers']['Data']) {
+  const keys = Object.keys(data) as (keyof DBSchema['servers']['Data'])[];
+  const settings = keys.map((key) => `${SettingsDescription[key]}: ${data[key]}`);
+  return settings.join('\n');
 }

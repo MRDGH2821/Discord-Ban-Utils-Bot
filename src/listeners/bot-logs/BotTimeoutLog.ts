@@ -2,7 +2,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { container, Listener } from '@sapphire/framework';
 import { APIEmbed, GuildMember, time, Webhook } from 'discord.js';
 import { COLORS } from '../../lib/Constants';
-import SettingsCache from '../../lib/Database/Settings/SettingsCache';
+import db from '../../lib/Database';
 import { BotTimeoutOptions, BUEvents } from '../../lib/EventTypes';
 import { getWebhook } from '../../lib/utils';
 
@@ -12,7 +12,7 @@ import { getWebhook } from '../../lib/utils';
 })
 export default class UserEvent extends Listener {
   public override async run({ convict, executor, reason }: BotTimeoutOptions) {
-    const settings = await SettingsCache.find(executor.guild.id);
+    const settings = await db.servers.get(executor.guild.id).then((v) => v?.data);
     if (!settings || !settings?.sendBanLog) {
       return;
     }

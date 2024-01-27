@@ -13,8 +13,7 @@ import {
 } from 'discord.js';
 import { createPaste } from 'dpaste-ts';
 import { COLORS } from '../lib/Constants';
-import ExclusionListCache from '../lib/Database/ExclusionList/ExclusionListCache';
-import SettingsCache from '../lib/Database/Settings/SettingsCache';
+import db from '../lib/Database';
 import { BUEvents } from '../lib/EventTypes';
 import type { BanEntityWithReason, ListImportOptions } from '../lib/typeDefs';
 import { fetchAllBans, sequentialPromises, truncateString } from '../lib/utils';
@@ -26,7 +25,7 @@ import { fetchAllBans, sequentialPromises, truncateString } from '../lib/utils';
 export default class UserEvent extends Listener {
   // eslint-disable-next-line class-methods-use-this
   public async filterList(guildId: string, ignoreExclusionList: boolean) {
-    const excData = await ExclusionListCache.find(guildId);
+    const excData = await db.exclusionList.get(guildId).then((v) => v?.data);
     const list = [];
     if (!ignoreExclusionList && excData && excData.exportExclusion) {
       list.push(...excData.exportExclusion);
@@ -176,7 +175,7 @@ export default class UserEvent extends Listener {
     embed: APIEmbed | EmbedBuilder,
     components?: MessagePayloadOption['components'] | undefined,
   ) {
-    const settings = await SettingsCache.find(guildId);
+    const settings = await db.servers.get(guildId).then((v) => v?.data);
     if (!settings || !settings.sendImportLog) return;
 
     const webhook = await this.container.client.fetchWebhook(settings.webhookId);

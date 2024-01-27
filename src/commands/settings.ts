@@ -13,8 +13,7 @@ import {
   TextChannel,
 } from 'discord.js';
 import { COLORS, SERVER_ONLY, WEBHOOK_ICON } from '../lib/Constants';
-import SettingsCache from '../lib/Database/Settings/SettingsCache';
-import { SettingsDescription } from '../lib/Database/Settings/SettingsData';
+import db from '../lib/Database';
 import type { SettingsParameter } from '../lib/typeDefs';
 import {
   debugErrorEmbed,
@@ -22,6 +21,8 @@ import {
   emitBotEvent,
   getWebhook,
   selectedSettingsValidator,
+  settingFormatter,
+  SettingsDescription,
 } from '../lib/utils';
 
 interface SettingsOpt extends APISelectMenuOption {
@@ -50,16 +51,10 @@ interface SettingsOpt extends APISelectMenuOption {
           ephemeral: true,
         });
 
-        const force = interaction.options.getBoolean('force') || false;
-
-        // eslint-disable-next-line unicorn/no-array-method-this-argument
-        const settings = await SettingsCache.find(interaction.guildId, force);
+        const settings = await db.servers.get(interaction.guildId).then((v) => v?.data);
         if (!settings) {
-          const text = force
-            ? 'Even refreshing settings cache forcefully'
-            : '(If this is a mistake, then please use force option)';
           return interaction.editReply({
-            content: `No settings configured.\n${text}`,
+            content: `No settings configured.`,
           });
         }
         const webhook = await getWebhook(interaction.guildId, settings.webhookId);
@@ -68,7 +63,7 @@ interface SettingsOpt extends APISelectMenuOption {
           embeds: [
             {
               title: 'Settings',
-              description: `${codeBlock('m', settings.toString())}\nChannel: ${webhook?.channel}`,
+              description: `${codeBlock('m', settingFormatter(settings))}\nChannel: ${webhook?.channel}`,
               color: COLORS.lightGray,
             },
           ],
@@ -114,13 +109,6 @@ export default class UserCommand extends Subcommand {
           name: 'view',
           description: 'View settings',
           type: ApplicationCommandOptionType.Subcommand,
-          options: [
-            {
-              name: 'force',
-              description: 'Force refresh settings, if you believe you have set settings',
-              type: ApplicationCommandOptionType.Boolean,
-            },
-          ],
         },
       ],
     });
@@ -245,14 +233,19 @@ export default class UserCommand extends Subcommand {
       })
       .then(async (settings) => {
         const webhook = await this.getOrCreateWebhook(channel);
-        const oldSettings = await SettingsCache.find(channel.guildId);
-        const newSettings = await SettingsCache.createSetting({
-          guildId: channel.guildId,
-          webhookId: webhook.id,
+        const oldSettings = await db.servers.get(channel.guildId).then((v) => v?.data);
+        const newSettings = await db.servers
+          .upset(channel.guildId, {
+            guildId: channel.guildId,
+            webhookId: webhook.id,
+            ...settings,
+          })
+          .then((v) => v.get())
+          .then((v) => v?.data);
+        return emitBotEvent('botSettingsUpdate', {
+          oldSettings,
+          newSettings,
         });
-        return newSettings
-          .updateAll(settings)
-          .then(() => emitBotEvent('botSettingsUpdate', { oldSettings, newSettings }));
       })
       .then(() =>
         interaction.followUp({

@@ -30,8 +30,6 @@ export type ListImportOptions = {
   mode: 'ban' | 'unban';
   ignoreExclusionList: boolean;
 };
-
-/* jscpd:ignore-start */
 export type SettingsParameter =
   | 'sendBanLog'
   | 'sendUnbanLog'
@@ -45,31 +43,9 @@ export type SettingsParameter =
   | 'sendBanCopyLog'
   | 'sendMassBanLog'
   | 'sendMassUnbanLog';
-
-export type SettingsOptions = Partial<Record<SettingsParameter, boolean>>;
-
-export type CoreSettingsOptions = {
-  webhookId: string;
-} & DataType;
-/* jscpd:ignore-end */
-
-export type AllSettingsOptions = SettingsOptions & CoreSettingsOptions;
-
-export type CoreSettingsParameter = keyof CoreSettingsOptions;
-
-export type AllSettingsParamenter = SettingsParameter | CoreSettingsParameter;
-
 export type SendLogOptions = {
   guild: Guild;
   title: string;
   description: string;
   type: SettingsParameter;
 };
-
-export type ExclusionListParameter = 'importExclusion' | 'exportExclusion';
-
-export type ExclusionListOptions = Partial<Record<ExclusionListParameter, User['id'][]>>;
-
-export type CoreExclusionListOptions = DataType;
-
-export type AllExclusionListOptions = ExclusionListOptions & CoreExclusionListOptions;

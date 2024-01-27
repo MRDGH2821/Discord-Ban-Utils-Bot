@@ -1,7 +1,7 @@
 import { container } from '@sapphire/framework';
 import type { GuildMember, User } from 'discord.js';
-import SettingsData from './Database/Settings/SettingsData';
-import type { AllSettingsOptions, BanExportOptions, ListImportOptions } from './typeDefs';
+import { DBSchema } from './Database';
+import type { BanExportOptions, ListImportOptions } from './typeDefs';
 
 export type ValueOf<T> = T[keyof T];
 
@@ -16,8 +16,8 @@ export type BotGuildMemberKickOptions = Pick<BotGuildBanAddOptions, 'reason' | '
 };
 export type BotTimeoutOptions = BotGuildMemberKickOptions;
 export type BotSettingsUpdateOptions = {
-  oldSettings?: AllSettingsOptions | SettingsData | undefined;
-  newSettings: AllSettingsOptions | SettingsData;
+  oldSettings?: DBSchema['servers']['Data'] | undefined;
+  newSettings: DBSchema['servers']['Data'];
 };
 
 export const BUEvents = {

@@ -5,6 +5,7 @@ import { applicationDefault, cert, initializeApp, ServiceAccount } from 'firebas
 import { getFirestore } from 'firebase-admin/firestore';
 import { botLogger as logger } from '../bot-logger';
 
+// eslint-disable-next-line import/prefer-default-export
 export function decodeBase64(base64String: string) {
   return Buffer.from(base64String, 'base64').toString();
 }
@@ -76,5 +77,3 @@ initializeApp({
 });
 const db = getFirestore();
 db.settings({ ignoreUndefinedProperties: true });
-
-export default db;

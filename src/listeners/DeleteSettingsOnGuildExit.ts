@@ -1,7 +1,7 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { container, Events, Listener } from '@sapphire/framework';
 import { Guild } from 'discord.js';
-import SettingsCache from '../lib/Database/Settings/SettingsCache';
+import db from '../lib/Database';
 
 @ApplyOptions<Listener.Options>({
   name: 'Delete settings on guild exit',
@@ -9,7 +9,7 @@ import SettingsCache from '../lib/Database/Settings/SettingsCache';
 })
 export default class UserEvent extends Listener {
   public override run(guild: Guild) {
-    return SettingsCache.deleteSetting(guild.id);
+    void db.servers.remove(guild.id);
   }
 }
 

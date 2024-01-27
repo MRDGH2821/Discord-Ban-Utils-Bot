@@ -11,8 +11,7 @@ import {
 } from 'discord.js';
 import { createPaste } from 'dpaste-ts';
 import { COLORS } from '../lib/Constants';
-import ExclusionListCache from '../lib/Database/ExclusionList/ExclusionListCache';
-import SettingsCache from '../lib/Database/Settings/SettingsCache';
+import db from '../lib/Database';
 import { BUEvents } from '../lib/EventTypes';
 import type { BanEntity, BanEntityWithReason, BanExportOptions, BanType } from '../lib/typeDefs';
 import {
@@ -112,7 +111,7 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
 
   // eslint-disable-next-line class-methods-use-this
   public async filterList(guildId: string, ignoreExclusionList = false) {
-    const excData = await ExclusionListCache.find(guildId);
+    const excData = await db.exclusionList.get(guildId).then((v) => v?.data);
     const list = [];
     if (!ignoreExclusionList && excData && excData.exportExclusion) {
       list.push(...excData.exportExclusion);
@@ -184,7 +183,7 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
     embed: APIEmbed | EmbedBuilder,
     files: AttachmentBuilder[],
   ) {
-    const settings = await SettingsCache.find(guildId);
+    const settings = await db.servers.get(guildId).then((v) => v?.data);
     if (!settings || !settings?.sendBanExportLog) {
       return;
     }
