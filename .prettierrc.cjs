@@ -9,7 +9,6 @@ module.exports = {
   embeddedLanguageFormatting: 'auto',
   endOfLine: 'lf',
   htmlWhitespaceSensitivity: 'css',
-  importOrderParserPlugins: ['typescript', 'decorators'],
   plugins: ['prettier-plugin-packagejson'],
   printWidth: 100,
   proseWrap: 'preserve',
@@ -27,6 +26,12 @@ module.exports = {
         parser: 'json',
         plugins: ['prettier-plugin-packagejson'],
         trailingComma: 'none',
+      },
+    },
+    {
+      files: '.prettierignore',
+      options: {
+        parser: 'markdown',
       },
     },
   ],
