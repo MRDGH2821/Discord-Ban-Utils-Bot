@@ -3,11 +3,7 @@
   "version": "3.0.4",
   "private": true,
   "description": "Discord Ban Utilities for Mutual Servers!",
-  "keywords": [
-    "discord",
-    "ban",
-    "utilities"
-  ],
+  "keywords": ["discord", "ban", "utilities"],
   "homepage": "https://github.com/MRDGH2821/Discord-Ban-Utils-Bot#readme",
   "bugs": {
     "url": "https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues"
@@ -52,13 +48,8 @@
     }
   },
   "lint-staged": {
-    "src/**/*.ts": [
-      "prettier --write",
-      "eslint --fix --ignore-path .gitignore"
-    ],
-    "*": [
-      "prettier --write"
-    ]
+    "src/**/*.ts": ["prettier --write", "eslint --fix --ignore-path .gitignore"],
+    "*": ["prettier --write"]
   },
   "dependencies": {
     "@sapphire/decorators": "^6.0.4",
