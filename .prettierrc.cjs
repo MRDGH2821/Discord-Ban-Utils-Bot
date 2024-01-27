@@ -26,6 +26,7 @@ module.exports = {
       options: {
         parser: 'json',
         plugins: ['prettier-plugin-packagejson'],
+        trailingComma: 'none',
       },
     },
   ],
