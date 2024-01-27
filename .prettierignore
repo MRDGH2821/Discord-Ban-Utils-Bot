@@ -1,5 +1,6 @@
-dist/
-node_modules/
+.husky/
 .yarn/
-examples/\*/dist/
 bun.lockb
+dist/
+examples/\*/dist/
+node_modules/
