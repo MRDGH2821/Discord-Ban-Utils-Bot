@@ -16,7 +16,7 @@ export type BotGuildMemberKickOptions = Pick<BotGuildBanAddOptions, 'reason' | '
 };
 export type BotTimeoutOptions = BotGuildMemberKickOptions;
 export type BotSettingsUpdateOptions = {
-  oldSettings?: DBSchema['servers']['Data'] | undefined;
+  oldSettings?: DBSchema['servers']['Data'] | undefined | null;
   newSettings: DBSchema['servers']['Data'];
 };
 

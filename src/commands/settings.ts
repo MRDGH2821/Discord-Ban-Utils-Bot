@@ -231,22 +231,28 @@ export default class UserCommand extends Subcommand {
 
         return parsedSettings;
       })
-      .then(async (settings) => {
-        const webhook = await this.getOrCreateWebhook(channel);
-        const oldSettings = await db.servers.get(channel.guildId).then((v) => v?.data);
-        const newSettings = await db.servers
+      .then((settings) =>
+        this.getOrCreateWebhook(channel).then((webhook) => ({ settings, webhook })),
+      )
+      .then(({ settings, webhook }) =>
+        db.servers.get(channel.guildId).then((v) => ({ settings, webhook, oldSettings: v?.data })),
+      )
+      .then(({ settings, webhook, oldSettings }) =>
+        db.servers
           .upset(channel.guildId, {
             guildId: channel.guildId,
             webhookId: webhook.id,
             ...settings,
           })
           .then((v) => v.get())
-          .then((v) => v?.data);
-        return emitBotEvent('botSettingsUpdate', {
-          oldSettings,
-          newSettings,
-        });
-      })
+          .then((v) => v!.data)
+          .then((newSettings) =>
+            emitBotEvent('botSettingsUpdate', {
+              oldSettings,
+              newSettings,
+            }),
+          ),
+      )
       .then(() =>
         interaction.followUp({
           content: 'Settings have been saved successfully!',
