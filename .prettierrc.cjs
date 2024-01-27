@@ -1,3 +1,6 @@
+/**
+ * @type {import('prettier').Options}
+ */
 module.exports = {
   ...require('prettier-config-mrdgh2821'),
   arrowParens: 'always',
@@ -17,4 +20,12 @@ module.exports = {
   tabWidth: 2,
   trailingComma: 'all',
   useTabs: false,
+  overrides: [
+    {
+      files: '*.json',
+      options: {
+        parser: 'json',
+      },
+    },
+  ],
 };
