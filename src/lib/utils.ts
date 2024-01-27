@@ -318,7 +318,7 @@ declare module '@sapphire/framework' {
   }
 }
 
-export { emitBotEvent, ValueOf } from './EventTypes';
+export { emitBotEvent, type ValueOf } from './EventTypes';
 
 export async function sequentialPromises<S, T>(
   params: S[],
