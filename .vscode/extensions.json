@@ -1,5 +1,6 @@
 {
   "recommendations": [
+    "aaron-bond.better-comments",
     "bierner.markdown-checkbox",
     "christian-kohler.npm-intellisense",
     "christian-kohler.path-intellisense",
