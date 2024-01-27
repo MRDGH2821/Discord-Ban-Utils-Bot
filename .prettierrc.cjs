@@ -25,6 +25,7 @@ module.exports = {
       files: '*.json',
       options: {
         parser: 'json',
+        plugins: ['prettier-plugin-packagejson'],
       },
     },
   ],
