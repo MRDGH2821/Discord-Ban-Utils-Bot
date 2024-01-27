@@ -1,12 +1,22 @@
 {
   "extends": ["auto"],
+  "ignorePatterns": ["./dist/**", ".eslintrc.json", "tsconfig.eslint.json", "tsconfig.json"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": ["tsconfig.json", "tsconfig.eslint.json"],
-    "extraFileExtensions": [".json"]
+    "extraFileExtensions": [".json"],
+    "project": ["tsconfig.json", "tsconfig.eslint.json"]
   },
   "plugins": ["@typescript-eslint", "unused-imports"],
   "rules": {
+    "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-base-to-string": [
+      "error",
+      {
+        "ignoredTypeNames": ["TextChannel"]
+      }
+    ],
+    "@typescript-eslint/restrict-template-expressions": "off",
     "class-methods-use-this": [
       "error",
       {
@@ -14,29 +24,20 @@
       }
     ],
     "implicit-arrow-linebreak": "off",
-    "unused-imports/no-unused-imports": "error",
+    "no-new-object": "off",
     "no-void": [
       "error",
       {
         "allowAsStatement": true
       }
     ],
-    "@typescript-eslint/restrict-template-expressions": "off",
-    "@typescript-eslint/explicit-function-return-type": "off",
-    "no-new-object": "off",
-    "unicorn/consistent-destructuring": "off",
     "simple-import-sort/imports": [
       "error",
       {
         "groups": [["^\\u0000", "^node:", "^@?\\w", "^", "^\\."]]
       }
     ],
-    "@typescript-eslint/no-base-to-string": [
-      "error",
-      {
-        "ignoredTypeNames": ["TextChannel"]
-      }
-    ]
-  },
-  "ignorePatterns": ["./dist/**", ".eslintrc.json", "tsconfig.eslint.json", "tsconfig.json"]
+    "unicorn/consistent-destructuring": "off",
+    "unused-imports/no-unused-imports": "error"
+  }
 }

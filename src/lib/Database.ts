@@ -1,5 +1,6 @@
 import type { Guild, User, Webhook } from 'discord.js';
-import { schema, Typesaurus } from 'typesaurus';
+import type { Typesaurus } from 'typesaurus';
+import { schema } from 'typesaurus';
 
 const db = schema(($) => ({
   servers: $.collection<Setting, Setting['guildId']>(),

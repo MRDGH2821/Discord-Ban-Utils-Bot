@@ -1,9 +1,10 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { container, Listener } from '@sapphire/framework';
-import { APIEmbed } from 'discord.js';
+import type { APIEmbed } from 'discord.js';
 import { COLORS } from '../../lib/Constants';
 import db from '../../lib/Database';
-import { BotGuildBanRemoveOptions, BUEvents } from '../../lib/EventTypes';
+import type { BotGuildBanRemoveOptions } from '../../lib/EventTypes';
+import { BUEvents } from '../../lib/EventTypes';
 import { getWebhook } from '../../lib/utils';
 
 @ApplyOptions<Listener.Options>({

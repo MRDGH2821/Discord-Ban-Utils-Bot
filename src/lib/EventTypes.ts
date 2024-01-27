@@ -1,6 +1,6 @@
 import { container } from '@sapphire/framework';
 import type { GuildMember, User } from 'discord.js';
-import { DBSchema } from './Database';
+import type { DBSchema } from './Database';
 import type { BanExportOptions, ListImportOptions } from './typeDefs';
 
 export type ValueOf<T> = T[keyof T];

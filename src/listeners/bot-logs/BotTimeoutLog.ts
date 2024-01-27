@@ -1,9 +1,11 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { container, Listener } from '@sapphire/framework';
-import { APIEmbed, GuildMember, time, Webhook } from 'discord.js';
+import type { APIEmbed, GuildMember, Webhook } from 'discord.js';
+import { time } from 'discord.js';
 import { COLORS } from '../../lib/Constants';
 import db from '../../lib/Database';
-import { BotTimeoutOptions, BUEvents } from '../../lib/EventTypes';
+import type { BotTimeoutOptions } from '../../lib/EventTypes';
+import { BUEvents } from '../../lib/EventTypes';
 import { getWebhook } from '../../lib/utils';
 
 @ApplyOptions<Listener.Options>({

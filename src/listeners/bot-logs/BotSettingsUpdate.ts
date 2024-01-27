@@ -1,8 +1,10 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Listener } from '@sapphire/framework';
 import { codeBlock } from '@sapphire/utilities';
-import { APIEmbed, Colors } from 'discord.js';
-import { BotSettingsUpdateOptions, BUEvents } from '../../lib/EventTypes';
+import type { APIEmbed } from 'discord.js';
+import { Colors } from 'discord.js';
+import type { BotSettingsUpdateOptions } from '../../lib/EventTypes';
+import { BUEvents } from '../../lib/EventTypes';
 import { getWebhook } from '../../lib/utils';
 
 function entries<T extends object>(obj: T): [keyof T, T[keyof T]][] {

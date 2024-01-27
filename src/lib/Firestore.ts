@@ -1,7 +1,8 @@
 import './EnvConfig';
 import fs from 'node:fs';
 import * as path from 'node:path';
-import { applicationDefault, cert, initializeApp, ServiceAccount } from 'firebase-admin/app';
+import type { ServiceAccount } from 'firebase-admin/app';
+import { applicationDefault, cert, initializeApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { botLogger as logger } from '../bot-logger';
 

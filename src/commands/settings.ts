@@ -2,15 +2,13 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { container } from '@sapphire/framework';
 import { Subcommand } from '@sapphire/plugin-subcommands';
 import { codeBlock } from '@sapphire/utilities';
+import type { APIEmbed, APISelectMenuOption, TextChannel } from 'discord.js';
 import {
-  type APIEmbed,
-  type APISelectMenuOption,
   ApplicationCommandOptionType,
   ApplicationCommandType,
   ChannelType,
   ComponentType,
   PermissionFlagsBits,
-  TextChannel,
 } from 'discord.js';
 import { COLORS, SERVER_ONLY, WEBHOOK_ICON } from '../lib/Constants';
 import db from '../lib/Database';

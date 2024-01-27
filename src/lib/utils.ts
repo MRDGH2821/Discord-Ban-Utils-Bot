@@ -9,9 +9,18 @@ import {
 import { s } from '@sapphire/shapeshift';
 import { codeBlock } from '@sapphire/utilities';
 import { cyan } from 'colorette';
-import { APIEmbed, APIUser, AuditLogEvent, Guild, GuildMember, User, Webhook } from 'discord.js';
+import type {
+  APIEmbed,
+  APIUser,
+  AuditLogEvent,
+  Guild,
+  GuildMember,
+  User,
+  Webhook,
+} from 'discord.js';
 import { COLORS } from './Constants';
-import db, { DBSchema } from './Database';
+import type { DBSchema } from './Database';
+import db from './Database';
 import { emitBotEvent } from './EventTypes';
 import type {
   BanEntity,

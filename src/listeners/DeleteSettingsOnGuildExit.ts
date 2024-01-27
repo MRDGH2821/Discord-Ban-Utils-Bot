@@ -1,6 +1,6 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { container, Events, Listener } from '@sapphire/framework';
-import { Guild } from 'discord.js';
+import type { Guild } from 'discord.js';
 import db from '../lib/Database';
 
 @ApplyOptions<Listener.Options>({

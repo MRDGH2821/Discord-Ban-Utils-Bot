@@ -1,6 +1,7 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { container, Events, Listener } from '@sapphire/framework';
-import { APIEmbed, AuditLogEvent, Colors, GuildMember, time } from 'discord.js';
+import type { APIEmbed, GuildMember } from 'discord.js';
+import { AuditLogEvent, Colors, time } from 'discord.js';
 import { getAuditLogData } from '../../lib/utils';
 
 @ApplyOptions<Listener.Options>({

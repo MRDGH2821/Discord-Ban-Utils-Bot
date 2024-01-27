@@ -3,7 +3,8 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { isGuildMember } from '@sapphire/discord.js-utilities';
 import { Command, container } from '@sapphire/framework';
-import { APIEmbed, ApplicationCommandOptionType, PermissionsBitField } from 'discord.js';
+import type { APIEmbed } from 'discord.js';
+import { ApplicationCommandOptionType, PermissionsBitField } from 'discord.js';
 import { COLORS } from '../lib/Constants';
 
 @ApplyOptions<Command.Options>({

@@ -1,15 +1,13 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { container, Listener } from '@sapphire/framework';
 import { retry, sleepSync, toTitleCase } from '@sapphire/utilities';
+import type { APIEmbed, Guild, MessagePayloadOption } from 'discord.js';
 import {
   ActionRowBuilder,
-  type APIEmbed,
   ButtonBuilder,
   ButtonStyle,
   ComponentType,
   EmbedBuilder,
-  Guild,
-  type MessagePayloadOption,
 } from 'discord.js';
 import { createPaste } from 'dpaste-ts';
 import { COLORS } from '../lib/Constants';
