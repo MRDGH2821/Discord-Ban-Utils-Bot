@@ -1,5 +1,5 @@
 import { ApplyOptions } from '@sapphire/decorators';
-import { Listener } from '@sapphire/framework';
+import { container, Listener } from '@sapphire/framework';
 import { codeBlock } from '@sapphire/utilities';
 import type { APIEmbed } from 'discord.js';
 import { Colors } from 'discord.js';
@@ -16,7 +16,7 @@ function entries<T extends object>(obj: T): [keyof T, T[keyof T]][] {
 })
 export default class UserEvent extends Listener {
   // eslint-disable-next-line class-methods-use-this
-  public emojify(value?: boolean | string) {
+  public emojify(value?: boolean | string | null) {
     const v = value!;
     return v ? '✅' : '❌';
   }
@@ -48,3 +48,9 @@ export default class UserEvent extends Listener {
     });
   }
 }
+
+void container.stores.loadPiece({
+  name: UserEvent.name,
+  piece: UserEvent,
+  store: 'listeners',
+});
