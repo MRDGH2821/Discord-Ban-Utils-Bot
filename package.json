@@ -66,18 +66,16 @@
     "enhanced-ms": "^2.3.0",
     "firebase-admin": "^12.0.0",
     "markdown-table": "^3.0.3",
-    "tslib": "^2.6.2",
-    "typesaurus": "^10.0.0-rc.11"
+    "typesaurus": "^10.0.0"
   },
   "devDependencies": {
     "@sapphire/cli": "^1.9.3",
     "@sapphire/ts-config": "^5.0.0",
-    "@types/node": "^20.11.8",
+    "@types/node": "^20.11.9",
     "@types/ws": "^8.5.10",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^6.19.1",
     "bun-types": "latest",
-    "dotenv": "^16.4.1",
     "eslint": "^8.56.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.1.0",
