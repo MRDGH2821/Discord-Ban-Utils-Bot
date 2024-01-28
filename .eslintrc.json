@@ -1,21 +1,31 @@
 {
-  "extends": ["auto"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "airbnb-base",
+    "airbnb-typescript/base",
+    "plugin:promise/recommended",
+    "plugin:switch-case/recommended",
+    "plugin:eslint-comments/recommended"
+  ],
   "ignorePatterns": ["./dist/**", ".eslintrc.json", "tsconfig.eslint.json", "tsconfig.json"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "extraFileExtensions": [".json"],
     "project": ["tsconfig.json", "tsconfig.eslint.json"]
   },
-  "plugins": ["@typescript-eslint", "unused-imports"],
+  "plugins": [
+    "@typescript-eslint",
+    "unused-imports",
+    "simple-import-sort",
+    "switch-case",
+    "const-case",
+    "promise"
+  ],
+  "root": true,
   "rules": {
     "@typescript-eslint/consistent-type-imports": "error",
     "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/no-base-to-string": [
-      "error",
-      {
-        "ignoredTypeNames": ["TextChannel"]
-      }
-    ],
     "@typescript-eslint/restrict-template-expressions": "off",
     "class-methods-use-this": [
       "error",
@@ -23,6 +33,8 @@
         "exceptMethods": ["run", "chatInputRun", "autocompleteRun", "sendLog"]
       }
     ],
+    "const-case/uppercase": "error",
+    "eslint-comments/no-unused-disable": "error",
     "implicit-arrow-linebreak": "off",
     "no-new-object": "off",
     "no-void": [
@@ -31,13 +43,13 @@
         "allowAsStatement": true
       }
     ],
+    "simple-import-sort/exports": "error",
     "simple-import-sort/imports": [
       "error",
       {
         "groups": [["^\\u0000", "^node:", "^@?\\w", "^", "^\\."]]
       }
     ],
-    "unicorn/consistent-destructuring": "off",
     "unused-imports/no-unused-imports": "error"
   }
 }
