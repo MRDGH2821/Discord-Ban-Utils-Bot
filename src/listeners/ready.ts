@@ -44,7 +44,7 @@ ${line03}${dev ? ` ${pad}${blc('<')}${llc('/')}${blc('>')} ${llc('DEVELOPMENT MO
   private printStoreDebugInformation() {
     const { client, logger } = this.container;
     const stores = [...client.stores.values()];
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
     const last = stores.pop()!;
 
     // eslint-disable-next-line no-restricted-syntax

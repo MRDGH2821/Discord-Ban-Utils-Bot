@@ -76,7 +76,6 @@ export default class UserCommand extends Command {
       const timeSentence = ms(time, { includeMs: true });
       if (!timeSentence) throw new Error(INVALID_TEXT);
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       if (time < Time.Minute || time > Time.Day * 27) {
         throw new Error(INVALID_TEXT);
       }

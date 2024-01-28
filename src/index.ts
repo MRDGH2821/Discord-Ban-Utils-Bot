@@ -32,10 +32,8 @@ const main = async () => {
   } catch (error) {
     client.logger.fatal(error);
     client.destroy().catch((error_) => botLogger.error(error_));
-    // eslint-disable-next-line unicorn/no-process-exit
     process.exit(1);
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
 main();

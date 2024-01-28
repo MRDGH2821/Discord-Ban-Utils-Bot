@@ -33,7 +33,6 @@ export default class UserEvent extends Listener<typeof Events.GuildMemberAdd> {
       description: `${member.user.tag} \`${
         member.user.username
       }\` joined the server. \nAccount Created: ${time(ageStamp, 'F')} (${time(ageStamp, 'R')})\n${
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         ageDifference < Time.Week ? '**WARNING:** Account is less than 7 days old!' : ''
       }`,
       timestamp: new Date().toISOString(),

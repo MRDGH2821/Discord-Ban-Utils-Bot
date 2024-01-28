@@ -50,20 +50,20 @@ export default class UserCommand extends Subcommand {
           options: [
             {
               name: 'ids',
-              description: `Discord IDs you want to mass ban`,
+              description: 'Discord IDs you want to mass ban',
               type: ApplicationCommandOptionType.String,
               required: true,
             },
             {
               name: 'reason',
-              description: `The reason for the ban`,
+              description: 'The reason for the ban',
               type: ApplicationCommandOptionType.String,
               required: true,
               autocomplete: true,
             },
             {
               name: IGNORE_EXCLUSION_TEXT,
-              description: `Ignore the exclusion list while importing ban list (default: false)`,
+              description: 'Ignore the exclusion list while importing ban list (default: false)',
               type: ApplicationCommandOptionType.Boolean,
               required: false,
             },
@@ -76,20 +76,20 @@ export default class UserCommand extends Subcommand {
           options: [
             {
               name: 'ids',
-              description: `Discord IDs you want to mass unban`,
+              description: 'Discord IDs you want to mass unban',
               type: ApplicationCommandOptionType.String,
               required: true,
             },
             {
               name: 'reason',
-              description: `The reason for the unban`,
+              description: 'The reason for the unban',
               type: ApplicationCommandOptionType.String,
               required: true,
               autocomplete: true,
             },
             {
               name: IGNORE_EXCLUSION_TEXT,
-              description: `Ignore the exclusion list while importing unban list (default: true)`,
+              description: 'Ignore the exclusion list while importing unban list (default: true)',
               type: ApplicationCommandOptionType.Boolean,
               required: false,
             },

@@ -52,7 +52,7 @@ interface SettingsOpt extends APISelectMenuOption {
         const settings = await db.servers.get(interaction.guildId).then((v) => v?.data);
         if (!settings) {
           return interaction.editReply({
-            content: `No settings configured.`,
+            content: 'No settings configured.',
           });
         }
         const webhook = await getWebhook(interaction.guildId, settings.webhookId);

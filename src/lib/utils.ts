@@ -166,7 +166,6 @@ export async function fetchAllBans(guild: Guild) {
       limit: 1000,
       after: masterBanList.lastKey()!,
     });
-    // eslint-disable-next-line unicorn/prefer-spread
     masterBanList = masterBanList.concat(newBanList);
   }
   return masterBanList;
@@ -226,15 +225,12 @@ export function jumpLink(user: GuildMember | GuildMember['user']) {
 }
 
 export function getWebhook(guildId: Guild['id'], webhookId?: Webhook['id']) {
-  return (
-    container.client.guilds
-      .fetch(guildId)
-      .then((guild) => guild.fetchWebhooks())
-      // eslint-disable-next-line max-len
-      .then((hooks) =>
-        hooks.find((w) => w.id === webhookId || w.owner?.id === container.client.user?.id),
-      )
-  );
+  return container.client.guilds
+    .fetch(guildId)
+    .then((guild) => guild.fetchWebhooks())
+    .then((hooks) =>
+      hooks.find((w) => w.id === webhookId || w.owner?.id === container.client.user?.id),
+    );
 }
 
 export function banEntitySchemaBuilder(banReason: string) {
@@ -334,7 +330,6 @@ export async function sequentialPromises<S, T>(
   func: (param: S) => Promise<T>,
 ): Promise<T[]> {
   const results: T[] = [];
-  // eslint-disable-next-line unicorn/no-array-reduce
   await params.reduce(async (prev, param) => {
     await prev;
     results.push(await func(param));
