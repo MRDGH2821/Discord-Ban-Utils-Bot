@@ -1,12 +1,13 @@
 {
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
     "airbnb-base",
     "airbnb-typescript/base",
     "plugin:promise/recommended",
     "plugin:switch-case/recommended",
-    "plugin:eslint-comments/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:eslint-comments/recommended",
+    "plugin:prettier/recommended"
   ],
   "ignorePatterns": ["./dist/**", ".eslintrc.json", "tsconfig.eslint.json", "tsconfig.json"],
   "parser": "@typescript-eslint/parser",
@@ -20,7 +21,8 @@
     "simple-import-sort",
     "switch-case",
     "const-case",
-    "promise"
+    "promise",
+    "prettier"
   ],
   "root": true,
   "rules": {
