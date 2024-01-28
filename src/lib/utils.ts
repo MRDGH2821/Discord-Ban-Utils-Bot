@@ -158,7 +158,9 @@ export function debugErrorFile(error: Error) {
 }
 
 export async function fetchAllBans(guild: Guild) {
+  container.logger.debug('Fetching all bans in guild:', guild.name, `(${guild.id})`);
   const first1kBans = await guild.bans.fetch();
+  container.logger.debug('Found', first1kBans.size, 'bans in guild:', guild.name, `(${guild.id})`);
   let masterBanList = first1kBans.clone();
   while (masterBanList.size % 1000 === 0) {
     // eslint-disable-next-line no-await-in-loop
@@ -168,6 +170,13 @@ export async function fetchAllBans(guild: Guild) {
     });
     masterBanList = masterBanList.concat(newBanList);
   }
+  container.logger.debug(
+    'Found',
+    masterBanList.size,
+    'bans in guild:',
+    guild.name,
+    `(${guild.id})`,
+  );
   return masterBanList;
 }
 
@@ -354,8 +363,15 @@ export const SettingsDescription: { [x in keyof Required<DBSchema['servers']['Da
   guildId: 'Server ID',
 };
 
+function isKeyOfSettingsDescription(key: string): key is keyof typeof SettingsDescription {
+  return key in SettingsDescription;
+}
 export function settingFormatter(data: DBSchema['servers']['Data']) {
-  const keys = Object.keys(data) as (keyof DBSchema['servers']['Data'])[];
-  const settings = keys.map((key) => `${SettingsDescription[key]}: ${data[key]}`);
+  const settings = Object.entries(data)
+    .filter(([key]) => isKeyOfSettingsDescription(key))
+    .map(([key, value]) => {
+      const keyTyped = key as keyof typeof SettingsDescription;
+      return `${SettingsDescription[keyTyped]}: ${value}`;
+    });
   return settings.join('\n');
 }
