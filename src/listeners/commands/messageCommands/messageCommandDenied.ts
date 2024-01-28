@@ -7,8 +7,9 @@ import {
   type UserError,
 } from '@sapphire/framework';
 
+const PIECE_NAME = 'Message Command Denied';
 @ApplyOptions<Listener.Options>({
-  name: 'Message Command Denied',
+  name: PIECE_NAME,
 })
 export default class UserEvent extends Listener<typeof Events.MessageCommandDenied> {
   public async run(
@@ -28,7 +29,7 @@ export default class UserEvent extends Listener<typeof Events.MessageCommandDeni
 }
 
 void container.stores.loadPiece({
-  name: UserEvent.name,
+  name: PIECE_NAME,
   piece: UserEvent,
   store: 'listeners',
 });

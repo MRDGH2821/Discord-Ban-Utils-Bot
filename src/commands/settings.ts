@@ -23,11 +23,12 @@ import {
   SettingsDescription,
 } from '../lib/utils';
 
+const PIECE_NAME = 'settings';
 interface SettingsOpt extends APISelectMenuOption {
   value: SettingsParameter;
 }
 @ApplyOptions<Subcommand.Options>({
-  name: 'settings',
+  name: PIECE_NAME,
   description: 'Configure bot settings',
   subcommands: [
     {
@@ -319,7 +320,7 @@ export default class UserCommand extends Subcommand {
 }
 
 void container.stores.loadPiece({
-  name: UserCommand.name,
+  name: PIECE_NAME,
   piece: UserCommand,
   store: 'commands',
 });

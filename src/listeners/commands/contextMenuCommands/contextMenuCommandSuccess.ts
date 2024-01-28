@@ -8,8 +8,9 @@ import {
 import type { Logger } from '@sapphire/plugin-logger';
 import { logSuccessCommand } from '../../../lib/utils';
 
+const PIECE_NAME = 'Context Menu Command Success';
 @ApplyOptions<Listener.Options>({
-  name: 'Context Menu Command Success',
+  name: PIECE_NAME,
 })
 export default class UserEvent extends Listener {
   public run(payload: ContextMenuCommandSuccessPayload) {
@@ -23,7 +24,7 @@ export default class UserEvent extends Listener {
 }
 
 void container.stores.loadPiece({
-  name: UserEvent.name,
+  name: PIECE_NAME,
   piece: UserEvent,
   store: 'listeners',
 });

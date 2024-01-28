@@ -8,8 +8,9 @@ import type { BotTimeoutOptions } from '../../lib/EventTypes';
 import { BUEvents } from '../../lib/EventTypes';
 import { getWebhook } from '../../lib/utils';
 
+const PIECE_NAME = 'Bot Timeout Log';
 @ApplyOptions<Listener.Options>({
-  name: 'Bot Timeout Log',
+  name: PIECE_NAME,
   event: BUEvents.BotTimeout,
 })
 export default class UserEvent extends Listener {
@@ -68,7 +69,7 @@ export default class UserEvent extends Listener {
 }
 
 void container.stores.loadPiece({
-  name: UserEvent.name,
+  name: PIECE_NAME,
   piece: UserEvent,
   store: 'listeners',
 });

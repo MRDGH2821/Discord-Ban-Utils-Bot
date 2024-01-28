@@ -12,8 +12,9 @@ import { COLORS, SERVER_ONLY } from '../lib/Constants';
 import type { BanExportOptions } from '../lib/typeDefs';
 import { emitBotEvent } from '../lib/utils';
 
+const PIECE_NAME = 'export-ban-list';
 @ApplyOptions<Command.Options>({
-  name: 'export-ban-list',
+  name: PIECE_NAME,
   description: 'Exports ban list as link(s)',
   requiredClientPermissions: [
     PermissionFlagsBits.ViewAuditLog,
@@ -142,7 +143,7 @@ export default class UserCommand extends Command {
 }
 
 void container.stores.loadPiece({
-  name: UserCommand.name,
+  name: PIECE_NAME,
   piece: UserCommand,
   store: 'commands',
 });

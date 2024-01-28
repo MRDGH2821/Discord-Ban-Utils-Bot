@@ -4,8 +4,9 @@ import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
 import { COLORS, NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
 import { emitBotEvent } from '../lib/EventTypes';
 
+const PIECE_NAME = 'unban';
 @ApplyOptions<Command.Options>({
-  name: 'unban',
+  name: PIECE_NAME,
   description: 'Unbans a member',
   preconditions: ['GuildOnly'],
   requiredClientPermissions: PermissionFlagsBits.BanMembers,
@@ -107,7 +108,7 @@ export default class UserCommand extends Command {
 }
 
 void container.stores.loadPiece({
-  name: UserCommand.name,
+  name: PIECE_NAME,
   piece: UserCommand,
   store: 'commands',
 });

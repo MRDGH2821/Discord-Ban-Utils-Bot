@@ -3,8 +3,9 @@ import type { Events } from '@sapphire/framework';
 import { container, Listener } from '@sapphire/framework';
 import type { Message } from 'discord.js';
 
+const PIECE_NAME = 'Mention Prefix Only';
 @ApplyOptions<Listener.Options>({
-  name: 'Mention Prefix Only',
+  name: PIECE_NAME,
 })
 export default class UserEvent extends Listener<typeof Events.MentionPrefixOnly> {
   public async run(message: Message) {
@@ -18,7 +19,7 @@ export default class UserEvent extends Listener<typeof Events.MentionPrefixOnly>
 }
 
 void container.stores.loadPiece({
-  name: UserEvent.name,
+  name: PIECE_NAME,
   piece: UserEvent,
   store: 'listeners',
 });

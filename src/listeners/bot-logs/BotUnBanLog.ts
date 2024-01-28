@@ -7,8 +7,9 @@ import type { BotGuildBanRemoveOptions } from '../../lib/EventTypes';
 import { BUEvents } from '../../lib/EventTypes';
 import { getWebhook } from '../../lib/utils';
 
+const PIECE_NAME = 'Bot UnBan Log';
 @ApplyOptions<Listener.Options>({
-  name: 'Bot UnBan Log',
+  name: PIECE_NAME,
   event: BUEvents.BotGuildBanRemove,
 })
 export default class UserEvent extends Listener {
@@ -44,7 +45,7 @@ export default class UserEvent extends Listener {
 }
 
 void container.stores.loadPiece({
-  name: UserEvent.name,
+  name: PIECE_NAME,
   piece: UserEvent,
   store: 'listeners',
 });

@@ -23,8 +23,9 @@ import {
   truncateString,
 } from '../lib/utils';
 
+const PIECE_NAME = 'Ban List Exporter';
 @ApplyOptions<Listener.Options>({
-  name: 'Ban List Exporter',
+  name: PIECE_NAME,
   event: BUEvents.BanListExport,
 })
 export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
@@ -202,7 +203,7 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
 }
 
 void container.stores.loadPiece({
-  name: UserEvent.name,
+  name: PIECE_NAME,
   piece: UserEvent,
   store: 'listeners',
 });

@@ -7,8 +7,9 @@ import { COLORS } from '../../lib/Constants';
 import db from '../../lib/Database';
 import { getWebhook } from '../../lib/utils';
 
+const PIECE_NAME = 'Audit Join Log';
 @ApplyOptions<Listener.Options>({
-  name: 'Audit Join Log',
+  name: PIECE_NAME,
   event: Events.GuildMemberAdd,
 })
 export default class UserEvent extends Listener<typeof Events.GuildMemberAdd> {
@@ -45,7 +46,7 @@ export default class UserEvent extends Listener<typeof Events.GuildMemberAdd> {
 }
 
 void container.stores.loadPiece({
-  name: UserEvent.name,
+  name: PIECE_NAME,
   piece: UserEvent,
   store: 'listeners',
 });

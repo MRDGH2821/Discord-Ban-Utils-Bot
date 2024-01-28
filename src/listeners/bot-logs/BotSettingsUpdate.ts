@@ -10,9 +10,10 @@ import { getWebhook } from '../../lib/utils';
 function entries<T extends object>(obj: T): [keyof T, T[keyof T]][] {
   return Object.entries(obj) as [keyof T, T[keyof T]][];
 }
+const PIECE_NAME = 'Bot Settings Update log';
 @ApplyOptions<Listener.Options>({
+  name: PIECE_NAME,
   event: BUEvents.BotSettingsUpdate,
-  name: 'Bot Settings Update log',
 })
 export default class UserEvent extends Listener {
   // eslint-disable-next-line class-methods-use-this
@@ -50,7 +51,7 @@ export default class UserEvent extends Listener {
 }
 
 void container.stores.loadPiece({
-  name: UserEvent.name,
+  name: PIECE_NAME,
   piece: UserEvent,
   store: 'listeners',
 });

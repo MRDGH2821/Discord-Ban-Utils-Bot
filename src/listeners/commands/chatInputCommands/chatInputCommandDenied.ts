@@ -4,8 +4,9 @@ import { ApplyOptions } from '@sapphire/decorators';
 import type { ChatInputCommandDeniedPayload, Events, UserError } from '@sapphire/framework';
 import { container, Listener } from '@sapphire/framework';
 
+const PIECE_NAME = 'Chat Input Command Denied';
 @ApplyOptions<Listener.Options>({
-  name: 'Chat Input Command Denied',
+  name: PIECE_NAME,
 })
 export default class UserEvent extends Listener<typeof Events.ChatInputCommandDenied> {
   public async run(
@@ -32,7 +33,7 @@ export default class UserEvent extends Listener<typeof Events.ChatInputCommandDe
 }
 
 void container.stores.loadPiece({
-  name: UserEvent.name,
+  name: PIECE_NAME,
   piece: UserEvent,
   store: 'listeners',
 });

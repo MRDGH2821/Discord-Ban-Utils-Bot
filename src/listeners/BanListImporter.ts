@@ -16,8 +16,9 @@ import { BUEvents } from '../lib/EventTypes';
 import type { BanEntityWithReason, ListImportOptions } from '../lib/typeDefs';
 import { fetchAllBans, sequentialPromises, truncateString } from '../lib/utils';
 
+const PIECE_NAME = 'List Importer';
 @ApplyOptions<Listener.Options>({
-  name: 'List Importer',
+  name: PIECE_NAME,
   event: BUEvents.ListImport,
 })
 export default class UserEvent extends Listener {
@@ -187,7 +188,7 @@ export default class UserEvent extends Listener {
 }
 
 void container.stores.loadPiece({
-  name: UserEvent.name,
+  name: PIECE_NAME,
   piece: UserEvent,
   store: 'listeners',
 });

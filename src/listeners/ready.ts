@@ -5,8 +5,9 @@ import { blue, gray, green, magenta, magentaBright, white, yellow } from 'colore
 
 const dev = process.env.NODE_ENV !== 'production';
 
+const PIECE_NAME = 'ready';
 @ApplyOptions<Listener.Options>({
-  name: 'ready',
+  name: PIECE_NAME,
   once: true,
 })
 export default class UserEvent extends Listener {
@@ -63,7 +64,7 @@ ${line03}${dev ? ` ${pad}${blc('<')}${llc('/')}${blc('>')} ${llc('DEVELOPMENT MO
 }
 
 void container.stores.loadPiece({
-  name: UserEvent.name,
+  name: PIECE_NAME,
   piece: UserEvent,
   store: 'listeners',
 });

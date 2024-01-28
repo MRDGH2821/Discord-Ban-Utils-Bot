@@ -9,8 +9,9 @@ import {
 import { COLORS, NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
 import { emitBotEvent } from '../lib/utils';
 
+const PIECE_NAME = 'ban';
 @ApplyOptions<Command.Options>({
-  name: 'ban',
+  name: PIECE_NAME,
   description: 'Bans a user',
   requiredClientPermissions: PermissionFlagsBits.BanMembers,
   requiredUserPermissions: PermissionFlagsBits.BanMembers,
@@ -199,7 +200,7 @@ export default class UserCommand extends Command {
 }
 
 void container.stores.loadPiece({
-  name: UserCommand.name,
+  name: PIECE_NAME,
   piece: UserCommand,
   store: 'commands',
 });

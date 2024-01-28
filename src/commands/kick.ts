@@ -5,8 +5,9 @@ import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
 import { COLORS, NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
 import { emitBotEvent } from '../lib/utils';
 
+const PIECE_NAME = 'kick';
 @ApplyOptions<Command.Options>({
-  name: 'kick',
+  name: PIECE_NAME,
   description: 'Kick out a member',
   preconditions: ['GuildOnly'],
   requiredClientPermissions: PermissionFlagsBits.KickMembers,
@@ -104,7 +105,7 @@ export default class UserCommand extends Command {
 }
 
 void container.stores.loadPiece({
-  name: UserCommand.name,
+  name: PIECE_NAME,
   piece: UserCommand,
   store: 'commands',
 });

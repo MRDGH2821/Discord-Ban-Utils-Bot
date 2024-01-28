@@ -7,8 +7,9 @@ import ms from 'enhanced-ms';
 import { COLORS, NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
 import { emitBotEvent } from '../lib/utils';
 
+const PIECE_NAME = 'timeout';
 @ApplyOptions<Command.Options>({
-  name: 'timeout',
+  name: PIECE_NAME,
   description: 'time out a user',
   preconditions: ['GuildOnly'],
   requiredClientPermissions: PermissionFlagsBits.ModerateMembers,
@@ -261,7 +262,7 @@ export default class UserCommand extends Command {
 }
 
 void container.stores.loadPiece({
-  name: UserCommand.name,
+  name: PIECE_NAME,
   piece: UserCommand,
   store: 'commands',
 });

@@ -2,8 +2,9 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { Command, container } from '@sapphire/framework';
 import { ApplicationCommandOptionType, MessageFlags, PermissionFlagsBits } from 'discord.js';
 
+const PIECE_NAME = 'test';
 @ApplyOptions<Command.Options>({
-  name: 'test',
+  name: PIECE_NAME,
   description: 'An experimental slash command',
   preconditions: ['GuildOnly'],
   requiredUserPermissions: PermissionFlagsBits.Administrator,
@@ -49,7 +50,7 @@ export default class UserCommand extends Command {
 }
 
 void container.stores.loadPiece({
-  name: UserCommand.name,
+  name: PIECE_NAME,
   piece: UserCommand,
   store: 'commands',
 });

@@ -4,8 +4,9 @@ import type { APIEmbed, GuildMember } from 'discord.js';
 import { AuditLogEvent, Colors, time } from 'discord.js';
 import { getAuditLogData } from '../../lib/utils';
 
+const PIECE_NAME = 'Audit Timeout Log';
 @ApplyOptions<Listener.Options>({
-  name: 'Audit Timeout Log',
+  name: PIECE_NAME,
   event: Events.GuildMemberUpdate,
 })
 export default class UserEvent extends Listener {
@@ -78,7 +79,7 @@ export default class UserEvent extends Listener {
 }
 
 void container.stores.loadPiece({
-  name: UserEvent.name,
+  name: PIECE_NAME,
   piece: UserEvent,
   store: 'listeners',
 });

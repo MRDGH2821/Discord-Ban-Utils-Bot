@@ -13,8 +13,9 @@ import {
 import { COLORS, EMPTY_STRING } from '../lib/Constants';
 import { jumpLink } from '../lib/utils';
 
+const PIECE_NAME = 'user-info';
 @ApplyOptions<Command.Options>({
-  name: 'user-info',
+  name: PIECE_NAME,
   description: 'Info about user',
   detailedDescription: {
     help: 'Tells information about a user',
@@ -189,7 +190,7 @@ export default class UserCommand extends Command {
 }
 
 void container.stores.loadPiece({
-  name: UserCommand.name,
+  name: PIECE_NAME,
   piece: UserCommand,
   store: 'commands',
 });

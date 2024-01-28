@@ -3,8 +3,9 @@ import { container, Events, Listener } from '@sapphire/framework';
 import type { Guild } from 'discord.js';
 import db from '../lib/Database';
 
+const PIECE_NAME = 'Delete settings on guild exit';
 @ApplyOptions<Listener.Options>({
-  name: 'Delete settings on guild exit',
+  name: PIECE_NAME,
   event: Events.GuildDelete,
 })
 export default class UserEvent extends Listener {
@@ -14,7 +15,7 @@ export default class UserEvent extends Listener {
 }
 
 void container.stores.loadPiece({
-  name: UserEvent.name,
+  name: PIECE_NAME,
   piece: UserEvent,
   store: 'listeners',
 });

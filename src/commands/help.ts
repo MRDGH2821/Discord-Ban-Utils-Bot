@@ -7,8 +7,9 @@ import type { APIEmbed } from 'discord.js';
 import { ApplicationCommandOptionType, PermissionsBitField } from 'discord.js';
 import { COLORS } from '../lib/Constants';
 
+const PIECE_NAME = 'help';
 @ApplyOptions<Command.Options>({
-  name: 'help',
+  name: PIECE_NAME,
   description: 'Provides help for commands',
   detailedDescription: {
     help: 'Provides detailed description of commands with other necessary info',
@@ -116,7 +117,7 @@ export default class UserCommand extends Command {
 }
 
 void container.stores.loadPiece({
-  name: UserCommand.name,
+  name: PIECE_NAME,
   piece: UserCommand,
   store: 'commands',
 });

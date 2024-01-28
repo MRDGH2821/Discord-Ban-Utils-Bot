@@ -2,8 +2,9 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { Command, container } from '@sapphire/framework';
 import { ApplicationCommandType, Message } from 'discord.js';
 
+const PIECE_NAME = 'ping';
 @ApplyOptions<Command.Options>({
-  name: 'ping',
+  name: PIECE_NAME,
   description: 'ping pong',
   detailedDescription: {
     help: "Check how fast the bot can respond to you.\nLower the number, the faster is the response.\n(Measures bot's network latency, not bot's ability to do things fast.",
@@ -75,7 +76,7 @@ export default class UserCommand extends Command {
 }
 
 void container.stores.loadPiece({
-  name: UserCommand.name,
+  name: PIECE_NAME,
   piece: UserCommand,
   store: 'commands',
 });

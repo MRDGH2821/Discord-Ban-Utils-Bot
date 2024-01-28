@@ -13,8 +13,9 @@ import type { ListImportOptions } from '../lib/typeDefs';
 import { banEntitySchemaBuilder, debugErrorEmbed, importList } from '../lib/utils';
 
 const IGNORE_EXCLUSION_TEXT = 'ignore-exclusion-list';
+const PIECE_NAME = 'mass';
 @ApplyOptions<Subcommand.Options>({
-  name: 'mass',
+  name: PIECE_NAME,
   description: 'Perform Mass ban or unban',
   subcommands: [
     {
@@ -180,7 +181,7 @@ export default class UserCommand extends Subcommand {
 }
 
 void container.stores.loadPiece({
-  name: UserCommand.name,
+  name: PIECE_NAME,
   piece: UserCommand,
   store: 'commands',
 });

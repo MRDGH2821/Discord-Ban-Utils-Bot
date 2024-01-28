@@ -5,8 +5,9 @@ import { AuditLogEvent } from 'discord.js';
 import { COLORS } from '../../lib/Constants';
 import { getAuditLogData } from '../../lib/utils';
 
+const PIECE_NAME = 'Audit UnBan Log';
 @ApplyOptions<Listener.Options>({
-  name: 'Audit UnBan Log',
+  name: PIECE_NAME,
   event: Events.GuildBanRemove,
 })
 export default class UserEvent extends Listener<typeof Events.GuildBanRemove> {
@@ -50,7 +51,7 @@ export default class UserEvent extends Listener<typeof Events.GuildBanRemove> {
 }
 
 void container.stores.loadPiece({
-  name: UserEvent.name,
+  name: PIECE_NAME,
   piece: UserEvent,
   store: 'listeners',
 });
