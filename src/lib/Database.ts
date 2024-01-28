@@ -1,3 +1,4 @@
+import './Firestore';
 import type { Guild, User, Webhook } from 'discord.js';
 import type { Typesaurus } from 'typesaurus';
 import { schema } from 'typesaurus';
