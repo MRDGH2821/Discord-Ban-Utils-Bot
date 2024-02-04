@@ -3,7 +3,7 @@
   "version": "3.0.4",
   "private": true,
   "description": "Discord Ban Utilities for Mutual Servers!",
-  "keywords": ["discord", "ban", "utilities"],
+  "keywords": ["discord", "ban", "utilities", "sapphirejs", "discordjs", "firebase"],
   "homepage": "https://github.com/MRDGH2821/Discord-Ban-Utils-Bot#readme",
   "bugs": {
     "url": "https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/issues"
@@ -67,16 +67,15 @@
     "enhanced-ms": "^2.3.0",
     "firebase-admin": "^12.0.0",
     "markdown-table": "^3.0.3",
-    "typesaurus": "^10.0.0"
+    "typesaurus": "^10.0.1"
   },
   "devDependencies": {
     "@sapphire/cli": "^1.9.3",
     "@sapphire/ts-config": "^5.0.0",
     "@types/node": "^20.11.9",
     "@types/ws": "^8.5.10",
-    "@typescript-eslint/eslint-plugin": "^6.19.1",
-    "@typescript-eslint/parser": "^6.19.1",
-    "bun-types": "latest",
+    "@typescript-eslint/eslint-plugin": "^6.20.0",
+    "@typescript-eslint/parser": "^6.20.0",
     "eslint": "^8.56.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.1.0",
@@ -89,12 +88,12 @@
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-switch-case": "^1.1.2",
     "eslint-plugin-unused-imports": "^3.0.0",
-    "husky": "^9.0.6",
+    "husky": "^9.0.10",
     "is-ci": "^3.0.1",
-    "lint-staged": "^15.2.0",
-    "prettier": "^3.2.4",
+    "lint-staged": "^15.2.1",
+    "prettier": "^3.2.5",
     "prettier-config-mrdgh2821": "^3.0.0",
-    "prettier-plugin-packagejson": "^2.4.9",
+    "prettier-plugin-packagejson": "^2.4.10",
     "tsc-watch": "^6.0.4",
     "typescript": "^5.3.3"
   },
