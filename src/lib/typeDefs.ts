@@ -40,7 +40,6 @@ export type SettingsParameter =
   | 'sendUnTimeoutLog'
   | 'sendImportLog'
   | 'sendBanExportLog'
-  | 'sendBanCopyLog'
   | 'sendMassBanLog'
   | 'sendMassUnbanLog';
 export type SendLogOptions = {

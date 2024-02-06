@@ -169,11 +169,6 @@ export default class UserCommand extends Subcommand {
         description: 'Send a log when a ban list is exported',
       },
       {
-        label: 'Ban Copy Log',
-        value: 'sendBanCopyLog',
-        description: 'Send a log when bans are copied from another server (Incoming bans)',
-      },
-      {
         label: 'Mass Ban Log',
         value: 'sendMassBanLog',
         description: 'Send a log when a mass ban is performed',

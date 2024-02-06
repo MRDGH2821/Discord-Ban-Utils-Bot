@@ -53,6 +53,6 @@ The following steps are for logs:
 - [x] Ban List Import
 - [x] Unban List Import
 - [x] Settings Change
-- [ ] Ban Copy
+- [ ] ~~Ban Copy~~ (Unplanned, as it was going to be a feature of website.)
 - [x] Mass Ban
 - [x] Mass Unban

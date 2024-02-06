@@ -11,7 +11,6 @@ const db = schema(($) => ({
 interface Setting {
   guildId: Guild['id'];
   webhookId: Webhook['id'];
-  sendBanCopyLog?: boolean | null;
   sendBanExportLog?: boolean | null;
   sendBanLog?: boolean | null;
   sendExitLog?: boolean | null;

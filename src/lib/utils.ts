@@ -192,7 +192,6 @@ export const selectedSettingsValidator = s
       'sendUnTimeoutLog',
       'sendImportLog',
       'sendBanExportLog',
-      'sendBanCopyLog',
       'sendMassBanLog',
       'sendMassUnbanLog',
     ),
@@ -348,7 +347,6 @@ export async function sequentialPromises<S, T>(
 
 export const SettingsDescription: { [x in keyof Required<DBSchema['servers']['Data']>]: string } = {
   sendBanLog: 'Send Ban Log',
-  sendBanCopyLog: 'Send Ban Copy Log',
   sendBanExportLog: 'Send Ban list Export Log',
   sendImportLog: 'Send Un/Ban list Import Log',
   sendExitLog: 'Send Member Exit Log',
