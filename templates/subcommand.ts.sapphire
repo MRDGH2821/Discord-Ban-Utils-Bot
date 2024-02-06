@@ -7,7 +7,7 @@ import { Subcommand } from '@sapphire/plugin-subcommands';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 @ApplyOptions<Subcommand.Options>({
-  name: 'settings',
+  name: 'subcommand',
   description: 'A basic command',
   subcommands: [
     {
