@@ -1,5 +1,8 @@
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ApplyOptions } from '@sapphire/decorators';
 import { Subcommand } from '@sapphire/plugin-subcommands';
+import type { User } from 'discord.js';
 import { ApplicationCommandOptionType, userMention } from 'discord.js';
 import { SERVER_ONLY } from '../lib/Constants';
 import db from '../lib/Database';
@@ -42,6 +45,16 @@ import db from '../lib/Database';
         });
       },
     },
+    {
+      name: 'add',
+      type: 'method',
+      chatInputRun: 'updateExclusionList',
+    },
+    {
+      name: 'remove',
+      type: 'method',
+      chatInputRun: 'updateExclusionList',
+    },
   ],
 })
 export default class UserCommand extends Subcommand {
@@ -55,6 +68,62 @@ export default class UserCommand extends Subcommand {
           description: 'View exclusion list',
           type: ApplicationCommandOptionType.Subcommand,
         },
+        {
+          name: 'add',
+          description: 'Add user IDs to exclusion list',
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: 'exclusion-type',
+              description: 'Select exclusion list type',
+              type: ApplicationCommandOptionType.String,
+              required: true,
+              choices: [
+                {
+                  name: 'Export',
+                  value: 'export',
+                },
+                {
+                  name: 'Import',
+                  value: 'import',
+                },
+              ],
+            },
+            {
+              name: 'user-ids',
+              description: 'User IDs to add',
+              type: ApplicationCommandOptionType.String,
+            },
+          ],
+        },
+        {
+          name: 'remove',
+          description: 'Remove user IDs from exclusion list',
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: 'exclusion-type',
+              description: 'Select exclusion list type',
+              type: ApplicationCommandOptionType.String,
+              required: true,
+              choices: [
+                {
+                  name: 'Export',
+                  value: 'export',
+                },
+                {
+                  name: 'Import',
+                  value: 'import',
+                },
+              ],
+            },
+            {
+              name: 'user-ids',
+              description: 'User IDs to remove',
+              type: ApplicationCommandOptionType.String,
+            },
+          ],
+        },
       ],
     });
   }
@@ -63,5 +132,37 @@ export default class UserCommand extends Subcommand {
   public async subChatInputRun(interaction: Subcommand.ChatInputCommandInteraction) {
     this.container.logger.info('subChatInputRun');
     interaction.deferReply();
+  }
+
+  // eslint-disable-next-line consistent-return
+  public async updateExclusionList(interaction: Subcommand.ChatInputCommandInteraction) {
+    this.container.logger.info('updateExclusionList');
+    const subcmd = interaction.options.getSubcommand(true);
+    const exclusionType = interaction.options.getString('exclusion-type', true);
+    const userIds = interaction.options.getString('user-ids');
+
+    if (!interaction.inGuild() || !interaction.guild) {
+      return interaction.reply({
+        content: SERVER_ONLY,
+        ephemeral: true,
+      });
+    }
+
+    if (
+      !interaction.memberPermissions.has('BanMembers') &&
+      !interaction.memberPermissions.has('ManageGuild')
+    ) {
+      return interaction.reply({
+        content: 'You do not have permission to use this command.',
+        ephemeral: true,
+      });
+    }
+
+    const { guildId } = interaction;
+
+    const idList: User['id'][] = [];
+
+    // todo: parse & validate user ids else ask for link/list via modal
+    // todo: add listener & update db
   }
 }
