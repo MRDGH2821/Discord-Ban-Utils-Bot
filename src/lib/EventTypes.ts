@@ -20,6 +20,13 @@ export type BotSettingsUpdateOptions = {
   newSettings: DBSchema['servers']['Data'];
 };
 
+export type ExclusionListUpdateOptions = {
+  guildId: string;
+  exportExclusion: string[];
+  importExclusion: string[];
+  mode: 'add' | 'remove';
+};
+
 export const BUEvents = {
   BanListExport: 'banListExport' as const,
   ListImport: 'listImport' as const,
@@ -28,6 +35,7 @@ export const BUEvents = {
   BotGuildMemberKick: 'botGuildMemberKick' as const,
   BotTimeout: 'botTimeout' as const,
   BotSettingsUpdate: 'botSettingsUpdate' as const,
+  ExclusionListUpdate: 'exclusionListUpdate' as const,
 } as const;
 
 export interface BUEventParams {
@@ -38,6 +46,7 @@ export interface BUEventParams {
   [BUEvents.BotGuildMemberKick]: [payload: BotGuildMemberKickOptions];
   [BUEvents.BotTimeout]: [payload: BotTimeoutOptions];
   [BUEvents.BotSettingsUpdate]: [payload: BotSettingsUpdateOptions];
+  [BUEvents.ExclusionListUpdate]: [payload: ExclusionListUpdateOptions];
 }
 
 export function emitBotEvent<E extends keyof BUEventParams>(
