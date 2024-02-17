@@ -1,11 +1,22 @@
-// eslint-disable-next-line eslint-comments/disable-enable-pair
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ApplyOptions } from '@sapphire/decorators';
+import { SnowflakeRegex } from '@sapphire/discord.js-utilities';
 import { Subcommand } from '@sapphire/plugin-subcommands';
+import { s } from '@sapphire/shapeshift';
+import { Time } from '@sapphire/time-utilities';
 import type { User } from 'discord.js';
-import { ApplicationCommandOptionType, userMention } from 'discord.js';
-import { SERVER_ONLY } from '../lib/Constants';
+import {
+  ActionRowBuilder,
+  ApplicationCommandOptionType,
+  ModalBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+  userMention,
+} from 'discord.js';
+import { COLORS, SERVER_ONLY } from '../lib/Constants';
 import db from '../lib/Database';
+import { emitBotEvent } from '../lib/EventTypes';
+
+const userIdValidator = s.array<User['id']>(s.string.regex(SnowflakeRegex));
 
 @ApplyOptions<Subcommand.Options>({
   name: 'exclusion-list',
@@ -58,6 +69,12 @@ import db from '../lib/Database';
   ],
 })
 export default class UserCommand extends Subcommand {
+  // eslint-disable-next-line class-methods-use-this
+  public parseIds(ids: string) {
+    const idList = ids.match(SnowflakeRegex);
+    return userIdValidator.run(idList).unwrap();
+  }
+
   registerApplicationCommands(registry: Subcommand.Registry) {
     registry.registerChatInputCommand({
       name: this.name,
@@ -70,12 +87,13 @@ export default class UserCommand extends Subcommand {
         },
         {
           name: 'add',
-          description: 'Add user IDs to exclusion list',
+          description:
+            'Add user IDs to exclusion list. Adding will prevent the user IDs from being exported or imported.',
           type: ApplicationCommandOptionType.Subcommand,
           options: [
             {
               name: 'exclusion-type',
-              description: 'Select exclusion list type',
+              description: 'Select exclusion list type.',
               type: ApplicationCommandOptionType.String,
               required: true,
               choices: [
@@ -98,7 +116,8 @@ export default class UserCommand extends Subcommand {
         },
         {
           name: 'remove',
-          description: 'Remove user IDs from exclusion list',
+          description:
+            'Remove user IDs from exclusion list. Removing will allow the user IDs from being exported or imported.',
           type: ApplicationCommandOptionType.Subcommand,
           options: [
             {
@@ -134,7 +153,32 @@ export default class UserCommand extends Subcommand {
     interaction.deferReply();
   }
 
-  // eslint-disable-next-line consistent-return
+  public async askModalUserId(
+    interaction: Subcommand.ChatInputCommandInteraction,
+    cmd: 'add' | 'remove',
+    listType: 'export' | 'import',
+  ): Promise<User['id'][]> {
+    const modal = new ModalBuilder()
+      .setTitle(`Input user Ids to ${cmd} from ${listType} exclusion list`)
+      .addComponents(
+        new ActionRowBuilder<TextInputBuilder>().addComponents(
+          new TextInputBuilder()
+            .setLabel('User IDs')
+            .setPlaceholder('User IDs')
+            .setCustomId('exclude-user-ids-list')
+            .setRequired(true)
+            .setStyle(TextInputStyle.Paragraph),
+        ),
+      )
+      .setCustomId('exclude-user-ids-list-modal');
+
+    return interaction
+      .showModal(modal)
+      .then(() => interaction.awaitModalSubmit({ time: Time.Minute * 5 }))
+      .then((modalCtx) => modalCtx.fields.getTextInputValue('exclude-user-ids-list'))
+      .then((idList) => this.parseIds(idList));
+  }
+
   public async updateExclusionList(interaction: Subcommand.ChatInputCommandInteraction) {
     this.container.logger.info('updateExclusionList');
     const subcmd = interaction.options.getSubcommand(true);
@@ -158,11 +202,37 @@ export default class UserCommand extends Subcommand {
       });
     }
 
-    const { guildId } = interaction;
+    const cmd = s.enum<'add' | 'remove'>('add', 'remove').default('add').run(subcmd).unwrap();
+    const listType = s.enum<'export' | 'import'>('export', 'import').run(exclusionType).unwrap();
 
+    const { guildId } = interaction;
+    await interaction.deferReply();
     const idList: User['id'][] = [];
 
-    // todo: parse & validate user ids else ask for link/list via modal
-    // todo: add listener & update db
+    if (userIds) {
+      const parsedIdsByCmd = this.parseIds(userIds);
+      idList.push(...parsedIdsByCmd);
+    } else {
+      const parsedIdsByModal = await this.askModalUserId(interaction, cmd, listType);
+      idList.push(...parsedIdsByModal);
+    }
+
+    emitBotEvent('exclusionListUpdate', {
+      guildId,
+      exportExclusion: listType === 'export' ? idList : [],
+      importExclusion: listType === 'import' ? idList : [],
+      mode: cmd,
+    });
+
+    return interaction.editReply({
+      embeds: [
+        {
+          title: '**List Update Scheduled!**',
+          color: COLORS.charcoalInvisible,
+          description:
+            'The list will be updated shortly.\n\nYou may use `/exclusion-list view` view to check the updated list.',
+        },
+      ],
+    });
   }
 }
