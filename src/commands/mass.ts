@@ -131,10 +131,7 @@ export default class UserCommand extends Subcommand {
       return;
     }
 
-    const schema = s.union(
-      s.literal<ListImportOptions['mode']>('ban'),
-      s.literal<ListImportOptions['mode']>('unban'),
-    );
+    const schema = s.enum<ListImportOptions['mode']>('ban', 'unban');
 
     const mode = schema.parse(invokerCmd);
     const ignoreExclusionList =
