@@ -13,7 +13,7 @@ import {
   TextInputStyle,
   userMention,
 } from 'discord.js';
-import { COLORS, SERVER_ONLY } from '../lib/Constants';
+import { COLORS, DUMMY_USER_ID, SERVER_ONLY } from '../lib/Constants';
 import db from '../lib/Database';
 import { emitBotEvent } from '../lib/EventTypes';
 
@@ -46,8 +46,14 @@ const PIECE_NAME = 'exclusion-list';
         if (!dbList) return interaction.editReply('No user IDs are excluded from export or import');
 
         const { exportExclusion, importExclusion } = dbList.data;
-        const exportExclusionList = exportExclusion.map((userId) => userMention(userId)).join(', ');
-        const importExclusionList = importExclusion.map((userId) => userMention(userId)).join(', ');
+        const exportExclusionList = exportExclusion
+          .filter((id) => !id.includes(DUMMY_USER_ID))
+          .map((userId) => userMention(userId))
+          .join(', ');
+        const importExclusionList = importExclusion
+          .filter((id) => !id.includes(DUMMY_USER_ID))
+          .map((userId) => userMention(userId))
+          .join(', ');
 
         return interaction.editReply({
           embeds: [
@@ -149,7 +155,6 @@ export default class UserCommand extends Subcommand {
       ],
     });
   }
-  // ToDo: add `exclusion-list add` and `exclusion-list remove` subcommands
 
   public async subChatInputRun(interaction: Subcommand.ChatInputCommandInteraction) {
     this.container.logger.info('subChatInputRun');
@@ -222,8 +227,8 @@ export default class UserCommand extends Subcommand {
 
     emitBotEvent('exclusionListUpdate', {
       guildId,
-      exportExclusion: listType === 'export' ? idList : [],
-      importExclusion: listType === 'import' ? idList : [],
+      exportExclusion: listType === 'export' ? idList : [DUMMY_USER_ID],
+      importExclusion: listType === 'import' ? idList : [DUMMY_USER_ID],
       mode: cmd,
     });
 

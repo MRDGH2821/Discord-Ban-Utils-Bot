@@ -15,3 +15,5 @@ export const WEBHOOK_ICON = 'https://i.imgur.com/2dmfOEw.png';
 export const SERVER_ONLY = 'This command can be used only inside server.';
 
 export const NOT_PERMITTED = 'You do not have permissions to use this command.';
+
+export const DUMMY_USER_ID = '000000000000000000';
