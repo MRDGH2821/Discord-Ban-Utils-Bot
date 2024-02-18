@@ -115,6 +115,7 @@ export default class UserCommand extends Command {
       'Harassing other users',
       'Advertising without permission',
       'Malicious Bot',
+      'Hacked Account',
       'Spam bot',
       'Nitro Scam',
       'Ping spam',
