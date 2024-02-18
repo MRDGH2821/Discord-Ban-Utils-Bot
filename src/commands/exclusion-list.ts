@@ -88,7 +88,7 @@ export default class UserCommand extends Subcommand {
         {
           name: 'add',
           description:
-            'Add user IDs to exclusion list. Adding will prevent the user IDs from being exported or imported.',
+            'Add user IDs to exclusion list. Prevents the user IDs from being exported or imported.',
           type: ApplicationCommandOptionType.Subcommand,
           options: [
             {
@@ -117,7 +117,7 @@ export default class UserCommand extends Subcommand {
         {
           name: 'remove',
           description:
-            'Remove user IDs from exclusion list. Removing will allow the user IDs from being exported or imported.',
+            'Remove user IDs from exclusion list. Allows the user IDs being exported or imported.',
           type: ApplicationCommandOptionType.Subcommand,
           options: [
             {
