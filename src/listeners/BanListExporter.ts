@@ -130,8 +130,8 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
     return new Promise((resolve, reject) => {
       fetchAllBans(guild)
         .then(async (bans) => {
-          const list = await this.filterList(guild.id, ignoreExclusionList);
-          const filteredBans = bans.filter((ban) => list.includes(ban.user.id));
+          const excludeList = await this.filterList(guild.id, ignoreExclusionList);
+          const filteredBans = bans.filter((ban) => !excludeList.includes(ban.user.id));
 
           return {
             links: await this.exportBanList(includeReason, filteredBans, guild.name),
