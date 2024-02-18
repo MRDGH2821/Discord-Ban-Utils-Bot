@@ -23,8 +23,8 @@ export default class UserEvent extends Listener {
           importExclusion: func(payload.importExclusion),
         };
       })
-      .then(this.container.logger.debug)
-      .catch(this.container.logger.error);
+      .then((val) => this.container.logger.debug(val))
+      .catch((error) => this.container.logger.error(error));
   }
 }
 
