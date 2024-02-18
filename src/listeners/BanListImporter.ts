@@ -23,11 +23,11 @@ const PIECE_NAME = 'List Importer';
 })
 export default class UserEvent extends Listener {
   // eslint-disable-next-line class-methods-use-this
-  public async filterList(guildId: string, ignoreExclusionList: boolean) {
+  public async filterList(guildId: string, shouldIgnoreExclusionList: boolean) {
     const excData = await db.exclusionList.get(guildId).then((v) => v?.data);
     const list = [];
-    if (!ignoreExclusionList && excData && excData.exportExclusion) {
-      list.push(...excData.exportExclusion);
+    if (!shouldIgnoreExclusionList && excData && excData.importExclusion) {
+      list.push(...excData.importExclusion);
     }
     return list;
   }
@@ -38,7 +38,7 @@ export default class UserEvent extends Listener {
     requesterUser: user,
     sourceMessage: message,
     mode,
-    ignoreExclusionList = mode !== 'ban',
+    shouldIgnoreExclusionList = mode !== 'ban',
   }: ListImportOptions) {
     // this.container.logger.debug(JSON.stringify(list));
     const titleMode = toTitleCase(mode);
@@ -55,7 +55,7 @@ export default class UserEvent extends Listener {
     const failedList = new Set<BanEntityWithReason>();
     const allBans = await fetchAllBans(guild);
     const bansInGuild = new Set(allBans.keys());
-    const eList = await this.filterList(guild.id, ignoreExclusionList);
+    const eList = await this.filterList(guild.id, shouldIgnoreExclusionList);
 
     // this.container.logger.debug(bansInGuild.size);
     const uniqueList = mode === 'ban' ? list.filter((ban) => !bansInGuild.has(ban.id)) : list;
@@ -96,7 +96,7 @@ export default class UserEvent extends Listener {
           Unique: filteredList.length,
           Total: list.length,
           Mode: mode,
-          ExclusionList: ignoreExclusionList ? 'Ignored' : 'Applied',
+          ExclusionList: shouldIgnoreExclusionList ? 'Ignored' : 'Applied',
         },
         null,
         2,
@@ -106,11 +106,11 @@ export default class UserEvent extends Listener {
     let elVerdict = '';
 
     if (mode === 'ban') {
-      elVerdict = ignoreExclusionList
+      elVerdict = shouldIgnoreExclusionList
         ? 'Bot will **not** filter the list.\n Thus the excluded people will be banned.'
         : 'Bot will filter the list.\n Thus the excluded people will **not** be banned.';
     } else if (mode === 'unban') {
-      elVerdict = ignoreExclusionList
+      elVerdict = shouldIgnoreExclusionList
         ? 'Bot will **not** filter the list.\n Thus the excluded people will be unbanned (if they were banned).'
         : 'Bot will filter the list.\n Thus the excluded people will **not** be unbanned (if they were banned).';
     }

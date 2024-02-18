@@ -71,14 +71,14 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
     requesterUser: user,
     sourceMessage: message,
     includeReason,
-    ignoreExclusionList = false,
+    shouldIgnoreExclusionList = false,
   }: BanExportOptions) {
     this.exportAndReply({
       sourceGuild: guild,
       includeReason,
       requesterUser: user,
       sourceMessage: message,
-      ignoreExclusionList,
+      shouldIgnoreExclusionList,
     }).catch((error: Error) => {
       this.container.logger.error(error);
       const errEmbed = debugErrorEmbed({
@@ -111,10 +111,10 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  public async filterList(guildId: string, ignoreExclusionList = false) {
+  public async filterList(guildId: string, shouldIgnoreExclusionList = false) {
     const excData = await db.exclusionList.get(guildId).then((v) => v?.data);
     const list = [];
-    if (!ignoreExclusionList && excData && excData.exportExclusion) {
+    if (!shouldIgnoreExclusionList && excData && excData.exportExclusion) {
       list.push(...excData.exportExclusion);
     }
     return list;
@@ -125,12 +125,12 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
     sourceGuild: guild,
     requesterUser: user,
     sourceMessage: message,
-    ignoreExclusionList = false,
+    shouldIgnoreExclusionList = false,
   }: BanExportOptions) {
     return new Promise((resolve, reject) => {
       fetchAllBans(guild)
         .then(async (bans) => {
-          const excludeList = await this.filterList(guild.id, ignoreExclusionList);
+          const excludeList = await this.filterList(guild.id, shouldIgnoreExclusionList);
           const filteredBans = bans.filter((ban) => !excludeList.includes(ban.user.id));
 
           return {

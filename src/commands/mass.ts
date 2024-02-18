@@ -134,7 +134,7 @@ export default class UserCommand extends Subcommand {
     const schema = s.enum<ListImportOptions['mode']>('ban', 'unban');
 
     const mode = schema.parse(invokerCmd);
-    const ignoreExclusionList =
+    const shouldIgnoreExclusionList =
       interaction.options.getBoolean(IGNORE_EXCLUSION_TEXT) || mode !== 'ban';
 
     const parsedIds = this.parseIds(ids, reason);
@@ -162,7 +162,7 @@ export default class UserCommand extends Subcommand {
               },
               {
                 name: IGNORE_EXCLUSION_TEXT,
-                value: `${ignoreExclusionList}`,
+                value: `${shouldIgnoreExclusionList}`,
               },
             ],
             solution: 'Please check your ban list once',
@@ -173,7 +173,13 @@ export default class UserCommand extends Subcommand {
       return;
     }
 
-    await importList(interaction, parsedIds.value, interaction.guild, mode, ignoreExclusionList);
+    await importList(
+      interaction,
+      parsedIds.value,
+      interaction.guild,
+      mode,
+      shouldIgnoreExclusionList,
+    );
   }
 }
 

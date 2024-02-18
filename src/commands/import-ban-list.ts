@@ -70,7 +70,8 @@ export default class UserCommand extends Command {
 
     await interaction.deferReply();
     const link = interaction.options.getString('link', true);
-    const ignoreExclusionList = interaction.options.getBoolean('ignore-exclusion-list') || false;
+    const shouldIgnoreExclusionList =
+      interaction.options.getBoolean('ignore-exclusion-list') || false;
 
     const data = await getRawPaste(link);
     const defaultReason =
@@ -93,7 +94,7 @@ export default class UserCommand extends Command {
         validatedData,
         interaction.guild,
         'ban',
-        ignoreExclusionList,
+        shouldIgnoreExclusionList,
       );
     } catch (error) {
       try {
@@ -103,7 +104,7 @@ export default class UserCommand extends Command {
           validatedData,
           interaction.guild,
           'ban',
-          ignoreExclusionList,
+          shouldIgnoreExclusionList,
         );
       } catch {
         return interaction.editReply({
