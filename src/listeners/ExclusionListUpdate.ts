@@ -1,5 +1,5 @@
 import { ApplyOptions } from '@sapphire/decorators';
-import { Listener } from '@sapphire/framework';
+import { container, Listener } from '@sapphire/framework';
 import db from '../lib/Database';
 import type { ExclusionListUpdateOptions } from '../lib/EventTypes';
 import { BUEvents } from '../lib/EventTypes';
@@ -27,3 +27,9 @@ export default class UserEvent extends Listener {
       .catch(this.container.logger.error);
   }
 }
+
+void container.stores.loadPiece({
+  name: PIECE_NAME,
+  piece: UserEvent,
+  store: 'listeners',
+});

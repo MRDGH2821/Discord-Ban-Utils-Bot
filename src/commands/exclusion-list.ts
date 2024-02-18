@@ -1,5 +1,6 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { SnowflakeRegex } from '@sapphire/discord.js-utilities';
+import { container } from '@sapphire/framework';
 import { Subcommand } from '@sapphire/plugin-subcommands';
 import { s } from '@sapphire/shapeshift';
 import { Time } from '@sapphire/time-utilities';
@@ -18,8 +19,10 @@ import { emitBotEvent } from '../lib/EventTypes';
 
 const userIdValidator = s.array<User['id']>(s.string.regex(SnowflakeRegex));
 
+const PIECE_NAME = 'exclusion-list';
+
 @ApplyOptions<Subcommand.Options>({
-  name: 'exclusion-list',
+  name: PIECE_NAME,
   description: 'Exclude certain user IDs from being exported or imported',
   requiredUserPermissions: [['BanMembers', 'ManageGuild']],
   preconditions: ['GuildOnly'],
@@ -236,3 +239,9 @@ export default class UserCommand extends Subcommand {
     });
   }
 }
+
+void container.stores.loadPiece({
+  name: PIECE_NAME,
+  piece: UserCommand,
+  store: 'commands',
+});
