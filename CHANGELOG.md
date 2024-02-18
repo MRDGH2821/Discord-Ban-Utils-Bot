@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0-1](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/compare/v4.0.0-0...v4.0.0-1) (2024-02-18)
+
+### Features
+
+- add error messages ([56d266d](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/56d266daeeb89122ddc593319fdbcdc48c6b30ef))
+
+### Bug Fixes
+
+- add dummy user id if array is empty ([c522d15](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/c522d15a0442973050b831630920209e26f28cfa))
+- fix logging ([af11bf3](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/af11bf3b0e50909b8711d63dc7411f7d4ca26a7c))
+- meet 100 character limit ([10c6f18](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/10c6f18b7defd169d7322a64e178dd2704487815))
+- register pieces ([9a9f5cd](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/9a9f5cdbe01d0f80dcb3da721928b825bf91cb4e))
+
 ## [4.0.0-0](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/compare/v3.0.4...v4.0.0-0) (2024-02-17)
 
 ### Features
