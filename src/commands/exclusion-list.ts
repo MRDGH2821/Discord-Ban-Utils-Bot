@@ -59,7 +59,17 @@ const PIECE_NAME = 'exclusion-list';
           embeds: [
             {
               title: 'Exclusion List',
-              description: `**Export Exclusion List:**\n${exportExclusionList || 'None'}\n\n**Import Exclusion List:**\n${importExclusionList || 'None'}`,
+              description: 'Exclusion list configured in this server',
+              fields: [
+                {
+                  name: 'Export Exclusion List',
+                  value: exportExclusionList || 'None',
+                },
+                {
+                  name: 'Import Exclusion List',
+                  value: importExclusionList || 'None',
+                },
+              ],
             },
           ],
         });
@@ -230,6 +240,7 @@ export default class UserCommand extends Subcommand {
       exportExclusion: listType === 'export' ? idList : [DUMMY_USER_ID],
       importExclusion: listType === 'import' ? idList : [DUMMY_USER_ID],
       mode: cmd,
+      interaction,
     });
 
     return interaction.editReply({

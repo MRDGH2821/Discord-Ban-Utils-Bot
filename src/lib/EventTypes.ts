@@ -1,3 +1,4 @@
+import type { AnyInteractableInteraction } from '@sapphire/discord.js-utilities';
 import { container } from '@sapphire/framework';
 import type { GuildMember, User } from 'discord.js';
 import type { DBSchema } from './Database';
@@ -25,6 +26,7 @@ export type ExclusionListUpdateOptions = {
   exportExclusion: string[];
   importExclusion: string[];
   mode: 'add' | 'remove';
+  interaction: AnyInteractableInteraction;
 };
 
 export const BUEvents = {
