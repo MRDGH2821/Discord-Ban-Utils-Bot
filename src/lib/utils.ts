@@ -13,11 +13,14 @@ import type {
   APIEmbed,
   APIUser,
   AuditLogEvent,
+  ChatInputCommandInteraction,
+  CommandInteractionOption,
   Guild,
   GuildMember,
   User,
   Webhook,
 } from 'discord.js';
+import { chatInputApplicationCommandMention } from 'discord.js';
 import { COLORS } from './Constants';
 import type { DBSchema } from './Database';
 import db from './Database';
@@ -372,4 +375,18 @@ export function settingFormatter(data: DBSchema['servers']['Data']) {
       return `${SettingsDescription[keyTyped]}: ${value}`;
     });
   return settings.join('\n');
+}
+
+export function getCmdname(interaction: ChatInputCommandInteraction) {
+  const command = interaction.commandName;
+  const subCmdGrp = interaction.options.getSubcommandGroup();
+  const subCmd = interaction.options.getSubcommand();
+
+  if (subCmdGrp) {
+    return chatInputApplicationCommandMention(command, subCmdGrp, subCmd, interaction.commandId);
+  }
+  if (subCmd) {
+    return chatInputApplicationCommandMention(command, subCmd, interaction.commandId);
+  }
+  return chatInputApplicationCommandMention(command, interaction.commandId);
 }
