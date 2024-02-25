@@ -13,7 +13,8 @@
     "**/*cache*/**",
     "**/dist/**",
     "**/node_modules/**",
-    "**/report/**"
+    "**/report/**",
+    "CHANGELOG.md"
   ],
   "reporters": ["html", "markdown"],
   "threshold": 0,
