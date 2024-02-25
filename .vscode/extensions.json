@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "aaron-bond.better-comments",
+    "adam-bender.commit-message-editor",
     "bierner.markdown-checkbox",
     "christian-kohler.npm-intellisense",
     "christian-kohler.path-intellisense",
@@ -15,6 +16,7 @@
     "exiasr.hadolint",
     "foxundermoon.shell-format",
     "idered.npm",
+    "joshbolduc.commitlint",
     "michaelcurrin.auto-commit-msg",
     "ms-azuretools.vscode-docker",
     "oderwat.indent-rainbow",
