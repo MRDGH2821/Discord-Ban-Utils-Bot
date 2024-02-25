@@ -1,7 +1,7 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import {
   container,
-  type Events,
+  Events,
   Listener,
   type MessageCommandDeniedPayload,
   type UserError,
@@ -9,6 +9,7 @@ import {
 
 const PIECE_NAME = 'Message Command Denied';
 @ApplyOptions<Listener.Options>({
+  event: Events.MessageCommandDenied,
   name: PIECE_NAME,
 })
 export default class UserEvent extends Listener<typeof Events.MessageCommandDenied> {

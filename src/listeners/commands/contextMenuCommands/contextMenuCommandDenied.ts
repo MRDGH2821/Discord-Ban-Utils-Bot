@@ -1,11 +1,12 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable consistent-return */
 import { ApplyOptions } from '@sapphire/decorators';
-import type { ContextMenuCommandDeniedPayload, Events, UserError } from '@sapphire/framework';
-import { container, Listener } from '@sapphire/framework';
+import type { ContextMenuCommandDeniedPayload, UserError } from '@sapphire/framework';
+import { container, Events, Listener } from '@sapphire/framework';
 
 const PIECE_NAME = 'Context Menu Command Denied';
 @ApplyOptions<Listener.Options>({
+  event: Events.ContextMenuCommandDenied,
   name: PIECE_NAME,
 })
 export default class UserEvent extends Listener<typeof Events.ContextMenuCommandDenied> {

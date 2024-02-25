@@ -1,11 +1,12 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable consistent-return */
 import { ApplyOptions } from '@sapphire/decorators';
-import type { ChatInputCommandDeniedPayload, Events, UserError } from '@sapphire/framework';
-import { container, Listener } from '@sapphire/framework';
+import type { ChatInputCommandDeniedPayload, UserError } from '@sapphire/framework';
+import { container, Events, Listener } from '@sapphire/framework';
 
 const PIECE_NAME = 'Chat Input Command Denied';
 @ApplyOptions<Listener.Options>({
+  event: Events.ChatInputCommandDenied,
   name: PIECE_NAME,
 })
 export default class UserEvent extends Listener<typeof Events.ChatInputCommandDenied> {

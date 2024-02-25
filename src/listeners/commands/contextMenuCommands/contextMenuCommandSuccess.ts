@@ -2,6 +2,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import {
   container,
   type ContextMenuCommandSuccessPayload,
+  Events,
   Listener,
   LogLevel,
 } from '@sapphire/framework';
@@ -10,6 +11,7 @@ import { logSuccessCommand } from '../../../lib/utils';
 
 const PIECE_NAME = 'Context Menu Command Success';
 @ApplyOptions<Listener.Options>({
+  event: Events.ContextMenuCommandSuccess,
   name: PIECE_NAME,
 })
 export default class UserEvent extends Listener {
