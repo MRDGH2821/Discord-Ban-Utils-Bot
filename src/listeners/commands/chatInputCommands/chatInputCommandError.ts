@@ -2,7 +2,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import type { ChatInputCommandErrorPayload } from '@sapphire/framework';
 import { container, Events, Listener } from '@sapphire/framework';
 import { invitation } from '../../../lib/DynamicConstants';
-import { debugErrorEmbed, getCmdname } from '../../../lib/utils';
+import { debugErrorEmbed, getCmdNameFromInteraction } from '../../../lib/utils';
 
 const PIECE_NAME = 'Chat Input Command Error';
 @ApplyOptions<Listener.Options>({
@@ -13,7 +13,7 @@ export default class UserEvent extends Listener<typeof Events.ChatInputCommandEr
   public override run(error: Error, { interaction }: ChatInputCommandErrorPayload) {
     const errEmb = debugErrorEmbed({
       title: 'Slash Command error',
-      description: `An error occurred while executing the command ${getCmdname(interaction)}.`,
+      description: `An error occurred while executing the command ${getCmdNameFromInteraction(interaction)}.`,
       checks: [
         {
           question: 'Can any checks be performed',

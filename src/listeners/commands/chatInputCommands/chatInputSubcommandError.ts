@@ -3,7 +3,7 @@ import { container, Listener } from '@sapphire/framework';
 import type { ChatInputSubcommandErrorPayload } from '@sapphire/plugin-subcommands';
 import { SubcommandPluginEvents } from '@sapphire/plugin-subcommands';
 import { invitation } from '../../../lib/DynamicConstants';
-import { debugErrorEmbed, getCmdname } from '../../../lib/utils';
+import { debugErrorEmbed, getCmdNameFromInteraction } from '../../../lib/utils';
 
 const PIECE_NAME = 'Chat Input Subcommand Error';
 @ApplyOptions<Listener.Options>({
@@ -16,7 +16,7 @@ export default class UserEvent extends Listener<
   public override run(error: Error, { interaction }: ChatInputSubcommandErrorPayload) {
     const errEmb = debugErrorEmbed({
       title: 'Slash Command error',
-      description: `An error occurred while executing the command ${getCmdname(interaction)}.`,
+      description: `An error occurred while executing the command ${getCmdNameFromInteraction(interaction)}.`,
       checks: [
         {
           question: 'Can any checks be performed',

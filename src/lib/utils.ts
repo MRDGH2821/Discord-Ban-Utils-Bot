@@ -371,7 +371,7 @@ export function settingFormatter(data: DBSchema['servers']['Data']) {
   return settings.join('\n');
 }
 
-export function getCmdname(interaction: ChatInputCommandInteraction) {
+export function getCmdNameFromInteraction(interaction: ChatInputCommandInteraction) {
   const command = interaction.commandName;
   const subCmdGrp = interaction.options.getSubcommandGroup();
   const subCmd = interaction.options.getSubcommand();
