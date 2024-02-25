@@ -23,6 +23,10 @@
       "url": "https://github.com/AroLeaf"
     }
   ],
+  "funding": {
+    "type": "individual",
+    "url": "https://ko-fi.com/mrdgh2821"
+  },
   "scripts": {
     "prebuild": "npm run generate:loaders",
     "build": "tsc",
