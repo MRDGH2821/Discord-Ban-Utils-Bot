@@ -1,12 +1,12 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable no-restricted-syntax */
 import { ApplyOptions } from '@sapphire/decorators';
-import { isGuildMember } from '@sapphire/discord.js-utilities';
+import { isGuildMember, PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { Command, container } from '@sapphire/framework';
-import type { APIEmbed } from 'discord.js';
-import { ApplicationCommandOptionType, PermissionsBitField } from 'discord.js';
+import type { Snowflake } from 'discord.js';
+import { ApplicationCommandOptionType, EmbedBuilder, PermissionsBitField } from 'discord.js';
 import { COLORS } from '../lib/Constants';
-import { formatCmdName } from '../lib/utils';
+import { formatCmdName, sequentialPromises } from '../lib/utils';
 
 const PIECE_NAME = 'help';
 @ApplyOptions<Command.Options>({
@@ -26,7 +26,7 @@ export default class UserCommand extends Command {
           name: 'command',
           description: 'Put command name to see its detailed description',
           type: ApplicationCommandOptionType.String,
-          required: true,
+          required: false,
           autocomplete: true,
         },
       ],
@@ -72,11 +72,33 @@ export default class UserCommand extends Command {
   }
 
   public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-    const cmdId = interaction.options.getString('command', true);
+    await interaction.deferReply();
+    const cmdId = interaction.options.getString('command');
+    if (cmdId) {
+      return interaction.editReply({
+        embeds: [await this.singleCommandHelp(cmdId, interaction)],
+      });
+    }
+
+    const cmdIds = (await interaction.client.application.commands.fetch()).map((cmd) => cmd.id);
+    const helpEmbed = (commandId: Snowflake) => this.singleCommandHelp(commandId, interaction);
+    const paginatedEmbeds = new PaginatedMessage();
+
+    return sequentialPromises(cmdIds, helpEmbed)
+      .then((embeds) =>
+        sequentialPromises(embeds, async (embed) => paginatedEmbeds.addAsyncPageEmbed(embed)),
+      )
+      .then(() => paginatedEmbeds.run(interaction));
+  }
+
+  public async singleCommandHelp(
+    cmdId: Snowflake,
+    interaction: Command.ChatInputCommandInteraction,
+  ) {
     const cmd = await interaction.client.application.commands.fetch(cmdId);
     const command = this.container.stores.get('commands').get(cmd.name);
 
-    if (!command) return interaction.reply({ content: 'Command not found', ephemeral: true });
+    if (!command) throw new Error(`Command with id: ${cmdId} not found`);
 
     const requiredBotPermissions = new PermissionsBitField(
       command.options.requiredClientPermissions,
@@ -93,11 +115,11 @@ export default class UserCommand extends Command {
       ? interaction.member.permissions
       : undefined;
 
-    const embed: APIEmbed = {
-      title: formatCmdName(command.name, cmdId),
-      description: command.description,
-      color: COLORS.charcoalInvisible,
-      fields: [
+    const embed = new EmbedBuilder()
+      .setTitle(formatCmdName(command.name, cmdId))
+      .setDescription(command.description)
+      .setColor(COLORS.charcoalInvisible)
+      .addFields([
         {
           name: 'Detailed description',
           value: command.detailedDescription?.help ?? 'None',
@@ -110,8 +132,7 @@ export default class UserCommand extends Command {
           name: 'Required user permissions & status',
           value: this.permissionsStatus(requiredUserPermissions, availablePermissionsToUser),
         },
-      ],
-    };
+      ]);
 
     const { subcommands } = command.detailedDescription;
     if (subcommands) {
@@ -121,13 +142,13 @@ export default class UserCommand extends Command {
         const formattedCmdName = formatCmdName(command.name, cmdId, subName, group);
         return `${formattedCmdName}\n${subcommand.description}\n${subcommand.help}`;
       });
-      embed.fields!.push({
+      embed.addFields({
         name: 'Subcommands',
         value: subCommandText.join('\n\n'),
       });
     }
 
-    return interaction.reply({ embeds: [embed] });
+    return embed;
   }
 }
 
