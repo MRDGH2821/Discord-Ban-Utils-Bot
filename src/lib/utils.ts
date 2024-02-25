@@ -97,7 +97,7 @@ type DebugEmbedOptions = {
   error: Error;
   checks: { question: string; result: boolean }[];
   solution: string;
-  inputs: { name: string; value: string }[];
+  inputs: Readonly<Pick<CommandInteractionOption, 'name' | 'value'>[]>;
 };
 
 /**
