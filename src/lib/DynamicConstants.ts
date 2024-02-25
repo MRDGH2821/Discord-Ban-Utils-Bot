@@ -6,8 +6,23 @@ import {
   OAuth2Scopes,
   PermissionFlagsBits,
 } from 'discord.js';
+import { funding, homepage } from '../../package.json';
 
 export const BOT_SUPPORT_SERVER_INVITE_LINK = 'https://discord.gg/HeFAqYgGr8';
+
+export const supportRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
+  new ButtonBuilder()
+    .setURL(homepage)
+    .setLabel('Source Code')
+    .setStyle(ButtonStyle.Link)
+    .setEmoji('📜'),
+  new ButtonBuilder()
+    .setURL(funding.url)
+    .setLabel('Donate')
+    .setStyle(ButtonStyle.Link)
+    .setEmoji('💰'),
+]);
+
 export function invitation(client: SapphireClient) {
   const botInviteLink = client.generateInvite({
     scopes: [
@@ -35,11 +50,16 @@ export function invitation(client: SapphireClient) {
   });
 
   const inviteRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
-    new ButtonBuilder().setURL(botInviteLink).setLabel('Invite me').setStyle(ButtonStyle.Link),
+    new ButtonBuilder()
+      .setURL(botInviteLink)
+      .setLabel('Invite me')
+      .setStyle(ButtonStyle.Link)
+      .setEmoji('📩'),
     new ButtonBuilder()
       .setURL(BOT_SUPPORT_SERVER_INVITE_LINK)
       .setLabel('Support server')
-      .setStyle(ButtonStyle.Link),
+      .setStyle(ButtonStyle.Link)
+      .setEmoji('🧑‍💻'),
   ]);
 
   return {
