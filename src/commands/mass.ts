@@ -12,7 +12,7 @@ import { NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
 import type { ListImportOptions } from '../lib/typeDefs';
 import { banEntitySchemaBuilder, debugErrorEmbed, importList } from '../lib/utils';
 
-const IGNORE_EXCLUSION_TEXT = 'ignore-exclusion-list';
+const IGNORE_FILTER_TEXT = 'ignore-filter-list';
 const PIECE_NAME = 'mass';
 @ApplyOptions<Subcommand.Options>({
   name: PIECE_NAME,
@@ -63,8 +63,8 @@ export default class UserCommand extends Subcommand {
               autocomplete: true,
             },
             {
-              name: IGNORE_EXCLUSION_TEXT,
-              description: 'Ignore the exclusion list while importing ban list (default: false)',
+              name: IGNORE_FILTER_TEXT,
+              description: 'Ignore the filter list while importing ban list (default: false)',
               type: ApplicationCommandOptionType.Boolean,
               required: false,
             },
@@ -89,8 +89,8 @@ export default class UserCommand extends Subcommand {
               autocomplete: true,
             },
             {
-              name: IGNORE_EXCLUSION_TEXT,
-              description: 'Ignore the exclusion list while importing unban list (default: true)',
+              name: IGNORE_FILTER_TEXT,
+              description: 'Ignore the filter list while importing unban list (default: true)',
               type: ApplicationCommandOptionType.Boolean,
               required: false,
             },
@@ -134,8 +134,8 @@ export default class UserCommand extends Subcommand {
     const schema = s.enum<ListImportOptions['mode']>('ban', 'unban');
 
     const mode = schema.parse(invokerCmd);
-    const shouldIgnoreExclusionList =
-      interaction.options.getBoolean(IGNORE_EXCLUSION_TEXT) || mode !== 'ban';
+    const shouldIgnoreFilterList =
+      interaction.options.getBoolean(IGNORE_FILTER_TEXT) || mode !== 'ban';
 
     const parsedIds = this.parseIds(ids, reason);
 
@@ -161,8 +161,8 @@ export default class UserCommand extends Subcommand {
                 value: reason,
               },
               {
-                name: IGNORE_EXCLUSION_TEXT,
-                value: `${shouldIgnoreExclusionList}`,
+                name: IGNORE_FILTER_TEXT,
+                value: `${shouldIgnoreFilterList}`,
               },
             ],
             solution: 'Please check your ban list once',
@@ -173,13 +173,7 @@ export default class UserCommand extends Subcommand {
       return;
     }
 
-    await importList(
-      interaction,
-      parsedIds.value,
-      interaction.guild,
-      mode,
-      shouldIgnoreExclusionList,
-    );
+    await importList(interaction, parsedIds.value, interaction.guild, mode, shouldIgnoreFilterList);
   }
 }
 

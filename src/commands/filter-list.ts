@@ -19,7 +19,7 @@ import { emitBotEvent } from '../lib/EventTypes';
 
 const userIdValidator = s.array<User['id']>(s.string.regex(SnowflakeRegex));
 
-const PIECE_NAME = 'exclusion-list';
+const PIECE_NAME = 'filter-list';
 
 @ApplyOptions<Subcommand.Options>({
   name: PIECE_NAME,
@@ -27,21 +27,21 @@ const PIECE_NAME = 'exclusion-list';
   requiredUserPermissions: [['BanMembers', 'ManageGuild']],
   preconditions: ['GuildOnly'],
   detailedDescription: {
-    help: 'Exclude certain user IDs from being exported or imported.\nImport Exclusion list will exclude the user IDs from being imported via ban import & mass ban. Useful when some users are good inside but not outside.\nExport Exclusion list will exclude the user IDs from being exported via ban export & mass ban. Useful when some users were banned due to server reasons but are good otherwise.',
+    help: 'Exclude certain user IDs from being exported or imported.\nImport Filter list will exclude the user IDs from being imported via ban import & mass ban. Useful when some users are good inside but not outside.\nExport Filter list will exclude the user IDs from being exported via ban export & mass ban. Useful when some users were banned due to server reasons but are good otherwise.',
     subcommands: [
       {
         subCommandName: 'view',
-        description: 'View exclusion list',
-        help: 'Shows you the current exclusion list for export and import',
+        description: 'View filter list',
+        help: 'Shows you the current filter list for export and import',
       },
       {
         subCommandName: 'add',
-        description: 'Add user IDs to exclusion list',
+        description: 'Add user IDs to filter list',
         help: 'Prevents the user IDs from being exported or imported',
       },
       {
         subCommandName: 'remove',
-        description: 'Remove user IDs from exclusion list',
+        description: 'Remove user IDs from filter list',
         help: 'Allows the user IDs being exported or imported',
       },
     ],
@@ -59,15 +59,15 @@ const PIECE_NAME = 'exclusion-list';
         }
         await interaction.deferReply({ ephemeral: true });
         const { guildId } = interaction;
-        const dbList = await db.exclusionList.get(guildId);
+        const dbList = await db.filterList.get(guildId);
         if (!dbList) return interaction.editReply('No user IDs are excluded from export or import');
 
-        const { exportExclusion, importExclusion } = dbList.data;
-        const exportExclusionList = exportExclusion
+        const { exportFilter, importFilter } = dbList.data;
+        const exportFilterList = exportFilter
           .filter((id) => !id.includes(DUMMY_USER_ID))
           .map((userId) => userMention(userId))
           .join(', ');
-        const importExclusionList = importExclusion
+        const importFilterList = importFilter
           .filter((id) => !id.includes(DUMMY_USER_ID))
           .map((userId) => userMention(userId))
           .join(', ');
@@ -75,16 +75,16 @@ const PIECE_NAME = 'exclusion-list';
         return interaction.editReply({
           embeds: [
             {
-              title: 'Exclusion List',
-              description: 'Exclusion list configured in this server',
+              title: 'Filter List',
+              description: 'Filter list configured in this server',
               fields: [
                 {
-                  name: 'Export Exclusion List',
-                  value: exportExclusionList || 'None',
+                  name: 'Export Filter List',
+                  value: exportFilterList || 'None',
                 },
                 {
-                  name: 'Import Exclusion List',
-                  value: importExclusionList || 'None',
+                  name: 'Import Filter List',
+                  value: importFilterList || 'None',
                 },
               ],
             },
@@ -95,12 +95,12 @@ const PIECE_NAME = 'exclusion-list';
     {
       name: 'add',
       type: 'method',
-      chatInputRun: 'updateExclusionList',
+      chatInputRun: 'updateFilterList',
     },
     {
       name: 'remove',
       type: 'method',
-      chatInputRun: 'updateExclusionList',
+      chatInputRun: 'updateFilterList',
     },
   ],
 })
@@ -118,18 +118,18 @@ export default class UserCommand extends Subcommand {
       options: [
         {
           name: 'view',
-          description: 'View exclusion list',
+          description: 'View filter list',
           type: ApplicationCommandOptionType.Subcommand,
         },
         {
           name: 'add',
           description:
-            'Add user IDs to exclusion list. Prevents the user IDs from being exported or imported.',
+            'Add user IDs to filter list. Prevents the user IDs from being exported or imported.',
           type: ApplicationCommandOptionType.Subcommand,
           options: [
             {
-              name: 'exclusion-type',
-              description: 'Select exclusion list type.',
+              name: 'filter-type',
+              description: 'Select filter list type.',
               type: ApplicationCommandOptionType.String,
               required: true,
               choices: [
@@ -153,12 +153,12 @@ export default class UserCommand extends Subcommand {
         {
           name: 'remove',
           description:
-            'Remove user IDs from exclusion list. Allows the user IDs being exported or imported.',
+            'Remove user IDs from filter list. Allows the user IDs being exported or imported.',
           type: ApplicationCommandOptionType.Subcommand,
           options: [
             {
-              name: 'exclusion-type',
-              description: 'Select exclusion list type',
+              name: 'filter-type',
+              description: 'Select filter list type',
               type: ApplicationCommandOptionType.String,
               required: true,
               choices: [
@@ -194,7 +194,7 @@ export default class UserCommand extends Subcommand {
     listType: 'export' | 'import',
   ): Promise<User['id'][]> {
     const modal = new ModalBuilder()
-      .setTitle(`Input user Ids to ${cmd} from ${listType} exclusion list`)
+      .setTitle(`Input user Ids to ${cmd} from ${listType} filter list`)
       .addComponents(
         new ActionRowBuilder<TextInputBuilder>().addComponents(
           new TextInputBuilder()
@@ -214,10 +214,10 @@ export default class UserCommand extends Subcommand {
       .then((idList) => this.parseIds(idList));
   }
 
-  public async updateExclusionList(interaction: Subcommand.ChatInputCommandInteraction) {
-    this.container.logger.info('updateExclusionList');
+  public async updateFilterList(interaction: Subcommand.ChatInputCommandInteraction) {
+    this.container.logger.info('updateFilterList');
     const subcmd = interaction.options.getSubcommand(true);
-    const exclusionType = interaction.options.getString('exclusion-type', true);
+    const filterType = interaction.options.getString('filter-type', true);
     const userIds = interaction.options.getString('user-ids');
 
     if (!interaction.inGuild() || !interaction.guild) {
@@ -238,7 +238,7 @@ export default class UserCommand extends Subcommand {
     }
 
     const cmd = s.enum<'add' | 'remove'>('add', 'remove').default('add').run(subcmd).unwrap();
-    const listType = s.enum<'export' | 'import'>('export', 'import').run(exclusionType).unwrap();
+    const listType = s.enum<'export' | 'import'>('export', 'import').run(filterType).unwrap();
 
     const { guildId } = interaction;
     await interaction.deferReply();
@@ -252,10 +252,10 @@ export default class UserCommand extends Subcommand {
       idList.push(...parsedIdsByModal);
     }
 
-    emitBotEvent('exclusionListUpdate', {
+    emitBotEvent('filterListUpdate', {
       guildId,
-      exportExclusion: listType === 'export' ? idList : [DUMMY_USER_ID],
-      importExclusion: listType === 'import' ? idList : [DUMMY_USER_ID],
+      exportFilter: listType === 'export' ? idList : [DUMMY_USER_ID],
+      importFilter: listType === 'import' ? idList : [DUMMY_USER_ID],
       mode: cmd,
       interaction,
     });
@@ -266,7 +266,7 @@ export default class UserCommand extends Subcommand {
           title: '**List Update Scheduled!**',
           color: COLORS.charcoalInvisible,
           description:
-            'The list will be updated shortly.\n\nYou may use `/exclusion-list view` view to check the updated list.',
+            'The list will be updated shortly.\n\nYou may use `/filter-list view` view to check the updated list.',
         },
       ],
     });

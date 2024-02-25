@@ -17,7 +17,7 @@ import './commands/chatInputCommands/chatInputSubcommandError.js';
 import './commands/chatInputCommands/chatInputCommandSuccess.js';
 import './commands/contextMenuCommands/contextMenuCommandSuccess.js';
 import './commands/contextMenuCommands/contextMenuCommandDenied.js';
-import './ExclusionListUpdate.js';
+import './FilterListUpdate.js';
 import './ready.js';
 import './mentionPrefixOnly.js';
 import './DeleteSettingsOnGuildExit.js';

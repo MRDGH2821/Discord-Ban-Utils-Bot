@@ -5,7 +5,7 @@ import { schema } from 'typesaurus';
 
 const db = schema(($) => ({
   servers: $.collection<Setting, Setting['guildId']>(),
-  exclusionList: $.collection<ExclusionList, ExclusionList['guildId']>().name('exclusion-list'),
+  filterList: $.collection<FilterList, FilterList['guildId']>().name('filter-list'),
 }));
 
 interface Setting {
@@ -24,9 +24,9 @@ interface Setting {
   sendUnTimeoutLog?: boolean | null;
 }
 
-interface ExclusionList {
-  importExclusion: User['id'][];
-  exportExclusion: User['id'][];
+interface FilterList {
+  importFilter: User['id'][];
+  exportFilter: User['id'][];
   guildId: Guild['id'];
 }
 

@@ -44,8 +44,8 @@ export default class UserCommand extends Command {
           required: false,
         },
         {
-          name: 'ignore-exclusion-list',
-          description: 'Ignore the exclusion list while importing ban list (default: false)',
+          name: 'ignore-filter-list',
+          description: 'Ignore the filter list while importing ban list (default: false)',
           type: ApplicationCommandOptionType.Boolean,
           required: false,
         },
@@ -70,8 +70,7 @@ export default class UserCommand extends Command {
 
     await interaction.deferReply();
     const link = interaction.options.getString('link', true);
-    const shouldIgnoreExclusionList =
-      interaction.options.getBoolean('ignore-exclusion-list') || false;
+    const shouldIgnoreFilterList = interaction.options.getBoolean('ignore-filter-list') || false;
 
     const data = await getRawPaste(link);
     const defaultReason =
@@ -94,7 +93,7 @@ export default class UserCommand extends Command {
         validatedData,
         interaction.guild,
         'ban',
-        shouldIgnoreExclusionList,
+        shouldIgnoreFilterList,
       );
     } catch (error) {
       try {
@@ -104,7 +103,7 @@ export default class UserCommand extends Command {
           validatedData,
           interaction.guild,
           'ban',
-          shouldIgnoreExclusionList,
+          shouldIgnoreFilterList,
         );
       } catch {
         return interaction.editReply({

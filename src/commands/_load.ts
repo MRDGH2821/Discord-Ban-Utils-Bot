@@ -7,7 +7,7 @@ import './export-ban-list.js';
 import './user-info.js';
 import './timeout.js';
 import './mass.js';
-import './exclusion-list.js';
+import './filter-list.js';
 import './ban.js';
 import './import-ban-list.js';
 import './ping.js';

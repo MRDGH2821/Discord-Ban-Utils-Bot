@@ -71,14 +71,14 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
     requesterUser: user,
     sourceMessage: message,
     includeReason,
-    shouldIgnoreExclusionList = false,
+    shouldIgnoreFilterList = false,
   }: BanExportOptions) {
     this.exportAndReply({
       sourceGuild: guild,
       includeReason,
       requesterUser: user,
       sourceMessage: message,
-      shouldIgnoreExclusionList,
+      shouldIgnoreFilterList,
     }).catch((error: Error) => {
       this.container.logger.error(error);
       const errEmbed = debugErrorEmbed({
@@ -111,11 +111,11 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  public async filterList(guildId: string, shouldIgnoreExclusionList = false) {
-    const excData = await db.exclusionList.get(guildId).then((v) => v?.data);
+  public async filterList(guildId: string, shouldIgnoreFilterList = false) {
+    const excData = await db.filterList.get(guildId).then((v) => v?.data);
     const list = [];
-    if (!shouldIgnoreExclusionList && excData && excData.exportExclusion) {
-      list.push(...excData.exportExclusion);
+    if (!shouldIgnoreFilterList && excData && excData.exportFilter) {
+      list.push(...excData.exportFilter);
     }
     return list;
   }
@@ -125,12 +125,12 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
     sourceGuild: guild,
     requesterUser: user,
     sourceMessage: message,
-    shouldIgnoreExclusionList = false,
+    shouldIgnoreFilterList = false,
   }: BanExportOptions) {
     return new Promise((resolve, reject) => {
       fetchAllBans(guild)
         .then(async (bans) => {
-          const excludeList = await this.filterList(guild.id, shouldIgnoreExclusionList);
+          const excludeList = await this.filterList(guild.id, shouldIgnoreFilterList);
           const filteredBans = bans.filter((ban) => !excludeList.includes(ban.user.id));
 
           return {

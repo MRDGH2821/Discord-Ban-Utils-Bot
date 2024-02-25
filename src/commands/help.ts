@@ -34,16 +34,16 @@ export default class UserCommand extends Command {
 
   public override async autocompleteRun(interaction: Command.AutocompleteInteraction) {
     const cmd = interaction.options.getFocused();
+    const commands = await interaction.client.application.commands.fetch();
 
-    const commandsList = this.container.stores
-      .get('commands')
-      .map((command) => command.name)
-      .filter((command) => command.toLowerCase().includes(cmd.toLowerCase()));
+    const commandsList = commands.filter((command) =>
+      command.name.toLowerCase().includes(cmd.toLowerCase()),
+    );
 
     return interaction.respond(
-      commandsList.map((cmdName) => ({
-        name: cmdName,
-        value: cmdName,
+      commandsList.map((command) => ({
+        name: command.name,
+        value: command.id,
       })),
     );
   }
@@ -71,9 +71,9 @@ export default class UserCommand extends Command {
   }
 
   public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-    const cmdName = interaction.options.getString('command', true);
-
-    const command = this.container.stores.get('commands').get(cmdName);
+    const cmdId = interaction.options.getString('command', true);
+    const cmd = await interaction.client.application.commands.fetch(cmdId);
+    const command = this.container.stores.get('commands').get(cmd.name);
 
     if (!command) return interaction.reply({ content: 'Command not found', ephemeral: true });
 

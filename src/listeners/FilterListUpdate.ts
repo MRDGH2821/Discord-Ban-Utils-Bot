@@ -3,37 +3,37 @@ import { container, Listener } from '@sapphire/framework';
 import { userMention } from 'discord.js';
 import { COLORS, DUMMY_USER_ID } from '../lib/Constants';
 import db from '../lib/Database';
-import type { ExclusionListUpdateOptions } from '../lib/EventTypes';
+import type { FilterListUpdateOptions } from '../lib/EventTypes';
 import { BUEvents } from '../lib/EventTypes';
 import { debugErrorEmbed, debugErrorFile } from '../lib/utils';
 
-const PIECE_NAME = 'Update Exclusion List';
+const PIECE_NAME = 'Update Filter List';
 @ApplyOptions<Listener.Options>({
   name: PIECE_NAME,
-  event: BUEvents.ExclusionListUpdate,
+  event: BUEvents.FilterListUpdate,
 })
 export default class UserEvent extends Listener {
-  public override run(payload: ExclusionListUpdateOptions) {
-    this.container.logger.debug('Updating Exclusion list:', payload);
+  public override run(payload: FilterListUpdateOptions) {
+    this.container.logger.debug('Updating Filter list:', payload);
     const { mode } = payload;
 
-    db.exclusionList
+    db.filterList
       .upset(payload.guildId, ($) => {
         const func = mode === 'add' ? $.arrayUnion : $.arrayRemove;
         return {
           guildId: payload.guildId,
-          exportExclusion: func(payload.exportExclusion),
-          importExclusion: func(payload.importExclusion),
+          exportFilter: func(payload.exportFilter),
+          importFilter: func(payload.importFilter),
         };
       })
       .then((val) => val.get())
       .then((val) => {
-        const { exportExclusion, importExclusion } = val!.data;
-        const exportExclusionList = exportExclusion
+        const { exportFilter, importFilter } = val!.data;
+        const exportFilterList = exportFilter
           .filter((id) => !id.includes(DUMMY_USER_ID))
           .map((userId) => userMention(userId))
           .join(', ');
-        const importExclusionList = importExclusion
+        const importFilterList = importFilter
           .filter((id) => !id.includes(DUMMY_USER_ID))
           .map((userId) => userMention(userId))
           .join(', ');
@@ -46,12 +46,12 @@ export default class UserEvent extends Listener {
               description: 'List Updated Successfully!',
               fields: [
                 {
-                  name: 'Export Exclusion List',
-                  value: exportExclusionList || 'None',
+                  name: 'Export Filter List',
+                  value: exportFilterList || 'None',
                 },
                 {
-                  name: 'Import Exclusion List',
-                  value: importExclusionList || 'None',
+                  name: 'Import Filter List',
+                  value: importFilterList || 'None',
                 },
               ],
             },
@@ -73,7 +73,7 @@ export default class UserEvent extends Listener {
                     false,
                 },
               ],
-              description: 'Unable to update the exclusion list',
+              description: 'Unable to update the filter list',
               error,
               inputs: [
                 {
@@ -82,15 +82,12 @@ export default class UserEvent extends Listener {
                 },
                 {
                   name: 'User IDs',
-                  value: [...payload.exportExclusion]
-                    .concat(payload.importExclusion)
-                    .flat()
-                    .join(', '),
+                  value: [...payload.exportFilter].concat(payload.importFilter).flat().join(', '),
                 },
               ],
               solution:
                 'Please check if you have the required permissions and try again. Else wait for some time.',
-              title: 'Exclusion List Update Failed',
+              title: 'Filter List Update Failed',
             }),
           ],
           files: [debugErrorFile(error)],

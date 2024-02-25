@@ -19,7 +19,7 @@ export type BanExportOptions = {
   requesterUser: User;
   includeReason: boolean;
   sourceMessage: Message;
-  shouldIgnoreExclusionList: boolean;
+  shouldIgnoreFilterList: boolean;
 };
 
 export type ListImportOptions = {
@@ -28,7 +28,7 @@ export type ListImportOptions = {
   sourceMessage: Message;
   list: NonNullable<BanEntityWithReason>[];
   mode: 'ban' | 'unban';
-  shouldIgnoreExclusionList: boolean;
+  shouldIgnoreFilterList: boolean;
 };
 export type SettingsParameter =
   | 'sendBanLog'
