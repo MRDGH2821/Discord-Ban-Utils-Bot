@@ -23,11 +23,11 @@ const PIECE_NAME = 'filter-list';
 
 @ApplyOptions<Subcommand.Options>({
   name: PIECE_NAME,
-  description: 'Exclude certain user IDs from being exported or imported',
+  description: 'Filter certain user IDs from being exported or imported',
   requiredUserPermissions: [['BanMembers', 'ManageGuild']],
   preconditions: ['GuildOnly'],
   detailedDescription: {
-    help: 'Exclude certain user IDs from being exported or imported.\nImport Filter list will exclude the user IDs from being imported via ban import & mass ban. Useful when some users are good inside but not outside.\nExport Filter list will exclude the user IDs from being exported via ban export & mass ban. Useful when some users were banned due to server reasons but are good otherwise.',
+    help: 'Filter certain user IDs from being exported or imported.\nImport Filter list will exclude the user IDs from being imported via ban import & mass ban. Useful when some users are good inside but not outside.\nExport Filter list will exclude the user IDs from being exported via ban export & mass ban. Useful when some users were banned due to server reasons but are good otherwise.',
     subcommands: [
       {
         name: 'view',
@@ -37,12 +37,12 @@ const PIECE_NAME = 'filter-list';
       {
         name: 'add',
         description: 'Add user IDs to filter list',
-        help: 'Prevents the user IDs from being exported or imported',
+        help: 'When added, prevents the user IDs from being exported or imported',
       },
       {
         name: 'remove',
         description: 'Remove user IDs from filter list',
-        help: 'Allows the user IDs being exported or imported',
+        help: 'When removed, allows the user IDs being exported or imported',
       },
     ],
   },
