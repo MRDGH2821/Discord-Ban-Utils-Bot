@@ -6,6 +6,7 @@ import { Command, container } from '@sapphire/framework';
 import type { APIEmbed } from 'discord.js';
 import { ApplicationCommandOptionType, PermissionsBitField } from 'discord.js';
 import { COLORS } from '../lib/Constants';
+import { formatCmdName } from '../lib/utils';
 
 const PIECE_NAME = 'help';
 @ApplyOptions<Command.Options>({
@@ -93,7 +94,7 @@ export default class UserCommand extends Command {
       : undefined;
 
     const embed: APIEmbed = {
-      title: command.name,
+      title: formatCmdName(command.name, cmdId),
       description: command.description,
       color: COLORS.charcoalInvisible,
       fields: [
@@ -111,6 +112,20 @@ export default class UserCommand extends Command {
         },
       ],
     };
+
+    const { subcommands } = command.detailedDescription;
+    if (subcommands) {
+      const subCommandText = subcommands?.map((subcommand) => {
+        const subName = subcommand.name;
+        const { group } = subcommand;
+        const formattedCmdName = formatCmdName(command.name, cmdId, subName, group);
+        return `${formattedCmdName}\n${subcommand.description}\n${subcommand.help}`;
+      });
+      embed.fields!.push({
+        name: 'Subcommands',
+        value: subCommandText.join('\n\n'),
+      });
+    }
 
     return interaction.reply({ embeds: [embed] });
   }

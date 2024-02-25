@@ -17,6 +17,7 @@ import type {
   CommandInteractionOption,
   Guild,
   GuildMember,
+  Snowflake,
   User,
   Webhook,
 } from 'discord.js';
@@ -383,4 +384,14 @@ export function getCmdNameFromInteraction(interaction: ChatInputCommandInteracti
     return chatInputApplicationCommandMention(command, subCmd, interaction.commandId);
   }
   return chatInputApplicationCommandMention(command, interaction.commandId);
+}
+
+export function formatCmdName(name: string, id: Snowflake, subName?: string, group?: string) {
+  if (subName && group) {
+    return chatInputApplicationCommandMention(name, group, subName, id);
+  }
+  if (subName) {
+    return chatInputApplicationCommandMention(name, subName, id);
+  }
+  return chatInputApplicationCommandMention(name, id);
 }
