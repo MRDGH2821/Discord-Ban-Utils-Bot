@@ -30,17 +30,17 @@ const PIECE_NAME = 'filter-list';
     help: 'Exclude certain user IDs from being exported or imported.\nImport Filter list will exclude the user IDs from being imported via ban import & mass ban. Useful when some users are good inside but not outside.\nExport Filter list will exclude the user IDs from being exported via ban export & mass ban. Useful when some users were banned due to server reasons but are good otherwise.',
     subcommands: [
       {
-        subCommandName: 'view',
+        name: 'view',
         description: 'View filter list',
         help: 'Shows you the current filter list for export and import',
       },
       {
-        subCommandName: 'add',
+        name: 'add',
         description: 'Add user IDs to filter list',
         help: 'Prevents the user IDs from being exported or imported',
       },
       {
-        subCommandName: 'remove',
+        name: 'remove',
         description: 'Remove user IDs from filter list',
         help: 'Allows the user IDs being exported or imported',
       },

@@ -17,10 +17,10 @@ declare module '@sapphire/framework' {
   export interface DetailedDescriptionCommand {
     help: string;
     subcommands?: {
-      subCommandName: string;
+      name: string;
       description: string;
       help: string;
-      subCommandGroupName?: string;
+      group?: string;
     }[];
   }
 }
