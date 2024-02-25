@@ -13,3 +13,14 @@ ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior
 
 // Enable colorette
 colorette.createColors({ useColor: true });
+declare module '@sapphire/framework' {
+  export interface DetailedDescriptionCommand {
+    help: string;
+    subcommands?: {
+      subCommandName: string;
+      description: string;
+      help: string;
+      subCommandGroupName?: string;
+    }[];
+  }
+}

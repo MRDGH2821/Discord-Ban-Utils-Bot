@@ -328,12 +328,6 @@ export async function getAuditLogData(auditType: AuditLogEvent, guildId: Guild['
   };
 }
 
-declare module '@sapphire/framework' {
-  export interface DetailedDescriptionCommand {
-    help: string;
-  }
-}
-
 export { emitBotEvent, type ValueOf } from './EventTypes';
 
 export async function sequentialPromises<S, T>(
