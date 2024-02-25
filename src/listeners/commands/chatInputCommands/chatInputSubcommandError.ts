@@ -3,7 +3,7 @@ import { container, Listener } from '@sapphire/framework';
 import type { ChatInputSubcommandErrorPayload } from '@sapphire/plugin-subcommands';
 import { SubcommandPluginEvents } from '@sapphire/plugin-subcommands';
 import { invitation } from '../../../lib/DynamicConstants';
-import { debugErrorEmbed, getCmdNameFromInteraction } from '../../../lib/utils';
+import { debugErrorEmbed, debugErrorFile, getCmdNameFromInteraction } from '../../../lib/utils';
 
 const PIECE_NAME = 'Chat Input Subcommand Error';
 @ApplyOptions<Listener.Options>({
@@ -28,13 +28,17 @@ export default class UserEvent extends Listener<
       solution: 'Please try again later. If the problem persists, please contact the bot owner.',
     });
 
+    const errFile = debugErrorFile(error);
     const { inviteRow } = invitation(this.container.client);
     return interaction
       .reply({
         embeds: [errEmb],
         components: [inviteRow],
+        files: [errFile],
       })
-      .catch(() => interaction.followUp({ embeds: [errEmb], components: [inviteRow] }));
+      .catch(() =>
+        interaction.followUp({ embeds: [errEmb], components: [inviteRow], files: [errFile] }),
+      );
   }
 }
 void container.stores.loadPiece({
