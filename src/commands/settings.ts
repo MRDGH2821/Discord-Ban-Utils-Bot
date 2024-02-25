@@ -77,6 +77,18 @@ interface SettingsOpt extends APISelectMenuOption {
       'json',
       JSON.stringify(SettingsDescription, null, 2),
     )}`,
+    subcommands: [
+      {
+        name: 'set',
+        description: 'Set a setting',
+        help: 'Select which log messages you want to enable/disable',
+      },
+      {
+        name: 'view',
+        description: 'View settings',
+        help: 'View currently configured settings in this server',
+      },
+    ],
   },
 })
 export default class UserCommand extends Subcommand {

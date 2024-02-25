@@ -32,6 +32,18 @@ const PIECE_NAME = 'mass';
   requiredClientPermissions: PermissionFlagsBits.BanMembers,
   detailedDescription: {
     help: 'Perform mass ban or unban on a list of discord IDs',
+    subcommands: [
+      {
+        name: 'ban',
+        description: 'Perform Mass Ban',
+        help: 'Perform mass ban on a list of discord IDs. Helpful when you have to bulk ban multiple spammers or raiders.',
+      },
+      {
+        name: 'unban',
+        description: 'Perform Mass Unban',
+        help: 'Perform mass unban on a list of discord IDs. Helpful when you have to bulk unban multiple users.',
+      },
+    ],
   },
 })
 export default class UserCommand extends Subcommand {
