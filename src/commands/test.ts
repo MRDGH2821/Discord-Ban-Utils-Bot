@@ -1,15 +1,17 @@
 import { ApplyOptions } from '@sapphire/decorators';
-import { Command, container } from '@sapphire/framework';
+import type { Command } from '@sapphire/framework';
+import { container } from '@sapphire/framework';
+import { Subcommand } from '@sapphire/plugin-subcommands';
 import { ApplicationCommandOptionType, MessageFlags, PermissionFlagsBits } from 'discord.js';
 
 const PIECE_NAME = 'test';
-@ApplyOptions<Command.Options>({
+@ApplyOptions<Subcommand.Options>({
   name: PIECE_NAME,
   description: 'An experimental slash command',
   preconditions: ['GuildOnly'],
   requiredUserPermissions: PermissionFlagsBits.Administrator,
 })
-export default class UserCommand extends Command {
+export default class UserCommand extends Subcommand {
   public override registerApplicationCommands(registry: Command.Registry) {
     registry.registerChatInputCommand(
       {
@@ -17,10 +19,17 @@ export default class UserCommand extends Command {
         description: this.description,
         options: [
           {
-            name: 'db-test',
-            description: 'A db test',
-            required: true,
-            type: ApplicationCommandOptionType.String,
+            name: 'string-input',
+            description: 'A string test',
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+              {
+                name: 'text',
+                description: 'A string test',
+                type: ApplicationCommandOptionType.String,
+                required: true,
+              },
+            ],
           },
         ],
       },
@@ -30,22 +39,21 @@ export default class UserCommand extends Command {
     );
   }
 
-  public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
+  public async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
     if (!interaction.inGuild() || !interaction.inCachedGuild()) {
-      return interaction.reply({
+      await interaction.reply({
         content: 'Please use this command inside server',
         flags: MessageFlags.Ephemeral,
       });
+      return;
     }
 
     const { options } = interaction;
-    const dbTest = options.getString('db-test', true);
+    const dbTest = options.getString('text', true);
 
-    this.container.logger.debug(dbTest);
-
-    return interaction.reply({
-      content: `dbTest: ${dbTest}`,
-    });
+    container.logger.debug(dbTest);
+    await interaction.reply({ content: dbTest });
+    throw new Error('Test error');
   }
 }
 
