@@ -28,6 +28,23 @@ const PIECE_NAME = 'exclusion-list';
   preconditions: ['GuildOnly'],
   detailedDescription: {
     help: 'Exclude certain user IDs from being exported or imported.\nImport Exclusion list will exclude the user IDs from being imported via ban import & mass ban. Useful when some users are good inside but not outside.\nExport Exclusion list will exclude the user IDs from being exported via ban export & mass ban. Useful when some users were banned due to server reasons but are good otherwise.',
+    subcommands: [
+      {
+        subCommandName: 'view',
+        description: 'View exclusion list',
+        help: 'Shows you the current exclusion list for export and import',
+      },
+      {
+        subCommandName: 'add',
+        description: 'Add user IDs to exclusion list',
+        help: 'Prevents the user IDs from being exported or imported',
+      },
+      {
+        subCommandName: 'remove',
+        description: 'Remove user IDs from exclusion list',
+        help: 'Allows the user IDs being exported or imported',
+      },
+    ],
   },
   subcommands: [
     {
