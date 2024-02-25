@@ -13,7 +13,7 @@ const PIECE_NAME = 'help';
   name: PIECE_NAME,
   description: 'Provides help for commands',
   detailedDescription: {
-    help: 'Provides detailed description of commands with other necessary info',
+    help: 'Provides detailed description of commands with other necessary info.\nSome commands require extra permissions and the emojis will tell if it is granted or not.\n✅ = Permission granted to you/bot\n❌ = Permission denied to you/bot',
   },
 })
 export default class UserCommand extends Command {
