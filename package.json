@@ -1,6 +1,6 @@
 {
   "name": "discord-ban-utils-bot",
-  "version": "4.0.0-1",
+  "version": "4.0.0-2",
   "private": true,
   "description": "Discord Ban Utilities for Mutual Servers!",
   "keywords": ["discord", "ban", "utilities", "sapphirejs", "discordjs", "firebase"],
