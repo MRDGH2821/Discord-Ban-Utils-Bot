@@ -1,20 +1,4 @@
 {
-  "name": "Ban Utils Dev Container",
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:20",
-  "postCreateCommand": "npm install",
-  "features": {
-    "ghcr.io/devcontainers-contrib/features/apt-get-packages:1": {
-      "packages": "firefox-esr"
-    },
-    "ghcr.io/devcontainers-contrib/features/gh-cli": {},
-    "ghcr.io/devcontainers-contrib/features/npm-package:1": {
-      "package": "mega-linter-runner"
-    },
-    "ghcr.io/devcontainers/features/desktop-lite:1": {},
-    "ghcr.io/devcontainers/features/docker-in-docker": {},
-    "ghcr.io/dhoeric/features/hadolint:1": {},
-    "ghcr.io/joshuanianji/devcontainer-features/github-cli-persistence:1": {}
-  },
   "customizations": {
     "vscode": {
       "extensions": [
@@ -43,5 +27,16 @@
       ]
     }
   },
-  "forwardPorts": [5901, 6080]
+  "features": {
+    "ghcr.io/devcontainers-contrib/features/gh-cli": {},
+    "ghcr.io/devcontainers-contrib/features/npm-package:1": {
+      "package": "mega-linter-runner"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker": {},
+    "ghcr.io/dhoeric/features/hadolint:1": {},
+    "ghcr.io/joshuanianji/devcontainer-features/github-cli-persistence:1": {}
+  },
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:20",
+  "name": "Ban Utils Dev Container",
+  "postCreateCommand": "npm install"
 }
