@@ -6,7 +6,7 @@ import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
 import { getRawPaste } from 'dpaste-ts';
 import { NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
 import type { BanEntityWithReason } from '../lib/typeDefs';
-import { banEntitySchemaBuilder, importList } from '../lib/utils';
+import { banEntitySchemaBuilder, debugErrorEmbed, importList } from '../lib/utils';
 
 const PIECE_NAME = 'import-ban-list';
 @ApplyOptions<Command.Options>({
@@ -107,9 +107,33 @@ export default class UserCommand extends Command {
           'ban',
           shouldIgnoreFilterList,
         );
-      } catch {
+      } catch (error2) {
         return interaction.editReply({
-          content: 'Invalid data',
+          embeds: [
+            debugErrorEmbed({
+              checks: [
+                {
+                  question: 'Can you ban',
+                  result: interaction.memberPermissions.has(PermissionFlagsBits.BanMembers),
+                },
+              ],
+              error: error2 as Error,
+              description: 'Failed to parse the data.',
+              inputs: [
+                {
+                  name: 'Link',
+                  value: link,
+                },
+                {
+                  name: 'Reason',
+                  value: defaultReason,
+                },
+              ],
+              solution:
+                'Please wait for some time before trying again. Or contact bot developer & provide the link.',
+              title: 'Failed to import ban list',
+            }),
+          ],
         });
       }
     }
