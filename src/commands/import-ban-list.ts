@@ -82,7 +82,7 @@ export default class UserCommand extends Command {
       s
         .object({
           id: s.string(),
-          reason: s.string().default(defaultReason),
+          reason: s.string().nullable().nullish().optional().default(defaultReason),
         })
         .required(),
     );
