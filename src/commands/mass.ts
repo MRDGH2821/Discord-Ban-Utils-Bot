@@ -1,5 +1,4 @@
 import { ApplyOptions } from '@sapphire/decorators';
-import { SnowflakeRegex } from '@sapphire/discord.js-utilities';
 import { container } from '@sapphire/framework';
 import { Subcommand } from '@sapphire/plugin-subcommands';
 import { s } from '@sapphire/shapeshift';
@@ -114,7 +113,7 @@ export default class UserCommand extends Subcommand {
 
   // eslint-disable-next-line class-methods-use-this
   private parseIds(ids: string, banReason: string) {
-    const idList = ids.match(SnowflakeRegex);
+    const idList = ids.match(/(?<id>\d{17,20})/gimu);
 
     const schema = banEntitySchemaBuilder(banReason);
 
