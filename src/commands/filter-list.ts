@@ -17,7 +17,7 @@ import { COLORS, DUMMY_USER_ID, SERVER_ONLY } from '../lib/Constants';
 import db from '../lib/Database';
 import { emitBotEvent } from '../lib/EventTypes';
 
-const userIdValidator = s.array<User['id']>(s.string.regex(SnowflakeRegex));
+const userIdValidator = s.array<User['id']>(s.string().regex(SnowflakeRegex));
 
 const PIECE_NAME = 'filter-list';
 
@@ -237,8 +237,8 @@ export default class UserCommand extends Subcommand {
       });
     }
 
-    const cmd = s.enum<'add' | 'remove'>('add', 'remove').default('add').run(subcmd).unwrap();
-    const listType = s.enum<'export' | 'import'>('export', 'import').run(filterType).unwrap();
+    const cmd = s.enum<'add' | 'remove'>(['add', 'remove']).default('add').run(subcmd).unwrap();
+    const listType = s.enum<'export' | 'import'>(['export', 'import']).run(filterType).unwrap();
 
     const { guildId } = interaction;
     await interaction.deferReply();

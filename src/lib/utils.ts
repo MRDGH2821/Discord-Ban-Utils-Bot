@@ -186,7 +186,7 @@ export async function fetchAllBans(guild: Guild) {
 
 export const selectedSettingsValidator = s
   .array(
-    s.enum<SettingsParameter>(
+    s.enum<SettingsParameter>([
       'sendBanLog',
       'sendUnbanLog',
       'sendExitLog',
@@ -198,7 +198,7 @@ export const selectedSettingsValidator = s
       'sendBanExportLog',
       'sendMassBanLog',
       'sendMassUnbanLog',
-    ),
+    ]),
   )
   .transform((values) => {
     const acc: Partial<DBSchema['servers']['Data']> = {};
@@ -251,7 +251,7 @@ export function banEntitySchemaBuilder(banReason: string) {
     reason: banReason,
   });
   return s
-    .array<BanEntity>(s.string.lengthGreaterThan(1))
+    .array<BanEntity>(s.string().lengthGreaterThan(1))
     .transform<BanEntityWithReason[]>((values) => values.map((v) => transformer(v)));
 }
 

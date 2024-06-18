@@ -79,10 +79,12 @@ export default class UserCommand extends Command {
     const BanEntitiesSchema = banEntitySchemaBuilder(defaultReason);
 
     const BanEntitiesWithReasonSchema = s.array<BanEntityWithReason>(
-      s.object({
-        id: s.string,
-        reason: s.string.default(defaultReason),
-      }).required,
+      s
+        .object({
+          id: s.string(),
+          reason: s.string().default(defaultReason),
+        })
+        .required(),
     );
 
     try {
@@ -98,7 +100,7 @@ export default class UserCommand extends Command {
     } catch (error) {
       try {
         const validatedData = BanEntitiesSchema.parse(data);
-        return importList(
+        return await importList(
           interaction,
           validatedData,
           interaction.guild,
