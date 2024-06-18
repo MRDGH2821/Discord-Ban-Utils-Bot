@@ -166,6 +166,7 @@ export async function fetchAllBans(guild: Guild) {
   const first1kBans = await guild.bans.fetch();
   container.logger.debug('Found', first1kBans.size, 'bans in guild:', guild.name, `(${guild.id})`);
   let masterBanList = first1kBans.clone();
+  if (first1kBans.size < 1000) return masterBanList;
   while (masterBanList.size % 1000 === 0) {
     // eslint-disable-next-line no-await-in-loop
     const newBanList = await guild.bans.fetch({
