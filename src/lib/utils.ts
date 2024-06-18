@@ -279,11 +279,9 @@ export async function importList(
   container.logger.debug(
     'Found',
     list.length,
-    `${mode}s to import in guild`,
+    `${mode}s to import in guild:`,
     guild.name,
-    '(',
-    guild.id,
-    ')',
+    `(${guild.id})`,
   );
 
   const importOptions: ListImportOptions = {
