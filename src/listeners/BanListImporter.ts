@@ -161,6 +161,15 @@ export default class UserEvent extends Listener {
           }),
         }),
       );
+    } else {
+      component.addComponents(
+        new ButtonBuilder({
+          type: ComponentType.Button,
+          label: 'Bans performed successfully. Jump to OG msg.',
+          style: ButtonStyle.Link,
+          url: message.url,
+        }),
+      );
     }
     return message.reply({
       content: `${user}`,
