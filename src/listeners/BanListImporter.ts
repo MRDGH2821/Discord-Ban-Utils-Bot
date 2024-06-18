@@ -43,7 +43,7 @@ export default class UserEvent extends Listener {
     // this.container.logger.debug(JSON.stringify(list));
     const titleMode = toTitleCase(mode);
 
-    this.container.logger.debug(`Starting ${mode}s in:`, guild.name);
+    container.logger.debug(`Starting ${mode}s in:`, guild.name);
 
     if (list.length === 0) {
       return message.reply({
@@ -60,6 +60,8 @@ export default class UserEvent extends Listener {
     // this.container.logger.debug(bansInGuild.size);
     const uniqueList = mode === 'ban' ? list.filter((ban) => !bansInGuild.has(ban.id)) : list;
     const filteredList = uniqueList.filter((ban) => !eList.includes(ban.id));
+
+    container.logger.debug('Filtered list size:', filteredList.length);
 
     const banFn = (id: string, reason: string) => guild.members.ban(id, { reason });
     const unBanFn = (id: string, reason: string) => guild.members.unban(id, reason);
@@ -81,12 +83,13 @@ export default class UserEvent extends Listener {
         3,
       );
 
+    container.logger.debug('Starting bans...');
     await sequentialPromises(filteredList, performBan).catch(async (error) =>
       message.reply({
         content: `${user}\nAn error occurred while importing ${mode} list: \n${error}`,
       }),
     );
-    this.container.logger.debug(
+    container.logger.debug(
       `${titleMode} stats:\n`,
       JSON.stringify(
         {
