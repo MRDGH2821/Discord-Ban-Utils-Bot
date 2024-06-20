@@ -46,7 +46,7 @@
     "watch": "tsc -w",
     "prewatch:start": "npm run generate:loaders",
     "watch:start": "tsc-watch --onSuccess \"npm run dev:start\"",
-    "changelog:pre": "npx -y commit-and-tag-version --prerelease"
+    "changelog:pre": "npx -y commit-and-tag-version --prerelease --sign"
   },
   "husky": {
     "hooks": {
