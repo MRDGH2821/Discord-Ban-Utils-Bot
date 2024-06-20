@@ -5,3 +5,4 @@ dist/
 examples/\*/dist/
 node_modules/
 \*.sapphire
+package-lock.json
