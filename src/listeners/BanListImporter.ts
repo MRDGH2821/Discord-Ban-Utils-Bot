@@ -75,11 +75,11 @@ export default class UserEvent extends Listener {
     const failedList = new Set<BanEntityWithReason>();
     const allBans = await fetchAllBans(guild);
     const bansInGuild = new Set(allBans.keys());
-    const eList = await this.filterList(guild.id, shouldIgnoreFilterList);
+    const ignoreList = await this.filterList(guild.id, shouldIgnoreFilterList);
 
     // this.container.logger.debug(bansInGuild.size);
     const uniqueList = mode === 'ban' ? list.filter((ban) => !bansInGuild.has(ban.id)) : list;
-    const filteredList = uniqueList.filter((ban) => !eList.includes(ban.id));
+    const filteredList = uniqueList.filter((ban) => !ignoreList.includes(ban.id));
 
     container.logger.debug('Filtered list size:', filteredList.length);
     bansProgress.setTotal(filteredList.length);
