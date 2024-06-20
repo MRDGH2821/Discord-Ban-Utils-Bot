@@ -3,11 +3,12 @@ import { container, Listener } from '@sapphire/framework';
 import { DurationFormatter } from '@sapphire/time-utilities';
 import { retry, sleepSync, toTitleCase } from '@sapphire/utilities';
 import { SingleBar } from 'cli-progress';
-import type { APIEmbed, Guild, MessagePayloadOption } from 'discord.js';
+import type { Guild, WebhookMessageCreateOptions } from 'discord.js';
 import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  Collection,
   ComponentType,
   EmbedBuilder,
 } from 'discord.js';
@@ -24,6 +25,8 @@ const bansProgress = new SingleBar({
   barIncompleteChar: '\u2591',
   hideCursor: true,
 });
+
+type ErrorEntity = { banEntity: BanEntityWithReason; error: Error };
 
 const PIECE_NAME = 'List Importer';
 @ApplyOptions<Listener.Options>({
@@ -76,6 +79,7 @@ export default class UserEvent extends Listener {
     const allBans = await fetchAllBans(guild);
     const bansInGuild = new Set(allBans.keys());
     const ignoreList = await this.filterList(guild.id, shouldIgnoreFilterList);
+    const errorList = new Collection<BanEntityWithReason['id'], ErrorEntity>();
 
     // this.container.logger.debug(bansInGuild.size);
     const uniqueList = mode === 'ban' ? list.filter((ban) => !bansInGuild.has(ban.id)) : list;
@@ -105,8 +109,9 @@ export default class UserEvent extends Listener {
                 }),
               ),
             )
-            .catch(() => {
+            .catch((error) => {
               failedList.add(ban);
+              errorList.set(ban.id, { banEntity: ban, error });
               return sleepSync(1000);
             }),
         3,
@@ -187,31 +192,45 @@ export default class UserEvent extends Listener {
         icon_url: user.displayAvatarURL(),
       },
     });
-    void this.sendLog(guild.id, operationEmbed);
 
     const component = new ActionRowBuilder<ButtonBuilder>();
     if (failedList.size > 0) {
+      const failedListLink = await createPaste({
+        content: JSON.stringify([...failedList], null, 2),
+        title: `[FAILED] ${truncateString(guild.name, 10)} ${titleMode} List`,
+      });
       component.addComponents(
         new ButtonBuilder({
           type: ComponentType.Button,
           label: `Unsuccessful ${mode} list link`,
           style: ButtonStyle.Link,
-          url: await createPaste({
-            content: JSON.stringify([...failedList], null, 2),
-            title: `[FAILED] ${truncateString(guild.name, 10)} ${titleMode} List`,
-          }),
+          url: failedListLink,
         }),
       );
-    } else {
-      component.addComponents(
-        new ButtonBuilder({
-          type: ComponentType.Button,
-          label: 'Bans performed successfully. Jump to OG msg.',
-          style: ButtonStyle.Link,
-          url: message.url,
-        }),
-      );
+      operationEmbed.addFields([{ name: 'Link of list of failed bans', value: failedListLink }]);
     }
+    component.addComponents(
+      new ButtonBuilder({
+        type: ComponentType.Button,
+        label: 'Jump to OG msg.',
+        style: ButtonStyle.Link,
+        url: message.url,
+      }),
+    );
+
+    void this.sendLog(guild.id, {
+      embeds: [operationEmbed],
+      components: [component],
+      files:
+        failedList.size > 0
+          ? [
+              {
+                name: 'failed_bans.json',
+                attachment: Buffer.from(JSON.stringify(errorList.toJSON(), null, 2)),
+              },
+            ]
+          : [],
+    });
     return message.reply({
       content: `${user}`,
       embeds: [operationEmbed],
@@ -219,21 +238,14 @@ export default class UserEvent extends Listener {
     });
   }
 
-  public async sendLog(
-    guildId: Guild['id'],
-    embed: APIEmbed | EmbedBuilder,
-    components?: MessagePayloadOption['components'] | undefined,
-  ) {
+  public async sendLog(guildId: Guild['id'], webhookOptions: WebhookMessageCreateOptions) {
     const settings = await db.servers.get(guildId).then((v) => v?.data);
     if (!settings || !settings.sendImportLog) return;
 
     const webhook = await this.container.client.fetchWebhook(settings.webhookId);
     if (!webhook) return;
 
-    await webhook.send({
-      embeds: [embed],
-      components: components!,
-    });
+    await webhook.send(webhookOptions);
   }
 }
 
