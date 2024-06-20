@@ -168,15 +168,27 @@ export async function fetchAllBans(guild: Guild) {
   let masterBanList = first1kBans.clone();
   if (first1kBans.size < 1000) return masterBanList;
   while (masterBanList.size % 1000 === 0) {
-    // eslint-disable-next-line no-await-in-loop
-    const newBanList = await guild.bans.fetch({
-      limit: 1000,
-      after: masterBanList.lastKey()!,
-    });
-    masterBanList = masterBanList.concat(newBanList);
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      const newBanList = await guild.bans.fetch({
+        limit: 1000,
+        after: masterBanList.lastKey()!,
+      });
+      container.logger.debug(
+        'Found the next',
+        newBanList.size,
+        'bans in guild:',
+        guild.name,
+        `(${guild.id})`,
+      );
+      masterBanList = masterBanList.concat(newBanList);
+    } catch (error) {
+      container.logger.error(error);
+      throw error;
+    }
   }
   container.logger.debug(
-    'Found',
+    'Found a total of',
     masterBanList.size,
     'bans in guild:',
     guild.name,
