@@ -1,6 +1,8 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { container, Listener } from '@sapphire/framework';
+import { DurationFormatter } from '@sapphire/time-utilities';
 import { retry, sleepSync, toTitleCase } from '@sapphire/utilities';
+import { SingleBar } from 'cli-progress';
 import type { APIEmbed, Guild, MessagePayloadOption } from 'discord.js';
 import {
   ActionRowBuilder,
@@ -16,12 +18,21 @@ import { BUEvents } from '../lib/EventTypes';
 import type { BanEntityWithReason, ListImportOptions } from '../lib/typeDefs';
 import { fetchAllBans, sequentialPromises, truncateString } from '../lib/utils';
 
+const bansProgress = new SingleBar({
+  format: 'Progress | {bar} | {percentage}% | {value}/{total}',
+  barCompleteChar: '\u2588',
+  barIncompleteChar: '\u2591',
+  hideCursor: true,
+});
+
 const PIECE_NAME = 'List Importer';
 @ApplyOptions<Listener.Options>({
   name: PIECE_NAME,
   event: BUEvents.ListImport,
 })
 export default class UserEvent extends Listener {
+  #lastMessageUpdateTime = 0;
+
   // eslint-disable-next-line class-methods-use-this
   public async filterList(guildId: string, shouldIgnoreFilterList: boolean) {
     const excData = await db.filterList.get(guildId).then((v) => v?.data);
@@ -30,6 +41,15 @@ export default class UserEvent extends Listener {
       list.push(...excData.importFilter);
     }
     return list;
+  }
+
+  private async debounceMessage(func: () => void) {
+    const now = Date.now();
+    if (now - this.#lastMessageUpdateTime > 10000) {
+      this.#lastMessageUpdateTime = now;
+      return func();
+    }
+    return null;
   }
 
   public override async run({
@@ -42,7 +62,7 @@ export default class UserEvent extends Listener {
   }: ListImportOptions) {
     // this.container.logger.debug(JSON.stringify(list));
     const titleMode = toTitleCase(mode);
-
+    const startTime = new Date();
     container.logger.debug(`Starting ${mode}s in:`, guild.name);
 
     if (list.length === 0) {
@@ -62,12 +82,13 @@ export default class UserEvent extends Listener {
     const filteredList = uniqueList.filter((ban) => !eList.includes(ban.id));
 
     container.logger.debug('Filtered list size:', filteredList.length);
+    bansProgress.setTotal(filteredList.length);
 
     const banFn = (id: string, reason: string) => guild.members.ban(id, { reason });
     const unBanFn = (id: string, reason: string) => guild.members.unban(id, reason);
 
     const actionFn = mode === 'ban' ? banFn : unBanFn;
-
+    bansProgress.start(filteredList.length, 0);
     const performBan = async (ban: BanEntityWithReason) =>
       retry(
         async () =>
@@ -76,6 +97,14 @@ export default class UserEvent extends Listener {
             ban.reason || `Imported by ${user.username} on ${new Date().toUTCString()}`,
           )
             .then(() => successList.add(ban))
+            .then(() => bansProgress.increment())
+            .then(() =>
+              this.debounceMessage(() =>
+                message.edit({
+                  content: `(${successList.size}/${filteredList.length - failedList.size})`,
+                }),
+              ),
+            )
             .catch(() => {
               failedList.add(ban);
               return sleepSync(1000);
@@ -83,14 +112,19 @@ export default class UserEvent extends Listener {
         3,
       );
 
-    container.logger.debug('Starting bans...');
-    await sequentialPromises(filteredList, performBan).catch(async (error) =>
-      message.reply({
-        content: `${user}\nAn error occurred while importing ${mode} list: \n${error}`,
-      }),
-    );
+    container.logger.debug('Starting bans...\n');
+    await sequentialPromises(filteredList, performBan)
+      .then(() => bansProgress.stop())
+      .then(() => message.edit({ content: 'Bans completed!' }))
+      .catch(async (error) =>
+        message.reply({
+          content: `${user}\nAn error occurred while importing ${mode} list: \n${error}`,
+        }),
+      );
+    const endTime = new Date();
+    const timeTaken = endTime.getTime() - startTime.getTime();
     container.logger.debug(
-      `${titleMode} stats:\n`,
+      `\n${titleMode} stats:\n`,
       JSON.stringify(
         {
           Server: guild.name,
@@ -142,6 +176,10 @@ export default class UserEvent extends Listener {
         {
           name: `Total ${mode}`,
           value: `${list.length}`,
+        },
+        {
+          name: 'Time Taken',
+          value: new DurationFormatter().format(timeTaken),
         },
       ],
       footer: {
