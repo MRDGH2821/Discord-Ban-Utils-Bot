@@ -181,6 +181,7 @@ export async function fetchAllBans(guild: Guild) {
         guild.name,
         `(${guild.id})`,
       );
+      if (newBanList.size === 0) break;
       masterBanList = masterBanList.concat(newBanList);
     } catch (error) {
       container.logger.error(error);
