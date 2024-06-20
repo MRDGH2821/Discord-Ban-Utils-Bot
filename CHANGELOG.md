@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.0.0-3](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/compare/v4.0.0-2...v4.0.0-3) (2024-06-20)
+
+### Features
+
+- add cli progress bar, message updater & time taken ([99ebd5b](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/99ebd5be01401cfcd79baf222bea8890dd6d8b14))
+- add debug message ([1ccca7e](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/1ccca7ef5f152d34041dbfd27152adbde74d4a85))
+- add logging messages ([75c6c95](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/75c6c95e67ef49e81c19a23c12a625ff5b5864db))
+- send error logs via webhook ([1ff673f](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/1ff673febc57b8655f96439244a7ac4deef45cc6))
+
+### Bug Fixes
+
+- add component in else part to avoid form body API error ([769db05](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/769db057f76a5b34ae194a1375aed604e223bca6))
+- break the loop explicitly on zero bans ([5f3682f](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/5f3682fb8a6e3c72da6d2ec5dc81c6e650461d59))
+- fix breaking changes of shapeshift package & linter errors ([8071f98](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/8071f9868455185536e712e21486db682fc556e1))
+- fix log statement format ([0829442](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/0829442466e9c96256286c7f3b519b2e00803c3c))
+- fix validator error ([5a15982](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/5a15982e1e92960b9281913a33e06a91ed01388e))
+- return early when there are less than 1k bans ([7638730](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/7638730413e47060244adb98872e5d1404203c64))
+- use modified regex instead of library regex ([cb5db05](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/cb5db053f7b823ffed1db57db0c51eb25f6e0c5a))
+
 ## [4.0.0-2](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/compare/v4.0.0-1...v4.0.0-2) (2024-04-14)
 
 ### Features

@@ -1,6 +1,6 @@
 {
   "name": "discord-ban-utils-bot",
-  "version": "4.0.0-2",
+  "version": "4.0.0-3",
   "private": true,
   "description": "Discord Ban Utilities for Mutual Servers!",
   "keywords": ["discord", "ban", "utilities", "sapphirejs", "discordjs", "firebase"],
@@ -45,7 +45,8 @@
     "prewatch": "npm run generate:loaders",
     "watch": "tsc -w",
     "prewatch:start": "npm run generate:loaders",
-    "watch:start": "tsc-watch --onSuccess \"npm run dev:start\""
+    "watch:start": "tsc-watch --onSuccess \"npm run dev:start\"",
+    "changelog:pre": "npx -y commit-and-tag-version --prerelease"
   },
   "husky": {
     "hooks": {
