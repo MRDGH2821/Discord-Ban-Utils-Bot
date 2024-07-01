@@ -117,6 +117,29 @@ export default class UserCommand extends Command {
                   result: interaction.memberPermissions.has(PermissionFlagsBits.BanMembers),
                 },
               ],
+              error: error as Error,
+              description: 'Failed to parse the data.',
+              inputs: [
+                {
+                  name: 'Link',
+                  value: link,
+                },
+                {
+                  name: 'Reason',
+                  value: defaultReason,
+                },
+              ],
+              solution:
+                'Please wait for some time before trying again. Or contact bot developer & provide the link.',
+              title: 'Failed to import ban list',
+            }),
+            debugErrorEmbed({
+              checks: [
+                {
+                  question: 'Can you ban',
+                  result: interaction.memberPermissions.has(PermissionFlagsBits.BanMembers),
+                },
+              ],
               error: error2 as Error,
               description: 'Failed to parse the data.',
               inputs: [
