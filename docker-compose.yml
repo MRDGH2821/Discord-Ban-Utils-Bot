@@ -1,7 +1,5 @@
-version: '3.9'
-
 services:
-  app:
+  ban-utils-bot:
     build:
       context: .
     container_name: ban-utils-bot
