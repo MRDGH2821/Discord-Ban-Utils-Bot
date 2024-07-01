@@ -2,13 +2,11 @@
 FROM node:lts-alpine AS builder
 WORKDIR /app
 
-RUN apk update && apk add bash=~5 curl=~8 npm=~9 --no-cache
+RUN apk update && apk add bash=~5 curl=~8 npm=~10 git=~2 --no-cache
 
 COPY . .
 
-RUN npm ci
-
-RUN npm run build && cp -r dist /app/build
+RUN npm install && npm run build
 
 # Minimalistic image
 FROM node:lts-slim
@@ -18,9 +16,9 @@ ENV NODE_ENV=production
 COPY ./firebase-service-acc ./firebase-service-acc
 COPY package*.json ./
 
-COPY --from=builder /app/build ./dist
+COPY --from=builder /app/dist ./dist
 
-RUN npm ci --omit=dev && useradd bu-bot
+RUN npm install --omit=dev && useradd bu-bot
 
 USER bu-bot
 
