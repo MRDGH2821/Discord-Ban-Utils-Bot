@@ -2,8 +2,6 @@
 
 Discord Ban Utilities for Mutual Servers!
 
-Hosted on Microsoft Azure B1ms Instance.
-
 Invite Link - [click here](https://discord.com/api/oauth2/authorize?client_id=897454611370213436&permissions=1377073941638&scope=bot%20applications.commands)
 
 Join my server - <https://discord.gg/MPtE9zsBs5>
