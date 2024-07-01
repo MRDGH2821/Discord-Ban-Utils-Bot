@@ -238,7 +238,7 @@ All notable changes to this project will be documented in this file. See [commit
 - add live count ([a9b8e38](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/a9b8e38f981b38d35626b596eca6f429114804f0))
 - add parts parameter ([7f7699a](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/7f7699ac48fea26d1464067eba0ccacefd84cbb8))
 - change parameter url to attachment ([ebedc38](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/ebedc383983900549eabc578d734e077d7c86931))
-- change paramter type to payload ([7ef0d3f](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/7ef0d3f956f45dc4d36b3d105ca99a830a2a541f))
+- change parameter type to payload ([7ef0d3f](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/7ef0d3f956f45dc4d36b3d105ca99a830a2a541f))
 - reduce limit of advance mode ([93c6add](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/93c6addca9dc801fdaea917d5582c62213779aa6))
 - remove username fetching, add embed messages ([9f1bc77](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/9f1bc7731da0e16adf45f5a04b7fcea4a929b05f))
 - use exporter functions ([2acb10e](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/2acb10e3853bfdf1592e09f9c4145512bd8ff657))
@@ -364,7 +364,7 @@ All notable changes to this project will be documented in this file. See [commit
 
 ### Features
 
-- add fotter & timestamp ([4fbf213](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/4fbf213d3f571bbce53625b7b3a69d9b3ab0ba34))
+- add footer & timestamp ([4fbf213](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/4fbf213d3f571bbce53625b7b3a69d9b3ab0ba34))
 - **ban command:** show ban target avatar ([b7859e5](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/b7859e5f0af3efa5462f606f9a755ac23e347df9))
 - display ban reason & avatar ([86012a8](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/86012a83a51b4da3ea12bc7c09d4defef6800d21))
 - display target avatar ([e5f04f0](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/e5f04f03593245b6a3f93da470340464e102dd39))
