@@ -43,7 +43,7 @@ For more info click [here](https://discordjs.guide/preparations/setting-up-a-bot
 Or Use Docker to start:
 
 ```bash
-docker compose up -d --build app
+docker compose up -d --build ban-utils-bot
 ```
 
 ## License
