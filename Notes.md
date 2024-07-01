@@ -31,8 +31,8 @@ The following steps are for logs:
 - [x] Timeout
 - [x] Unban
 - [x] User Info
-- [ ] Filter List
-- [ ] About bot
+- [x] Filter List
+- [x] About bot
 
 ### Audit Logs
 
