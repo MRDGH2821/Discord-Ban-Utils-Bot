@@ -12,6 +12,10 @@
     "type": "git",
     "url": "git+https://github.com/MRDGH2821/Discord-Ban-Utils-Bot.git"
   },
+  "funding": {
+    "type": "individual",
+    "url": "https://ko-fi.com/mrdgh2821"
+  },
   "license": "MIT",
   "author": {
     "name": "MRDGH2821",
@@ -23,15 +27,13 @@
       "url": "https://github.com/AroLeaf"
     }
   ],
-  "funding": {
-    "type": "individual",
-    "url": "https://ko-fi.com/mrdgh2821"
-  },
   "scripts": {
     "prebuild": "npm run generate:loaders",
     "build": "tsc",
+    "changelog:pre": "npx -y commit-and-tag-version --prerelease --sign",
     "dev": "npm run build && npm run dev:start",
     "dev:start": "node --env-file .env ./dist/index.js",
+    "firekeybase64": "node ./buildLibs/generate-base64-cred.mjs",
     "format": "prettier --write .",
     "format-lint": "npm run format && npm run lint",
     "generate": "sapphire generate",
@@ -45,9 +47,7 @@
     "prewatch": "npm run generate:loaders",
     "watch": "tsc -w",
     "prewatch:start": "npm run generate:loaders",
-    "watch:start": "tsc-watch --onSuccess \"npm run dev:start\"",
-    "changelog:pre": "npx -y commit-and-tag-version --prerelease --sign",
-    "firekeybase64": "node ./buildLibs/generate-base64-cred.mjs"
+    "watch:start": "tsc-watch --onSuccess \"npm run dev:start\""
   },
   "husky": {
     "hooks": {
@@ -55,8 +55,8 @@
     }
   },
   "lint-staged": {
-    "src/**/*.ts": ["prettier --write", "eslint --fix --ignore-path .gitignore"],
-    "*": ["prettier --write"]
+    "*": ["prettier --write"],
+    "src/**/*.ts": ["prettier --write", "eslint --fix --ignore-path .gitignore"]
   },
   "dependencies": {
     "@sapphire/decorators": "^6.1.0",
