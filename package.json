@@ -46,7 +46,8 @@
     "watch": "tsc -w",
     "prewatch:start": "npm run generate:loaders",
     "watch:start": "tsc-watch --onSuccess \"npm run dev:start\"",
-    "changelog:pre": "npx -y commit-and-tag-version --prerelease --sign"
+    "changelog:pre": "npx -y commit-and-tag-version --prerelease --sign",
+    "firekeybase64": "node ./buildLibs/generate-base64-cred.mjs"
   },
   "husky": {
     "hooks": {
