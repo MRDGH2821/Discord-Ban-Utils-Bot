@@ -27,6 +27,7 @@ For more info check [here](./firebase-service-acc/README.md)
 ## Hosting
 
 - Clone this repo.
+- Add [Firebase private key](#firebase-integration)
 - Create a file named `.env` & put the given text -
 
 ```environment
@@ -44,6 +45,28 @@ Or Use Docker to start:
 
 ```bash
 docker compose up -d --build ban-utils-bot
+```
+
+Incase there is no way to upload firebase service account key:
+
+```environment
+# Put respective details from the firebase service account file here if firebase key cannot be uploaded
+FIREBASE_CLIENT_EMAIL=
+FIREBASE_PRIVATE_KEY=
+FIREBASE_PROJECT_ID=
+```
+
+Or use base64 encoder using
+
+```bash
+npm run firekeybase64
+```
+
+And then use the generated value below:
+
+```environment
+# Put base64 encoded version of the firebase service account file here if above method doesn't work
+FIREBASE_SERVICE_ACCOUNT_BASE64=
 ```
 
 ## License
