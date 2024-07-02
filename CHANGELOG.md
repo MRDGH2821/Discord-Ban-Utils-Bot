@@ -2,25 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
-## [4.0.0](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/compare/v4.0.0-2...v4.0.0) (2024-07-02)
+## [4.0.0](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/compare/v4.0.0-3...v4.0.0) (2024-07-02)
 
 ### Features
 
-- add cli progress bar, message updater & time taken ([99ebd5b](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/99ebd5be01401cfcd79baf222bea8890dd6d8b14))
-- add debug message ([1ccca7e](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/1ccca7ef5f152d34041dbfd27152adbde74d4a85))
-- add logging messages ([75c6c95](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/75c6c95e67ef49e81c19a23c12a625ff5b5864db))
-- send error logs via webhook ([1ff673f](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/1ff673febc57b8655f96439244a7ac4deef45cc6))
 - show both errors instead of one ([3d7c376](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/3d7c376aa3050274233fcc51083d9b33e066cdef))
-
-### Bug Fixes
-
-- add component in else part to avoid form body API error ([769db05](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/769db057f76a5b34ae194a1375aed604e223bca6))
-- break the loop explicitly on zero bans ([5f3682f](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/5f3682fb8a6e3c72da6d2ec5dc81c6e650461d59))
-- fix breaking changes of shapeshift package & linter errors ([8071f98](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/8071f9868455185536e712e21486db682fc556e1))
-- fix log statement format ([0829442](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/0829442466e9c96256286c7f3b519b2e00803c3c))
-- fix validator error ([5a15982](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/5a15982e1e92960b9281913a33e06a91ed01388e))
-- return early when there are less than 1k bans ([7638730](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/7638730413e47060244adb98872e5d1404203c64))
-- use modified regex instead of library regex ([cb5db05](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/cb5db053f7b823ffed1db57db0c51eb25f6e0c5a))
 
 ## [4.0.0-3](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/compare/v4.0.0-2...v4.0.0-3) (2024-06-20)
 
@@ -258,7 +244,7 @@ All notable changes to this project will be documented in this file. See [commit
 - add live count ([a9b8e38](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/a9b8e38f981b38d35626b596eca6f429114804f0))
 - add parts parameter ([7f7699a](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/7f7699ac48fea26d1464067eba0ccacefd84cbb8))
 - change parameter url to attachment ([ebedc38](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/ebedc383983900549eabc578d734e077d7c86931))
-- change parameter type to payload ([7ef0d3f](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/7ef0d3f956f45dc4d36b3d105ca99a830a2a541f))
+- change paramter type to payload ([7ef0d3f](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/7ef0d3f956f45dc4d36b3d105ca99a830a2a541f))
 - reduce limit of advance mode ([93c6add](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/93c6addca9dc801fdaea917d5582c62213779aa6))
 - remove username fetching, add embed messages ([9f1bc77](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/9f1bc7731da0e16adf45f5a04b7fcea4a929b05f))
 - use exporter functions ([2acb10e](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/2acb10e3853bfdf1592e09f9c4145512bd8ff657))
@@ -384,7 +370,7 @@ All notable changes to this project will be documented in this file. See [commit
 
 ### Features
 
-- add footer & timestamp ([4fbf213](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/4fbf213d3f571bbce53625b7b3a69d9b3ab0ba34))
+- add fotter & timestamp ([4fbf213](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/4fbf213d3f571bbce53625b7b3a69d9b3ab0ba34))
 - **ban command:** show ban target avatar ([b7859e5](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/b7859e5f0af3efa5462f606f9a755ac23e347df9))
 - display ban reason & avatar ([86012a8](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/86012a83a51b4da3ea12bc7c09d4defef6800d21))
 - display target avatar ([e5f04f0](https://github.com/MRDGH2821/Discord-Ban-Utils-Bot/commit/e5f04f03593245b6a3f93da470340464e102dd39))
