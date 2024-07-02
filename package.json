@@ -72,6 +72,7 @@
     "dpaste-ts": "^3.0.0",
     "enhanced-ms": "^3.0.0",
     "firebase-admin": "^12.2.0",
+    "is-ci": "^3.0.1",
     "markdown-table": "^3.0.3",
     "typesaurus": "^10.7.0"
   },
@@ -98,7 +99,6 @@
     "eslint-plugin-switch-case": "^1.1.2",
     "eslint-plugin-unused-imports": "^3.2.0",
     "husky": "^9.0.11",
-    "is-ci": "^3.0.1",
     "lint-staged": "^15.2.7",
     "prettier": "^3.3.2",
     "prettier-config-mrdgh2821": "^3.0.0",
