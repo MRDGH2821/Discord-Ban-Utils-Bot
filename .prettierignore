@@ -7,3 +7,4 @@ node_modules/
 \*.sapphire
 package-lock.json
 DockerFile
+.gitignore
