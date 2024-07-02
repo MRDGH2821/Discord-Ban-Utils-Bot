@@ -15,6 +15,7 @@ ENV NODE_ENV=production
 
 COPY ./firebase-service-acc ./firebase-service-acc
 COPY package*.json ./
+COPY .husky/install.mjs /app/.husky/install.mjs
 
 COPY --from=builder /app/dist ./dist
 
