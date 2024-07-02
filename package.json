@@ -40,7 +40,7 @@
     "mega-lint": "npx -y mega-linter-runner --flavor javascript",
     "preplayground": "npm run build",
     "playground": "node --env-file .env dist/experiments/playground.js",
-    "prepare": "is-ci || husky",
+    "prepare": "node .husky/install.mjs",
     "start": "node dist/index.js",
     "prewatch": "npm run generate:loaders",
     "watch": "tsc -w",
@@ -72,7 +72,6 @@
     "dpaste-ts": "^3.0.0",
     "enhanced-ms": "^3.0.0",
     "firebase-admin": "^12.2.0",
-    "is-ci": "^3.0.1",
     "markdown-table": "^3.0.3",
     "typesaurus": "^10.7.0"
   },
