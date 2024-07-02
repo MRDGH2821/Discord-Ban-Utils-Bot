@@ -46,6 +46,7 @@ lib/firebase-service-acc/*.json
 megalinter-reports/*
 old/*
 firebase-service-acc/*.json
+firebase-service-acc/*.txt
 .devcontainer/gpg/*
 !.devcontainer/gpg/README.md
 megalinter-reports/
