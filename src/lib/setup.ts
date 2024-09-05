@@ -14,6 +14,7 @@ ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior
 // Enable colorette
 colorette.createColors({ useColor: true });
 declare module '@sapphire/framework' {
+  //  @ts-expect-error This is module override
   export interface DetailedDescriptionCommand {
     help: string;
     subcommands?: {
