@@ -16,6 +16,7 @@
         "exiasr.hadolint",
         "foxundermoon.shell-format",
         "github.vscode-github-actions",
+        "idered.npm",
         "joshbolduc.commitlint",
         "ms-azuretools.vscode-containers",
         "oderwat.indent-rainbow",
