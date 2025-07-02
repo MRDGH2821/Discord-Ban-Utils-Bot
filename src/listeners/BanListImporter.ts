@@ -1,9 +1,9 @@
-import { ApplyOptions } from '@sapphire/decorators';
-import { container, Listener } from '@sapphire/framework';
-import { DurationFormatter } from '@sapphire/time-utilities';
-import { retry, sleepSync, toTitleCase } from '@sapphire/utilities';
-import { SingleBar } from 'cli-progress';
-import type { Guild, WebhookMessageCreateOptions } from 'discord.js';
+import { ApplyOptions } from "@sapphire/decorators";
+import { container, Listener } from "@sapphire/framework";
+import { DurationFormatter } from "@sapphire/time-utilities";
+import { retry, sleepSync, toTitleCase } from "@sapphire/utilities";
+import { SingleBar } from "cli-progress";
+import type { Guild, WebhookMessageCreateOptions } from "discord.js";
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -11,24 +11,24 @@ import {
   Collection,
   ComponentType,
   EmbedBuilder,
-} from 'discord.js';
-import { createPaste } from 'dpaste-ts';
-import { COLORS } from '../lib/Constants';
-import db from '../lib/Database';
-import { BUEvents } from '../lib/EventTypes';
-import type { BanEntityWithReason, ListImportOptions } from '../lib/typeDefs';
-import { fetchAllBans, sequentialPromises, truncateString } from '../lib/utils';
+} from "discord.js";
+import { createPaste } from "dpaste-ts";
+import { COLORS } from "../lib/Constants";
+import db from "../lib/Database";
+import { BUEvents } from "../lib/EventTypes";
+import type { BanEntityWithReason, ListImportOptions } from "../lib/typeDefs";
+import { fetchAllBans, sequentialPromises, truncateString } from "../lib/utils";
 
 const bansProgress = new SingleBar({
-  format: 'Progress | {bar} | {percentage}% | {value}/{total}',
-  barCompleteChar: '\u2588',
-  barIncompleteChar: '\u2591',
+  format: "Progress | {bar} | {percentage}% | {value}/{total}",
+  barCompleteChar: "\u2588",
+  barIncompleteChar: "\u2591",
   hideCursor: true,
 });
 
 type ErrorEntity = { banEntity: BanEntityWithReason; error: Error };
 
-const PIECE_NAME = 'List Importer';
+const PIECE_NAME = "List Importer";
 @ApplyOptions<Listener.Options>({
   name: PIECE_NAME,
   event: BUEvents.ListImport,
@@ -61,7 +61,7 @@ export default class UserEvent extends Listener {
     requesterUser: user,
     sourceMessage: message,
     mode,
-    shouldIgnoreFilterList = mode !== 'ban',
+    shouldIgnoreFilterList = mode !== "ban",
   }: ListImportOptions) {
     // this.container.logger.debug(JSON.stringify(list));
     const titleMode = toTitleCase(mode);
@@ -79,26 +79,32 @@ export default class UserEvent extends Listener {
     const allBans = await fetchAllBans(guild);
     const bansInGuild = new Set(allBans.keys());
     const ignoreList = await this.filterList(guild.id, shouldIgnoreFilterList);
-    const errorList = new Collection<BanEntityWithReason['id'], ErrorEntity>();
+    const errorList = new Collection<BanEntityWithReason["id"], ErrorEntity>();
 
     // this.container.logger.debug(bansInGuild.size);
-    const uniqueList = mode === 'ban' ? list.filter((ban) => !bansInGuild.has(ban.id)) : list;
-    const filteredList = uniqueList.filter((ban) => !ignoreList.includes(ban.id));
+    const uniqueList =
+      mode === "ban" ? list.filter((ban) => !bansInGuild.has(ban.id)) : list;
+    const filteredList = uniqueList.filter(
+      (ban) => !ignoreList.includes(ban.id),
+    );
 
-    container.logger.debug('Filtered list size:', filteredList.length);
+    container.logger.debug("Filtered list size:", filteredList.length);
     bansProgress.setTotal(filteredList.length);
 
-    const banFn = (id: string, reason: string) => guild.members.ban(id, { reason });
-    const unBanFn = (id: string, reason: string) => guild.members.unban(id, reason);
+    const banFn = (id: string, reason: string) =>
+      guild.members.ban(id, { reason });
+    const unBanFn = (id: string, reason: string) =>
+      guild.members.unban(id, reason);
 
-    const actionFn = mode === 'ban' ? banFn : unBanFn;
+    const actionFn = mode === "ban" ? banFn : unBanFn;
     bansProgress.start(filteredList.length, 0);
     const performBan = async (ban: BanEntityWithReason) =>
       retry(
         async () =>
           actionFn(
             ban.id,
-            ban.reason || `Imported by ${user.username} on ${new Date().toUTCString()}`,
+            ban.reason ||
+              `Imported by ${user.username} on ${new Date().toUTCString()}`,
           )
             .then(() => successList.add(ban))
             .then(() => bansProgress.increment())
@@ -117,10 +123,10 @@ export default class UserEvent extends Listener {
         3,
       );
 
-    container.logger.debug('Starting bans...\n');
+    container.logger.debug("Starting bans...\n");
     await sequentialPromises(filteredList, performBan)
       .then(() => bansProgress.stop())
-      .then(() => message.edit({ content: 'Bans completed!' }))
+      .then(() => message.edit({ content: "Bans completed!" }))
       .catch(async (error) =>
         message.reply({
           content: `${user}\nAn error occurred while importing ${mode} list: \n${error}`,
@@ -138,23 +144,23 @@ export default class UserEvent extends Listener {
           Unique: filteredList.length,
           Total: list.length,
           Mode: mode,
-          FilterList: shouldIgnoreFilterList ? 'Ignored' : 'Applied',
+          FilterList: shouldIgnoreFilterList ? "Ignored" : "Applied",
         },
         null,
         2,
       ),
     );
 
-    let elVerdict = '';
+    let elVerdict = "";
 
-    if (mode === 'ban') {
+    if (mode === "ban") {
       elVerdict = shouldIgnoreFilterList
-        ? 'Bot will **not** filter the list.\n Thus the excluded people will be banned.'
-        : 'Bot will filter the list.\n Thus the excluded people will **not** be banned.';
-    } else if (mode === 'unban') {
+        ? "Bot will **not** filter the list.\n Thus the excluded people will be banned."
+        : "Bot will filter the list.\n Thus the excluded people will **not** be banned.";
+    } else if (mode === "unban") {
       elVerdict = shouldIgnoreFilterList
-        ? 'Bot will **not** filter the list.\n Thus the excluded people will be unbanned (if they were banned).'
-        : 'Bot will filter the list.\n Thus the excluded people will **not** be unbanned (if they were banned).';
+        ? "Bot will **not** filter the list.\n Thus the excluded people will be unbanned (if they were banned)."
+        : "Bot will filter the list.\n Thus the excluded people will **not** be unbanned (if they were banned).";
     }
 
     const operationEmbed = EmbedBuilder.from({
@@ -175,7 +181,7 @@ export default class UserEvent extends Listener {
           value: `${filteredList.length}`,
         },
         {
-          name: 'Filter List Status',
+          name: "Filter List Status",
           value: elVerdict,
         },
         {
@@ -183,7 +189,7 @@ export default class UserEvent extends Listener {
           value: `${list.length}`,
         },
         {
-          name: 'Time Taken',
+          name: "Time Taken",
           value: new DurationFormatter().format(timeTaken),
         },
       ],
@@ -207,12 +213,14 @@ export default class UserEvent extends Listener {
           url: failedListLink,
         }),
       );
-      operationEmbed.addFields([{ name: 'Link of list of failed bans', value: failedListLink }]);
+      operationEmbed.addFields([
+        { name: "Link of list of failed bans", value: failedListLink },
+      ]);
     }
     component.addComponents(
       new ButtonBuilder({
         type: ComponentType.Button,
-        label: 'Jump to OG msg.',
+        label: "Jump to OG msg.",
         style: ButtonStyle.Link,
         url: message.url,
       }),
@@ -225,8 +233,10 @@ export default class UserEvent extends Listener {
         failedList.size > 0
           ? [
               {
-                name: 'failed_bans.json',
-                attachment: Buffer.from(JSON.stringify(errorList.toJSON(), null, 2)),
+                name: "failed_bans.json",
+                attachment: Buffer.from(
+                  JSON.stringify(errorList.toJSON(), null, 2),
+                ),
               },
             ]
           : [],
@@ -238,11 +248,16 @@ export default class UserEvent extends Listener {
     });
   }
 
-  public async sendLog(guildId: Guild['id'], webhookOptions: WebhookMessageCreateOptions) {
+  public async sendLog(
+    guildId: Guild["id"],
+    webhookOptions: WebhookMessageCreateOptions,
+  ) {
     const settings = await db.servers.get(guildId).then((v) => v?.data);
     if (!settings || !settings.sendImportLog) return;
 
-    const webhook = await this.container.client.fetchWebhook(settings.webhookId);
+    const webhook = await this.container.client.fetchWebhook(
+      settings.webhookId,
+    );
     if (!webhook) return;
 
     await webhook.send(webhookOptions);
@@ -252,5 +267,5 @@ export default class UserEvent extends Listener {
 void container.stores.loadPiece({
   name: PIECE_NAME,
   piece: UserEvent,
-  store: 'listeners',
+  store: "listeners",
 });

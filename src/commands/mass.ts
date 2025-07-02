@@ -1,46 +1,50 @@
-import { ApplyOptions } from '@sapphire/decorators';
-import { container } from '@sapphire/framework';
-import { Subcommand } from '@sapphire/plugin-subcommands';
-import { s } from '@sapphire/shapeshift';
+import { ApplyOptions } from "@sapphire/decorators";
+import { container } from "@sapphire/framework";
+import { Subcommand } from "@sapphire/plugin-subcommands";
+import { s } from "@sapphire/shapeshift";
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
   PermissionFlagsBits,
-} from 'discord.js';
-import { NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
-import type { ListImportOptions } from '../lib/typeDefs';
-import { banEntitySchemaBuilder, debugErrorEmbed, importList } from '../lib/utils';
+} from "discord.js";
+import { NOT_PERMITTED, SERVER_ONLY } from "../lib/Constants";
+import type { ListImportOptions } from "../lib/typeDefs";
+import {
+  banEntitySchemaBuilder,
+  debugErrorEmbed,
+  importList,
+} from "../lib/utils";
 
-const IGNORE_FILTER_TEXT = 'ignore-filter-list';
-const PIECE_NAME = 'mass';
+const IGNORE_FILTER_TEXT = "ignore-filter-list";
+const PIECE_NAME = "mass";
 @ApplyOptions<Subcommand.Options>({
   name: PIECE_NAME,
-  description: 'Perform Mass ban or unban',
+  description: "Perform Mass ban or unban",
   subcommands: [
     {
-      name: 'ban',
-      type: 'method',
+      name: "ban",
+      type: "method",
     },
     {
-      name: 'unban',
-      type: 'method',
+      name: "unban",
+      type: "method",
     },
   ],
-  preconditions: ['GuildOnly'],
+  preconditions: ["GuildOnly"],
   requiredUserPermissions: PermissionFlagsBits.BanMembers,
   requiredClientPermissions: PermissionFlagsBits.BanMembers,
   detailedDescription: {
-    help: 'Perform mass ban or unban on a list of discord IDs',
+    help: "Perform mass ban or unban on a list of discord IDs",
     subcommands: [
       {
-        name: 'ban',
-        description: 'Perform Mass Ban',
-        help: 'Perform mass ban on a list of discord IDs. Helpful when you have to bulk ban multiple spammers or raiders.',
+        name: "ban",
+        description: "Perform Mass Ban",
+        help: "Perform mass ban on a list of discord IDs. Helpful when you have to bulk ban multiple spammers or raiders.",
       },
       {
-        name: 'unban',
-        description: 'Perform Mass Unban',
-        help: 'Perform mass unban on a list of discord IDs. Helpful when you have to bulk unban multiple users.',
+        name: "unban",
+        description: "Perform Mass Unban",
+        help: "Perform mass unban on a list of discord IDs. Helpful when you have to bulk unban multiple users.",
       },
     ],
   },
@@ -56,52 +60,54 @@ export default class UserCommand extends Subcommand {
       type: ApplicationCommandType.ChatInput,
       options: [
         {
-          name: 'ban',
-          description: 'Perform Mass Ban',
+          name: "ban",
+          description: "Perform Mass Ban",
           type: ApplicationCommandOptionType.Subcommand,
           options: [
             {
-              name: 'ids',
-              description: 'Discord IDs you want to mass ban',
+              name: "ids",
+              description: "Discord IDs you want to mass ban",
               type: ApplicationCommandOptionType.String,
               required: true,
             },
             {
-              name: 'reason',
-              description: 'The reason for the ban',
+              name: "reason",
+              description: "The reason for the ban",
               type: ApplicationCommandOptionType.String,
               required: true,
               autocomplete: true,
             },
             {
               name: IGNORE_FILTER_TEXT,
-              description: 'Ignore the filter list while importing ban list (default: false)',
+              description:
+                "Ignore the filter list while importing ban list (default: false)",
               type: ApplicationCommandOptionType.Boolean,
               required: false,
             },
           ],
         },
         {
-          name: 'unban',
-          description: 'Perform Mass Unban',
+          name: "unban",
+          description: "Perform Mass Unban",
           type: ApplicationCommandOptionType.Subcommand,
           options: [
             {
-              name: 'ids',
-              description: 'Discord IDs you want to mass unban',
+              name: "ids",
+              description: "Discord IDs you want to mass unban",
               type: ApplicationCommandOptionType.String,
               required: true,
             },
             {
-              name: 'reason',
-              description: 'The reason for the unban',
+              name: "reason",
+              description: "The reason for the unban",
               type: ApplicationCommandOptionType.String,
               required: true,
               autocomplete: true,
             },
             {
               name: IGNORE_FILTER_TEXT,
-              description: 'Ignore the filter list while importing unban list (default: true)',
+              description:
+                "Ignore the filter list while importing unban list (default: true)",
               type: ApplicationCommandOptionType.Boolean,
               required: false,
             },
@@ -120,10 +126,12 @@ export default class UserCommand extends Subcommand {
     return schema.run(idList);
   }
 
-  public override async chatInputRun(interaction: Subcommand.ChatInputCommandInteraction) {
+  public override async chatInputRun(
+    interaction: Subcommand.ChatInputCommandInteraction,
+  ) {
     await interaction.deferReply();
-    const ids = interaction.options.getString('ids', true);
-    const reason = interaction.options.getString('reason', true);
+    const ids = interaction.options.getString("ids", true);
+    const reason = interaction.options.getString("reason", true);
     const invokerCmd = interaction.options.getSubcommand(true);
 
     if (!interaction.inGuild() || !interaction.guild) {
@@ -142,11 +150,11 @@ export default class UserCommand extends Subcommand {
       return;
     }
 
-    const schema = s.enum<ListImportOptions['mode']>(['ban', 'unban']);
+    const schema = s.enum<ListImportOptions["mode"]>(["ban", "unban"]);
 
     const mode = schema.parse(invokerCmd);
     const shouldIgnoreFilterList =
-      interaction.options.getBoolean(IGNORE_FILTER_TEXT) || mode !== 'ban';
+      interaction.options.getBoolean(IGNORE_FILTER_TEXT) || mode !== "ban";
 
     const parsedIds = this.parseIds(ids, reason);
 
@@ -156,19 +164,21 @@ export default class UserCommand extends Subcommand {
           debugErrorEmbed({
             checks: [
               {
-                question: 'Can you ban?',
-                result: interaction.memberPermissions.has(PermissionFlagsBits.BanMembers),
+                question: "Can you ban?",
+                result: interaction.memberPermissions.has(
+                  PermissionFlagsBits.BanMembers,
+                ),
               },
               {
-                question: 'Inside server?',
+                question: "Inside server?",
                 result: interaction.inGuild(),
               },
             ],
-            description: 'There was an error while parsing the list of IDs',
+            description: "There was an error while parsing the list of IDs",
             error: parsedIds.error!,
             inputs: [
               {
-                name: 'reason',
+                name: "reason",
                 value: reason,
               },
               {
@@ -176,20 +186,26 @@ export default class UserCommand extends Subcommand {
                 value: `${shouldIgnoreFilterList}`,
               },
             ],
-            solution: 'Please check your ban list once',
-            title: '**An error occurred**',
+            solution: "Please check your ban list once",
+            title: "**An error occurred**",
           }),
         ],
       });
       return;
     }
 
-    await importList(interaction, parsedIds.value, interaction.guild, mode, shouldIgnoreFilterList);
+    await importList(
+      interaction,
+      parsedIds.value,
+      interaction.guild,
+      mode,
+      shouldIgnoreFilterList,
+    );
   }
 }
 
 void container.stores.loadPiece({
   name: PIECE_NAME,
   piece: UserCommand,
-  store: 'commands',
+  store: "commands",
 });

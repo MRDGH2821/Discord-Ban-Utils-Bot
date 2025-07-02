@@ -1,19 +1,26 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable no-restricted-syntax */
-import { ApplyOptions } from '@sapphire/decorators';
-import { isGuildMember, PaginatedMessage } from '@sapphire/discord.js-utilities';
-import { Command, container } from '@sapphire/framework';
-import type { Snowflake } from 'discord.js';
-import { ApplicationCommandOptionType, EmbedBuilder, PermissionsBitField } from 'discord.js';
-import { COLORS } from '../lib/Constants';
-import { formatCmdName, sequentialPromises } from '../lib/utils';
+import { ApplyOptions } from "@sapphire/decorators";
+import {
+  isGuildMember,
+  PaginatedMessage,
+} from "@sapphire/discord.js-utilities";
+import { Command, container } from "@sapphire/framework";
+import type { Snowflake } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  EmbedBuilder,
+  PermissionsBitField,
+} from "discord.js";
+import { COLORS } from "../lib/Constants";
+import { formatCmdName, sequentialPromises } from "../lib/utils";
 
-const PIECE_NAME = 'help';
+const PIECE_NAME = "help";
 @ApplyOptions<Command.Options>({
   name: PIECE_NAME,
-  description: 'Provides help for commands',
+  description: "Provides help for commands",
   detailedDescription: {
-    help: 'Provides detailed description of commands with other necessary info.\nSome commands require extra permissions and the emojis will tell if it is granted or not.\n✅ = Permission granted to you/bot\n❌ = Permission denied to you/bot',
+    help: "Provides detailed description of commands with other necessary info.\nSome commands require extra permissions and the emojis will tell if it is granted or not.\n✅ = Permission granted to you/bot\n❌ = Permission denied to you/bot",
   },
 })
 export default class UserCommand extends Command {
@@ -23,8 +30,8 @@ export default class UserCommand extends Command {
       description: this.description,
       options: [
         {
-          name: 'command',
-          description: 'Put command name to see its detailed description',
+          name: "command",
+          description: "Put command name to see its detailed description",
           type: ApplicationCommandOptionType.String,
           required: false,
           autocomplete: true,
@@ -33,7 +40,9 @@ export default class UserCommand extends Command {
     });
   }
 
-  public override async autocompleteRun(interaction: Command.AutocompleteInteraction) {
+  public override async autocompleteRun(
+    interaction: Command.AutocompleteInteraction,
+  ) {
     const cmd = interaction.options.getFocused();
     const commands = await interaction.client.application.commands.fetch();
 
@@ -54,13 +63,16 @@ export default class UserCommand extends Command {
     requiredPermissions?: PermissionsBitField,
     availablePermissions?: Readonly<PermissionsBitField>,
   ) {
-    let text = '';
+    let text = "";
 
-    if (!requiredPermissions || requiredPermissions.toArray().length <= 0) return 'None';
+    if (!requiredPermissions || requiredPermissions.toArray().length <= 0)
+      return "None";
 
     if (availablePermissions && availablePermissions.toArray().length > 0) {
       for (const permission of requiredPermissions) {
-        text += requiredPermissions.has(permission) ? `${permission} ✅\n` : `${permission} ❌\n`;
+        text += requiredPermissions.has(permission)
+          ? `${permission} ✅\n`
+          : `${permission} ❌\n`;
       }
     } else {
       for (const permission of requiredPermissions) {
@@ -71,22 +83,29 @@ export default class UserCommand extends Command {
     return text;
   }
 
-  public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
+  public override async chatInputRun(
+    interaction: Command.ChatInputCommandInteraction,
+  ) {
     await interaction.deferReply();
-    const cmdId = interaction.options.getString('command');
+    const cmdId = interaction.options.getString("command");
     if (cmdId) {
       return interaction.editReply({
         embeds: [await this.singleCommandHelp(cmdId, interaction)],
       });
     }
 
-    const cmdIds = (await interaction.client.application.commands.fetch()).map((cmd) => cmd.id);
-    const helpEmbed = (commandId: Snowflake) => this.singleCommandHelp(commandId, interaction);
+    const cmdIds = (await interaction.client.application.commands.fetch()).map(
+      (cmd) => cmd.id,
+    );
+    const helpEmbed = (commandId: Snowflake) =>
+      this.singleCommandHelp(commandId, interaction);
     const paginatedEmbeds = new PaginatedMessage();
 
     return sequentialPromises(cmdIds, helpEmbed)
       .then((embeds) =>
-        sequentialPromises(embeds, async (embed) => paginatedEmbeds.addAsyncPageEmbed(embed)),
+        sequentialPromises(embeds, async (embed) =>
+          paginatedEmbeds.addAsyncPageEmbed(embed),
+        ),
       )
       .then(() => paginatedEmbeds.run(interaction));
   }
@@ -96,7 +115,7 @@ export default class UserCommand extends Command {
     interaction: Command.ChatInputCommandInteraction,
   ) {
     const cmd = await interaction.client.application.commands.fetch(cmdId);
-    const command = this.container.stores.get('commands').get(cmd.name);
+    const command = this.container.stores.get("commands").get(cmd.name);
 
     if (!command) throw new Error(`Command with id: ${cmdId} not found`);
 
@@ -121,16 +140,22 @@ export default class UserCommand extends Command {
       .setColor(COLORS.charcoalInvisible)
       .addFields([
         {
-          name: 'Detailed description',
-          value: command.detailedDescription?.help ?? 'None',
+          name: "Detailed description",
+          value: command.detailedDescription?.help ?? "None",
         },
         {
-          name: 'Permissions required by bot & status',
-          value: this.permissionsStatus(requiredBotPermissions, availablePermissionsToBot),
+          name: "Permissions required by bot & status",
+          value: this.permissionsStatus(
+            requiredBotPermissions,
+            availablePermissionsToBot,
+          ),
         },
         {
-          name: 'Required user permissions & status',
-          value: this.permissionsStatus(requiredUserPermissions, availablePermissionsToUser),
+          name: "Required user permissions & status",
+          value: this.permissionsStatus(
+            requiredUserPermissions,
+            availablePermissionsToUser,
+          ),
         },
       ]);
 
@@ -139,12 +164,17 @@ export default class UserCommand extends Command {
       const subCommandText = subcommands?.map((subcommand) => {
         const subName = subcommand.name;
         const { group } = subcommand;
-        const formattedCmdName = formatCmdName(command.name, cmdId, subName, group);
+        const formattedCmdName = formatCmdName(
+          command.name,
+          cmdId,
+          subName,
+          group,
+        );
         return `${formattedCmdName}\n${subcommand.description}\n${subcommand.help}`;
       });
       embed.addFields({
-        name: 'Subcommands',
-        value: subCommandText.join('\n\n'),
+        name: "Subcommands",
+        value: subCommandText.join("\n\n"),
       });
     }
 
@@ -155,5 +185,5 @@ export default class UserCommand extends Command {
 void container.stores.loadPiece({
   name: PIECE_NAME,
   piece: UserCommand,
-  store: 'commands',
+  store: "commands",
 });

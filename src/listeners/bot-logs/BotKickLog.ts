@@ -1,20 +1,26 @@
-import { ApplyOptions } from '@sapphire/decorators';
-import { container, Listener } from '@sapphire/framework';
-import type { APIEmbed } from 'discord.js';
-import { COLORS } from '../../lib/Constants';
-import db from '../../lib/Database';
-import type { BotGuildMemberKickOptions } from '../../lib/EventTypes';
-import { BUEvents } from '../../lib/EventTypes';
-import { getWebhook } from '../../lib/utils';
+import { ApplyOptions } from "@sapphire/decorators";
+import { container, Listener } from "@sapphire/framework";
+import type { APIEmbed } from "discord.js";
+import { COLORS } from "../../lib/Constants";
+import db from "../../lib/Database";
+import type { BotGuildMemberKickOptions } from "../../lib/EventTypes";
+import { BUEvents } from "../../lib/EventTypes";
+import { getWebhook } from "../../lib/utils";
 
-const PIECE_NAME = 'Bot Kick Log';
+const PIECE_NAME = "Bot Kick Log";
 @ApplyOptions<Listener.Options>({
   name: PIECE_NAME,
   event: BUEvents.BotGuildMemberKick,
 })
 export default class UserEvent extends Listener {
-  public override async run({ convict, executor, reason }: BotGuildMemberKickOptions) {
-    const settings = await db.servers.get(executor.guild.id).then((v) => v?.data);
+  public override async run({
+    convict,
+    executor,
+    reason,
+  }: BotGuildMemberKickOptions) {
+    const settings = await db.servers
+      .get(executor.guild.id)
+      .then((v) => v?.data);
     if (!settings || !settings?.sendUnbanLog) {
       return;
     }
@@ -25,13 +31,13 @@ export default class UserEvent extends Listener {
     }
 
     const kickEmbed: APIEmbed = {
-      title: '**BU Member Kick Log**',
+      title: "**BU Member Kick Log**",
       color: COLORS.blueGrayBoot,
       description: `\`${convict.user.username}\` ${convict} is kicked with the swiftest boots!\nID: \`${convict.id}\`\n\nReason: ${reason}`,
       timestamp: new Date().toISOString(),
       fields: [
         {
-          name: '**Justice Kick Boots Wielder**',
+          name: "**Justice Kick Boots Wielder**",
           value: `${executor.user.username} ${executor}`,
         },
       ],
@@ -39,7 +45,7 @@ export default class UserEvent extends Listener {
 
     await webhook.send({
       embeds: [kickEmbed],
-      username: 'BU Kick Log',
+      username: "BU Kick Log",
     });
   }
 }
@@ -47,5 +53,5 @@ export default class UserEvent extends Listener {
 void container.stores.loadPiece({
   name: PIECE_NAME,
   piece: UserEvent,
-  store: 'listeners',
+  store: "listeners",
 });

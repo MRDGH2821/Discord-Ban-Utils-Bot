@@ -1,11 +1,11 @@
-import { ApplyOptions } from '@sapphire/decorators';
-import { Command, container } from '@sapphire/framework';
-import { ApplicationCommandType, Message } from 'discord.js';
+import { ApplyOptions } from "@sapphire/decorators";
+import { Command, container } from "@sapphire/framework";
+import { ApplicationCommandType, Message } from "discord.js";
 
-const PIECE_NAME = 'ping';
+const PIECE_NAME = "ping";
 @ApplyOptions<Command.Options>({
   name: PIECE_NAME,
-  description: 'ping pong',
+  description: "ping pong",
   detailedDescription: {
     help: "Check how fast the bot can respond to you.\nLower the number, the faster is the response.\n(Measures bot's network latency, not bot's ability to do things fast.",
   },
@@ -38,12 +38,16 @@ export default class UserCommand extends Command {
   }
 
   // Chat Input (slash) command
-  public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
+  public override async chatInputRun(
+    interaction: Command.ChatInputCommandInteraction,
+  ) {
     return this.sendPing(interaction);
   }
 
   // Context Menu command
-  public override async contextMenuRun(interaction: Command.ContextMenuCommandInteraction) {
+  public override async contextMenuRun(
+    interaction: Command.ContextMenuCommandInteraction,
+  ) {
     return this.sendPing(interaction);
   }
 
@@ -55,9 +59,9 @@ export default class UserCommand extends Command {
   ) {
     const pingMessage =
       interactionOrMessage instanceof Message
-        ? await interactionOrMessage.channel.send({ content: 'Ping?' })
+        ? await interactionOrMessage.channel.send({ content: "Ping?" })
         : await interactionOrMessage.reply({
-            content: 'Ping?',
+            content: "Ping?",
             fetchReply: true,
           });
 
@@ -78,5 +82,5 @@ export default class UserCommand extends Command {
 void container.stores.loadPiece({
   name: PIECE_NAME,
   piece: UserCommand,
-  store: 'commands',
+  store: "commands",
 });

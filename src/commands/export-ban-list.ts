@@ -1,5 +1,5 @@
-import { ApplyOptions } from '@sapphire/decorators';
-import { Command, container } from '@sapphire/framework';
+import { ApplyOptions } from "@sapphire/decorators";
+import { Command, container } from "@sapphire/framework";
 import {
   type APIEmbed,
   ApplicationCommandOptionType,
@@ -7,23 +7,23 @@ import {
   ButtonStyle,
   ComponentType,
   PermissionFlagsBits,
-} from 'discord.js';
-import { COLORS, SERVER_ONLY } from '../lib/Constants';
-import type { BanExportOptions } from '../lib/typeDefs';
-import { emitBotEvent } from '../lib/utils';
+} from "discord.js";
+import { COLORS, SERVER_ONLY } from "../lib/Constants";
+import type { BanExportOptions } from "../lib/typeDefs";
+import { emitBotEvent } from "../lib/utils";
 
-const PIECE_NAME = 'export-ban-list';
+const PIECE_NAME = "export-ban-list";
 @ApplyOptions<Command.Options>({
   name: PIECE_NAME,
-  description: 'Exports ban list as link(s)',
+  description: "Exports ban list as link(s)",
   requiredClientPermissions: [
     PermissionFlagsBits.ViewAuditLog,
     PermissionFlagsBits.BanMembers,
     PermissionFlagsBits.EmbedLinks,
   ],
-  preconditions: ['GuildOnly'],
+  preconditions: ["GuildOnly"],
   detailedDescription: {
-    help: 'Exports all the bans of current server as a list of links.',
+    help: "Exports all the bans of current server as a list of links.",
   },
 })
 export default class UserCommand extends Command {
@@ -36,14 +36,14 @@ export default class UserCommand extends Command {
       type: ApplicationCommandType.ChatInput,
       options: [
         {
-          name: 'include-reason',
-          description: 'Export the ban list with ban reason (default: true)',
+          name: "include-reason",
+          description: "Export the ban list with ban reason (default: true)",
           type: ApplicationCommandOptionType.Boolean,
           required: false,
         },
         {
-          name: 'ignore-filter-list',
-          description: 'Ignore the filter list (default: false)',
+          name: "ignore-filter-list",
+          description: "Ignore the filter list (default: false)",
           type: ApplicationCommandOptionType.Boolean,
           required: false,
         },
@@ -51,12 +51,19 @@ export default class UserCommand extends Command {
     });
   }
 
-  public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-    const reasonFlag = interaction.options.getBoolean('include-reason');
+  public override async chatInputRun(
+    interaction: Command.ChatInputCommandInteraction,
+  ) {
+    const reasonFlag = interaction.options.getBoolean("include-reason");
     const includeReason = reasonFlag === null ? true : reasonFlag;
-    const shouldIgnoreFilterList = interaction.options.getBoolean('ignore-filter-list') ?? false;
+    const shouldIgnoreFilterList =
+      interaction.options.getBoolean("ignore-filter-list") ?? false;
 
-    if (!interaction.guild || !interaction.inGuild() || !interaction.inCachedGuild()) {
+    if (
+      !interaction.guild ||
+      !interaction.inGuild() ||
+      !interaction.inCachedGuild()
+    ) {
       return interaction.reply({
         content: SERVER_ONLY,
         ephemeral: true,
@@ -67,9 +74,9 @@ export default class UserCommand extends Command {
       .reply({
         embeds: [
           {
-            title: '**Confirm Export**',
+            title: "**Confirm Export**",
             description:
-              'Exporting a ban list may take a long time and cannot be cancelled once started. \nAre you sure you want to export?',
+              "Exporting a ban list may take a long time and cannot be cancelled once started. \nAre you sure you want to export?",
           },
         ],
         components: [
@@ -79,14 +86,14 @@ export default class UserCommand extends Command {
               {
                 type: ComponentType.Button,
                 style: ButtonStyle.Success,
-                label: 'Yes',
-                custom_id: 'export-ban-list-yes',
+                label: "Yes",
+                custom_id: "export-ban-list-yes",
               },
               {
                 type: ComponentType.Button,
                 style: ButtonStyle.Danger,
-                label: 'No',
-                custom_id: 'export-ban-list-no',
+                label: "No",
+                custom_id: "export-ban-list-no",
               },
             ],
           },
@@ -102,12 +109,12 @@ export default class UserCommand extends Command {
         }),
       )
       .then((btx) => {
-        if (btx.customId === 'export-ban-list-yes') {
+        if (btx.customId === "export-ban-list-yes") {
           const statusEmbed: APIEmbed = {
-            title: '**Ban List export Scheduled**',
+            title: "**Ban List export Scheduled**",
             color: COLORS.lightGray,
             description: `Ban list export is scheduled. You will be notified in this channel when it's done.\n\nFilter list is ${
-              shouldIgnoreFilterList ? 'ignored' : 'applied'
+              shouldIgnoreFilterList ? "ignored" : "applied"
             }`,
             timestamp: new Date().toISOString(),
           };
@@ -120,7 +127,7 @@ export default class UserCommand extends Command {
             shouldIgnoreFilterList,
           };
 
-          emitBotEvent('banListExport', exportBanOptions);
+          emitBotEvent("banListExport", exportBanOptions);
 
           // interaction.client.emit('exportBanList', exportBanOptions);
 
@@ -132,7 +139,7 @@ export default class UserCommand extends Command {
         return btx.editReply({
           embeds: [
             {
-              title: '**Export Cancelled**',
+              title: "**Export Cancelled**",
               color: COLORS.lightGray,
             },
           ],
@@ -145,5 +152,5 @@ export default class UserCommand extends Command {
 void container.stores.loadPiece({
   name: PIECE_NAME,
   piece: UserCommand,
-  store: 'commands',
+  store: "commands",
 });

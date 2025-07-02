@@ -9,7 +9,12 @@
     "plugin:eslint-comments/recommended",
     "plugin:prettier/recommended"
   ],
-  "ignorePatterns": ["./dist/**", ".eslintrc.json", "tsconfig.eslint.json", "tsconfig.json"],
+  "ignorePatterns": [
+    "./dist/**",
+    ".eslintrc.json",
+    "tsconfig.eslint.json",
+    "tsconfig.json"
+  ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "extraFileExtensions": [".json"],

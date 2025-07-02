@@ -1,5 +1,5 @@
-import { ApplyOptions } from '@sapphire/decorators';
-import { Command, container } from '@sapphire/framework';
+import { ApplyOptions } from "@sapphire/decorators";
+import { Command, container } from "@sapphire/framework";
 import {
   ActionRowBuilder,
   type APIEmbed,
@@ -9,16 +9,16 @@ import {
   OAuth2Scopes,
   PermissionFlagsBits,
   time,
-} from 'discord.js';
-import { COLORS, EMPTY_STRING } from '../lib/Constants';
-import { jumpLink } from '../lib/utils';
+} from "discord.js";
+import { COLORS, EMPTY_STRING } from "../lib/Constants";
+import { jumpLink } from "../lib/utils";
 
-const PIECE_NAME = 'user-info';
+const PIECE_NAME = "user-info";
 @ApplyOptions<Command.Options>({
   name: PIECE_NAME,
-  description: 'Info about user',
+  description: "Info about user",
   detailedDescription: {
-    help: 'Tells information about a user',
+    help: "Tells information about a user",
   },
 })
 export default class UserCommand extends Command {
@@ -28,8 +28,8 @@ export default class UserCommand extends Command {
       description: this.description,
       options: [
         {
-          name: 'user',
-          description: 'Put user ID or Select a user to see their info',
+          name: "user",
+          description: "Put user ID or Select a user to see their info",
           type: ApplicationCommandOptionType.User,
           required: true,
         },
@@ -37,10 +37,12 @@ export default class UserCommand extends Command {
     });
   }
 
-  public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-    const user = interaction.options.getUser('user', true);
+  public override async chatInputRun(
+    interaction: Command.ChatInputCommandInteraction,
+  ) {
+    const user = interaction.options.getUser("user", true);
     const embed: APIEmbed = {
-      title: '**User info**',
+      title: "**User info**",
       color: COLORS.lightGray,
       thumbnail: {
         url: user.displayAvatarURL(),
@@ -53,18 +55,18 @@ export default class UserCommand extends Command {
       url: jumpLink(user),
       fields: [
         {
-          name: 'Username',
+          name: "Username",
           value: user.bot ? user.tag : user.username,
           inline: true,
         },
         {
-          name: 'User ID',
+          name: "User ID",
           value: user.id,
           inline: true,
         },
         {
-          name: 'Account created on',
-          value: `${time(user.createdAt)} (${time(user.createdAt, 'R')})`,
+          name: "Account created on",
+          value: `${time(user.createdAt)} (${time(user.createdAt, "R")})`,
           inline: true,
         },
       ],
@@ -73,10 +75,14 @@ export default class UserCommand extends Command {
 
     const inviteButton = new ButtonBuilder({
       type: ComponentType.Button,
-      label: 'Invite the bot in your Server!',
+      label: "Invite the bot in your Server!",
       style: 5,
       url: this.container.client.generateInvite({
-        scopes: [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands, OAuth2Scopes.Guilds],
+        scopes: [
+          OAuth2Scopes.Bot,
+          OAuth2Scopes.ApplicationsCommands,
+          OAuth2Scopes.Guilds,
+        ],
         permissions: [
           PermissionFlagsBits.AttachFiles,
           PermissionFlagsBits.BanMembers,
@@ -109,10 +115,12 @@ export default class UserCommand extends Command {
     }
 
     const member = await interaction.guild.members.fetch(user);
-    const mod = await interaction.guild.members.fetch(interaction.member.user.id);
+    const mod = await interaction.guild.members.fetch(
+      interaction.member.user.id,
+    );
 
     embed.fields?.push({
-      name: '**Display name**',
+      name: "**Display name**",
       value: member.displayName,
       inline: true,
     });
@@ -120,13 +128,15 @@ export default class UserCommand extends Command {
     const { joinedAt, communicationDisabledUntil } = member;
     if (joinedAt) {
       embed.fields?.push({
-        name: '**Joined on**',
-        value: `${time(joinedAt)} (${time(joinedAt, 'R')})`,
+        name: "**Joined on**",
+        value: `${time(joinedAt)} (${time(joinedAt, "R")})`,
         inline: true,
       });
     }
 
-    const isActuallyMod = mod.permissions.has(PermissionFlagsBits.ModerateMembers);
+    const isActuallyMod = mod.permissions.has(
+      PermissionFlagsBits.ModerateMembers,
+    );
 
     if (isActuallyMod) {
       embed.fields?.push({
@@ -153,26 +163,26 @@ export default class UserCommand extends Command {
       }\``;
 
       embed.fields?.push({
-        name: '**Your Powers**',
+        name: "**Your Powers**",
         value: userModStats,
         inline: true,
       });
 
       embed.fields?.push({
-        name: '**Top 5 Roles**',
+        name: "**Top 5 Roles**",
         value: member.roles.cache
           .sort((a, b) => b.position - a.position)
           .filter((r) => !r.managed)
           .map((r) => r.toString())
-          .filter((r) => r !== '@everyone')
+          .filter((r) => r !== "@everyone")
           .splice(0, 5)
-          .join(' '),
+          .join(" "),
       });
 
       if (communicationDisabledUntil) {
         embed.fields?.push({
-          name: '**In Timeout until**',
-          value: `${time(communicationDisabledUntil)} (${time(communicationDisabledUntil, 'R')})`,
+          name: "**In Timeout until**",
+          value: `${time(communicationDisabledUntil)} (${time(communicationDisabledUntil, "R")})`,
           inline: true,
         });
       }
@@ -192,5 +202,5 @@ export default class UserCommand extends Command {
 void container.stores.loadPiece({
   name: PIECE_NAME,
   piece: UserCommand,
-  store: 'commands',
+  store: "commands",
 });

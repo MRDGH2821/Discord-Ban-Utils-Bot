@@ -35,13 +35,13 @@ LINTER_RULES_PATH: .
 PRINT_ALPACA: false
 
 PRE_COMMANDS:
-  - command: 'npm ci --force --include=dev'
-    cwd: 'workspace'
+  - command: "npm ci --force --include=dev"
+    cwd: "workspace"
 POST_COMMANDS:
-  - command: 'npm run format'
-    cwd: 'workspace'
-  - command: 'npm run lint'
-    cwd: 'workspace'
+  - command: "npm run format"
+    cwd: "workspace"
+  - command: "npm run lint"
+    cwd: "workspace"
 IGNORE_GITIGNORED_FILES: true
 
 # TYPESCRIPT_ES_CLI_LINT_MODE: project

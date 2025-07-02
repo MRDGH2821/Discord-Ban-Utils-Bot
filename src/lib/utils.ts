@@ -1,14 +1,14 @@
-import type { AnyInteractableInteraction } from '@sapphire/discord.js-utilities';
+import type { AnyInteractableInteraction } from "@sapphire/discord.js-utilities";
 import {
   type ChatInputCommandSuccessPayload,
   type Command,
   container,
   type ContextMenuCommandSuccessPayload,
   type MessageCommandSuccessPayload,
-} from '@sapphire/framework';
-import { s } from '@sapphire/shapeshift';
-import { codeBlock } from '@sapphire/utilities';
-import { cyan } from 'colorette';
+} from "@sapphire/framework";
+import { s } from "@sapphire/shapeshift";
+import { codeBlock } from "@sapphire/utilities";
+import { cyan } from "colorette";
 import type {
   APIEmbed,
   APIUser,
@@ -20,19 +20,19 @@ import type {
   Snowflake,
   User,
   Webhook,
-} from 'discord.js';
-import { chatInputApplicationCommandMention } from 'discord.js';
-import { COLORS } from './Constants';
-import type { DBSchema } from './Database';
-import db from './Database';
-import { emitBotEvent } from './EventTypes';
+} from "discord.js";
+import { chatInputApplicationCommandMention } from "discord.js";
+import { COLORS } from "./Constants";
+import type { DBSchema } from "./Database";
+import db from "./Database";
+import { emitBotEvent } from "./EventTypes";
 import type {
   BanEntity,
   BanEntityWithReason,
   ListImportOptions,
   SendLogOptions,
   SettingsParameter,
-} from './typeDefs';
+} from "./typeDefs";
 
 function getShardInfo(id: number) {
   return `[${cyan(id.toString())}]`;
@@ -47,11 +47,15 @@ function getAuthorInfo(author: User | APIUser) {
 }
 
 function getGuildInfo(guild: Guild | null) {
-  if (guild === null) return 'Direct Messages';
+  if (guild === null) return "Direct Messages";
   return `${guild.name}[${cyan(guild.id)}]`;
 }
 
-export function getSuccessLoggerData(guild: Guild | null, user: User, command: Command) {
+export function getSuccessLoggerData(
+  guild: Guild | null,
+  user: User,
+  command: Command,
+) {
   const shard = getShardInfo(guild?.shardId ?? 0);
   const commandName = getCommandInfo(command);
   const author = getAuthorInfo(user);
@@ -72,9 +76,17 @@ export function logSuccessCommand(
     | MessageCommandSuccessPayload,
 ): void {
   const successLoggerData: ReturnType<typeof getSuccessLoggerData> =
-    'interaction' in payload
-      ? getSuccessLoggerData(payload.interaction.guild, payload.interaction.user, payload.command)
-      : getSuccessLoggerData(payload.message.guild, payload.message.author, payload.command);
+    "interaction" in payload
+      ? getSuccessLoggerData(
+          payload.interaction.guild,
+          payload.interaction.user,
+          payload.command,
+        )
+      : getSuccessLoggerData(
+          payload.message.guild,
+          payload.message.author,
+          payload.command,
+        );
 
   container.logger.debug(
     `${successLoggerData.shard} - ${successLoggerData.commandName} ${successLoggerData.author} ${successLoggerData.sentAt}`,
@@ -101,7 +113,7 @@ type DebugEmbedOptions = {
   error: Error;
   checks: { question: string; result: boolean }[];
   solution: string;
-  inputs: Readonly<Pick<CommandInteractionOption, 'name' | 'value'>[]>;
+  inputs: Readonly<Pick<CommandInteractionOption, "name" | "value">[]>;
 };
 
 /**
@@ -112,31 +124,36 @@ type DebugEmbedOptions = {
  */
 export function debugErrorEmbed(options: DebugEmbedOptions): APIEmbed {
   const errField = {
-    name: '**Error Message**',
+    name: "**Error Message**",
     value: `${options.error.message}\n\n${codeBlock(
-      'json',
+      "json",
       JSON.stringify(options.error, null, 2),
     )}`,
   };
   const fields = [
     {
-      name: '**Checks**',
-      value: options.checks.map((check) => `${check.question}? **\`${check.result}\`**`).join('\n'),
+      name: "**Checks**",
+      value: options.checks
+        .map((check) => `${check.question}? **\`${check.result}\`**`)
+        .join("\n"),
     },
     {
-      name: '**Possible Solutions**',
+      name: "**Possible Solutions**",
       value: options.solution,
     },
     {
-      name: '**Inputs**',
-      value: options.inputs.map((input) => `${input.name}: ${input.value}`).join('\n'),
+      name: "**Inputs**",
+      value: options.inputs
+        .map((input) => `${input.name}: ${input.value}`)
+        .join("\n"),
     },
   ];
 
   if (errField.value.length > 1024) {
-    const TIP = '_(For more details, check the error message file, if attached)_';
+    const TIP =
+      "_(For more details, check the error message file, if attached)_";
     errField.value = `${TIP}\n${options.error.message}\n\n${codeBlock(
-      'json',
+      "json",
       truncateString(
         JSON.stringify(options.error, null, 2),
         900 - TIP.length - options.error.message.length,
@@ -154,7 +171,7 @@ export function debugErrorEmbed(options: DebugEmbedOptions): APIEmbed {
 
 export function debugErrorFile(error: Error) {
   return {
-    name: 'Error Dump.txt',
+    name: "Error Dump.txt",
     attachment: Buffer.from(
       `${error.message}\n-------------------\n\n${JSON.stringify(error, null, 2)}`,
     ),
@@ -162,9 +179,19 @@ export function debugErrorFile(error: Error) {
 }
 
 export async function fetchAllBans(guild: Guild) {
-  container.logger.debug('Fetching all bans in guild:', guild.name, `(${guild.id})`);
+  container.logger.debug(
+    "Fetching all bans in guild:",
+    guild.name,
+    `(${guild.id})`,
+  );
   const first1kBans = await guild.bans.fetch();
-  container.logger.debug('Found', first1kBans.size, 'bans in guild:', guild.name, `(${guild.id})`);
+  container.logger.debug(
+    "Found",
+    first1kBans.size,
+    "bans in guild:",
+    guild.name,
+    `(${guild.id})`,
+  );
   let masterBanList = first1kBans.clone();
   if (first1kBans.size < 1000) return masterBanList;
   while (masterBanList.size % 1000 === 0) {
@@ -175,9 +202,9 @@ export async function fetchAllBans(guild: Guild) {
         after: masterBanList.lastKey()!,
       });
       container.logger.debug(
-        'Found the next',
+        "Found the next",
         newBanList.size,
-        'bans in guild:',
+        "bans in guild:",
         guild.name,
         `(${guild.id})`,
       );
@@ -189,9 +216,9 @@ export async function fetchAllBans(guild: Guild) {
     }
   }
   container.logger.debug(
-    'Found a total of',
+    "Found a total of",
     masterBanList.size,
-    'bans in guild:',
+    "bans in guild:",
     guild.name,
     `(${guild.id})`,
   );
@@ -201,28 +228,33 @@ export async function fetchAllBans(guild: Guild) {
 export const selectedSettingsValidator = s
   .array(
     s.enum<SettingsParameter>([
-      'sendBanLog',
-      'sendUnbanLog',
-      'sendExitLog',
-      'sendJoinLog',
-      'sendKickLog',
-      'sendTimeoutLog',
-      'sendUnTimeoutLog',
-      'sendImportLog',
-      'sendBanExportLog',
-      'sendMassBanLog',
-      'sendMassUnbanLog',
+      "sendBanLog",
+      "sendUnbanLog",
+      "sendExitLog",
+      "sendJoinLog",
+      "sendKickLog",
+      "sendTimeoutLog",
+      "sendUnTimeoutLog",
+      "sendImportLog",
+      "sendBanExportLog",
+      "sendMassBanLog",
+      "sendMassUnbanLog",
     ]),
   )
   .transform((values) => {
-    const acc: Partial<DBSchema['servers']['Data']> = {};
+    const acc: Partial<DBSchema["servers"]["Data"]> = {};
     values.forEach((key) => {
       acc[key] = true;
     });
     return acc;
   });
 
-export async function sendLog({ guild, title, description, type }: SendLogOptions) {
+export async function sendLog({
+  guild,
+  title,
+  description,
+  type,
+}: SendLogOptions) {
   const settings = await db.servers.get(guild.id).then((v) => v?.data);
   if (!settings) return;
   if (!settings.webhookId) return;
@@ -246,16 +278,18 @@ export async function sendLog({ guild, title, description, type }: SendLogOption
     .catch((error) => container.logger.error(error));
 }
 
-export function jumpLink(user: GuildMember | GuildMember['user']) {
+export function jumpLink(user: GuildMember | GuildMember["user"]) {
   return `https://discord.com/users/${user.id}`;
 }
 
-export function getWebhook(guildId: Guild['id'], webhookId?: Webhook['id']) {
+export function getWebhook(guildId: Guild["id"], webhookId?: Webhook["id"]) {
   return container.client.guilds
     .fetch(guildId)
     .then((guild) => guild.fetchWebhooks())
     .then((hooks) =>
-      hooks.find((w) => w.id === webhookId || w.owner?.id === container.client.user?.id),
+      hooks.find(
+        (w) => w.id === webhookId || w.owner?.id === container.client.user?.id,
+      ),
     );
 }
 
@@ -266,15 +300,17 @@ export function banEntitySchemaBuilder(banReason: string) {
   });
   return s
     .array<BanEntity>(s.string().lengthGreaterThan(1))
-    .transform<BanEntityWithReason[]>((values) => values.map((v) => transformer(v)));
+    .transform<
+      BanEntityWithReason[]
+    >((values) => values.map((v) => transformer(v)));
 }
 
 export async function importList(
   interaction: AnyInteractableInteraction,
   list: BanEntityWithReason[],
   guild: Guild,
-  mode: ListImportOptions['mode'],
-  shouldIgnoreFilterList = mode !== 'ban',
+  mode: ListImportOptions["mode"],
+  shouldIgnoreFilterList = mode !== "ban",
 ) {
   const msg = await interaction.editReply({
     embeds: [
@@ -283,14 +319,14 @@ export async function importList(
         description: `Found ${
           list.length
         } ${mode}s.\n\nYou will be notified here when the import is complete.\nFilter list is ${
-          shouldIgnoreFilterList ? 'ignored' : 'applied'
+          shouldIgnoreFilterList ? "ignored" : "applied"
         }`,
         color: COLORS.lightGray,
       },
     ],
   });
   container.logger.debug(
-    'Found',
+    "Found",
     list.length,
     `${mode}s to import in guild:`,
     guild.name,
@@ -305,12 +341,15 @@ export async function importList(
     mode,
     shouldIgnoreFilterList,
   };
-  emitBotEvent('listImport', importOptions);
+  emitBotEvent("listImport", importOptions);
   // interaction.client.emit('importBanList', importOptions);
   return msg;
 }
 
-export async function getAuditLogData(auditType: AuditLogEvent, guildId: Guild['id']) {
+export async function getAuditLogData(
+  auditType: AuditLogEvent,
+  guildId: Guild["id"],
+) {
   const guild = await container.client.guilds.fetch(guildId);
 
   const settings = await db.servers.get(guild.id).then((v) => v?.data);
@@ -341,7 +380,7 @@ export async function getAuditLogData(auditType: AuditLogEvent, guildId: Guild['
   };
 }
 
-export { emitBotEvent, type ValueOf } from './EventTypes';
+export { emitBotEvent, type ValueOf } from "./EventTypes";
 
 export async function sequentialPromises<S, T>(
   params: S[],
@@ -355,50 +394,70 @@ export async function sequentialPromises<S, T>(
   return results;
 }
 
-export const SettingsDescription: { [x in keyof Required<DBSchema['servers']['Data']>]: string } = {
-  sendBanLog: 'Send Ban Log',
-  sendBanExportLog: 'Send Ban list Export Log',
-  sendImportLog: 'Send Un/Ban list Import Log',
-  sendExitLog: 'Send Member Exit Log',
-  sendJoinLog: 'Send Member Join Log',
-  sendKickLog: 'Send Kicked Member Log',
-  sendMassBanLog: 'Send Mass Ban Log',
-  sendMassUnbanLog: 'Send Mass UnBan Log',
-  sendTimeoutLog: 'Send Timeout Log',
-  sendUnbanLog: 'Send Unban Log',
-  sendUnTimeoutLog: 'Send Un-Timeout Log',
-  webhookId: 'Webhook ID',
-  guildId: 'Server ID',
+export const SettingsDescription: {
+  [x in keyof Required<DBSchema["servers"]["Data"]>]: string;
+} = {
+  sendBanLog: "Send Ban Log",
+  sendBanExportLog: "Send Ban list Export Log",
+  sendImportLog: "Send Un/Ban list Import Log",
+  sendExitLog: "Send Member Exit Log",
+  sendJoinLog: "Send Member Join Log",
+  sendKickLog: "Send Kicked Member Log",
+  sendMassBanLog: "Send Mass Ban Log",
+  sendMassUnbanLog: "Send Mass UnBan Log",
+  sendTimeoutLog: "Send Timeout Log",
+  sendUnbanLog: "Send Unban Log",
+  sendUnTimeoutLog: "Send Un-Timeout Log",
+  webhookId: "Webhook ID",
+  guildId: "Server ID",
 };
 
-function isKeyOfSettingsDescription(key: string): key is keyof typeof SettingsDescription {
+function isKeyOfSettingsDescription(
+  key: string,
+): key is keyof typeof SettingsDescription {
   return key in SettingsDescription;
 }
-export function settingFormatter(data: DBSchema['servers']['Data']) {
+export function settingFormatter(data: DBSchema["servers"]["Data"]) {
   const settings = Object.entries(data)
     .filter(([key]) => isKeyOfSettingsDescription(key))
     .map(([key, value]) => {
       const keyTyped = key as keyof typeof SettingsDescription;
       return `${SettingsDescription[keyTyped]}: ${value}`;
     });
-  return settings.join('\n');
+  return settings.join("\n");
 }
 
-export function getCmdNameFromInteraction(interaction: ChatInputCommandInteraction) {
+export function getCmdNameFromInteraction(
+  interaction: ChatInputCommandInteraction,
+) {
   const command = interaction.commandName;
   const subCmdGrp = interaction.options.getSubcommandGroup();
   const subCmd = interaction.options.getSubcommand();
 
   if (subCmdGrp) {
-    return chatInputApplicationCommandMention(command, subCmdGrp, subCmd, interaction.commandId);
+    return chatInputApplicationCommandMention(
+      command,
+      subCmdGrp,
+      subCmd,
+      interaction.commandId,
+    );
   }
   if (subCmd) {
-    return chatInputApplicationCommandMention(command, subCmd, interaction.commandId);
+    return chatInputApplicationCommandMention(
+      command,
+      subCmd,
+      interaction.commandId,
+    );
   }
   return chatInputApplicationCommandMention(command, interaction.commandId);
 }
 
-export function formatCmdName(name: string, id: Snowflake, subName?: string, group?: string) {
+export function formatCmdName(
+  name: string,
+  id: Snowflake,
+  subName?: string,
+  group?: string,
+) {
   if (subName && group) {
     return chatInputApplicationCommandMention(name, group, subName, id);
   }

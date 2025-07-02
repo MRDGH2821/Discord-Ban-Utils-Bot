@@ -1,16 +1,18 @@
-import './Firestore';
-import type { Guild, User, Webhook } from 'discord.js';
-import type { Typesaurus } from 'typesaurus';
-import { schema } from 'typesaurus';
+import "./Firestore";
+import type { Guild, User, Webhook } from "discord.js";
+import type { Typesaurus } from "typesaurus";
+import { schema } from "typesaurus";
 
 const db = schema(($) => ({
-  servers: $.collection<Setting, Setting['guildId']>(),
-  filterList: $.collection<FilterList, FilterList['guildId']>().name('filter-list'),
+  servers: $.collection<Setting, Setting["guildId"]>(),
+  filterList: $.collection<FilterList, FilterList["guildId"]>().name(
+    "filter-list",
+  ),
 }));
 
 interface Setting {
-  guildId: Guild['id'];
-  webhookId: Webhook['id'];
+  guildId: Guild["id"];
+  webhookId: Webhook["id"];
   sendBanExportLog?: boolean | null;
   sendBanLog?: boolean | null;
   sendExitLog?: boolean | null;
@@ -25,9 +27,9 @@ interface Setting {
 }
 
 interface FilterList {
-  importFilter: User['id'][];
-  exportFilter: User['id'][];
-  guildId: Guild['id'];
+  importFilter: User["id"][];
+  exportFilter: User["id"][];
+  guildId: Guild["id"];
 }
 
 export default db;

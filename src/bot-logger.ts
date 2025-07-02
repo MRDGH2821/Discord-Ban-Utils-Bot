@@ -1,4 +1,4 @@
-import { Logger, LogLevel } from '@sapphire/framework';
+import { Logger, LogLevel } from "@sapphire/framework";
 
 export const botLogLevel = LogLevel.Info;
 

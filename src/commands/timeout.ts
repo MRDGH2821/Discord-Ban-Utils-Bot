@@ -1,17 +1,17 @@
-import { ApplyOptions } from '@sapphire/decorators';
-import { isGuildMember } from '@sapphire/discord.js-utilities';
-import { Command, container } from '@sapphire/framework';
-import { Time } from '@sapphire/time-utilities';
-import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
-import ms from 'enhanced-ms';
-import { COLORS, NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
-import { emitBotEvent } from '../lib/utils';
+import { ApplyOptions } from "@sapphire/decorators";
+import { isGuildMember } from "@sapphire/discord.js-utilities";
+import { Command, container } from "@sapphire/framework";
+import { Time } from "@sapphire/time-utilities";
+import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
+import ms from "enhanced-ms";
+import { COLORS, NOT_PERMITTED, SERVER_ONLY } from "../lib/Constants";
+import { emitBotEvent } from "../lib/utils";
 
-const PIECE_NAME = 'timeout';
+const PIECE_NAME = "timeout";
 @ApplyOptions<Command.Options>({
   name: PIECE_NAME,
-  description: 'time out a user',
-  preconditions: ['GuildOnly'],
+  description: "time out a user",
+  preconditions: ["GuildOnly"],
   requiredClientPermissions: PermissionFlagsBits.ModerateMembers,
   requiredUserPermissions: PermissionFlagsBits.ModerateMembers,
   detailedDescription: {
@@ -28,14 +28,14 @@ export default class UserCommand extends Command {
       dmPermission: false,
       options: [
         {
-          name: 'user',
-          description: 'The user to time out',
+          name: "user",
+          description: "The user to time out",
           required: true,
           type: ApplicationCommandOptionType.User,
         },
         {
-          name: 'duration',
-          description: 'The duration of the timeout',
+          name: "duration",
+          description: "The duration of the timeout",
           required: true,
           type: ApplicationCommandOptionType.Integer,
           autocomplete: true,
@@ -43,35 +43,37 @@ export default class UserCommand extends Command {
           maxValue: Time.Day * 27,
         },
         {
-          name: 'reason',
-          description: 'The reason for the timeout',
+          name: "reason",
+          description: "The reason for the timeout",
           type: ApplicationCommandOptionType.String,
         },
       ],
     });
   }
 
-  public override async autocompleteRun(interaction: Command.AutocompleteInteraction) {
+  public override async autocompleteRun(
+    interaction: Command.AutocompleteInteraction,
+  ) {
     const value = interaction.options.getFocused();
 
     const choices = [
       {
-        name: 'Remove Timeout',
+        name: "Remove Timeout",
         value: -1,
       },
       {
-        name: '1 Minute (minimum)',
+        name: "1 Minute (minimum)",
         value: Time.Minute,
       },
       {
-        name: '27 Days (maximum)',
+        name: "27 Days (maximum)",
         value: Time.Day * 27,
       },
     ];
 
     try {
       const time = ms(value);
-      const INVALID_TEXT = 'Invalid time';
+      const INVALID_TEXT = "Invalid time";
       if (!time) throw new Error(INVALID_TEXT);
 
       const timeSentence = ms(time, { includeMs: true });
@@ -88,76 +90,76 @@ export default class UserCommand extends Command {
     } catch {
       const defaultChoices: { name: string; value: number }[] = [
         {
-          name: ms(ms('5 min')!)!,
-          value: ms('5 min')!,
+          name: ms(ms("5 min")!)!,
+          value: ms("5 min")!,
         },
         {
-          name: ms(ms('10 min')!)!,
-          value: ms('10 min')!,
+          name: ms(ms("10 min")!)!,
+          value: ms("10 min")!,
         },
         {
-          name: ms(ms('15 min')!)!,
-          value: ms('15 min')!,
+          name: ms(ms("15 min")!)!,
+          value: ms("15 min")!,
         },
         {
-          name: ms(ms('30 min')!)!,
-          value: ms('30 min')!,
+          name: ms(ms("30 min")!)!,
+          value: ms("30 min")!,
         },
         {
-          name: ms(ms('1 hour')!)!,
-          value: ms('1 hour')!,
+          name: ms(ms("1 hour")!)!,
+          value: ms("1 hour")!,
         },
         {
-          name: ms(ms('2 hours')!)!,
-          value: ms('2 hours')!,
+          name: ms(ms("2 hours")!)!,
+          value: ms("2 hours")!,
         },
         {
-          name: ms(ms('3 hours')!)!,
-          value: ms('3 hours')!,
+          name: ms(ms("3 hours")!)!,
+          value: ms("3 hours")!,
         },
         {
-          name: ms(ms('6 hours')!)!,
-          value: ms('6 hours')!,
+          name: ms(ms("6 hours")!)!,
+          value: ms("6 hours")!,
         },
         {
-          name: ms(ms('12 hours')!)!,
-          value: ms('12 hours')!,
+          name: ms(ms("12 hours")!)!,
+          value: ms("12 hours")!,
         },
         {
-          name: ms(ms('1 day')!)!,
-          value: ms('1 day')!,
+          name: ms(ms("1 day")!)!,
+          value: ms("1 day")!,
         },
         {
-          name: ms(ms('2 days')!)!,
-          value: ms('2 days')!,
+          name: ms(ms("2 days")!)!,
+          value: ms("2 days")!,
         },
         {
-          name: ms(ms('3 days')!)!,
-          value: ms('3 days')!,
+          name: ms(ms("3 days")!)!,
+          value: ms("3 days")!,
         },
         {
-          name: ms(ms('4 days')!)!,
-          value: ms('4 days')!,
+          name: ms(ms("4 days")!)!,
+          value: ms("4 days")!,
         },
         {
-          name: ms(ms('5 days')!)!,
-          value: ms('5 days')!,
+          name: ms(ms("5 days")!)!,
+          value: ms("5 days")!,
         },
         {
-          name: ms(ms('6 days')!)!,
-          value: ms('6 days')!,
+          name: ms(ms("6 days")!)!,
+          value: ms("6 days")!,
         },
         {
-          name: ms(ms('7 days')!)!,
-          value: ms('7 days')!,
+          name: ms(ms("7 days")!)!,
+          value: ms("7 days")!,
         },
         {
-          name: ms(ms('14 days')!)!,
-          value: ms('14 days')!,
+          name: ms(ms("14 days")!)!,
+          value: ms("14 days")!,
         },
         {
-          name: ms(ms('21 days')!)!,
-          value: ms('21 days')!,
+          name: ms(ms("21 days")!)!,
+          value: ms("21 days")!,
         },
       ];
 
@@ -166,10 +168,13 @@ export default class UserCommand extends Command {
     return interaction.respond(choices.slice(0, 25));
   }
 
-  public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-    const convict = interaction.options.getMember('user');
-    const duration = interaction.options.getInteger('duration', true);
-    const reason = interaction.options.getString('reason') || 'No reason provided';
+  public override async chatInputRun(
+    interaction: Command.ChatInputCommandInteraction,
+  ) {
+    const convict = interaction.options.getMember("user");
+    const duration = interaction.options.getInteger("duration", true);
+    const reason =
+      interaction.options.getString("reason") || "No reason provided";
 
     if (!interaction.inGuild() || !interaction.guild) {
       return interaction.reply({
@@ -185,7 +190,9 @@ export default class UserCommand extends Command {
       });
     }
 
-    if (!interaction.memberPermissions.has(PermissionFlagsBits.ModerateMembers)) {
+    if (
+      !interaction.memberPermissions.has(PermissionFlagsBits.ModerateMembers)
+    ) {
       return interaction.reply({
         content: NOT_PERMITTED,
         ephemeral: true,
@@ -201,7 +208,7 @@ export default class UserCommand extends Command {
 
     const fields = [
       {
-        name: '**Reason**',
+        name: "**Reason**",
         value: reason,
       },
     ];
@@ -238,7 +245,7 @@ export default class UserCommand extends Command {
     const executor = await interaction.guild.members.fetch(interaction.user.id);
 
     return convict.timeout(duration, reason).then((target) => {
-      emitBotEvent('botTimeout', { convict, executor, reason });
+      emitBotEvent("botTimeout", { convict, executor, reason });
       return interaction.reply({
         embeds: [
           {
@@ -249,7 +256,7 @@ export default class UserCommand extends Command {
             fields: [
               ...fields,
               {
-                name: '**Convict ID**',
+                name: "**Convict ID**",
                 value: convict.id,
               },
             ],
@@ -264,5 +271,5 @@ export default class UserCommand extends Command {
 void container.stores.loadPiece({
   name: PIECE_NAME,
   piece: UserCommand,
-  store: 'commands',
+  store: "commands",
 });

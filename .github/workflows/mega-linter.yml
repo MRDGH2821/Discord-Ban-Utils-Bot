@@ -118,8 +118,8 @@ jobs:
           !contains(github.event.head_commit.message, 'skip fix')
         with:
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-          commit-message: '[MegaLinter] Apply linters automatic fixes'
-          title: '[MegaLinter] Apply linters automatic fixes'
+          commit-message: "[MegaLinter] Apply linters automatic fixes"
+          title: "[MegaLinter] Apply linters automatic fixes"
           labels: bot
 
       - name: Create PR output
@@ -179,6 +179,6 @@ jobs:
               github.head_ref ||
               github.ref
             }}
-          commit_message: 'chore(megalinter): apply linters fixes'
+          commit_message: "chore(megalinter): apply linters fixes"
           commit_user_name: megalinter-bot
           commit_user_email: nicolas.vuillamy@ox.security

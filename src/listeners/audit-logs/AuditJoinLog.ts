@@ -1,13 +1,13 @@
-import { ApplyOptions } from '@sapphire/decorators';
-import { container, Events, Listener } from '@sapphire/framework';
-import { Time } from '@sapphire/time-utilities';
-import type { APIEmbed, GuildMember } from 'discord.js';
-import { time } from 'discord.js';
-import { COLORS } from '../../lib/Constants';
-import db from '../../lib/Database';
-import { getWebhook } from '../../lib/utils';
+import { ApplyOptions } from "@sapphire/decorators";
+import { container, Events, Listener } from "@sapphire/framework";
+import { Time } from "@sapphire/time-utilities";
+import type { APIEmbed, GuildMember } from "discord.js";
+import { time } from "discord.js";
+import { COLORS } from "../../lib/Constants";
+import db from "../../lib/Database";
+import { getWebhook } from "../../lib/utils";
 
-const PIECE_NAME = 'Audit Join Log';
+const PIECE_NAME = "Audit Join Log";
 @ApplyOptions<Listener.Options>({
   name: PIECE_NAME,
   event: Events.GuildMemberAdd,
@@ -29,18 +29,20 @@ export default class UserEvent extends Listener<typeof Events.GuildMemberAdd> {
     const ageDifference = Date.now() - ageStamp;
 
     const ageEmbed: APIEmbed = {
-      title: '**Audit Join Log**',
+      title: "**Audit Join Log**",
       color: COLORS.yellowWarning,
       description: `${member.user.tag} \`${
         member.user.username
-      }\` joined the server. \nAccount Created: ${time(ageStamp, 'F')} (${time(ageStamp, 'R')})\n${
-        ageDifference < Time.Week ? '**WARNING:** Account is less than 7 days old!' : ''
+      }\` joined the server. \nAccount Created: ${time(ageStamp, "F")} (${time(ageStamp, "R")})\n${
+        ageDifference < Time.Week
+          ? "**WARNING:** Account is less than 7 days old!"
+          : ""
       }`,
       timestamp: new Date().toISOString(),
     };
     await webhook.send({
       embeds: [ageEmbed],
-      username: 'BU Audit Log',
+      username: "BU Audit Log",
     });
   }
 }
@@ -48,5 +50,5 @@ export default class UserEvent extends Listener<typeof Events.GuildMemberAdd> {
 void container.stores.loadPiece({
   name: PIECE_NAME,
   piece: UserEvent,
-  store: 'listeners',
+  store: "listeners",
 });

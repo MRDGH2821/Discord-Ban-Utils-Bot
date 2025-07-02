@@ -1,19 +1,19 @@
-import { ApplyOptions } from '@sapphire/decorators';
-import { isGuildMember } from '@sapphire/discord.js-utilities';
-import { Command, container } from '@sapphire/framework';
-import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
-import { COLORS, NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
-import { emitBotEvent } from '../lib/utils';
+import { ApplyOptions } from "@sapphire/decorators";
+import { isGuildMember } from "@sapphire/discord.js-utilities";
+import { Command, container } from "@sapphire/framework";
+import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
+import { COLORS, NOT_PERMITTED, SERVER_ONLY } from "../lib/Constants";
+import { emitBotEvent } from "../lib/utils";
 
-const PIECE_NAME = 'kick';
+const PIECE_NAME = "kick";
 @ApplyOptions<Command.Options>({
   name: PIECE_NAME,
-  description: 'Kick out a member',
-  preconditions: ['GuildOnly'],
+  description: "Kick out a member",
+  preconditions: ["GuildOnly"],
   requiredClientPermissions: PermissionFlagsBits.KickMembers,
   requiredUserPermissions: PermissionFlagsBits.KickMembers,
   detailedDescription: {
-    help: 'Kicks a member out from current server.',
+    help: "Kicks a member out from current server.",
   },
 })
 export default class UserCommand extends Command {
@@ -26,24 +26,26 @@ export default class UserCommand extends Command {
       defaultMemberPermissions: PermissionFlagsBits.KickMembers,
       options: [
         {
-          name: 'user',
-          description: 'The user to kick',
+          name: "user",
+          description: "The user to kick",
           type: ApplicationCommandOptionType.User,
           required: true,
         },
         {
-          name: 'reason',
-          description: 'The reason for kicking',
+          name: "reason",
+          description: "The reason for kicking",
           type: ApplicationCommandOptionType.String,
         },
       ],
     });
   }
 
-  public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-    const convict = interaction.options.getMember('user');
+  public override async chatInputRun(
+    interaction: Command.ChatInputCommandInteraction,
+  ) {
+    const convict = interaction.options.getMember("user");
     const reason =
-      interaction.options.getString('reason') ||
+      interaction.options.getString("reason") ||
       `Kicked by ${interaction.user.username} on ${new Date().toString()} ||for no reason :joy:||`;
 
     if (!interaction.inGuild() || !interaction.guild) {
@@ -76,11 +78,11 @@ export default class UserCommand extends Command {
     const executor = await interaction.guild.members.fetch(interaction.user.id);
 
     return convict.kick(reason).then(() => {
-      emitBotEvent('botGuildMemberKick', { convict, executor, reason });
+      emitBotEvent("botGuildMemberKick", { convict, executor, reason });
       return interaction.reply({
         embeds: [
           {
-            title: '**Kicking Wrench Thrown!**',
+            title: "**Kicking Wrench Thrown!**",
             color: COLORS.blueGrayBoot,
             description: `\`${convict.user.username}\` ${convict} is kicked from this server.`,
             thumbnail: {
@@ -88,11 +90,11 @@ export default class UserCommand extends Command {
             },
             fields: [
               {
-                name: '**Reason**',
+                name: "**Reason**",
                 value: reason,
               },
               {
-                name: '**Convict ID**',
+                name: "**Convict ID**",
                 value: convict.id,
               },
             ],
@@ -107,5 +109,5 @@ export default class UserCommand extends Command {
 void container.stores.loadPiece({
   name: PIECE_NAME,
   piece: UserCommand,
-  store: 'commands',
+  store: "commands",
 });

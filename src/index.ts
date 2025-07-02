@@ -1,10 +1,10 @@
-import './lib/setup';
-import { LogLevel, SapphireClient } from '@sapphire/framework';
-import { GatewayIntentBits, Partials } from 'discord.js';
-import { botLogger } from './bot-logger';
+import "./lib/setup";
+import { LogLevel, SapphireClient } from "@sapphire/framework";
+import { GatewayIntentBits, Partials } from "discord.js";
+import { botLogger } from "./bot-logger";
 
 const client = new SapphireClient({
-  defaultPrefix: '!',
+  defaultPrefix: "!",
   caseInsensitiveCommands: true,
   logger: {
     instance: botLogger,
@@ -26,7 +26,7 @@ const client = new SapphireClient({
 // client.stores.registerPath(__dirname);
 const main = async () => {
   try {
-    client.logger.info('Logging in');
+    client.logger.info("Logging in");
     await client.login();
     client.logger.info(`Logged in as: ${client.user?.tag}`);
   } catch (error) {

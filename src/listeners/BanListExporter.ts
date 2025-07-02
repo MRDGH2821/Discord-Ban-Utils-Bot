@@ -1,6 +1,6 @@
-import { ApplyOptions } from '@sapphire/decorators';
-import { container, Listener } from '@sapphire/framework';
-import { chunk } from '@sapphire/utilities';
+import { ApplyOptions } from "@sapphire/decorators";
+import { container, Listener } from "@sapphire/framework";
+import { chunk } from "@sapphire/utilities";
 import {
   type APIEmbed,
   AttachmentBuilder,
@@ -8,12 +8,17 @@ import {
   EmbedBuilder,
   type Guild,
   type GuildBan,
-} from 'discord.js';
-import { createPaste } from 'dpaste-ts';
-import { COLORS } from '../lib/Constants';
-import db from '../lib/Database';
-import { BUEvents } from '../lib/EventTypes';
-import type { BanEntity, BanEntityWithReason, BanExportOptions, BanType } from '../lib/typeDefs';
+} from "discord.js";
+import { createPaste } from "dpaste-ts";
+import { COLORS } from "../lib/Constants";
+import db from "../lib/Database";
+import { BUEvents } from "../lib/EventTypes";
+import type {
+  BanEntity,
+  BanEntityWithReason,
+  BanExportOptions,
+  BanType,
+} from "../lib/typeDefs";
 import {
   debugErrorEmbed,
   debugErrorFile,
@@ -21,9 +26,9 @@ import {
   getWebhook,
   sequentialPromises,
   truncateString,
-} from '../lib/utils';
+} from "../lib/utils";
 
-const PIECE_NAME = 'Ban List Exporter';
+const PIECE_NAME = "Ban List Exporter";
 @ApplyOptions<Listener.Options>({
   name: PIECE_NAME,
   event: BUEvents.BanListExport,
@@ -34,7 +39,7 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
     return createPaste({
       content: JSON.stringify(array),
       title,
-      syntax: 'text',
+      syntax: "text",
     });
   }
 
@@ -82,22 +87,22 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
     }).catch((error: Error) => {
       this.container.logger.error(error);
       const errEmbed = debugErrorEmbed({
-        title: 'Error while exporting ban list',
-        description: 'An error occurred while exporting ban list',
+        title: "Error while exporting ban list",
+        description: "An error occurred while exporting ban list",
         error,
         checks: [
           {
-            question: 'None',
+            question: "None",
             result: true,
           },
         ],
         inputs: [
           {
-            name: 'Include Reason',
+            name: "Include Reason",
             value: `${includeReason}`,
           },
         ],
-        solution: 'Please wait for sometime before trying again.',
+        solution: "Please wait for sometime before trying again.",
       });
       const errFile = debugErrorFile(error);
       void this.sendLog(guild.id, errEmbed, [
@@ -130,17 +135,26 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
     return new Promise((resolve, reject) => {
       fetchAllBans(guild)
         .then(async (bans) => {
-          const excludeList = await this.filterList(guild.id, shouldIgnoreFilterList);
-          const filteredBans = bans.filter((ban) => !excludeList.includes(ban.user.id));
+          const excludeList = await this.filterList(
+            guild.id,
+            shouldIgnoreFilterList,
+          );
+          const filteredBans = bans.filter(
+            (ban) => !excludeList.includes(ban.user.id),
+          );
 
           return {
-            links: await this.exportBanList(includeReason, filteredBans, guild.name),
+            links: await this.exportBanList(
+              includeReason,
+              filteredBans,
+              guild.name,
+            ),
             bans: filteredBans,
           };
         })
         .then(({ links, bans }) => {
           const resultEmbed = EmbedBuilder.from({
-            title: '**Ban List Export Success!**',
+            title: "**Ban List Export Success!**",
             description: `Total Bans Found: ${bans.size}\n\nEach link contains ${
               includeReason ? 350 : 1000
             } bans.\nExcept the last one, which contains ${
@@ -149,12 +163,12 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
             color: COLORS.lightGray,
             fields: [
               {
-                name: '**Number of parts**',
+                name: "**Number of parts**",
                 value: `${links.length}`,
               },
               {
-                name: '**Links**',
-                value: links.join('\n'),
+                name: "**Links**",
+                value: links.join("\n"),
               },
             ],
             timestamp: new Date().toISOString(),
@@ -163,9 +177,11 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
               icon_url: user.displayAvatarURL(),
             },
           });
-          const resultFile = new AttachmentBuilder(Buffer.from(links.join('\n')))
-            .setFile(Buffer.from(links.join('\n')))
-            .setDescription('Ban list links')
+          const resultFile = new AttachmentBuilder(
+            Buffer.from(links.join("\n")),
+          )
+            .setFile(Buffer.from(links.join("\n")))
+            .setDescription("Ban list links")
             .setName(`Ban List of ${guild.name}.txt`);
           void this.sendLog(guild.id, resultEmbed, [resultFile]);
           return message.reply({
@@ -180,7 +196,7 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
   }
 
   public async sendLog(
-    guildId: Guild['id'],
+    guildId: Guild["id"],
     embed: APIEmbed | EmbedBuilder,
     files: AttachmentBuilder[],
   ) {
@@ -205,5 +221,5 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
 void container.stores.loadPiece({
   name: PIECE_NAME,
   piece: UserEvent,
-  store: 'listeners',
+  store: "listeners",
 });

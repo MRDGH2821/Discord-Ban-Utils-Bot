@@ -1,21 +1,23 @@
-import { ApplyOptions } from '@sapphire/decorators';
-import { container, Listener } from '@sapphire/framework';
-import type { APIEmbed, GuildMember, Webhook } from 'discord.js';
-import { time } from 'discord.js';
-import { COLORS } from '../../lib/Constants';
-import db from '../../lib/Database';
-import type { BotTimeoutOptions } from '../../lib/EventTypes';
-import { BUEvents } from '../../lib/EventTypes';
-import { getWebhook } from '../../lib/utils';
+import { ApplyOptions } from "@sapphire/decorators";
+import { container, Listener } from "@sapphire/framework";
+import type { APIEmbed, GuildMember, Webhook } from "discord.js";
+import { time } from "discord.js";
+import { COLORS } from "../../lib/Constants";
+import db from "../../lib/Database";
+import type { BotTimeoutOptions } from "../../lib/EventTypes";
+import { BUEvents } from "../../lib/EventTypes";
+import { getWebhook } from "../../lib/utils";
 
-const PIECE_NAME = 'Bot Timeout Log';
+const PIECE_NAME = "Bot Timeout Log";
 @ApplyOptions<Listener.Options>({
   name: PIECE_NAME,
   event: BUEvents.BotTimeout,
 })
 export default class UserEvent extends Listener {
   public override async run({ convict, executor, reason }: BotTimeoutOptions) {
-    const settings = await db.servers.get(executor.guild.id).then((v) => v?.data);
+    const settings = await db.servers
+      .get(executor.guild.id)
+      .then((v) => v?.data);
     if (!settings || !settings?.sendBanLog) {
       return;
     }
@@ -32,7 +34,7 @@ export default class UserEvent extends Listener {
         convict.id
       }\`\nIn timeout until: ${time(communicationDisabledUntil)} (${time(
         communicationDisabledUntil,
-        'R',
+        "R",
       )})\n\nReason: ${reason}`;
 
       this.sendLog(webhook, executor, description).catch((error) =>
@@ -41,13 +43,18 @@ export default class UserEvent extends Listener {
     } else {
       const description = `\`${convict.user.username}\` ${convict} is out of timeout!\nID: \`${convict.id}\`\n\nReason: ${reason}`;
 
-      this.sendLog(webhook, executor, description, 'Un').catch((error) =>
+      this.sendLog(webhook, executor, description, "Un").catch((error) =>
         this.container.logger.error(error),
       );
     }
   }
 
-  public sendLog(webhook: Webhook, executor: GuildMember, description: string, un = '') {
+  public sendLog(
+    webhook: Webhook,
+    executor: GuildMember,
+    description: string,
+    un = "",
+  ) {
     const timeoutEmbed: APIEmbed = {
       title: `**BU ${un}Timeout Log**`,
       color: COLORS.orangeHammerHandle,
@@ -71,5 +78,5 @@ export default class UserEvent extends Listener {
 void container.stores.loadPiece({
   name: PIECE_NAME,
   piece: UserEvent,
-  store: 'listeners',
+  store: "listeners",
 });

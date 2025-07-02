@@ -1,23 +1,23 @@
-import { ApplyOptions } from '@sapphire/decorators';
-import { Command, container } from '@sapphire/framework';
-import { Time } from '@sapphire/time-utilities';
+import { ApplyOptions } from "@sapphire/decorators";
+import { Command, container } from "@sapphire/framework";
+import { Time } from "@sapphire/time-utilities";
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
   PermissionFlagsBits,
-} from 'discord.js';
-import { COLORS, NOT_PERMITTED, SERVER_ONLY } from '../lib/Constants';
-import { emitBotEvent } from '../lib/utils';
+} from "discord.js";
+import { COLORS, NOT_PERMITTED, SERVER_ONLY } from "../lib/Constants";
+import { emitBotEvent } from "../lib/utils";
 
-const PIECE_NAME = 'ban';
+const PIECE_NAME = "ban";
 @ApplyOptions<Command.Options>({
   name: PIECE_NAME,
-  description: 'Bans a user',
+  description: "Bans a user",
   requiredClientPermissions: PermissionFlagsBits.BanMembers,
   requiredUserPermissions: PermissionFlagsBits.BanMembers,
-  preconditions: ['GuildOnly'],
+  preconditions: ["GuildOnly"],
   detailedDescription: {
-    help: 'Bans a user from current server.\nReason can be used from the list or you can input your custom reason',
+    help: "Bans a user from current server.\nReason can be used from the list or you can input your custom reason",
   },
 })
 export default class UserCommand extends Command {
@@ -31,21 +31,21 @@ export default class UserCommand extends Command {
       type: ApplicationCommandType.ChatInput,
       options: [
         {
-          name: 'user',
-          description: 'The user to ban',
+          name: "user",
+          description: "The user to ban",
           type: ApplicationCommandOptionType.User,
           required: true,
         },
         {
-          name: 'reason',
-          description: 'The reason for the ban',
+          name: "reason",
+          description: "The reason for the ban",
           type: ApplicationCommandOptionType.String,
           required: true,
           autocomplete: true,
         },
         {
-          name: 'delete_messages',
-          description: 'How much message history to delete',
+          name: "delete_messages",
+          description: "How much message history to delete",
           type: ApplicationCommandOptionType.Integer,
           required: false,
           choices: [
@@ -54,47 +54,47 @@ export default class UserCommand extends Command {
               value: 0,
             },
             {
-              name: 'Previous hour',
+              name: "Previous hour",
               value: Time.Hour,
             },
             {
-              name: 'Previous 3 hours',
+              name: "Previous 3 hours",
               value: 3 * Time.Hour,
             },
             {
-              name: 'Previous 6 hours',
+              name: "Previous 6 hours",
               value: 6 * Time.Hour,
             },
             {
-              name: 'Previous 12 hours',
+              name: "Previous 12 hours",
               value: 12 * Time.Hour,
             },
             {
-              name: 'Previous 24 hours',
+              name: "Previous 24 hours",
               value: Time.Day,
             },
             {
-              name: 'Previous 2 Days',
+              name: "Previous 2 Days",
               value: 2 * Time.Day,
             },
             {
-              name: 'Previous 3 Days',
+              name: "Previous 3 Days",
               value: 3 * Time.Day,
             },
             {
-              name: 'Previous 4 Days',
+              name: "Previous 4 Days",
               value: 4 * Time.Day,
             },
             {
-              name: 'Previous 5 Days',
+              name: "Previous 5 Days",
               value: 5 * Time.Day,
             },
             {
-              name: 'Previous 6 Days',
+              name: "Previous 6 Days",
               value: 6 * Time.Day,
             },
             {
-              name: 'Previous 7 Days',
+              name: "Previous 7 Days",
               value: Time.Week,
             },
           ],
@@ -103,24 +103,26 @@ export default class UserCommand extends Command {
     });
   }
 
-  public override async autocompleteRun(interaction: Command.AutocompleteInteraction) {
+  public override async autocompleteRun(
+    interaction: Command.AutocompleteInteraction,
+  ) {
     const val = interaction.options.getFocused();
     const stdReason = `Banned by ${interaction.user.username} on ${new Date().toDateString()}`;
 
     const possibleReasons = [
       stdReason,
-      'Spamming in chat',
-      'Raiding the server',
-      'Posted NSFW',
-      'Harassing other users',
-      'Advertising without permission',
-      'Malicious Bot',
-      'Hacked Account',
-      'Spam bot',
-      'Nitro Scam',
-      'Ping spam',
-      'Crypto scam',
-      'DM scam',
+      "Spamming in chat",
+      "Raiding the server",
+      "Posted NSFW",
+      "Harassing other users",
+      "Advertising without permission",
+      "Malicious Bot",
+      "Hacked Account",
+      "Spam bot",
+      "Nitro Scam",
+      "Ping spam",
+      "Crypto scam",
+      "DM scam",
     ].filter((reason) => reason.toLowerCase().includes(val.toLowerCase()));
 
     const mappedReasons = possibleReasons.map((reason) => ({
@@ -130,17 +132,19 @@ export default class UserCommand extends Command {
 
     if (val.length < 3) {
       mappedReasons.push({
-        name: '(Or type your own)',
+        name: "(Or type your own)",
         value: stdReason,
       });
     }
     return interaction.respond(mappedReasons.slice(0, 24));
   }
 
-  public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-    const convict = interaction.options.getUser('user', true);
-    const reason = interaction.options.getString('reason', true);
-    let deleteMsgDays = interaction.options.getInteger('delete_messages') || 0;
+  public override async chatInputRun(
+    interaction: Command.ChatInputCommandInteraction,
+  ) {
+    const convict = interaction.options.getUser("user", true);
+    const reason = interaction.options.getString("reason", true);
+    let deleteMsgDays = interaction.options.getInteger("delete_messages") || 0;
 
     if (!interaction.inGuild() || !interaction.guild) {
       return interaction.reply({
@@ -168,11 +172,11 @@ export default class UserCommand extends Command {
         reason,
       })
       .then(() => {
-        emitBotEvent('botGuildBanAdd', { convict, executor, reason });
+        emitBotEvent("botGuildBanAdd", { convict, executor, reason });
         return interaction.reply({
           embeds: [
             {
-              title: '**Ban Hammer Dropped!**',
+              title: "**Ban Hammer Dropped!**",
               color: COLORS.orangeHammerHandle,
               description: `\`${convict.username}\` ${convict} is banned from this server.`,
               thumbnail: {
@@ -180,16 +184,18 @@ export default class UserCommand extends Command {
               },
               fields: [
                 {
-                  name: '**Reason**',
+                  name: "**Reason**",
                   value: reason,
                 },
                 {
-                  name: '**Convict ID**',
+                  name: "**Convict ID**",
                   value: convict.id,
                 },
                 {
-                  name: '**Duration of Message History deleted**',
-                  value: deleteMsgDays ? `${deleteMsgDays} days` : 'Not deleted',
+                  name: "**Duration of Message History deleted**",
+                  value: deleteMsgDays
+                    ? `${deleteMsgDays} days`
+                    : "Not deleted",
                 },
               ],
               timestamp: new Date().toISOString(),
@@ -203,5 +209,5 @@ export default class UserCommand extends Command {
 void container.stores.loadPiece({
   name: PIECE_NAME,
   piece: UserCommand,
-  store: 'commands',
+  store: "commands",
 });

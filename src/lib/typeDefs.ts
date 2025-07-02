@@ -1,6 +1,6 @@
-import type { Guild, Message, User } from 'discord.js';
+import type { Guild, Message, User } from "discord.js";
 
-export type DataType = { guildId: Guild['id'] };
+export type DataType = { guildId: Guild["id"] };
 
 export abstract class DataClass<T extends DataType> {
   constructor(options: T) {
@@ -10,8 +10,11 @@ export abstract class DataClass<T extends DataType> {
   abstract toString(): string;
 }
 
-export type BanEntity = User['id'];
-export type BanEntityWithReason = { id: BanEntity; reason?: string | null | undefined };
+export type BanEntity = User["id"];
+export type BanEntityWithReason = {
+  id: BanEntity;
+  reason?: string | null | undefined;
+};
 export type BanType = BanEntity | BanEntityWithReason;
 
 export type BanExportOptions = {
@@ -27,21 +30,21 @@ export type ListImportOptions = {
   requesterUser: User;
   sourceMessage: Message;
   list: NonNullable<BanEntityWithReason>[];
-  mode: 'ban' | 'unban';
+  mode: "ban" | "unban";
   shouldIgnoreFilterList: boolean;
 };
 export type SettingsParameter =
-  | 'sendBanLog'
-  | 'sendUnbanLog'
-  | 'sendExitLog'
-  | 'sendJoinLog'
-  | 'sendKickLog'
-  | 'sendTimeoutLog'
-  | 'sendUnTimeoutLog'
-  | 'sendImportLog'
-  | 'sendBanExportLog'
-  | 'sendMassBanLog'
-  | 'sendMassUnbanLog';
+  | "sendBanLog"
+  | "sendUnbanLog"
+  | "sendExitLog"
+  | "sendJoinLog"
+  | "sendKickLog"
+  | "sendTimeoutLog"
+  | "sendUnTimeoutLog"
+  | "sendImportLog"
+  | "sendBanExportLog"
+  | "sendMassBanLog"
+  | "sendMassUnbanLog";
 export type SendLogOptions = {
   guild: Guild;
   title: string;
