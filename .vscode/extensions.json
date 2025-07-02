@@ -1,8 +1,6 @@
 {
   "recommendations": [
-    "aaron-bond.better-comments",
-    "adam-bender.commit-message-editor",
-    "bierner.markdown-checkbox",
+    "bierner.github-markdown-preview",
     "christian-kohler.npm-intellisense",
     "christian-kohler.path-intellisense",
     "cschlosser.doxdocgen",
@@ -16,12 +14,9 @@
     "exiasr.hadolint",
     "foxundermoon.shell-format",
     "github.vscode-github-actions",
-    "idered.npm",
     "joshbolduc.commitlint",
-    "michaelcurrin.auto-commit-msg",
-    "ms-azuretools.vscode-docker",
+    "ms-azuretools.vscode-containers",
     "oderwat.indent-rainbow",
-    "omrigrossman.live-code-metric",
     "p42ai.refactor",
     "redhat.vscode-yaml",
     "spmeesseman.vscode-taskexplorer",
@@ -29,6 +24,6 @@
     "tamasfe.even-better-toml",
     "timonwong.shellcheck",
     "usernamehw.errorlens",
-    "wdhongtw.gpg-indicator"
+    "vivaxy.vscode-conventional-commits"
   ]
 }
