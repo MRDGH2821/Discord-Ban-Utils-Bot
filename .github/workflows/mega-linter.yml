@@ -2,7 +2,9 @@
 # More info at https://megalinter.io
 ---
 name: MegaLinter
+
 permissions: read-all
+
 # Trigger mega-linter at every push. Action will also be visible from
 # Pull Requests to main
 on:
@@ -50,7 +52,7 @@ jobs:
     steps:
       # Git Checkout
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
 
@@ -63,7 +65,7 @@ jobs:
 
         # You can override MegaLinter flavor used to have faster performances
         # More info at https://megalinter.io/latest/flavors/
-        uses: oxsecurity/megalinter/flavors/javascript@v7
+        uses: oxsecurity/megalinter/flavors/javascript@v8
 
         id: ml
 
@@ -86,15 +88,26 @@ jobs:
 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+          # Uncomment to use ApiReporter (Grafana)
+          # API_REPORTER: true
+          # API_REPORTER_URL: ${{ secrets.API_REPORTER_URL }}
+          # API_REPORTER_BASIC_AUTH_USERNAME: ${{ secrets.API_REPORTER_BASIC_AUTH_USERNAME }}
+          # API_REPORTER_BASIC_AUTH_PASSWORD: ${{ secrets.API_REPORTER_BASIC_AUTH_PASSWORD }}
+          # API_REPORTER_METRICS_URL: ${{ secrets.API_REPORTER_METRICS_URL }}
+          # API_REPORTER_METRICS_BASIC_AUTH_USERNAME: ${{ secrets.API_REPORTER_METRICS_BASIC_AUTH_USERNAME }}
+          # API_REPORTER_METRICS_BASIC_AUTH_PASSWORD: ${{ secrets.API_REPORTER_METRICS_BASIC_AUTH_PASSWORD }}
+          # API_REPORTER_DEBUG: false
+
           # ADD YOUR CUSTOM ENV VARIABLES HERE TO OVERRIDE VALUES OF
           # .mega-linter.yml AT THE ROOT OF YOUR REPOSITORY
 
       # Upload MegaLinter artifacts
       - name: Archive production artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
           name: MegaLinter reports
+          include-hidden-files: "true"
           path: |
             megalinter-reports
             mega-linter.log
@@ -102,7 +115,7 @@ jobs:
       # Create pull request if applicable
       # (for now works only on PR from same repository, not from forks)
       - name: Create Pull Request with applied fixes
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v6
         id: cpr
         if: >-
           steps.ml.outputs.has_updated_sources == 1 &&
@@ -118,8 +131,8 @@ jobs:
           !contains(github.event.head_commit.message, 'skip fix')
         with:
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-          commit-message: "[MegaLinter] Apply linters automatic fixes"
-          title: "[MegaLinter] Apply linters automatic fixes"
+          commit-message: "chore(megalinter): Apply linters automatic fixes"
+          title: "chore(megalinter): Apply linters automatic fixes"
           labels: bot
 
       - name: Create PR output
@@ -158,7 +171,7 @@ jobs:
         run: sudo chown -Rc $UID .git/
 
       - name: Commit and push applied linter fixes
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         if: >-
           steps.ml.outputs.has_updated_sources == 1 &&
           (
@@ -179,6 +192,6 @@ jobs:
               github.head_ref ||
               github.ref
             }}
-          commit_message: "chore(megalinter): apply linters fixes"
+          commit_message: "chore(megalinter): Apply linters fixes"
           commit_user_name: megalinter-bot
-          commit_user_email: nicolas.vuillamy@ox.security
+          commit_user_email: 129584137+megalinter-bot@users.noreply.github.com

@@ -8,10 +8,14 @@
     "**/node_modules/**",
     "**/vscode-extension/**",
     "megalinter-reports",
-    "package-lock.json"
+    "megalinter",
+    "package-lock.json",
+    "report"
   ],
-  "language": "en,en-IN",
+
+  "language": "en,en-IN,en-GB",
   "useGitignore": true,
+  "noConfigSearch": true,
   "version": "0.2",
   "words": [
     "adminsdk",
@@ -22,9 +26,11 @@
     "emojify",
     "fulcio",
     "lockb",
+    "megalinter",
     "mihir",
     "mrdgh",
     "ohwmr",
+    "oxsecurity",
     "rabade",
     "regist",
     "rekor",

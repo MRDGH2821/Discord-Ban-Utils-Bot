@@ -15,17 +15,14 @@ APPLY_FIXES: all
 # ENABLE_LINTERS:
 
 # DISABLE:
-# - COPYPASTE # Uncomment to disable checks of excessive copy-pastes
-# - SPELL # Uncomment to disable checks of spelling mistakes
+#   - COPYPASTE # Uncomment to disable checks of excessive copy-pastes
+#   - SPELL # Uncomment to disable checks of spelling mistakes
 
 DISABLE_LINTERS:
   - TYPESCRIPT_STANDARD
   - JAVASCRIPT_STANDARD
-
 SHOW_ELAPSED_TIME: true
-
 FILEIO_REPORTER: false
-
 # Uncomment if you want MegaLinter to detect errors but not block CI to pass
 # DISABLE_ERRORS: true
 
