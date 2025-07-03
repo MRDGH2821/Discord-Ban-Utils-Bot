@@ -46,7 +46,7 @@
     "format-lint": "npm run format && npm run lint",
     "generate": "sapphire generate",
     "generate:loaders": "npx @sapphire/cli gl",
-    "lint": "npx eslint --fix . --ignore-path .gitignore",
+    "lint": "npx eslint --fix .",
     "mega-lint": "npx -y mega-linter-runner --flavor javascript",
     "preplayground": "npm run build",
     "playground": "node --env-file .env ./dist/experiments/playground.js",
@@ -97,30 +97,19 @@
     "@types/cli-progress": "^3.11.6",
     "@types/node": "^22.16.0",
     "@types/ws": "^8.18.1",
-    "@typescript-eslint/eslint-plugin": "^8.35.1",
-    "@typescript-eslint/parser": "^8.35.1",
     "eslint": "^9.30.1",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-airbnb-typescript": "^18.0.0",
-    "eslint-config-prettier": "^10.1.5",
-    "eslint-plugin-const-case": "^1.2.2",
-    "eslint-plugin-eslint-comments": "^3.2.0",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-prettier": "^5.5.1",
-    "eslint-plugin-promise": "^7.2.1",
-    "eslint-plugin-simple-import-sort": "^12.1.1",
-    "eslint-plugin-switch-case": "^3.0.1",
-    "eslint-plugin-unused-imports": "^4.1.4",
+    "eslint-config-neon": "^0.2.7",
     "husky": "^9.1.7",
+    "jiti": "^2.4.2",
     "lint-staged": "^16.1.2",
     "prettier": "^3.6.2",
     "prettier-plugin-packagejson": "^2.5.17",
     "tsc-watch": "^7.1.1",
-    "typescript": "5.4.5"
+    "typescript": "^5.8.3"
   },
   "engines": {
     "bun": ">=1.0.0",
-    "node": ">=20.6.0"
+    "node": ">=22.16.0"
   },
   "engineStrict": true
 }
