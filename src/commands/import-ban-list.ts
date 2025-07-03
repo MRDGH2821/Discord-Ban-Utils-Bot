@@ -4,13 +4,13 @@ import { s } from "@sapphire/shapeshift";
 import { Time } from "@sapphire/time-utilities";
 import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import { getRawPaste } from "dpaste-ts";
-import { NOT_PERMITTED, SERVER_ONLY } from "../lib/Constants";
-import type { BanEntityWithReason } from "../lib/typeDefs";
+import { NOT_PERMITTED, SERVER_ONLY } from "../lib/Constants.js";
+import type { BanEntityWithReason } from "../lib/typeDefs.js";
 import {
   banEntitySchemaBuilder,
   debugErrorEmbed,
   importList,
-} from "../lib/utils";
+} from "../lib/utils.js";
 
 const PIECE_NAME = "import-ban-list";
 @ApplyOptions<Command.Options>({

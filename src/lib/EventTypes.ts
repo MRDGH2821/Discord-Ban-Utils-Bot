@@ -1,8 +1,8 @@
 import type { AnyInteractableInteraction } from "@sapphire/discord.js-utilities";
 import { container } from "@sapphire/framework";
 import type { GuildMember, User } from "discord.js";
-import type { DBSchema } from "./Database";
-import type { BanExportOptions, ListImportOptions } from "./typeDefs";
+import type { DBSchema } from "./Database.js";
+import type { BanExportOptions, ListImportOptions } from "./typeDefs.js";
 
 export type ValueOf<T> = T[keyof T];
 

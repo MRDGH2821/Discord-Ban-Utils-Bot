@@ -13,11 +13,18 @@ import {
   EmbedBuilder,
 } from "discord.js";
 import { createPaste } from "dpaste-ts";
-import { COLORS } from "../lib/Constants";
-import db from "../lib/Database";
-import { BUEvents } from "../lib/EventTypes";
-import type { BanEntityWithReason, ListImportOptions } from "../lib/typeDefs";
-import { fetchAllBans, sequentialPromises, truncateString } from "../lib/utils";
+import { COLORS } from "../lib/Constants.js";
+import db from "../lib/Database.js";
+import { BUEvents } from "../lib/EventTypes.js";
+import type {
+  BanEntityWithReason,
+  ListImportOptions,
+} from "../lib/typeDefs.js";
+import {
+  fetchAllBans,
+  sequentialPromises,
+  truncateString,
+} from "../lib/utils.js";
 
 const bansProgress = new SingleBar({
   format: "Progress | {bar} | {percentage}% | {value}/{total}",

@@ -7,7 +7,7 @@ import {
   LogLevel,
 } from "@sapphire/framework";
 import type { Logger } from "@sapphire/plugin-logger";
-import { logSuccessCommand } from "../../../lib/utils";
+import { logSuccessCommand } from "../../../lib/utils.js";
 
 const PIECE_NAME = "Context Menu Command Success";
 @ApplyOptions<Listener.Options>({

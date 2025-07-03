@@ -2,12 +2,12 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { container, Listener } from "@sapphire/framework";
 import type { ChatInputSubcommandErrorPayload } from "@sapphire/plugin-subcommands";
 import { SubcommandPluginEvents } from "@sapphire/plugin-subcommands";
-import { invitation } from "../../../lib/DynamicConstants";
+import { invitation } from "../../../lib/DynamicConstants.js";
 import {
   debugErrorEmbed,
   debugErrorFile,
   getCmdNameFromInteraction,
-} from "../../../lib/utils";
+} from "../../../lib/utils.js";
 
 const PIECE_NAME = "Chat Input Subcommand Error";
 @ApplyOptions<Listener.Options>({

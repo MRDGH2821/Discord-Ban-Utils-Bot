@@ -4,8 +4,8 @@ import { Command, container } from "@sapphire/framework";
 import { Time } from "@sapphire/time-utilities";
 import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import ms from "enhanced-ms";
-import { COLORS, NOT_PERMITTED, SERVER_ONLY } from "../lib/Constants";
-import { emitBotEvent } from "../lib/utils";
+import { COLORS, NOT_PERMITTED, SERVER_ONLY } from "../lib/Constants.js";
+import { emitBotEvent } from "../lib/utils.js";
 
 const PIECE_NAME = "timeout";
 @ApplyOptions<Command.Options>({

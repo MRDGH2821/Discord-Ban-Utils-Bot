@@ -12,8 +12,8 @@ import {
   EmbedBuilder,
   PermissionsBitField,
 } from "discord.js";
-import { COLORS } from "../lib/Constants";
-import { formatCmdName, sequentialPromises } from "../lib/utils";
+import { COLORS } from "../lib/Constants.js";
+import { formatCmdName, sequentialPromises } from "../lib/utils.js";
 
 const PIECE_NAME = "help";
 @ApplyOptions<Command.Options>({

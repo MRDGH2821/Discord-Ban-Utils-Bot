@@ -1,5 +1,5 @@
 import http from "node:http";
-import { botLogger } from "./bot-logger";
+import { botLogger } from "./bot-logger.js";
 
 const PORT = 9000;
 

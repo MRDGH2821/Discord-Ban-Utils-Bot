@@ -1,10 +1,10 @@
-import "./EnvConfig";
+import "./EnvConfig.js";
 import fs from "node:fs";
 import * as path from "node:path";
 import type { ServiceAccount } from "firebase-admin/app";
 import { applicationDefault, cert, initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
-import { botLogger as logger } from "../bot-logger";
+import { botLogger as logger } from "../bot-logger.js";
 
 // eslint-disable-next-line import/prefer-default-export
 export function decodeBase64(base64String: string) {

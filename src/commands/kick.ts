@@ -2,8 +2,8 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { isGuildMember } from "@sapphire/discord.js-utilities";
 import { Command, container } from "@sapphire/framework";
 import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
-import { COLORS, NOT_PERMITTED, SERVER_ONLY } from "../lib/Constants";
-import { emitBotEvent } from "../lib/utils";
+import { COLORS, NOT_PERMITTED, SERVER_ONLY } from "../lib/Constants.js";
+import { emitBotEvent } from "../lib/utils.js";
 
 const PIECE_NAME = "kick";
 @ApplyOptions<Command.Options>({

@@ -22,17 +22,17 @@ import type {
   Webhook,
 } from "discord.js";
 import { chatInputApplicationCommandMention } from "discord.js";
-import { COLORS } from "./Constants";
-import type { DBSchema } from "./Database";
-import db from "./Database";
-import { emitBotEvent } from "./EventTypes";
+import { COLORS } from "./Constants.js";
+import type { DBSchema } from "./Database.js";
+import db from "./Database.js";
+import { emitBotEvent } from "./EventTypes.js";
 import type {
   BanEntity,
   BanEntityWithReason,
   ListImportOptions,
   SendLogOptions,
   SettingsParameter,
-} from "./typeDefs";
+} from "./typeDefs.js";
 
 function getShardInfo(id: number) {
   return `[${cyan(id.toString())}]`;
@@ -380,7 +380,7 @@ export async function getAuditLogData(
   };
 }
 
-export { emitBotEvent, type ValueOf } from "./EventTypes";
+export { emitBotEvent, type ValueOf } from "./EventTypes.js";
 
 export async function sequentialPromises<S, T>(
   params: S[],

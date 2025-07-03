@@ -1,12 +1,12 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import type { ChatInputCommandErrorPayload } from "@sapphire/framework";
 import { container, Events, Listener } from "@sapphire/framework";
-import { invitation } from "../../../lib/DynamicConstants";
+import { invitation } from "../../../lib/DynamicConstants.js";
 import {
   debugErrorEmbed,
   debugErrorFile,
   formatCmdName,
-} from "../../../lib/utils";
+} from "../../../lib/utils.js";
 
 const PIECE_NAME = "Chat Input Command Error";
 @ApplyOptions<Listener.Options>({

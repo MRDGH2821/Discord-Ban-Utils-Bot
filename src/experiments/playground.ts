@@ -1,8 +1,8 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable promise/no-nesting */
 import { schema } from "typesaurus";
-import { botLogger } from "../bot-logger";
-import db from "../lib/Database";
+import { botLogger } from "../bot-logger.js";
+import db from "../lib/Database.js";
 
 const oldDB = schema(($) => ({
   servers: $.collection<Setting, Setting["serverID"]>(),

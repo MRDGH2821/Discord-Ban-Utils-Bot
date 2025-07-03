@@ -10,8 +10,8 @@ import {
   PermissionFlagsBits,
   time,
 } from "discord.js";
-import { COLORS, EMPTY_STRING } from "../lib/Constants";
-import { jumpLink } from "../lib/utils";
+import { COLORS, EMPTY_STRING } from "../lib/Constants.js";
+import { jumpLink } from "../lib/utils.js";
 
 const PIECE_NAME = "user-info";
 @ApplyOptions<Command.Options>({

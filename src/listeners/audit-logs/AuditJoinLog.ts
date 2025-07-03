@@ -3,9 +3,9 @@ import { container, Events, Listener } from "@sapphire/framework";
 import { Time } from "@sapphire/time-utilities";
 import type { APIEmbed, GuildMember } from "discord.js";
 import { time } from "discord.js";
-import { COLORS } from "../../lib/Constants";
-import db from "../../lib/Database";
-import { getWebhook } from "../../lib/utils";
+import { COLORS } from "../../lib/Constants.js";
+import db from "../../lib/Database.js";
+import { getWebhook } from "../../lib/utils.js";
 
 const PIECE_NAME = "Audit Join Log";
 @ApplyOptions<Listener.Options>({

@@ -10,9 +10,9 @@ import {
   ComponentType,
   PermissionFlagsBits,
 } from "discord.js";
-import { COLORS, SERVER_ONLY, WEBHOOK_ICON } from "../lib/Constants";
-import db from "../lib/Database";
-import type { SettingsParameter } from "../lib/typeDefs";
+import { COLORS, SERVER_ONLY, WEBHOOK_ICON } from "../lib/Constants.js";
+import db from "../lib/Database.js";
+import type { SettingsParameter } from "../lib/typeDefs.js";
 import {
   debugErrorEmbed,
   debugErrorFile,
@@ -21,7 +21,7 @@ import {
   selectedSettingsValidator,
   settingFormatter,
   SettingsDescription,
-} from "../lib/utils";
+} from "../lib/utils.js";
 
 const PIECE_NAME = "settings";
 interface SettingsOpt extends APISelectMenuOption {

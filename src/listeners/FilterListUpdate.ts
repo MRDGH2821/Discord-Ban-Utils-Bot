@@ -1,11 +1,11 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { container, Listener } from "@sapphire/framework";
 import { userMention } from "discord.js";
-import { COLORS, DUMMY_USER_ID } from "../lib/Constants";
-import db from "../lib/Database";
-import type { FilterListUpdateOptions } from "../lib/EventTypes";
-import { BUEvents } from "../lib/EventTypes";
-import { debugErrorEmbed, debugErrorFile } from "../lib/utils";
+import { COLORS, DUMMY_USER_ID } from "../lib/Constants.js";
+import db from "../lib/Database.js";
+import type { FilterListUpdateOptions } from "../lib/EventTypes.js";
+import { BUEvents } from "../lib/EventTypes.js";
+import { debugErrorEmbed, debugErrorFile } from "../lib/utils.js";
 
 const PIECE_NAME = "Update Filter List";
 @ApplyOptions<Listener.Options>({

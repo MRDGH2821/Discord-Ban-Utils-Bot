@@ -2,7 +2,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { container, Events, Listener } from "@sapphire/framework";
 import type { APIEmbed, GuildMember } from "discord.js";
 import { AuditLogEvent, Colors, time } from "discord.js";
-import { getAuditLogData } from "../../lib/utils";
+import { getAuditLogData } from "../../lib/utils.js";
 
 const PIECE_NAME = "Audit Timeout Log";
 @ApplyOptions<Listener.Options>({

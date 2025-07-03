@@ -2,8 +2,8 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { container, Events, Listener } from "@sapphire/framework";
 import type { APIEmbed, GuildBan } from "discord.js";
 import { AuditLogEvent } from "discord.js";
-import { COLORS } from "../../lib/Constants";
-import { getAuditLogData } from "../../lib/utils";
+import { COLORS } from "../../lib/Constants.js";
+import { getAuditLogData } from "../../lib/utils.js";
 
 const PIECE_NAME = "Audit Ban Log";
 @ApplyOptions<Listener.Options>({

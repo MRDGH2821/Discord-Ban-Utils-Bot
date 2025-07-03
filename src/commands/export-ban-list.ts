@@ -8,9 +8,9 @@ import {
   ComponentType,
   PermissionFlagsBits,
 } from "discord.js";
-import { COLORS, SERVER_ONLY } from "../lib/Constants";
-import type { BanExportOptions } from "../lib/typeDefs";
-import { emitBotEvent } from "../lib/utils";
+import { COLORS, SERVER_ONLY } from "../lib/Constants.js";
+import type { BanExportOptions } from "../lib/typeDefs.js";
+import { emitBotEvent } from "../lib/utils.js";
 
 const PIECE_NAME = "export-ban-list";
 @ApplyOptions<Command.Options>({
@@ -64,10 +64,7 @@ export default class UserCommand extends Command {
       !interaction.inGuild() ||
       !interaction.inCachedGuild()
     ) {
-      return interaction.reply({
-        content: SERVER_ONLY,
-        ephemeral: true,
-      });
+      return interaction.reply({ content: SERVER_ONLY, ephemeral: true });
     }
 
     return interaction
@@ -137,12 +134,7 @@ export default class UserCommand extends Command {
           });
         }
         return btx.editReply({
-          embeds: [
-            {
-              title: "**Export Cancelled**",
-              color: COLORS.lightGray,
-            },
-          ],
+          embeds: [{ title: "**Export Cancelled**", color: COLORS.lightGray }],
           components: [],
         });
       });

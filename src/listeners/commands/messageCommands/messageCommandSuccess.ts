@@ -2,7 +2,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 import type { MessageCommandSuccessPayload } from "@sapphire/framework";
 import { container, Events, Listener, LogLevel } from "@sapphire/framework";
 import type { Logger } from "@sapphire/plugin-logger";
-import { logSuccessCommand } from "../../../lib/utils";
+import { logSuccessCommand } from "../../../lib/utils.js";
 
 const PIECE_NAME = "Message Command Success";
 @ApplyOptions<Listener.Options>({

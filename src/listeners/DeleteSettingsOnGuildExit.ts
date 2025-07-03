@@ -1,7 +1,7 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { container, Events, Listener } from "@sapphire/framework";
 import type { Guild } from "discord.js";
-import db from "../lib/Database";
+import db from "../lib/Database.js";
 
 const PIECE_NAME = "Delete settings on guild exit";
 @ApplyOptions<Listener.Options>({

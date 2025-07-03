@@ -6,18 +6,18 @@ import {
   OAuth2Scopes,
   PermissionFlagsBits,
 } from "discord.js";
-import { funding, homepage } from "../../package.json";
+import packageJson from "../../package.json" with { type: "json" };
 
 export const BOT_SUPPORT_SERVER_INVITE_LINK = "https://discord.gg/HeFAqYgGr8";
 
 export const supportRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
   new ButtonBuilder()
-    .setURL(homepage)
+    .setURL(packageJson.homepage)
     .setLabel("Source Code")
     .setStyle(ButtonStyle.Link)
     .setEmoji("📜"),
   new ButtonBuilder()
-    .setURL(funding.url)
+    .setURL(packageJson.funding.url)
     .setLabel("Donate")
     .setStyle(ButtonStyle.Link)
     .setEmoji("💰"),

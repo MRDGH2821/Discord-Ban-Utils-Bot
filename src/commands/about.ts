@@ -1,9 +1,9 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Command, container } from "@sapphire/framework";
 import { DurationFormatter } from "@sapphire/time-utilities";
-import { COLORS } from "../lib/Constants";
-import { invitation, supportRow } from "../lib/DynamicConstants";
-import { formatCmdName } from "../lib/utils";
+import { COLORS } from "../lib/Constants.js";
+import { invitation, supportRow } from "../lib/DynamicConstants.js";
+import { formatCmdName } from "../lib/utils.js";
 
 const PIECE_NAME = "about";
 @ApplyOptions<Command.Options>({

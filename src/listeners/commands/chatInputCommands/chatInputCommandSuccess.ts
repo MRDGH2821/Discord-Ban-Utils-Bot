@@ -7,7 +7,7 @@ import {
 } from "@sapphire/framework";
 import { Events } from "@sapphire/framework";
 import type { Logger } from "@sapphire/plugin-logger";
-import { logSuccessCommand } from "../../../lib/utils";
+import { logSuccessCommand } from "../../../lib/utils.js";
 
 const PIECE_NAME = "Chat Input Command Success";
 @ApplyOptions<Listener.Options>({

@@ -34,6 +34,7 @@
       "url": "https://github.com/AroLeaf"
     }
   ],
+  "type": "module",
   "scripts": {
     "prebuild": "npm run generate:loaders",
     "build": "tsc",

@@ -7,13 +7,13 @@ import {
   ApplicationCommandType,
   PermissionFlagsBits,
 } from "discord.js";
-import { NOT_PERMITTED, SERVER_ONLY } from "../lib/Constants";
-import type { ListImportOptions } from "../lib/typeDefs";
+import { NOT_PERMITTED, SERVER_ONLY } from "../lib/Constants.js";
+import type { ListImportOptions } from "../lib/typeDefs.js";
 import {
   banEntitySchemaBuilder,
   debugErrorEmbed,
   importList,
-} from "../lib/utils";
+} from "../lib/utils.js";
 
 const IGNORE_FILTER_TEXT = "ignore-filter-list";
 const PIECE_NAME = "mass";

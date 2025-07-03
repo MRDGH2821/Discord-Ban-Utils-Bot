@@ -1,11 +1,11 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { container, Listener } from "@sapphire/framework";
 import type { APIEmbed } from "discord.js";
-import { COLORS } from "../../lib/Constants";
-import db from "../../lib/Database";
-import type { BotGuildBanRemoveOptions } from "../../lib/EventTypes";
-import { BUEvents } from "../../lib/EventTypes";
-import { getWebhook } from "../../lib/utils";
+import { COLORS } from "../../lib/Constants.js";
+import db from "../../lib/Database.js";
+import type { BotGuildBanRemoveOptions } from "../../lib/EventTypes.js";
+import { BUEvents } from "../../lib/EventTypes.js";
+import { getWebhook } from "../../lib/utils.js";
 
 const PIECE_NAME = "Bot UnBan Log";
 @ApplyOptions<Listener.Options>({

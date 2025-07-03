@@ -13,9 +13,9 @@ import {
   TextInputStyle,
   userMention,
 } from "discord.js";
-import { COLORS, DUMMY_USER_ID, SERVER_ONLY } from "../lib/Constants";
-import db from "../lib/Database";
-import { emitBotEvent } from "../lib/EventTypes";
+import { COLORS, DUMMY_USER_ID, SERVER_ONLY } from "../lib/Constants.js";
+import db from "../lib/Database.js";
+import { emitBotEvent } from "../lib/EventTypes.js";
 
 const userIdValidator = s.array<User["id"]>(s.string().regex(SnowflakeRegex));
 

@@ -12,7 +12,7 @@ export default class UserEvent extends Listener<
 > {
   public async run(message: Message) {
     const prefix = this.container.client.options.defaultPrefix;
-    return message.channel.send(
+    return message.reply(
       prefix
         ? `My prefix in this guild is: \`${prefix}\``
         : "Cannot find any Prefix for Message Commands.",

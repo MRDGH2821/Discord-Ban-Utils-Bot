@@ -10,15 +10,15 @@ import {
   type GuildBan,
 } from "discord.js";
 import { createPaste } from "dpaste-ts";
-import { COLORS } from "../lib/Constants";
-import db from "../lib/Database";
-import { BUEvents } from "../lib/EventTypes";
+import { COLORS } from "../lib/Constants.js";
+import db from "../lib/Database.js";
+import { BUEvents } from "../lib/EventTypes.js";
 import type {
   BanEntity,
   BanEntityWithReason,
   BanExportOptions,
   BanType,
-} from "../lib/typeDefs";
+} from "../lib/typeDefs.js";
 import {
   debugErrorEmbed,
   debugErrorFile,
@@ -26,7 +26,7 @@ import {
   getWebhook,
   sequentialPromises,
   truncateString,
-} from "../lib/utils";
+} from "../lib/utils.js";
 
 const PIECE_NAME = "Ban List Exporter";
 @ApplyOptions<Listener.Options>({

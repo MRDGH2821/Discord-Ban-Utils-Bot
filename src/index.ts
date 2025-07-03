@@ -1,7 +1,7 @@
-import "./lib/setup";
+import "./lib/setup.js";
 import { LogLevel, SapphireClient } from "@sapphire/framework";
 import { GatewayIntentBits, Partials } from "discord.js";
-import { botLogger } from "./bot-logger";
+import { botLogger } from "./bot-logger.js";
 
 const client = new SapphireClient({
   defaultPrefix: "!",
