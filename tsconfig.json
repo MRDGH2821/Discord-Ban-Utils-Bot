@@ -12,5 +12,6 @@
     "moduleResolution": "nodenext",
     "module": "nodenext"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["eslint.config.ts"]
 }
