@@ -1,6 +1,11 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Command, container } from "@sapphire/framework";
-import { ApplicationCommandType, Message } from "discord.js";
+import {
+  ApplicationCommandType,
+  ApplicationIntegrationType,
+  InteractionContextType,
+  Message,
+} from "discord.js";
 
 const PIECE_NAME = "ping";
 @ApplyOptions<Command.Options>({
@@ -13,22 +18,40 @@ const PIECE_NAME = "ping";
 export default class UserCommand extends Command {
   // Register Chat Input and Context Menu command
   public override registerApplicationCommands(registry: Command.Registry) {
-    // Register Chat Input command
+    // Create shared integration types and contexts
+    // These allow the command to be used in guilds and DMs
+    const integrationTypes: ApplicationIntegrationType[] = [
+      ApplicationIntegrationType.GuildInstall,
+      ApplicationIntegrationType.UserInstall,
+    ];
+    const contexts: InteractionContextType[] = [
+      InteractionContextType.BotDM,
+      InteractionContextType.Guild,
+      InteractionContextType.PrivateChannel,
+    ];
+
+    // Register slash command
     registry.registerChatInputCommand({
       name: this.name,
       description: this.description,
+      integrationTypes,
+      contexts,
     });
 
-    // Register Context Menu command available from any message
+    // Register context menu command available from any message
     registry.registerContextMenuCommand({
       name: this.name,
       type: ApplicationCommandType.Message,
+      integrationTypes,
+      contexts,
     });
 
-    // Register Context Menu command available from any user
+    // Register context menu command available from any user
     registry.registerContextMenuCommand({
       name: this.name,
       type: ApplicationCommandType.User,
+      integrationTypes,
+      contexts,
     });
   }
 
@@ -57,20 +80,24 @@ export default class UserCommand extends Command {
       | Command.ChatInputCommandInteraction
       | Command.ContextMenuCommandInteraction,
   ) {
-    const pingMessage =
-      interactionOrMessage instanceof Message
-        ? await interactionOrMessage.channel.send({ content: "Ping?" })
-        : await interactionOrMessage.reply({
-            content: "Ping?",
-            fetchReply: true,
-          });
+    const pingMessage = await interactionOrMessage
+      .reply({
+        content: "Ping?",
+        withResponse: true,
+      })
+      .then((msg) => {
+        if (msg instanceof Message) {
+          return msg;
+        }
+        return msg.interaction;
+      });
 
     const content = `Pong! Bot Latency ${Math.round(
       this.container.client.ws.ping,
     )}ms. API Latency ${pingMessage.createdTimestamp - interactionOrMessage.createdTimestamp}ms.`;
 
     if (interactionOrMessage instanceof Message) {
-      return pingMessage.edit({ content });
+      return interactionOrMessage.edit({ content });
     }
 
     return interactionOrMessage.editReply({
