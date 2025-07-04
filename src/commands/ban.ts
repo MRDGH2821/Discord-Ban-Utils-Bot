@@ -136,6 +136,7 @@ export default class UserCommand extends Command {
         value: stdReason,
       });
     }
+
     return interaction.respond(mappedReasons.slice(0, 24));
   }
 
@@ -144,7 +145,7 @@ export default class UserCommand extends Command {
   ) {
     const convict = interaction.options.getUser("user", true);
     const reason = interaction.options.getString("reason", true);
-    let deleteMsgDays = interaction.options.getInteger("delete_messages") || 0;
+    let deleteMsgDays = interaction.options.getInteger("delete_messages") ?? 0;
 
     if (!interaction.inGuild() || !interaction.guild) {
       return interaction.reply({
@@ -161,7 +162,7 @@ export default class UserCommand extends Command {
     }
 
     if (deleteMsgDays) {
-      deleteMsgDays /= 1000;
+      deleteMsgDays /= 1_000;
     }
 
     const executor = await interaction.guild.members.fetch(interaction.user.id);
@@ -171,7 +172,7 @@ export default class UserCommand extends Command {
         deleteMessageSeconds: deleteMsgDays,
         reason,
       })
-      .then(() => {
+      .then(async () => {
         emitBotEvent("botGuildBanAdd", { convict, executor, reason });
         return interaction.reply({
           embeds: [

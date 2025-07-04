@@ -24,7 +24,7 @@ export default class UserEvent extends Listener<typeof Events.GuildBanRemove> {
 
     const { webhook, executor } = auditData;
 
-    const reason = unban?.reason || auditData?.reason || "No reason provided";
+    const reason = unban?.reason ?? auditData?.reason ?? "No reason provided";
 
     const unBanEmbed: APIEmbed = {
       title: "**Audit UnBan Log**",

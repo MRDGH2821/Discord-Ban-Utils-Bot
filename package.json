@@ -68,7 +68,7 @@
     ],
     "src/**/*.ts": [
       "prettier --write",
-      "eslint --fix --ignore-path .gitignore"
+      "eslint --fix"
     ]
   },
   "dependencies": {
@@ -92,6 +92,7 @@
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
+    "@commitlint/types": "^19.8.1",
     "@sapphire/cli": "^1.9.3",
     "@sapphire/ts-config": "^5.0.1",
     "@types/cli-progress": "^3.11.6",

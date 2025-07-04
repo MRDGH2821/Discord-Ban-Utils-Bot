@@ -28,7 +28,7 @@ export default class UserEvent extends Listener<
 
     const firstExitLog = auditData.auditLog;
 
-    const reason = firstExitLog?.reason || "";
+    const reason = firstExitLog?.reason ?? "";
 
     const exitEmbed: APIEmbed = {
       title: "**Audit Exit Log**",

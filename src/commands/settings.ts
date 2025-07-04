@@ -24,9 +24,9 @@ import {
 } from "../lib/utils.js";
 
 const PIECE_NAME = "settings";
-interface SettingsOpt extends APISelectMenuOption {
+type SettingsOpt = APISelectMenuOption & {
   value: SettingsParameter;
-}
+};
 @ApplyOptions<Subcommand.Options>({
   name: PIECE_NAME,
   description: "Configure bot settings",
@@ -52,7 +52,7 @@ interface SettingsOpt extends APISelectMenuOption {
 
         const settings = await db.servers
           .get(interaction.guildId)
-          .then((v) => v?.data);
+          .then((dbDoc) => dbDoc?.data);
         if (!settings) {
           return interaction.editReply({
             content: "No settings configured.",
@@ -97,7 +97,7 @@ interface SettingsOpt extends APISelectMenuOption {
   },
 })
 export default class UserCommand extends Subcommand {
-  override registerApplicationCommands(registry: Subcommand.Registry) {
+  public override registerApplicationCommands(registry: Subcommand.Registry) {
     registry.registerChatInputCommand({
       name: this.name,
       description: this.description,
@@ -220,10 +220,11 @@ export default class UserCommand extends Subcommand {
           },
         ],
       })
-      .then((msg) =>
+      .then(async (msg) =>
         msg.awaitMessageComponent({
           componentType: ComponentType.StringSelect,
-          filter: (i) => i.user.id === interaction.user.id,
+          filter: (menuInteraction) =>
+            menuInteraction.user.id === interaction.user.id,
         }),
       )
       .then(async (selectMenu) => {
@@ -249,26 +250,26 @@ export default class UserCommand extends Subcommand {
 
         return parsedSettings;
       })
-      .then((settings) =>
+      .then(async (settings) =>
         this.getOrCreateWebhook(channel).then((webhook) => ({
           settings,
           webhook,
         })),
       )
-      .then(({ settings, webhook }) =>
+      .then(async ({ settings, webhook }) =>
         db.servers
           .get(channel.guildId)
-          .then((v) => ({ settings, webhook, oldSettings: v?.data })),
+          .then((dbDoc) => ({ settings, webhook, oldSettings: dbDoc?.data })),
       )
-      .then(({ settings, webhook, oldSettings }) =>
+      .then(async ({ settings, webhook, oldSettings }) =>
         db.servers
           .upset(channel.guildId, {
             guildId: channel.guildId,
             webhookId: webhook.id,
             ...settings,
           })
-          .then((v) => v.get())
-          .then((v) => v!.data)
+          .then(async (dbRef) => dbRef.get())
+          .then((dbDoc) => dbDoc!.data)
           .then((newSettings) =>
             emitBotEvent("botSettingsUpdate", {
               oldSettings,
@@ -276,13 +277,13 @@ export default class UserCommand extends Subcommand {
             }),
           ),
       )
-      .then(() =>
+      .then(async () =>
         interaction.followUp({
           content: "Settings have been saved successfully!",
           ephemeral: true,
         }),
       )
-      .catch((error: Error) => {
+      .catch(async (error: Error) => {
         this.container.logger.error(error);
         const errEmb = debugErrorEmbed({
           checks: [
@@ -291,7 +292,7 @@ export default class UserCommand extends Subcommand {
               result:
                 interaction.memberPermissions?.has(
                   PermissionFlagsBits.BanMembers,
-                ) || false,
+                ) ?? false,
             },
             {
               question: "Inside server",
@@ -322,7 +323,7 @@ export default class UserCommand extends Subcommand {
   public async getOrCreateWebhook(channel: TextChannel, cleanUp = true) {
     const webhooks = await channel.guild.fetchWebhooks();
     const myWebhooks = webhooks
-      .filter((w) => w.owner?.id === this.container.client.user?.id)
+      .filter((webhook) => webhook.owner?.id === this.container.client.user?.id)
       .sort((a, b) => b.createdTimestamp - a.createdTimestamp);
 
     const selectedWebhook = myWebhooks.first();
@@ -330,10 +331,11 @@ export default class UserCommand extends Subcommand {
       if (cleanUp) {
         await Promise.all(
           myWebhooks
-            .filter((w) => w.id !== selectedWebhook.id)
-            .map((w) => w.delete()),
+            .filter((webhook) => webhook.id !== selectedWebhook.id)
+            .map(async (oldWebhook) => oldWebhook.delete()),
         );
       }
+
       return selectedWebhook.edit({
         name: "Ban Utils Logs",
         avatar: WEBHOOK_ICON,
@@ -341,6 +343,7 @@ export default class UserCommand extends Subcommand {
         reason: "Updating a webhook for Ban Utils bot",
       });
     }
+
     return channel.createWebhook({
       name: "Ban Utils Logs",
       avatar: WEBHOOK_ICON,

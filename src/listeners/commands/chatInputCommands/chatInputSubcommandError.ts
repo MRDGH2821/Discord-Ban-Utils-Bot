@@ -17,7 +17,7 @@ const PIECE_NAME = "Chat Input Subcommand Error";
 export default class UserEvent extends Listener<
   typeof SubcommandPluginEvents.ChatInputSubcommandError
 > {
-  public override run(
+  public override async run(
     error: Error,
     { interaction }: ChatInputSubcommandErrorPayload,
   ) {
@@ -44,7 +44,7 @@ export default class UserEvent extends Listener<
         components: [inviteRow],
         files: [errFile],
       })
-      .catch(() =>
+      .catch(async () =>
         interaction.followUp({
           embeds: [errEmb],
           components: [inviteRow],

@@ -65,7 +65,7 @@ export default class UserCommand extends Command {
   ) {
     const user = interaction.options.getUser("user", true);
     const reason =
-      interaction.options.getString("reason") || "No reason provided";
+      interaction.options.getString("reason") ?? "No reason provided";
 
     if (!interaction.inGuild() || !interaction.guild) {
       return interaction.reply({
@@ -83,7 +83,7 @@ export default class UserCommand extends Command {
 
     const executor = await interaction.guild.members.fetch(interaction.user.id);
 
-    return interaction.guild.members.unban(user, reason).then(() => {
+    return interaction.guild.members.unban(user, reason).then(async () => {
       emitBotEvent("botGuildBanRemove", { convict: user, executor, reason });
       return interaction.reply({
         embeds: [

@@ -10,16 +10,15 @@ import { getWebhook } from "../../lib/utils.js";
 function entries<T extends object>(obj: T): [keyof T, T[keyof T]][] {
   return Object.entries(obj) as [keyof T, T[keyof T]][];
 }
+
 const PIECE_NAME = "Bot Settings Update log";
 @ApplyOptions<Listener.Options>({
   name: PIECE_NAME,
   event: BUEvents.BotSettingsUpdate,
 })
 export default class UserEvent extends Listener {
-  // eslint-disable-next-line class-methods-use-this
   public emojify(value?: boolean | string | null) {
-    const v = value!;
-    return v ? "✅" : "❌";
+    return value ? "✅" : "❌";
   }
 
   public override async run({
@@ -34,6 +33,7 @@ export default class UserEvent extends Listener {
     if (!webhook) {
       return;
     }
+
     const { markdownTable } = await import("markdown-table");
     const table = markdownTable([
       ["Setting name", "Old", "New"],
@@ -42,7 +42,7 @@ export default class UserEvent extends Listener {
         .map(([key, value]) => [
           key,
           this.emojify(oldSettings![key]),
-          `${value || false}`,
+          `${value ?? false}`,
         ]),
     ]);
 

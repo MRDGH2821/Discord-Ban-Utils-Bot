@@ -1,10 +1,14 @@
 {
-  "include": ["./buildLibs/*", "package.json", "package-lock.json"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "./tsconfig.json",
-    "./tsconfig.eslint.json",
-    "./.eslintrc.json"
+  "compilerOptions": {
+    "strictNullChecks": true
+  },
+  "exclude": ["dist", "node_modules"],
+  "include": [
+    "./.commitlintrc.cts",
+    "./.husky/install.mjs",
+    "./buildLibs/*",
+    "./eslint.config.ts",
+    "package-lock.json",
+    "package.json"
   ]
 }

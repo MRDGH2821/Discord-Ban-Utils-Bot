@@ -76,9 +76,9 @@ export default class UserCommand extends Command {
 
   private async sendPing(
     interactionOrMessage:
-      | Message
       | Command.ChatInputCommandInteraction
-      | Command.ContextMenuCommandInteraction,
+      | Command.ContextMenuCommandInteraction
+      | Message,
   ) {
     const pingMessage = await interactionOrMessage
       .reply({
@@ -89,6 +89,7 @@ export default class UserCommand extends Command {
         if (msg instanceof Message) {
           return msg;
         }
+
         return msg.interaction;
       });
 

@@ -43,22 +43,26 @@ const PIECE_NAME = "List Importer";
 export default class UserEvent extends Listener {
   #lastMessageUpdateTime = 0;
 
-  // eslint-disable-next-line class-methods-use-this
   public async filterList(guildId: string, shouldIgnoreFilterList: boolean) {
-    const excData = await db.filterList.get(guildId).then((v) => v?.data);
+    const excData = await db.filterList
+      .get(guildId)
+      .then((dbDoc) => dbDoc?.data);
     const list = [];
-    if (!shouldIgnoreFilterList && excData && excData.importFilter) {
+    if (!shouldIgnoreFilterList && excData?.importFilter) {
       list.push(...excData.importFilter);
     }
+
     return list;
   }
 
   private async debounceMessage(func: () => void) {
     const now = Date.now();
-    if (now - this.#lastMessageUpdateTime > 10000) {
+    if (now - this.#lastMessageUpdateTime > 10_000) {
       this.#lastMessageUpdateTime = now;
-      return func();
+      func();
+      return;
     }
+
     return null;
   }
 
@@ -98,9 +102,9 @@ export default class UserEvent extends Listener {
     container.logger.debug("Filtered list size:", filteredList.length);
     bansProgress.setTotal(filteredList.length);
 
-    const banFn = (id: string, reason: string) =>
+    const banFn = async (id: string, reason: string) =>
       guild.members.ban(id, { reason });
-    const unBanFn = (id: string, reason: string) =>
+    const unBanFn = async (id: string, reason: string) =>
       guild.members.unban(id, reason);
 
     const actionFn = mode === "ban" ? banFn : unBanFn;
@@ -110,13 +114,13 @@ export default class UserEvent extends Listener {
         async () =>
           actionFn(
             ban.id,
-            ban.reason ||
+            ban.reason ??
               `Imported by ${user.username} on ${new Date().toUTCString()}`,
           )
             .then(() => successList.add(ban))
             .then(() => bansProgress.increment())
-            .then(() =>
-              this.debounceMessage(() =>
+            .then(async () =>
+              this.debounceMessage(async () =>
                 message.edit({
                   content: `(${successList.size}/${filteredList.length - failedList.size})`,
                 }),
@@ -125,7 +129,7 @@ export default class UserEvent extends Listener {
             .catch((error) => {
               failedList.add(ban);
               errorList.set(ban.id, { banEntity: ban, error });
-              return sleepSync(1000);
+              sleepSync(1_000);
             }),
         3,
       );
@@ -133,7 +137,7 @@ export default class UserEvent extends Listener {
     container.logger.debug("Starting bans...\n");
     await sequentialPromises(filteredList, performBan)
       .then(() => bansProgress.stop())
-      .then(() => message.edit({ content: "Bans completed!" }))
+      .then(async () => message.edit({ content: "Bans completed!" }))
       .catch(async (error) =>
         message.reply({
           content: `${user}\nAn error occurred while importing ${mode} list: \n${error}`,
@@ -224,6 +228,7 @@ export default class UserEvent extends Listener {
         { name: "Link of list of failed bans", value: failedListLink },
       ]);
     }
+
     component.addComponents(
       new ButtonBuilder({
         type: ComponentType.Button,
@@ -259,8 +264,8 @@ export default class UserEvent extends Listener {
     guildId: Guild["id"],
     webhookOptions: WebhookMessageCreateOptions,
   ) {
-    const settings = await db.servers.get(guildId).then((v) => v?.data);
-    if (!settings || !settings.sendImportLog) return;
+    const settings = await db.servers.get(guildId).then((dbDoc) => dbDoc?.data);
+    if (!settings?.sendImportLog) return;
 
     const webhook = await this.container.client.fetchWebhook(
       settings.webhookId,

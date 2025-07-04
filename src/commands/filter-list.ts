@@ -108,13 +108,12 @@ const PIECE_NAME = "filter-list";
   ],
 })
 export default class UserCommand extends Subcommand {
-  // eslint-disable-next-line class-methods-use-this
   public parseIds(ids: string) {
     const idList = ids.match(SnowflakeRegex);
     return userIdValidator.run(idList).unwrap();
   }
 
-  registerApplicationCommands(registry: Subcommand.Registry) {
+  public registerApplicationCommands(registry: Subcommand.Registry) {
     registry.registerChatInputCommand({
       name: this.name,
       description: this.description,
@@ -190,7 +189,7 @@ export default class UserCommand extends Subcommand {
     interaction: Subcommand.ChatInputCommandInteraction,
   ) {
     this.container.logger.info("subChatInputRun");
-    interaction.deferReply();
+    return interaction.deferReply();
   }
 
   public async askModalUserId(
@@ -214,7 +213,7 @@ export default class UserCommand extends Subcommand {
 
     return interaction
       .showModal(modal)
-      .then(() => interaction.awaitModalSubmit({ time: Time.Minute * 5 }))
+      .then(async () => interaction.awaitModalSubmit({ time: Time.Minute * 5 }))
       .then((modalCtx) =>
         modalCtx.fields.getTextInputValue("exclude-user-ids-list"),
       )

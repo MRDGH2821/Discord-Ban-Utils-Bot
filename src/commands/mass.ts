@@ -50,7 +50,7 @@ const PIECE_NAME = "mass";
   },
 })
 export default class UserCommand extends Subcommand {
-  override registerApplicationCommands(registry: Subcommand.Registry) {
+  public override registerApplicationCommands(registry: Subcommand.Registry) {
     registry.registerChatInputCommand({
       name: this.name,
       description: this.description,
@@ -117,7 +117,6 @@ export default class UserCommand extends Subcommand {
     });
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private parseIds(ids: string, banReason: string) {
     const idList = ids.match(/(?<id>\d{17,20})/gimu);
 
@@ -154,7 +153,7 @@ export default class UserCommand extends Subcommand {
 
     const mode = schema.parse(invokerCmd);
     const shouldIgnoreFilterList =
-      interaction.options.getBoolean(IGNORE_FILTER_TEXT) || mode !== "ban";
+      interaction.options.getBoolean(IGNORE_FILTER_TEXT) ?? mode !== "ban";
 
     const parsedIds = this.parseIds(ids, reason);
 

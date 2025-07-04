@@ -55,7 +55,7 @@ export default class UserCommand extends Command {
     interaction: Command.ChatInputCommandInteraction,
   ) {
     const reasonFlag = interaction.options.getBoolean("include-reason");
-    const includeReason = reasonFlag === null ? true : reasonFlag;
+    const includeReason = reasonFlag ?? true;
     const shouldIgnoreFilterList =
       interaction.options.getBoolean("ignore-filter-list") ?? false;
 
@@ -96,7 +96,7 @@ export default class UserCommand extends Command {
           },
         ],
       })
-      .then((iRes) =>
+      .then(async (iRes) =>
         iRes.awaitMessageComponent({
           filter(btx) {
             return btx.user.id === interaction.user.id;
@@ -105,7 +105,7 @@ export default class UserCommand extends Command {
           dispose: true,
         }),
       )
-      .then((btx) => {
+      .then(async (btx) => {
         if (btx.customId === "export-ban-list-yes") {
           const statusEmbed: APIEmbed = {
             title: "**Ban List export Scheduled**",
@@ -133,6 +133,7 @@ export default class UserCommand extends Command {
             components: [],
           });
         }
+
         return btx.editReply({
           embeds: [{ title: "**Export Cancelled**", color: COLORS.lightGray }],
           components: [],

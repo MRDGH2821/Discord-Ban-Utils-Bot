@@ -111,6 +111,7 @@ export default class UserCommand extends Command {
           components: [inviteButtonRow],
         });
       }
+
       return iRes;
     }
 
@@ -172,9 +173,9 @@ export default class UserCommand extends Command {
         name: "**Top 5 Roles**",
         value: member.roles.cache
           .sort((a, b) => b.position - a.position)
-          .filter((r) => !r.managed)
-          .map((r) => r.toString())
-          .filter((r) => r !== "@everyone")
+          .filter((role) => !role.managed)
+          .map((role) => role.toString())
+          .filter((roleMention) => roleMention !== "@everyone")
           .splice(0, 5)
           .join(" "),
       });
@@ -187,6 +188,7 @@ export default class UserCommand extends Command {
         });
       }
     }
+
     const component = new ActionRowBuilder<ButtonBuilder>();
     if (isActuallyMod) {
       component.addComponents(inviteButton);

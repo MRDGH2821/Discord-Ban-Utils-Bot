@@ -10,9 +10,8 @@ const db = schema(($) => ({
   ),
 }));
 
-interface Setting {
+type Setting = {
   guildId: Guild["id"];
-  webhookId: Webhook["id"];
   sendBanExportLog?: boolean | null;
   sendBanLog?: boolean | null;
   sendExitLog?: boolean | null;
@@ -22,15 +21,16 @@ interface Setting {
   sendMassBanLog?: boolean | null;
   sendMassUnbanLog?: boolean | null;
   sendTimeoutLog?: boolean | null;
-  sendUnbanLog?: boolean | null;
   sendUnTimeoutLog?: boolean | null;
-}
+  sendUnbanLog?: boolean | null;
+  webhookId: Webhook["id"];
+};
 
-interface FilterList {
-  importFilter: User["id"][];
+type FilterList = {
   exportFilter: User["id"][];
   guildId: Guild["id"];
-}
+  importFilter: User["id"][];
+};
 
 export default db;
 

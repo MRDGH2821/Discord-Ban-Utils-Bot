@@ -1,5 +1,3 @@
-// eslint-disable-next-line eslint-comments/disable-enable-pair
-/* eslint-disable no-restricted-syntax */
 import { ApplyOptions } from "@sapphire/decorators";
 import {
   isGuildMember,
@@ -58,7 +56,6 @@ export default class UserCommand extends Command {
     );
   }
 
-  // eslint-disable-next-line class-methods-use-this
   public permissionsStatus(
     requiredPermissions?: PermissionsBitField,
     availablePermissions?: Readonly<PermissionsBitField>,
@@ -97,17 +94,17 @@ export default class UserCommand extends Command {
     const cmdIds = (await interaction.client.application.commands.fetch()).map(
       (cmd) => cmd.id,
     );
-    const helpEmbed = (commandId: Snowflake) =>
+    const helpEmbed = async (commandId: Snowflake) =>
       this.singleCommandHelp(commandId, interaction);
     const paginatedEmbeds = new PaginatedMessage();
 
     return sequentialPromises(cmdIds, helpEmbed)
-      .then((embeds) =>
+      .then(async (embeds) =>
         sequentialPromises(embeds, async (embed) =>
           paginatedEmbeds.addAsyncPageEmbed(embed),
         ),
       )
-      .then(() => paginatedEmbeds.run(interaction));
+      .then(async () => paginatedEmbeds.run(interaction));
   }
 
   public async singleCommandHelp(

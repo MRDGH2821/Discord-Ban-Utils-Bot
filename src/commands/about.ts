@@ -31,7 +31,7 @@ export default class UserCommand extends Command {
       embeds: [
         {
           title: "About the bot",
-          description: `${interaction.client.user.username} was made with one objective:\nTo make it easy to transfer bans from one server to another.\n\nTo get started, invite me to your server and use the ${formatCmdName(helpCmd?.name || "help", helpCmd!.id)} command to see the list of commands.`,
+          description: `${interaction.client.user.username} was made with one objective:\nTo make it easy to transfer bans from one server to another.\n\nTo get started, invite me to your server and use the ${formatCmdName(helpCmd?.name ?? "help", helpCmd!.id)} command to see the list of commands.`,
           fields: [
             {
               name: "Ping (Websocket)",
@@ -56,10 +56,7 @@ export default class UserCommand extends Command {
           color: COLORS.lightGray,
         },
       ],
-      components: [
-        (await invitation(this.container.client)).inviteRow,
-        supportRow,
-      ],
+      components: [invitation(this.container.client).inviteRow, supportRow],
     });
   }
 }

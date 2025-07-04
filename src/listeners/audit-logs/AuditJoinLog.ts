@@ -14,8 +14,10 @@ const PIECE_NAME = "Audit Join Log";
 })
 export default class UserEvent extends Listener<typeof Events.GuildMemberAdd> {
   public override async run(member: GuildMember) {
-    const settings = await db.servers.get(member.guild.id).then((v) => v?.data);
-    if (!settings || !settings?.sendJoinLog) {
+    const settings = await db.servers
+      .get(member.guild.id)
+      .then((dbDoc) => dbDoc?.data);
+    if (!settings?.sendJoinLog) {
       return;
     }
 

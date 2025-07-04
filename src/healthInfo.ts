@@ -1,7 +1,7 @@
 import http from "node:http";
 import { botLogger } from "./bot-logger.js";
 
-const PORT = 9000;
+const PORT = 9_000;
 
 http
   .createServer((_, res) => {

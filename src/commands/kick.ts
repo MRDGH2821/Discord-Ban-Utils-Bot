@@ -45,7 +45,7 @@ export default class UserCommand extends Command {
   ) {
     const convict = interaction.options.getMember("user");
     const reason =
-      interaction.options.getString("reason") ||
+      interaction.options.getString("reason") ??
       `Kicked by ${interaction.user.username} on ${new Date().toString()} ||for no reason :joy:||`;
 
     if (!interaction.inGuild() || !interaction.guild) {
@@ -57,7 +57,7 @@ export default class UserCommand extends Command {
 
     if (!isGuildMember(convict)) {
       return interaction.reply({
-        content: `${convict} is not in this server.`,
+        content: `${interaction.options.getUser("user")} is not in this server.`,
         ephemeral: true,
       });
     }
@@ -75,9 +75,10 @@ export default class UserCommand extends Command {
         ephemeral: true,
       });
     }
+
     const executor = await interaction.guild.members.fetch(interaction.user.id);
 
-    return convict.kick(reason).then(() => {
+    return convict.kick(reason).then(async () => {
       emitBotEvent("botGuildMemberKick", { convict, executor, reason });
       return interaction.reply({
         embeds: [

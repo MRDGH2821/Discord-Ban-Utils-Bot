@@ -165,6 +165,7 @@ export default class UserCommand extends Command {
 
       choices.push(...defaultChoices);
     }
+
     return interaction.respond(choices.slice(0, 25));
   }
 
@@ -174,7 +175,7 @@ export default class UserCommand extends Command {
     const convict = interaction.options.getMember("user");
     const duration = interaction.options.getInteger("duration", true);
     const reason =
-      interaction.options.getString("reason") || "No reason provided";
+      interaction.options.getString("reason") ?? "No reason provided";
 
     if (!interaction.inGuild() || !interaction.guild) {
       return interaction.reply({
@@ -185,7 +186,7 @@ export default class UserCommand extends Command {
 
     if (!isGuildMember(convict)) {
       return interaction.reply({
-        content: `${convict} is not in this server.`,
+        content: `${interaction.options.getUser("user")} is not in this server.`,
         ephemeral: true,
       });
     }
@@ -217,20 +218,22 @@ export default class UserCommand extends Command {
     };
 
     if (duration <= 0) {
-      return convict.disableCommunicationUntil(null, reason).then((target) =>
-        interaction.reply({
-          embeds: [
-            {
-              title: `${target.user.username} is no longer timed out!`,
-              description: `\`${target.user.username}\` ${target} is no longer timed out`,
-              color: COLORS.lightGray,
-              thumbnail,
-              fields,
-              timestamp: new Date().toISOString(),
-            },
-          ],
-        }),
-      );
+      return convict
+        .disableCommunicationUntil(null, reason)
+        .then(async (target) =>
+          interaction.reply({
+            embeds: [
+              {
+                title: `${target.user.username} is no longer timed out!`,
+                description: `\`${target.user.username}\` ${target} is no longer timed out`,
+                color: COLORS.lightGray,
+                thumbnail,
+                fields,
+                timestamp: new Date().toISOString(),
+              },
+            ],
+          }),
+        );
     }
 
     const durationSentence = ms(duration, { includeMs: true });
@@ -244,7 +247,7 @@ export default class UserCommand extends Command {
 
     const executor = await interaction.guild.members.fetch(interaction.user.id);
 
-    return convict.timeout(duration, reason).then((target) => {
+    return convict.timeout(duration, reason).then(async (target) => {
       emitBotEvent("botTimeout", { convict, executor, reason });
       return interaction.reply({
         embeds: [

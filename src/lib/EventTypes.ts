@@ -14,22 +14,22 @@ export type BotGuildBanAddOptions = {
 export type BotGuildBanRemoveOptions = BotGuildBanAddOptions;
 export type BotGuildMemberKickOptions = Pick<
   BotGuildBanAddOptions,
-  "reason" | "executor"
+  "executor" | "reason"
 > & {
   convict: GuildMember;
 };
 export type BotTimeoutOptions = BotGuildMemberKickOptions;
 export type BotSettingsUpdateOptions = {
-  oldSettings?: DBSchema["servers"]["Data"] | undefined | null;
   newSettings: DBSchema["servers"]["Data"];
+  oldSettings?: DBSchema["servers"]["Data"] | null | undefined;
 };
 
 export type FilterListUpdateOptions = {
-  guildId: string;
   exportFilter: string[];
+  guildId: string;
   importFilter: string[];
-  mode: "add" | "remove";
   interaction: AnyInteractableInteraction;
+  mode: "add" | "remove";
 };
 
 export const BUEvents = {
@@ -43,7 +43,7 @@ export const BUEvents = {
   FilterListUpdate: "filterListUpdate" as const,
 } as const;
 
-export interface BUEventParams {
+export type BUEventParams = {
   [BUEvents.BanListExport]: [payload: BanExportOptions];
   [BUEvents.ListImport]: [payload: ListImportOptions];
   [BUEvents.BotGuildBanAdd]: [payload: BotGuildBanAddOptions];
@@ -52,7 +52,7 @@ export interface BUEventParams {
   [BUEvents.BotTimeout]: [payload: BotTimeoutOptions];
   [BUEvents.BotSettingsUpdate]: [payload: BotSettingsUpdateOptions];
   [BUEvents.FilterListUpdate]: [payload: FilterListUpdateOptions];
-}
+};
 
 export function emitBotEvent<E extends keyof BUEventParams>(
   event: ValueOf<typeof BUEvents>,

@@ -34,8 +34,7 @@ const PIECE_NAME = "Ban List Exporter";
   event: BUEvents.BanListExport,
 })
 export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
-  // eslint-disable-next-line class-methods-use-this
-  private async banListLink<T>(array: Array<T>, title: string) {
+  private async banListLink<T>(array: T[], title: string) {
     return createPaste({
       content: JSON.stringify(array),
       title,
@@ -56,7 +55,7 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
 
     const chunks: BanType[][] = includeReason
       ? chunk(banListWithReason, 350)
-      : chunk(banList, 1000);
+      : chunk(banList, 1_000);
 
     let idx = 1;
     const getLink = async (list: (typeof chunks)[0]) => {
@@ -84,7 +83,7 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
       requesterUser: user,
       sourceMessage: message,
       shouldIgnoreFilterList,
-    }).catch((error: Error) => {
+    }).catch(async (error: Error) => {
       this.container.logger.error(error);
       const errEmbed = debugErrorEmbed({
         title: "Error while exporting ban list",
@@ -115,13 +114,15 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
     });
   }
 
-  // eslint-disable-next-line class-methods-use-this
   public async filterList(guildId: string, shouldIgnoreFilterList = false) {
-    const excData = await db.filterList.get(guildId).then((v) => v?.data);
+    const excData = await db.filterList
+      .get(guildId)
+      .then((dbDoc) => dbDoc?.data);
     const list = [];
-    if (!shouldIgnoreFilterList && excData && excData.exportFilter) {
+    if (!shouldIgnoreFilterList && excData?.exportFilter) {
       list.push(...excData.exportFilter);
     }
+
     return list;
   }
 
@@ -152,13 +153,13 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
             bans: filteredBans,
           };
         })
-        .then(({ links, bans }) => {
+        .then(async ({ links, bans }) => {
           const resultEmbed = EmbedBuilder.from({
             title: "**Ban List Export Success!**",
             description: `Total Bans Found: ${bans.size}\n\nEach link contains ${
-              includeReason ? 350 : 1000
+              includeReason ? 350 : 1_000
             } bans.\nExcept the last one, which contains ${
-              includeReason ? bans.size % 350 : bans.size % 1000
+              includeReason ? bans.size % 350 : bans.size % 1_000
             } bans.`,
             color: COLORS.lightGray,
             fields: [
@@ -200,8 +201,8 @@ export default class UserEvent extends Listener<typeof BUEvents.BanListExport> {
     embed: APIEmbed | EmbedBuilder,
     files: AttachmentBuilder[],
   ) {
-    const settings = await db.servers.get(guildId).then((v) => v?.data);
-    if (!settings || !settings?.sendBanExportLog) {
+    const settings = await db.servers.get(guildId).then((dbDoc) => dbDoc?.data);
+    if (!settings?.sendBanExportLog) {
       return;
     }
 

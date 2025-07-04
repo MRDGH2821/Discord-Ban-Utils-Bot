@@ -20,8 +20,8 @@ export default class UserEvent extends Listener {
   }: BotGuildMemberKickOptions) {
     const settings = await db.servers
       .get(executor.guild.id)
-      .then((v) => v?.data);
-    if (!settings || !settings?.sendUnbanLog) {
+      .then((dbDoc) => dbDoc?.data);
+    if (!settings?.sendUnbanLog) {
       return;
     }
 

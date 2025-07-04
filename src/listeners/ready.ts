@@ -26,7 +26,6 @@ export default class UserEvent extends Listener {
     this.printStoreDebugInformation();
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private printBanner() {
     const success = green("+");
 
@@ -40,7 +39,6 @@ export default class UserEvent extends Listener {
     // Offset Pad
     const pad = " ".repeat(7);
 
-    // eslint-disable-next-line no-console
     console.log(
       String.raw`
 ${line01} ${pad}${blc("1.0.0")}
@@ -56,12 +54,10 @@ ${line03}${dev ? ` ${pad}${blc("<")}${llc("/")}${blc(">")} ${llc("DEVELOPMENT MO
 
     const last = stores.pop()!;
 
-    // eslint-disable-next-line no-restricted-syntax
     for (const store of stores) logger.info(this.styleStore(store, false));
     logger.info(this.styleStore(last, true));
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private styleStore(store: Store<any>, last: boolean) {
     return gray(
       `${last ? "└─" : "├─"} Loaded ${this.style(store.size.toString().padEnd(3, " "))} ${

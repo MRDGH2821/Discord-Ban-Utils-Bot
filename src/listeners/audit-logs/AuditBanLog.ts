@@ -24,7 +24,7 @@ export default class UserEvent extends Listener<typeof Events.GuildBanAdd> {
 
     const { webhook, executor } = auditData;
 
-    const reason = ban?.reason || auditData?.reason || "No reason provided";
+    const reason = ban?.reason ?? auditData?.reason ?? "No reason provided";
 
     const banEmbed: APIEmbed = {
       title: "**Audit Ban Log**",

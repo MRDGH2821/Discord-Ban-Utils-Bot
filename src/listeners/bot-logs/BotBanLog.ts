@@ -21,8 +21,8 @@ export default class UserEvent extends Listener<
   }: BotGuildBanAddOptions) {
     const settings = await db.servers
       .get(executor.guild.id)
-      .then((v) => v?.data);
-    if (!settings || !settings?.sendBanLog) {
+      .then((dbDoc) => dbDoc?.data);
+    if (!settings?.sendBanLog) {
       return;
     }
 

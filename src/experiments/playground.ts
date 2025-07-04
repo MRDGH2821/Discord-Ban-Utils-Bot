@@ -1,5 +1,3 @@
-// eslint-disable-next-line eslint-comments/disable-enable-pair
-/* eslint-disable promise/no-nesting */
 import { schema } from "typesaurus";
 import { botLogger } from "../bot-logger.js";
 import db from "../lib/Database.js";
@@ -8,25 +6,28 @@ const oldDB = schema(($) => ({
   servers: $.collection<Setting, Setting["serverID"]>(),
 }));
 
-interface Setting {
-  serverID: string;
+type Setting = {
   logChannelID: string;
   logWebhookID: string;
-}
+  serverID: string;
+};
 const SID = "911985492281688134";
 oldDB.servers
   .all()
-  .then((servers) => {
-    return servers.forEach((server) => {
+  .then(async (servers) => {
+    for (const server of servers) {
       // return servers.forEach((server) =>
-      if (!server) return Error("No server found");
+      if (!server) {
+        new Error("No server found");
+        continue;
+      }
 
       botLogger.info(`Migrating ${server.data.serverID}`);
       const oldValues = server.data;
       const { logChannelID, logWebhookID, serverID, ...newValues } = oldValues;
-      return server
+      await server
         .remove()
-        .then(() =>
+        .then(async () =>
           db.servers.upset(SID, {
             guildId: serverID,
             webhookId: logWebhookID,
@@ -36,6 +37,6 @@ oldDB.servers
         .then(() => botLogger.info(`Migrated ${serverID}`));
 
       // );
-    });
+    }
   })
-  .catch((err) => botLogger.error(err));
+  .catch((error) => botLogger.error(error));

@@ -17,8 +17,8 @@ export default class UserEvent extends Listener {
   public override async run({ convict, executor, reason }: BotTimeoutOptions) {
     const settings = await db.servers
       .get(executor.guild.id)
-      .then((v) => v?.data);
-    if (!settings || !settings?.sendBanLog) {
+      .then((dbDoc) => dbDoc?.data);
+    if (!settings?.sendBanLog) {
       return;
     }
 
@@ -49,7 +49,7 @@ export default class UserEvent extends Listener {
     }
   }
 
-  public sendLog(
+  public async sendLog(
     webhook: Webhook,
     executor: GuildMember,
     description: string,

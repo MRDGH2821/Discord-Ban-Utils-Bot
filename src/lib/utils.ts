@@ -42,7 +42,7 @@ function getCommandInfo(command: Command) {
   return cyan(command.name);
 }
 
-function getAuthorInfo(author: User | APIUser) {
+function getAuthorInfo(author: APIUser | User) {
   return `${author.username}[${cyan(author.id)}]`;
 }
 
@@ -71,8 +71,8 @@ export function getSuccessLoggerData(
 
 export function logSuccessCommand(
   payload:
-    | ContextMenuCommandSuccessPayload
     | ChatInputCommandSuccessPayload
+    | ContextMenuCommandSuccessPayload
     | MessageCommandSuccessPayload,
 ): void {
   const successLoggerData: ReturnType<typeof getSuccessLoggerData> =
@@ -95,32 +95,33 @@ export function logSuccessCommand(
 
 /**
  * truncates string to given length and appends "..."
- * @function truncateString
- * @param {string} str - input string
- * @param {number} num - truncate length
- * @returns {string} - truncated string
+ *
+ * @param str - input string
+ * @param num - truncate length
+ * @returns - truncated string
  */
 export function truncateString(str: string, num: number): string {
   if (str.length <= num) {
     return str;
   }
+
   return `${str.slice(0, num)}...`;
 }
 
 type DebugEmbedOptions = {
-  title: string;
+  checks: { question: string; result: boolean }[];
   description: string;
   error: Error;
-  checks: { question: string; result: boolean }[];
+  inputs: readonly Pick<CommandInteractionOption, "name" | "value">[];
   solution: string;
-  inputs: Readonly<Pick<CommandInteractionOption, "name" | "value">[]>;
+  title: string;
 };
 
 /**
  * Creates a debug embed
- * @function debugErrorEmbed
- * @param options {DebugEmbedOptions} - options for the debug embed
- * @returns {APIEmbed} - the debug embed
+ *
+ * @param options - options for the debug embed
+ * @returns the debug embed
  */
 export function debugErrorEmbed(options: DebugEmbedOptions): APIEmbed {
   const errField = {
@@ -149,7 +150,7 @@ export function debugErrorEmbed(options: DebugEmbedOptions): APIEmbed {
     },
   ];
 
-  if (errField.value.length > 1024) {
+  if (errField.value.length > 1_024) {
     const TIP =
       "_(For more details, check the error message file, if attached)_";
     errField.value = `${TIP}\n${options.error.message}\n\n${codeBlock(
@@ -160,6 +161,7 @@ export function debugErrorEmbed(options: DebugEmbedOptions): APIEmbed {
       ),
     )}`;
   }
+
   fields.push(errField);
   return {
     title: options.title,
@@ -193,12 +195,11 @@ export async function fetchAllBans(guild: Guild) {
     `(${guild.id})`,
   );
   let masterBanList = first1kBans.clone();
-  if (first1kBans.size < 1000) return masterBanList;
-  while (masterBanList.size % 1000 === 0) {
+  if (first1kBans.size < 1_000) return masterBanList;
+  while (masterBanList.size % 1_000 === 0) {
     try {
-      // eslint-disable-next-line no-await-in-loop
       const newBanList = await guild.bans.fetch({
-        limit: 1000,
+        limit: 1_000,
         after: masterBanList.lastKey()!,
       });
       container.logger.debug(
@@ -215,6 +216,7 @@ export async function fetchAllBans(guild: Guild) {
       throw error;
     }
   }
+
   container.logger.debug(
     "Found a total of",
     masterBanList.size,
@@ -243,9 +245,10 @@ export const selectedSettingsValidator = s
   )
   .transform((values) => {
     const acc: Partial<DBSchema["servers"]["Data"]> = {};
-    values.forEach((key) => {
+    for (const key of values) {
       acc[key] = true;
-    });
+    }
+
     return acc;
   });
 
@@ -255,14 +258,14 @@ export async function sendLog({
   description,
   type,
 }: SendLogOptions) {
-  const settings = await db.servers.get(guild.id).then((v) => v?.data);
+  const settings = await db.servers.get(guild.id).then((dbDoc) => dbDoc?.data);
   if (!settings) return;
   if (!settings.webhookId) return;
   if (!settings[type]) return;
 
   const hook = await guild
     .fetchWebhooks()
-    .then((hooks) => hooks.find((h) => h.id === settings.webhookId));
+    .then((hooks) => hooks.find((hook) => hook.id === settings.webhookId));
   if (!hook) return;
 
   hook
@@ -282,13 +285,18 @@ export function jumpLink(user: GuildMember | GuildMember["user"]) {
   return `https://discord.com/users/${user.id}`;
 }
 
-export function getWebhook(guildId: Guild["id"], webhookId?: Webhook["id"]) {
+export async function getWebhook(
+  guildId: Guild["id"],
+  webhookId?: Webhook["id"],
+) {
   return container.client.guilds
     .fetch(guildId)
-    .then((guild) => guild.fetchWebhooks())
+    .then(async (guild) => guild.fetchWebhooks())
     .then((hooks) =>
       hooks.find(
-        (w) => w.id === webhookId || w.owner?.id === container.client.user?.id,
+        (webhook) =>
+          webhook.id === webhookId ||
+          webhook.owner?.id === container.client.user?.id,
       ),
     );
 }
@@ -302,7 +310,7 @@ export function banEntitySchemaBuilder(banReason: string) {
     .array<BanEntity>(s.string().lengthGreaterThan(1))
     .transform<
       BanEntityWithReason[]
-    >((values) => values.map((v) => transformer(v)));
+    >((values) => values.map((stringifiedEntity) => transformer(stringifiedEntity)));
 }
 
 export async function importList(
@@ -352,7 +360,7 @@ export async function getAuditLogData(
 ) {
   const guild = await container.client.guilds.fetch(guildId);
 
-  const settings = await db.servers.get(guild.id).then((v) => v?.data);
+  const settings = await db.servers.get(guild.id).then((dbDoc) => dbDoc?.data);
   if (!settings) return null;
 
   const webhook = await getWebhook(guild.id, settings.webhookId);
@@ -417,6 +425,7 @@ function isKeyOfSettingsDescription(
 ): key is keyof typeof SettingsDescription {
   return key in SettingsDescription;
 }
+
 export function settingFormatter(data: DBSchema["servers"]["Data"]) {
   const settings = Object.entries(data)
     .filter(([key]) => isKeyOfSettingsDescription(key))
@@ -442,6 +451,7 @@ export function getCmdNameFromInteraction(
       interaction.commandId,
     );
   }
+
   if (subCmd) {
     return chatInputApplicationCommandMention(
       command,
@@ -449,6 +459,7 @@ export function getCmdNameFromInteraction(
       interaction.commandId,
     );
   }
+
   return chatInputApplicationCommandMention(command, interaction.commandId);
 }
 
@@ -461,8 +472,10 @@ export function formatCmdName(
   if (subName && group) {
     return chatInputApplicationCommandMention(name, group, subName, id);
   }
+
   if (subName) {
     return chatInputApplicationCommandMention(name, subName, id);
   }
+
   return chatInputApplicationCommandMention(name, id);
 }

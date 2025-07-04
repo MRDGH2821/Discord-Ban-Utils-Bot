@@ -19,15 +19,15 @@ ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(
 // Enable colorette
 colorette.createColors({ useColor: true });
 declare module "@sapphire/framework" {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //  @ts-ignore This is module override
+  //  @ts-expect-error This is module override
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   export interface DetailedDescriptionCommand {
     help: string;
     subcommands?: {
-      name: string;
       description: string;
-      help: string;
       group?: string;
+      help: string;
+      name: string;
     }[];
   }
 }

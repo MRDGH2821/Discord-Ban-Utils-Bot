@@ -18,16 +18,19 @@ export default class UserEvent extends Listener {
     const { mode } = payload;
 
     db.filterList
-      .upset(payload.guildId, ($) => {
-        const func = mode === "add" ? $.arrayUnion : $.arrayRemove;
-        return {
-          guildId: payload.guildId,
-          exportFilter: func(payload.exportFilter),
-          importFilter: func(payload.importFilter),
-        };
-      })
-      .then((val) => val.get())
-      .then((val) => {
+      .upset(payload.guildId, ($) => ({
+        guildId: payload.guildId,
+        exportFilter:
+          mode === "add"
+            ? $.arrayUnion(payload.exportFilter)
+            : $.arrayRemove(payload.exportFilter),
+        importFilter:
+          mode === "add"
+            ? $.arrayUnion(payload.importFilter)
+            : $.arrayRemove(payload.importFilter),
+      }))
+      .then(async (val) => val.get())
+      .then(async (val) => {
         const { exportFilter, importFilter } = val!.data;
         const exportFilterList = exportFilter
           .filter((id) => !id.includes(DUMMY_USER_ID))
@@ -58,7 +61,7 @@ export default class UserEvent extends Listener {
           ],
         });
       })
-      .catch((error) => {
+      .catch(async (error) => {
         this.container.logger.error(error);
         const { interaction } = payload;
         return interaction.editReply({
@@ -68,8 +71,8 @@ export default class UserEvent extends Listener {
                 {
                   question: "Can you ban members or manage the server?",
                   result:
-                    interaction.memberPermissions?.has("BanMembers") ||
-                    interaction.memberPermissions?.has("ManageGuild") ||
+                    interaction.memberPermissions?.has("BanMembers") ??
+                    interaction.memberPermissions?.has("ManageGuild") ??
                     false,
                 },
               ],

@@ -83,11 +83,11 @@ export default class UserCommand extends Command {
     await interaction.deferReply();
     const link = interaction.options.getString("link", true);
     const shouldIgnoreFilterList =
-      interaction.options.getBoolean("ignore-filter-list") || false;
+      interaction.options.getBoolean("ignore-filter-list") ?? false;
 
     const data = await getRawPaste(link);
     const defaultReason =
-      interaction.options.getString("reason") ||
+      interaction.options.getString("reason") ??
       `Imported by ${interaction.user.username} on ${new Date().toUTCString()}`;
     const BanEntitiesSchema = banEntitySchemaBuilder(defaultReason);
 
@@ -125,7 +125,7 @@ export default class UserCommand extends Command {
           "ban",
           shouldIgnoreFilterList,
         );
-      } catch (error2) {
+      } catch (error_) {
         return interaction.editReply({
           embeds: [
             debugErrorEmbed({
@@ -162,7 +162,7 @@ export default class UserCommand extends Command {
                   ),
                 },
               ],
-              error: error2 as Error,
+              error: error_ as Error,
               description: "Failed to parse the data.",
               inputs: [
                 {

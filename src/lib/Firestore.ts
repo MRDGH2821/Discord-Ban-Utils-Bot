@@ -6,7 +6,6 @@ import { applicationDefault, cert, initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { botLogger as logger } from "../bot-logger.js";
 
-// eslint-disable-next-line import/prefer-default-export
 export function decodeBase64(base64String: string) {
   return Buffer.from(base64String, "base64").toString();
 }
@@ -35,8 +34,10 @@ function searchCredFilePath(): string | undefined {
       baseDir,
     );
   }
+
   return undefined;
 }
+
 if (process.env.NODE_ENV === "development") {
   logger.info("Searching for Firebase credentials file in:", baseDir);
   searchCredFilePath();
@@ -54,6 +55,7 @@ function searchCredEnv() {
     logger.warn("Firebase credentials not found in 3 environment variables.");
     return null;
   }
+
   logger.info(
     "Using firebase service account credentials from 3 environment variables.",
   );
@@ -71,6 +73,7 @@ function searchBase64CredEnv() {
     );
     return null;
   }
+
   logger.info(
     "Using firebase service account credentials from base64 environment variable.",
   );
@@ -80,7 +83,7 @@ function searchBase64CredEnv() {
 }
 
 const finalCred =
-  searchBase64CredEnv() || searchCredEnv() || applicationDefault();
+  searchBase64CredEnv() ?? searchCredEnv() ?? applicationDefault();
 
 if (!finalCred) {
   throw new Error("Can't find firebase service account credentials.");
