@@ -2,7 +2,7 @@
   "compilerOptions": {
     "strictNullChecks": true
   },
-  "exclude": ["dist", "node_modules"],
+  "exclude": ["dist", "megalinter-reports", "node_modules", "reports"],
   "include": [
     "./.commitlintrc.cts",
     "./.husky/install.mjs",

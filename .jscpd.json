@@ -2,6 +2,7 @@
   "gitignore": true,
   "ignore": [
     "./src/listeners/**",
+    ".vscode/**",
     "**.lock**",
     "**/.git/**",
     "**/.github/**",

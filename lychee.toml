@@ -1,1 +1,2 @@
 exclude = ["megalinter.io/*"]
+exclude_path = ["package-lock.json", "yarn.lock", "pnpm-lock.yaml"]

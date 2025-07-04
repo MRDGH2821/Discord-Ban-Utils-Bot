@@ -105,6 +105,7 @@
     "lint-staged": "^16.1.2",
     "prettier": "^3.6.2",
     "prettier-plugin-packagejson": "^2.5.17",
+    "prettier-plugin-toml": "^2.0.5",
     "tsc-watch": "^7.1.1",
     "typescript": "^5.8.3"
   },

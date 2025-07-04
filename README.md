@@ -47,7 +47,7 @@ Or Use Docker to start:
 docker compose up -d --build ban-utils-bot
 ```
 
-Incase there is no way to upload firebase service account key:
+In case there is no way to upload firebase service account key:
 
 ```environment
 # Put respective details from the firebase service account file here if firebase key cannot be uploaded
