@@ -2,11 +2,11 @@
 
 Discord Ban Utilities for Mutual Servers!
 
-Invite Link - [click here](https://discord.com/api/oauth2/authorize?client_id=897454611370213436&permissions=1377073941638&scope=bot%20applications.commands)
+[Invite the bot!](https://discord.com/api/oauth2/authorize?client_id=897454611370213436&permissions=1377073941638&scope=bot%20applications.commands)
 
-Join my server - <https://discord.gg/MPtE9zsBs5>
+[Join my server](https://discord.gg/hK7upMsXpT)
 
-This bot project was inspired by the project [here](https://github.com/PermissionError/dbans-cli)
+This bot project was inspired by the [dbans-cli](https://github.com/PermissionError/dbans-cli)
 
 ## Bot Permissions
 
@@ -22,7 +22,7 @@ So to setup logging follow these steps:
 3. In Firebase Admin SDK section, click on `Node.js` & finally on `Generate new private key`.
 4. Copy this private key (i.e. the json file which gets downloaded) into `./firebase-service-acc/`
 
-For more info check [here](./firebase-service-acc/README.md)
+For more info [check here](./firebase-service-acc/README.md)
 
 ## Hosting
 
@@ -39,7 +39,7 @@ You can also copy [`sample.env`](./sample.env) file and rename it to `.env`.
 - Install dependencies by using `npm install`.
 - Use `npm start` to run the bot code.
 
-For more info click [here](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot) & [here](https://discordjs.guide/creating-your-bot/)
+See discord.js guides on [setting up a bot application](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot) & [creating a bot](https://discordjs.guide/creating-your-bot/)
 
 Or Use Docker to start:
 
